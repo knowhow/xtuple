@@ -1,0 +1,8 @@
+In no particular order:
+- make all strings translatable and update .ts and .pro files
+- update use of scripting api (i.e. QMessageBox.critical & symbolic constants)
+- add an ItemCluster to DisplayItemLocations to show how
+- add a right-click to DisplayItemLocations to show how to build menus
+- add initMenu to put stuff in a reasonable place
+- remove redundant scripts
+- either incorporate simpleSalesOrder into the package or move it

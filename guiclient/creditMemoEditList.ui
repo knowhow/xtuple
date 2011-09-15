@@ -1,0 +1,140 @@
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+  <exportmacro></exportmacro>
+  <class>creditMemoEditList</class>
+  <widget class="QWidget" name="creditMemoEditList" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>773</width>
+        <height>351</height>
+      </rect>
+    </property>
+    <property name="windowTitle" >
+      <string>Credit Memo Edit List</string>
+    </property>
+      <layout class="QVBoxLayout" >
+        <item>
+          <layout class="QHBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
+            </property>
+            <property name="spacing" >
+              <number>0</number>
+            </property>
+            <item>
+              <spacer name="Spacer129" >
+                <property name="sizeHint" >
+                  <size>
+                    <width>20</width>
+                    <height>20</height>
+                  </size>
+                </property>
+                <property name="sizeType" >
+                  <enum>Expanding</enum>
+                </property>
+                <property name="orientation" >
+                  <enum>Horizontal</enum>
+                </property>
+              </spacer>
+            </item>
+            <item>
+              <layout class="QVBoxLayout" >
+                <property name="margin" >
+                  <number>0</number>
+                </property>
+                <property name="spacing" >
+                  <number>5</number>
+                </property>
+                <item>
+                  <widget class="QPushButton" name="_close" >
+                    <property name="text" >
+                      <string>&amp;Close</string>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <widget class="QPushButton" name="_print" >
+                    <property name="text" >
+                      <string>&amp;Print</string>
+                    </property>
+                  </widget>
+                </item>
+              </layout>
+            </item>
+          </layout>
+        </item>
+        <item>
+          <layout class="QVBoxLayout" >
+            <property name="spacing" >
+              <number>0</number>
+            </property>
+            <property name="margin" >
+              <number>0</number>
+            </property>
+            <item>
+              <widget class="QLabel" name="_billingListLit" >
+                <property name="text" >
+                  <string>Billing List:</string>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <widget class="XTreeWidget" name="_cmhead" >
+                <property name="sizePolicy" >
+                  <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>7</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="minimumSize" >
+                  <size>
+                    <width>0</width>
+                    <height>100</height>
+                  </size>
+                </property>
+              </widget>
+            </item>
+          </layout>
+        </item>
+      </layout>
+  </widget>
+  <layoutdefault spacing="5" margin="5" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
+    <customwidget>
+      <class>XTreeWidget</class>
+      <extends>QTreeWidget</extends>
+      <header>xtreewidget.h</header>
+      <container>0</container>
+      <pixmap></pixmap>
+    </customwidget>
+  </customwidgets>
+  <tabstops>
+    <tabstop>_cmhead</tabstop>
+    <tabstop>_print</tabstop>
+    <tabstop>_close</tabstop>
+  </tabstops>
+  <includes>
+    
+    <include location="global" >parameter.h</include>
+  </includes>
+  <connections>
+    <connection>
+      <sender>_close</sender>
+      <signal>clicked()</signal>
+      <receiver>creditMemoEditList</receiver>
+      <slot>close()</slot>
+    </connection>
+  </connections>
+</ui>

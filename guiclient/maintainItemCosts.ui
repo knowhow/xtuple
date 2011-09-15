@@ -1,0 +1,248 @@
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+  <exportmacro></exportmacro>
+  <class>maintainItemCosts</class>
+  <widget class="QWidget" name="maintainItemCosts" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>685</width>
+        <height>319</height>
+      </rect>
+    </property>
+    <property name="windowTitle" >
+      <string>Maintain Item Costs</string>
+    </property>
+      <layout class="QVBoxLayout" >
+        <item>
+          <layout class="QHBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
+            </property>
+            <property name="spacing" >
+              <number>7</number>
+            </property>
+            <item>
+              <widget class="ItemCluster" name="_item" />
+            </item>
+            <item>
+              <layout class="QHBoxLayout" >
+                <property name="margin" >
+                  <number>0</number>
+                </property>
+                <property name="spacing" >
+                  <number>0</number>
+                </property>
+                <item>
+                  <spacer name="Spacer9" >
+                    <property name="sizeHint" >
+                      <size>
+                        <width>20</width>
+                        <height>20</height>
+                      </size>
+                    </property>
+                    <property name="sizeType" >
+                      <enum>Expanding</enum>
+                    </property>
+                    <property name="orientation" >
+                      <enum>Horizontal</enum>
+                    </property>
+                  </spacer>
+                </item>
+                <item>
+                  <layout class="QVBoxLayout" >
+                    <property name="margin" >
+                      <number>0</number>
+                    </property>
+                    <property name="spacing" >
+                      <number>0</number>
+                    </property>
+                    <item>
+                      <widget class="QPushButton" name="_close" >
+                        <property name="text" >
+                          <string>&amp;Close</string>
+                        </property>
+                      </widget>
+                    </item>
+                    <item>
+                      <spacer name="Spacer133" >
+                        <property name="sizeHint" >
+                          <size>
+                            <width>20</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType" >
+                          <enum>Preferred</enum>
+                        </property>
+                        <property name="orientation" >
+                          <enum>Vertical</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                  </layout>
+                </item>
+              </layout>
+            </item>
+          </layout>
+        </item>
+        <item>
+          <layout class="QVBoxLayout" >
+            <property name="margin" >
+              <number>0</number>
+            </property>
+            <property name="spacing" >
+              <number>0</number>
+            </property>
+            <item>
+              <widget class="QLabel" name="_costingElementsLit" >
+                <property name="sizePolicy" >
+                  <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                  </sizepolicy>
+                </property>
+                <property name="minimumSize" >
+                  <size>
+                    <width>0</width>
+                    <height>20</height>
+                  </size>
+                </property>
+                <property name="text" >
+                  <string>Costing &amp;Elements:</string>
+                </property>
+                <property name="buddy" stdset="0" >
+                  <cstring>_itemcost</cstring>
+                </property>
+              </widget>
+            </item>
+            <item>
+              <layout class="QHBoxLayout" >
+                <property name="margin" >
+                  <number>0</number>
+                </property>
+                <property name="spacing" >
+                  <number>7</number>
+                </property>
+                <item>
+                  <widget class="XTreeWidget" name="_itemcost" >
+                    <property name="sizePolicy" >
+                      <sizepolicy>
+                        <hsizetype>7</hsizetype>
+                        <vsizetype>7</vsizetype>
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                      </sizepolicy>
+                    </property>
+                  </widget>
+                </item>
+                <item>
+                  <layout class="QVBoxLayout" >
+                    <property name="margin" >
+                      <number>0</number>
+                    </property>
+                    <property name="spacing" >
+                      <number>0</number>
+                    </property>
+                    <item>
+                      <widget class="QPushButton" name="_new" >
+                        <property name="enabled" >
+                          <bool>false</bool>
+                        </property>
+                        <property name="text" >
+                          <string>&amp;New Cost</string>
+                        </property>
+                      </widget>
+                    </item>
+                    <item>
+                      <widget class="QPushButton" name="_edit" >
+                        <property name="enabled" >
+                          <bool>false</bool>
+                        </property>
+                        <property name="text" >
+                          <string>&amp;Edit Cost</string>
+                        </property>
+                      </widget>
+                    </item>
+                    <item>
+                      <widget class="QPushButton" name="_delete" >
+                        <property name="enabled" >
+                          <bool>false</bool>
+                        </property>
+                        <property name="text" >
+                          <string>&amp;Delete Cost</string>
+                        </property>
+                      </widget>
+                    </item>
+                    <item>
+                      <spacer name="Spacer12" >
+                        <property name="sizeHint" >
+                          <size>
+                            <width>20</width>
+                            <height>20</height>
+                          </size>
+                        </property>
+                        <property name="sizeType" >
+                          <enum>Expanding</enum>
+                        </property>
+                        <property name="orientation" >
+                          <enum>Vertical</enum>
+                        </property>
+                      </spacer>
+                    </item>
+                  </layout>
+                </item>
+              </layout>
+            </item>
+          </layout>
+        </item>
+      </layout>
+  </widget>
+  <layoutdefault spacing="5" margin="5" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
+    <customwidget>
+      <class>XTreeWidget</class>
+      <extends>QTreeWidget</extends>
+      <header>xtreewidget.h</header>
+      <container>0</container>
+      <pixmap></pixmap>
+    </customwidget>
+  </customwidgets>
+  <tabstops>
+    <tabstop>_item</tabstop>
+    <tabstop>_itemcost</tabstop>
+    <tabstop>_new</tabstop>
+    <tabstop>_edit</tabstop>
+    <tabstop>_delete</tabstop>
+    <tabstop>_close</tabstop>
+  </tabstops>
+  <includes>
+    <include location="global" >parameter.h</include>
+    
+  </includes>
+  <connections>
+    <connection>
+      <sender>_close</sender>
+      <signal>clicked()</signal>
+      <receiver>maintainItemCosts</receiver>
+      <slot>close()</slot>
+    </connection>
+    <connection>
+      <sender>_itemcost</sender>
+      <signal>itemSelected(int)</signal>
+      <receiver>_edit</receiver>
+      <slot>animateClick()</slot>
+    </connection>
+  </connections>
+</ui>

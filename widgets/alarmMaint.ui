@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>alarmMaint</class>
+ <widget class="QDialog" name="alarmMaint">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>612</width>
+    <height>388</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Alarm</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout">
+     <item>
+      <layout class="QVBoxLayout">
+       <item>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="QLabel" name="_alarmDueLit">
+           <property name="text">
+            <string>Due:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout">
+           <item>
+            <widget class="QSpinBox" name="_alarmOffset">
+             <property name="value">
+              <number>15</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="XComboBox" name="_alarmQualifier">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <item>
+              <property name="text">
+               <string>minutes before</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>hours before</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>days before</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>minutes after</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>hours after</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>days after</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="DLineEdit" name="_alarmDate">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTimeEdit" name="_alarmTime"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="_alarmGroup">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="XCheckBox" name="_eventAlarm">
+            <property name="text">
+             <string>Event</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="forgetful">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="_eventRecipient"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="XCheckBox" name="_emailAlarm">
+            <property name="text">
+             <string>Email</string>
+            </property>
+            <property name="forgetful">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="_emailRecipient"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="XCheckBox" name="_sysmsgAlarm">
+            <property name="text">
+             <string>System Message</string>
+            </property>
+            <property name="forgetful">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="_sysmsgRecipient"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="_buttonBox">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="ContactCluster" name="_contactCluster"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="UsernameCluster" name="_usernameCluster"/>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="5" margin="5"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>ContactCluster</class>
+   <extends>QWidget</extends>
+   <header>contactcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DLineEdit</class>
+   <extends>QWidget</extends>
+   <header>datecluster.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>UsernameCluster</class>
+   <extends>QWidget</extends>
+   <header>usernamecluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_alarmOffset</tabstop>
+  <tabstop>_alarmQualifier</tabstop>
+  <tabstop>_alarmDate</tabstop>
+  <tabstop>_alarmTime</tabstop>
+  <tabstop>_eventAlarm</tabstop>
+  <tabstop>_eventRecipient</tabstop>
+  <tabstop>_emailAlarm</tabstop>
+  <tabstop>_emailRecipient</tabstop>
+  <tabstop>_sysmsgAlarm</tabstop>
+  <tabstop>_sysmsgRecipient</tabstop>
+ </tabstops>
+ <includes>
+  <include location="global">parameter.h</include>
+ </includes>
+ <resources/>
+ <connections/>
+</ui>

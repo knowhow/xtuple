@@ -1,0 +1,16 @@
+-- Group: xtreewidgetdemo
+-- Name:  sohist02
+-- Notes: 
+SELECT cohead_id, 0, cohead_id AS seq,
+       cohead_number, cohead_orderdate, cohead_billtoname, COUNT(*) AS counter
+  FROM cohead JOIN coitem ON (cohead_id=coitem_cohead_id)
+GROUP BY cohead_id, cohead_number, cohead_orderdate, cohead_billtoname
+<? if exists("showItems") ?>
+UNION
+SELECT coitem_id, 1, coitem_cohead_id AS seq,
+       CAST(coitem_linenumber AS TEXT), coitem_scheddate, item_number, -1
+  FROM coitem
+  JOIN itemsite ON (coitem_itemsite_id=itemsite_id)
+  JOIN item ON (itemsite_item_id=item_id)
+<? endif ?>
+ORDER BY seq, cohead_number DESC;

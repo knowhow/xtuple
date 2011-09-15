@@ -1,0 +1,90 @@
+<ui version="4.0" >
+ <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>fixACL</class>
+ <widget class="QWidget" name="fixACL" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>411</width>
+    <height>328</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Fix Access Control</string>
+  </property>
+   <layout class="QGridLayout" >
+    <item row="0" column="1" >
+     <widget class="QPushButton" name="_close" >
+      <property name="text" >
+       <string>Close</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1" >
+     <widget class="QPushButton" name="_fix" >
+      <property name="text" >
+       <string>Fix</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" >
+     <spacer>
+      <property name="orientation" >
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" >
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item rowspan="3" row="0" column="0" >
+     <widget class="QLabel" name="_explanationLit" >
+      <property name="sizeIncrement" >
+       <size>
+        <width>3</width>
+        <height>3</height>
+       </size>
+      </property>
+      <property name="text" >
+       <string>Sometimes after restoring a database users get unexpected errors relating to permission to modify the data in database tables. This can happen even though the user has been granted privileges through the application.
+
+Click the "Fix" button to try to correct database-level permissions problems. This will only work if you are logged in as a PostgreSQL administrative user.</string>
+      </property>
+      <property name="wordWrap" >
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>fixACL</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>311</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>204</x>
+     <y>12</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

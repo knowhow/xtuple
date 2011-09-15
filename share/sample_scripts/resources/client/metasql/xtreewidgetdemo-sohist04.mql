@@ -1,0 +1,20 @@
+-- Group: xtreewidgetdemo
+-- Name:  sohist04
+-- Notes: add color
+SELECT cohead_id, 0 AS xtindentrole, cohead_id AS seq,
+       cohead_number, cohead_orderdate, cohead_billtoname, COUNT(*) AS counter,
+       CASE WHEN cohead_orderdate < (CURRENT_DATE - 30) THEN 'expired'
+            WHEN cohead_orderdate > CURRENT_DATE THEN 'future'
+       END AS cohead_orderdate_qtforegroundrole
+  FROM cohead JOIN coitem ON (cohead_id=coitem_cohead_id)
+GROUP BY cohead_id, cohead_number, cohead_orderdate, cohead_billtoname
+<? if exists("showItems") ?>
+UNION
+SELECT coitem_id, 1, coitem_cohead_id AS seq,
+       CAST(coitem_linenumber AS TEXT), coitem_scheddate, item_number, -1,
+       NULL
+  FROM coitem
+  JOIN itemsite ON (coitem_itemsite_id=itemsite_id)
+  JOIN item ON (itemsite_item_id=item_id)
+<? endif ?>
+ORDER BY seq, cohead_number DESC;

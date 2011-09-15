@@ -1,0 +1,20 @@
+-- Group: xtreewidgetdemo
+-- Name:  sohist06
+-- Notes: deal with numerics
+SELECT cohead_id, 0 AS xtindentrole, cohead_id AS seq,
+       cohead_number, cohead_orderdate, cohead_billtoname, COUNT(*) AS counter,
+       '#' || REPEAT(to_hex(COUNT(*) * 3), 3) AS qtforegroundrole,
+       '0' AS counter_xtnumericrole
+  FROM cohead JOIN coitem ON (cohead_id=coitem_cohead_id)
+GROUP BY cohead_id, cohead_number, cohead_orderdate, cohead_billtoname
+<? if exists("showItems") ?>
+UNION
+SELECT coitem_id, 1, coitem_cohead_id AS seq,
+       CAST(coitem_linenumber AS TEXT), coitem_scheddate, item_number, coitem_qtyord,
+       NULL,
+       'price'
+  FROM coitem
+  JOIN itemsite ON (coitem_itemsite_id=itemsite_id)
+  JOIN item ON (itemsite_item_id=item_id)
+<? endif ?>
+ORDER BY seq, cohead_number DESC;

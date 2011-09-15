@@ -1,0 +1,6 @@
+<RCC version="1.0">
+  <qresource prefix="/login">
+    <file>images/splashXTuple.png</file>
+  </qresource>
+</RCC>
+

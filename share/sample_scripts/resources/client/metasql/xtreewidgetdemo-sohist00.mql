@@ -1,0 +1,7 @@
+-- Group: xtreewidgetdemo
+-- Name:  sohist00
+-- Notes: 
+SELECT cohead_id, 0, cohead_number, cohead_orderdate, cohead_billtoname, COUNT(*) AS counter
+FROM cohead JOIN coitem ON (cohead_id=coitem_cohead_id)
+GROUP BY cohead_id, cohead_number, cohead_orderdate, cohead_billtoname
+ORDER BY cohead_id;

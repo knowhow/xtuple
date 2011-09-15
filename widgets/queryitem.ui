@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QueryItem</class>
+ <widget class="QWidget" name="QueryItem">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>395</width>
+    <height>353</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Query Item</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+     </property>
+     <item row="2" column="0">
+      <widget class="XLabel" name="_qryOrderLit">
+       <property name="text">
+        <string>Order:</string>
+       </property>
+       <property name="buddy">
+        <cstring>_qryOrder</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="XSpinBox" name="_qryOrder"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="XLabel" name="xlabel">
+       <property name="text">
+        <string>Type of Query:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="XComboBox" name="_qrySrc">
+       <property name="allowNull">
+        <bool>true</bool>
+       </property>
+       <property name="nullStr">
+        <string>[ Pick a type of query ]</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="_qryNameLit">
+       <property name="text">
+        <string>Name:</string>
+       </property>
+       <property name="buddy">
+        <cstring>_qryName</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="_qryName"/>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="3">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="_cancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_save">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" rowspan="2" colspan="4">
+    <widget class="QStackedWidget" name="_qryStack">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>10</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="_undefinedQueryTypePage"/>
+     <widget class="QWidget" name="_qryRelationPage">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QFormLayout" name="formLayout_2">
+         <item row="0" column="0">
+          <widget class="XLabel" name="_qrySchemaLit">
+           <property name="text">
+            <string>Schema or Package:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_qrySchema</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="XComboBox" name="_qrySchema">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+           <property name="nullStr">
+            <string>[ Select a schema ]</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="XLabel" name="_qryRelationLit">
+           <property name="text">
+            <string>Table or View:</string>
+           </property>
+           <property name="buddy">
+            <cstring>_qryRelation</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="XComboBox" name="_qryRelation">
+           <property name="allowNull">
+            <bool>true</bool>
+           </property>
+           <property name="nullStr">
+            <string>[ Select a table or view ]</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="_qryMQLPage"/>
+     <widget class="QWidget" name="_qryCustomPage"/>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="4">
+    <widget class="XTextEdit" name="_qryNotes">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>7</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="XLabel" name="_qryNotesLit">
+     <property name="text">
+      <string>Notes:</string>
+     </property>
+     <property name="buddy">
+      <cstring>_qryNotes</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLabel</class>
+   <extends>QLabel</extends>
+   <header>xlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>xspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_qryName</tabstop>
+  <tabstop>_qryOrder</tabstop>
+  <tabstop>_qrySrc</tabstop>
+  <tabstop>_qryNotes</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_cancel</tabstop>
+  <tabstop>_qrySchema</tabstop>
+  <tabstop>_qryRelation</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_qrySrc</sender>
+   <signal>activated(int)</signal>
+   <receiver>_qryStack</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>113</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>223</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>QueryItem</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>382</x>
+     <y>33</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>394</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

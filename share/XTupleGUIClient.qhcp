@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+  <docFiles>
+    <generate>
+      <file>
+        <input>XTupleGUIClient.qhp</input>
+        <output>XTupleGUIClient.qch</output>
+      </file>
+    </generate>
+    <register>
+      <file>XTupleGUIClient.qch</file>
+    </register>
+  </docFiles>
+</QHelpCollectionProject>

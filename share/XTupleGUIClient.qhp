@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+  <namespace>xtuple.org</namespace>
+  <virtualFolder>postbooks</virtualFolder>
+  <filterSection>
+    <toc>
+      <section title="xTuple ERP Reference Guide Not Installed" ref="index.html"/>
+    </toc>
+    <files>
+      <file>index.html</file>
+    </files>
+  </filterSection>
+</QtHelpProject>

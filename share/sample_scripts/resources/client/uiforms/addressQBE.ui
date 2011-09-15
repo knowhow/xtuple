@@ -1,0 +1,297 @@
+<ui version="4.0" >
+ <class>addressQBE</class>
+ <widget class="QWidget" name="addressQBE" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>733</width>
+    <height>331</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Query For Addresses</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <widget class="QLabel" name="_searchMeLit" >
+     <property name="text" >
+      <string>Search Criteria:</string>
+     </property>
+    </widget>
+   </item>
+   <item rowspan="2" row="0" column="2" >
+    <layout class="QVBoxLayout" name="verticalLayout" >
+     <property name="leftMargin" >
+      <number>14</number>
+     </property>
+     <property name="rightMargin" >
+      <number>12</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="_close" >
+       <property name="text" >
+        <string>&amp;Close</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_query" >
+       <property name="text" >
+        <string>Query</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="AddressCluster" name="_searchMe" />
+   </item>
+   <item row="3" column="0" >
+    <widget class="XTreeWidget" name="_found" />
+   </item>
+   <item row="3" column="1" >
+    <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <item>
+      <widget class="QPushButton" name="_editD" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>QDialog</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_editW" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>QMainWindow</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QLabel" name="_foundLit" >
+     <property name="text" >
+      <string>Matching Addresses:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <layout class="QVBoxLayout" name="verticalLayout_3" >
+     <property name="leftMargin" >
+      <number>5</number>
+     </property>
+     <property name="rightMargin" >
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="_viewD" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>QDialog</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_viewW" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>QMainWindow</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_coords" >
+       <property name="enabled" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string>QWidget</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_3" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QLabel" name="_editLit" >
+     <property name="text" >
+      <string>Edit in a</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <widget class="QLabel" name="_viewLit" >
+     <property name="text" >
+      <string>View in a</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AddressCluster</class>
+   <extends></extends>
+   <header>addresscluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTreeWidget</class>
+   <extends></extends>
+   <header>xtreewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_query</tabstop>
+  <tabstop>_close</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>addressQBE</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>595</x>
+     <y>43</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>246</x>
+     <y>7</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_found</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_editD</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>430</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>523</x>
+     <y>219</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_found</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_coords</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>423</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_found</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_editW</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>235</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>533</x>
+     <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_found</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_viewD</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>225</x>
+     <y>262</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>655</x>
+     <y>221</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_found</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_viewW</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>225</x>
+     <y>262</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>655</x>
+     <y>253</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

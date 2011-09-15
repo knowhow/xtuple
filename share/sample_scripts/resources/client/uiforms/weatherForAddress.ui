@@ -1,0 +1,100 @@
+<ui version="4.0" >
+ <comment> This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>weatherForAddress</class>
+ <widget class="QWidget" name="weatherForAddress" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>618</width>
+    <height>283</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>New Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" >
+    <widget class="AddressCluster" name="_addr" />
+   </item>
+   <item row="2" column="0" >
+    <widget class="QTextEdit" name="_output" />
+   </item>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <property name="topMargin" >
+      <number>5</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="_err" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="_tempLit" >
+       <property name="text" >
+        <string>Temperature:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="_temp" />
+     </item>
+     <item>
+      <widget class="QLabel" name="_conditionsLit" >
+       <property name="text" >
+        <string>Conditions:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="_conditions" />
+     </item>
+     <item>
+      <widget class="QLabel" name="_datetimelit" >
+       <property name="text" >
+        <string>As of:</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="_datetime" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AddressCluster</class>
+   <extends></extends>
+   <header>addresscluster.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

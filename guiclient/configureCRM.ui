@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>configureCRM</class>
+ <widget class="QWidget" name="configureCRM">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>709</width>
+    <height>425</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CRM Configuration</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="_acctGenerationLit">
+               <property name="text">
+                <string>Account # Generation:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="buddy">
+                <cstring>_acctGeneration</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="_acctGeneration">
+               <item>
+                <property name="text">
+                 <string>Manual</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Automatic</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Automatic, Allow Override</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="_nextAcctNumberLit">
+               <property name="text">
+                <string>Next #:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="buddy">
+                <cstring>_nextAcctNumber</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="XLineEdit" name="_nextAcctNumber">
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="_incidentGenerationLit">
+               <property name="text">
+                <string>Incident # Generation:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="buddy">
+                <cstring>_incidentGeneration</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="_incidentGeneration">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Automatic</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="_nextInNumberLit">
+               <property name="text">
+                <string>Next #:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="buddy">
+                <cstring>_nextInNumber</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="XLineEdit" name="_nextInNumber">
+               <property name="minimumSize">
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QCheckBox" name="_useProjects">
+             <property name="text">
+              <string>Use Projects</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="_autoCreate">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Automatically create Projects for Sales Orders</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="_opportunityChangeLog">
+             <property name="text">
+              <string>Post Opportunity Changes to the Change Log</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="_incidentsPublicShow">
+             <property name="text">
+              <string>Show Incident Public checkbox</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="_incidentsPublicDefault">
+             <property name="text">
+              <string>Incidents Public by Default</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout">
+             <item>
+              <widget class="QLabel" name="_incdtEmailProfileLit">
+               <property name="text">
+                <string>Default Incident Email Delivery Profile:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="buddy">
+                <cstring>_incdtEmailProfile</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="XComboBox" name="_incdtEmailProfile">
+               <property name="allowNull">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QGroupBox" name="_incdtDelGroup">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="title">
+              <string>Email Delivery when Incident</string>
+             </property>
+             <layout class="QGridLayout">
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="_incdtCreated">
+                <property name="text">
+                 <string>Created</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="_incdtAssigned">
+                <property name="text">
+                 <string>Assigned</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="_incdtStatus">
+                <property name="text">
+                 <string>Status Changed</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QCheckBox" name="_incdtUpdated">
+                <property name="text">
+                 <string>Updated</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QCheckBox" name="_incdtComments">
+                <property name="text">
+                 <string>Comments added</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="_incdtStatus_2">
+             <property name="title">
+              <string>Incident Status Colors</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="_newLit">
+                <property name="text">
+                 <string>New:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="XLineEdit" name="_new"/>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="_assignedLit">
+                <property name="text">
+                 <string>Assigned:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="XLineEdit" name="_assigned"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="_feedbackLit">
+                <property name="text">
+                 <string>Feedback:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="XLineEdit" name="_feedback"/>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="_resolvedLit">
+                <property name="text">
+                 <string>Resolved:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="XLineEdit" name="_resolved"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="_confirmedLit">
+                <property name="text">
+                 <string>Confirmed:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="XLineEdit" name="_confirmed"/>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="_closedLit">
+                <property name="text">
+                 <string>Closed:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
+               <widget class="XLineEdit" name="_closed"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="XLabel" name="_countryLit">
+             <property name="text">
+              <string>Default Country for Addresses:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>_country</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="XComboBox" name="_country">
+             <property name="allowNull">
+              <bool>true</bool>
+             </property>
+             <property name="nullStr">
+              <string>[ no default ]</string>
+             </property>
+             <property name="type">
+              <enum>XComboBox::Countries</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="XCheckBox" name="_strictCountries">
+           <property name="text">
+            <string>Enforce Valid Country Names</string>
+           </property>
+           <property name="forgetful">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLabel</class>
+   <extends>QLabel</extends>
+   <header>xlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_acctGeneration</tabstop>
+  <tabstop>_nextAcctNumber</tabstop>
+  <tabstop>_incidentGeneration</tabstop>
+  <tabstop>_nextInNumber</tabstop>
+  <tabstop>_useProjects</tabstop>
+  <tabstop>_autoCreate</tabstop>
+  <tabstop>_opportunityChangeLog</tabstop>
+  <tabstop>_incidentsPublicShow</tabstop>
+  <tabstop>_incidentsPublicDefault</tabstop>
+  <tabstop>_incdtEmailProfile</tabstop>
+  <tabstop>_incdtCreated</tabstop>
+  <tabstop>_incdtAssigned</tabstop>
+  <tabstop>_incdtStatus</tabstop>
+  <tabstop>_incdtUpdated</tabstop>
+  <tabstop>_incdtComments</tabstop>
+  <tabstop>_new</tabstop>
+  <tabstop>_feedback</tabstop>
+  <tabstop>_confirmed</tabstop>
+  <tabstop>_assigned</tabstop>
+  <tabstop>_resolved</tabstop>
+  <tabstop>_closed</tabstop>
+  <tabstop>_country</tabstop>
+  <tabstop>_strictCountries</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_useProjects</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_autoCreate</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>269</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>246</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

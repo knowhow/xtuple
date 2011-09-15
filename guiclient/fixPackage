@@ -1,0 +1,138 @@
+#!/bin/bash
+PROG=`basename $0`
+
+if ! [ -d $QTDIR ]; then
+  echo "Cannot find QTDIR"
+  exit 1
+fi
+if ! [ -d $PGDIR/lib ]; then
+  echo "Cannot find PGDIR/lib"
+  exit 1
+fi
+
+if [ $# -lt 1 ] ; then
+  APPROOT=../bin/xtuple.app
+  EXECNAME=xtuple
+elif [ $# -eq 1 ] ; then
+  APPROOT=$1
+  EXECNAME=`basename $APPROOT .app`
+elif [ $# -eq 2 ] ; then
+  APPROOT=$1
+  EXECNAME=$2
+fi
+
+if ! [ -d "$APPROOT" ] ; then
+  echo "$PROG: $APPROOT does not exist so either rebuild or specify a .app directory"
+  exit 1
+elif ! [ -f "$APPROOT/Contents/MacOS/$EXECNAME" ] ; then
+  echo "$PROG: $APPROOT/Contents/MacOS/$EXECNAME does not exist so rebuild, "
+  echo "       specify a proper .app directory, or name the executable as well as the .app"
+  exit 1
+fi
+
+cd $APPROOT                                                     || exit 1
+APPROOT=`pwd`
+
+collectAndRenameLibs() {
+  if [ $# -ne 1 ] ; then
+    echo "$PROG collectAndRenameLibs() expected 1 args and got $#: $*"
+    return 1
+  fi
+  if expr "$1" : '\/' > /dev/null ; then
+    FILE="$1"
+  else
+    FILE="`pwd`/$1"
+  fi
+
+  STARTDIR=`pwd`
+  NEWLOC="@executable_path/../Frameworks"
+
+  FRAMEWORKSDIR=$APPROOT/Contents/Frameworks
+  [ -d $FRAMEWORKSDIR ] || mkdir $FRAMEWORKSDIR                     || return 1
+  cd $FRAMEWORKSDIR                                                 || return 1
+
+  LIBSTORENAME=`otool -L $FILE | tail -n +2 |\
+                egrep "($QTDIR|$PGDIR|boost)" |\
+                grep -v @executable |\
+                awk '{print $1}'`
+  for TORENAME in $LIBSTORENAME ; do
+    FOUNDTORENAME=false
+    BASETORENAME=`basename $TORENAME`
+# if TORENAME is a relative path, try various searchpaths until we find it
+    if [ -e "$TORENAME" -a `echo $TORENAME | cut -c1 ` = / ] ; then
+      cp "$TORENAME" .                                              || return 1
+      FOUNDTORENAME=true
+    else
+      for LIBDIR in `echo "$DYLD_LIBRARY_PATH:$LD_LIBRARY_PATH:$LIBRARY_PATH:/usr/local/lib" |\
+                     tr : " "` ; do
+        if [ -e "$LIBDIR/$BASETORENAME" ] ; then
+          cp "$LIBDIR/$BASETORENAME" .                              || return 1
+          FOUNDTORENAME=true
+          break
+        fi
+      done
+    fi
+    if ! $FOUNDTORENAME ; then
+      echo "Could not find $TORENAME to copy"
+      return 1
+    fi
+
+    install_name_tool -id $NEWLOC/$BASETORENAME $BASETORENAME       || return 1
+    install_name_tool -change $TORENAME $NEWLOC/$BASETORENAME $FILE || return 1
+  done
+
+  cd $STARTDIR                                                      || return 1
+  return 0
+}
+
+collectAndRenameLibs $APPROOT/Contents/MacOS/$EXECNAME              || exit 2
+
+for PLUGIN in sqldrivers/libqsqlpsql.dylib sqldrivers/libqsqlodbc.dylib \
+              sqldrivers/libqsqlite.dylib \
+              imageformats/libqgif.dylib imageformats/libqjpeg.dylib    \
+              imageformats/libqmng.dylib \
+              designer/libxtuplewidgets.dylib \
+              designer/libqwebview.dylib ; do
+  [ -d $APPROOT/Contents/plugins/`dirname $PLUGIN` ] || \
+    mkdir -p $APPROOT/Contents/plugins/`dirname $PLUGIN`        || exit 2
+  cp $QTDIR/plugins/$PLUGIN $APPROOT/Contents/plugins/$PLUGIN   || exit 2
+  collectAndRenameLibs $APPROOT/Contents/plugins/$PLUGIN        || exit 2
+done
+
+if [ -f $APPROOT/../../../csvimp/plugins/libcsvimpplugin.dylib ] ; then
+  cp $APPROOT/../../../csvimp/plugins/libcsvimpplugin.dylib \
+                    $APPROOT/Contents/plugins/libcsvimpplugin.dylib    || exit 2
+  collectAndRenameLibs $APPROOT/Contents/plugins/libcsvimpplugin.dylib || exit 2
+fi
+
+cd $APPROOT/Contents/MacOS
+for PDIR in sqldrivers imageformats ; do
+  if [ ! -e $PDIR ] ; then
+    if [ -L $PDIR ] ; then
+      rm $PDIR
+    fi
+    ln -s ../plugins/$PDIR          || exit 2
+  fi
+done
+cd $APPROOT
+
+while [ `otool -L $APPROOT/Contents/Frameworks/* | egrep "($QTDIR|$PGDIR)" | wc -l` -gt 0 ] ; do
+  for LIB in $APPROOT/Contents/Frameworks/* ; do
+    collectAndRenameLibs $LIB                || exit 4
+  done
+done
+
+cd $APPROOT/Contents/Resources               ||  exit 4
+# create/copy a qt.conf file pointing to the plugins directory
+echo "[Paths]" > qt.conf
+echo "Prefix = .." >> qt.conf
+
+cd ..                                        ||  exit 4
+if [ -L Frameworks ] ; then
+  rm Frameworks && ln -s ../../../Frameworks ||  exit 4
+fi
+if [ -L plugins ] ; then
+  rm plugins    && ln -s ../../../plugins    ||  exit 4
+fi
+
+exit 0

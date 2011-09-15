@@ -1,0 +1,849 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>bankAccount</class>
+ <widget class="QDialog" name="bankAccount">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>638</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Bank Account</string>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout">
+     <item>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="_nameLit">
+         <property name="text">
+          <string>Name:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>_name</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="XLineEdit" name="_name"/>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>76</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="_descriptionLit">
+         <property name="text">
+          <string>Description:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>_description</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="XLineEdit" name="_description"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="_buttonBox">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="_bankGroup">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="_bankNameLit">
+        <property name="text">
+         <string>Bank Name:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>_bankName</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="XLineEdit" name="_bankName"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_accountNumberLit">
+        <property name="text">
+         <string>Account Number:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>_accountNumber</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="XLineEdit" name="_accountNumber"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="_typeLit">
+        <property name="text">
+         <string>Type:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>_type</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="_currencyLit">
+        <property name="text">
+         <string>Currency:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>_currency</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="XComboBox" name="_type">
+        <item>
+         <property name="text">
+          <string>Checking</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Cash</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Credit Card</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="XComboBox" name="_currency"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" rowspan="2">
+    <widget class="QGroupBox" name="_useGroup">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0" colspan="3">
+       <widget class="QCheckBox" name="_ap">
+        <property name="text">
+         <string>Used in Accounts Payable</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" rowspan="2">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="_nextCheckNumLit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Next Check #:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <layout class="QHBoxLayout">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="XLineEdit" name="_nextCheckNum">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>32767</height>
+           </size>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>42</width>
+            <height>16</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="_checkFormatLit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Check Format:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <layout class="QHBoxLayout">
+        <item>
+         <widget class="XComboBox" name="_form">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QCheckBox" name="_ar">
+        <property name="text">
+         <string>Used in Accounts Receivable</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QGroupBox" name="_accountGroup">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="_assetAccountLit">
+        <property name="text">
+         <string>Asset Account:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="GLCluster" name="_assetAccount"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QTabWidget" name="_tab">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="_notesTab">
+      <attribute name="title">
+       <string>Notes</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="_notes"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="_transmitTab">
+      <attribute name="title">
+       <string>Transmission</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="_transmitGroup">
+         <property name="title">
+          <string>Enable EFT Check Printing</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="_routingLit">
+            <property name="text">
+             <string>Routing Number:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>_routing</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="XLineEdit" name="_routing"/>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="_genCheckNumber">
+            <property name="text">
+             <string>Create Check Number for EFT Checks</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QGroupBox" name="_originGroup">
+            <property name="title">
+             <string>Immediate Origin Name and Number</string>
+            </property>
+            <layout class="QGridLayout">
+             <item row="0" column="0" colspan="2">
+              <widget class="QRadioButton" name="_useCompanyIdOrigin">
+               <property name="text">
+                <string>Company Name</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="_defaultOrigin">
+               <property name="text">
+                <string>default</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QRadioButton" name="_useOtherOrigin">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QRadioButton" name="_useRoutingNumberOrigin">
+               <property name="text">
+                <string>Bank Name</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="XLineEdit" name="_otherOrigin">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maxLength">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="_otherOriginName">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maxLength">
+                <number>23</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="_routingNumberOrigin">
+               <property name="text">
+                <string>Routing Number</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="_settlementLeadtimeLit">
+            <property name="text">
+             <string>Settlement Lead Time:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QSpinBox" name="_settlementLeadtime">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" colspan="2">
+           <widget class="QGroupBox" name="_destinationGroup">
+            <property name="title">
+             <string>Immediate Destination Name and Number</string>
+            </property>
+            <layout class="QGridLayout">
+             <item row="0" column="0" colspan="2">
+              <widget class="QRadioButton" name="_useRoutingNumberDest">
+               <property name="text">
+                <string>Bank Name</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QRadioButton" name="_useFederalReserveDest">
+               <property name="text">
+                <string>Federal Reserve</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QRadioButton" name="_useOtherDest">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLineEdit" name="_federalReserveDest">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLineEdit" name="_otherDest">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maxLength">
+                <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="_otherDestName">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="maxLength">
+                <number>23</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="_routingNumberDest">
+               <property name="text">
+                <string>Routing Number</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>GLCluster</class>
+   <extends>QWidget</extends>
+   <header>glcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_name</tabstop>
+  <tabstop>_description</tabstop>
+  <tabstop>_bankName</tabstop>
+  <tabstop>_accountNumber</tabstop>
+  <tabstop>_type</tabstop>
+  <tabstop>_currency</tabstop>
+  <tabstop>_ap</tabstop>
+  <tabstop>_nextCheckNum</tabstop>
+  <tabstop>_form</tabstop>
+  <tabstop>_ar</tabstop>
+  <tabstop>_tab</tabstop>
+  <tabstop>_notes</tabstop>
+  <tabstop>_transmitGroup</tabstop>
+  <tabstop>_routing</tabstop>
+  <tabstop>_settlementLeadtime</tabstop>
+  <tabstop>_genCheckNumber</tabstop>
+  <tabstop>_useCompanyIdOrigin</tabstop>
+  <tabstop>_useRoutingNumberOrigin</tabstop>
+  <tabstop>_useOtherOrigin</tabstop>
+  <tabstop>_otherOriginName</tabstop>
+  <tabstop>_otherOrigin</tabstop>
+  <tabstop>_useRoutingNumberDest</tabstop>
+  <tabstop>_useFederalReserveDest</tabstop>
+  <tabstop>_federalReserveDest</tabstop>
+  <tabstop>_useOtherDest</tabstop>
+  <tabstop>_otherDestName</tabstop>
+  <tabstop>_otherDest</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_ap</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_nextCheckNumLit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>76</x>
+     <y>248</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_ap</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_nextCheckNum</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>176</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_ap</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_checkFormatLit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>76</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_ap</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_form</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>45</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>175</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useOtherOrigin</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_otherOrigin</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>558</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>559</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useCompanyIdOrigin</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_defaultOrigin</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>195</x>
+     <y>505</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>335</x>
+     <y>502</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useFederalReserveDest</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_federalReserveDest</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>523</x>
+     <y>532</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>642</x>
+     <y>531</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useOtherDest</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_otherDest</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>405</x>
+     <y>561</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>642</x>
+     <y>562</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useOtherDest</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_otherDestName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>405</x>
+     <y>561</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>523</x>
+     <y>562</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_routing</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>_routingNumberOrigin</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>421</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>523</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_routing</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>_routingNumberDest</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>350</x>
+     <y>415</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>562</x>
+     <y>499</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useOtherOrigin</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_otherOriginName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>65</x>
+     <y>549</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>97</x>
+     <y>552</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>bankAccount</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>647</x>
+     <y>46</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>349</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

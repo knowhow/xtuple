@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>dspFinancialReport</class>
+ <widget class="QWidget" name="dspFinancialReport">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>629</width>
+    <height>313</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>View Financial Report</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_5">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="_layoutGroup">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="_nameLit">
+          <property name="text">
+           <string>Financial Report:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="XComboBox" name="_flhead">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="_flcolLit">
+          <property name="text">
+           <string>Column Layout:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>_flcol</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="XComboBox" name="_flcol">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="_typeLit">
+          <property name="text">
+           <string>Report Type:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>_type</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="_type">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="3">
+    <widget class="QTabWidget" name="_tab">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="_periodsTab">
+      <attribute name="title">
+       <string>Periods</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="XTreeWidget" name="_periods">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="_showColumnsTab">
+      <attribute name="title">
+       <string>Columns</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="XCheckBox" name="_showBegBal">
+         <property name="text">
+          <string>Beg. Bal.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="XCheckBox" name="_showBegBalPrcnt">
+         <property name="text">
+          <string>Beg. Bal. %</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="XCheckBox" name="_showDebits">
+         <property name="text">
+          <string>Debits</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="XCheckBox" name="_showDebitsPrcnt">
+         <property name="text">
+          <string>Debits %</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="XCheckBox" name="_showCredits">
+         <property name="text">
+          <string>Credits</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="XCheckBox" name="_showCreditsPrcnt">
+         <property name="text">
+          <string>Credits %</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="XCheckBox" name="_showEndBal">
+         <property name="text">
+          <string>End. Bal.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="XCheckBox" name="_showEndBalPrcnt">
+         <property name="text">
+          <string>End. Bal. %</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="XCheckBox" name="_showBudget">
+         <property name="text">
+          <string>Budget</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="XCheckBox" name="_showBudgetPrcnt">
+         <property name="text">
+          <string>Budget %</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="XCheckBox" name="_showDiff">
+         <property name="text">
+          <string>Difference</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="XCheckBox" name="_showDiffPrcnt">
+         <property name="text">
+          <string>Difference %</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="XCheckBox" name="_showCustom">
+         <property name="text">
+          <string>Custom</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="XCheckBox" name="_showCustomPrcnt">
+         <property name="text">
+          <string>Custom %</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="_trend">
+     <property name="title">
+      <string>Trend Report</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_8">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <layout class="QGridLayout" name="gridLayout_6">
+          <property name="spacing">
+           <number>12</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="_month">
+            <property name="text">
+             <string>Month</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="_quarter">
+            <property name="text">
+             <string>Quarter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="_year">
+            <property name="text">
+             <string>Year</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="_budgets">
+            <property name="text">
+             <string>Budgets</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="_actuals">
+            <property name="text">
+             <string>Actuals</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>13</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QGroupBox" name="_options">
+     <property name="minimumSize">
+      <size>
+       <width>230</width>
+       <height>16</height>
+      </size>
+     </property>
+     <property name="title">
+      <string>Show</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <item>
+         <widget class="XCheckBox" name="_shownumbers">
+          <property name="text">
+           <string>Account Numbers</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="XCheckBox" name="_showzeros">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Zero Amounts</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>0</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="5" margin="5"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>xtreewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_flhead</tabstop>
+  <tabstop>_flcol</tabstop>
+  <tabstop>_showBegBal</tabstop>
+  <tabstop>_showBegBalPrcnt</tabstop>
+  <tabstop>_showDebits</tabstop>
+  <tabstop>_showDebitsPrcnt</tabstop>
+  <tabstop>_showCredits</tabstop>
+  <tabstop>_showCreditsPrcnt</tabstop>
+  <tabstop>_showEndBal</tabstop>
+  <tabstop>_showEndBalPrcnt</tabstop>
+  <tabstop>_showBudget</tabstop>
+  <tabstop>_showBudgetPrcnt</tabstop>
+  <tabstop>_showDiff</tabstop>
+  <tabstop>_showDiffPrcnt</tabstop>
+  <tabstop>_showCustom</tabstop>
+  <tabstop>_showCustomPrcnt</tabstop>
+  <tabstop>_shownumbers</tabstop>
+  <tabstop>_showzeros</tabstop>
+  <tabstop>_periods</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_trend</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_flcol</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>549</x>
+     <y>93</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>179</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

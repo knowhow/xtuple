@@ -1,0 +1,163 @@
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+  <exportmacro></exportmacro>
+  <class>printChecksReview</class>
+  <widget class="QDialog" name="printChecksReview" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>482</width>
+        <height>335</height>
+      </rect>
+    </property>
+    <property name="windowTitle" >
+      <string>Review Printed Checks</string>
+    </property>
+    <layout class="QVBoxLayout" >
+      <item>
+        <widget class="QLabel" name="_label" >
+          <property name="text" >
+            <string>Make any necessary adjustments by marking the listed Checks appropriately.</string>
+          </property>
+        </widget>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="XTreeWidget" name="_checks" >
+              <property name="selectionMode" >
+                <enum>QAbstractItemView::ExtendedSelection</enum>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <layout class="QVBoxLayout" >
+              <property name="spacing" >
+                <number>0</number>
+              </property>
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <item>
+                <layout class="QVBoxLayout" >
+                  <property name="margin" >
+                    <number>0</number>
+                  </property>
+                  <item>
+                    <widget class="QPushButton" name="_complete" >
+                      <property name="text" >
+                        <string>Complete</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="Line" name="line1" >
+                      <property name="frameShape" >
+                        <enum>QFrame::HLine</enum>
+                      </property>
+                      <property name="frameShadow" >
+                        <enum>QFrame::Sunken</enum>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QPushButton" name="_unmark" >
+                      <property name="text" >
+                        <string>&amp;Unmark</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QPushButton" name="_printed" >
+                      <property name="text" >
+                        <string>Mark as &amp;Printed</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QPushButton" name="_voided" >
+                      <property name="text" >
+                        <string>&amp;Void</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QPushButton" name="_replace" >
+                      <property name="text" >
+                        <string>Void &amp;&amp; &amp;Replace</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="Line" name="line1_2" >
+                      <property name="frameShape" >
+                        <enum>QFrame::HLine</enum>
+                      </property>
+                      <property name="frameShadow" >
+                        <enum>QFrame::Sunken</enum>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="QPushButton" name="_selectAll" >
+                      <property name="text" >
+                        <string>Select All</string>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
+              </item>
+              <item>
+                <spacer name="spacer1" >
+                  <property name="sizeHint" >
+                    <size>
+                      <width>20</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="sizeType" >
+                    <enum>Expanding</enum>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Vertical</enum>
+                  </property>
+                </spacer>
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
+    <customwidget>
+      <class>XTreeWidget</class>
+      <extends>QTreeWidget</extends>
+      <header>xtreewidget.h</header>
+      <container>0</container>
+      <pixmap></pixmap>
+    </customwidget>
+  </customwidgets>
+  <tabstops>
+    <tabstop>_checks</tabstop>
+    <tabstop>_unmark</tabstop>
+    <tabstop>_printed</tabstop>
+    <tabstop>_voided</tabstop>
+    <tabstop>_replace</tabstop>
+    <tabstop>_selectAll</tabstop>
+    <tabstop>_complete</tabstop>
+  </tabstops>
+</ui>

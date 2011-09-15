@@ -1,0 +1,88 @@
+function filecheck()
+{
+  var pathstring = toolbox.fileDialog(mywindow, "SELECT TEXT FILE", toolbox.getHomeDir(), "Text Files (*.txt)", 0,0);
+  if(toolbox.fileExists(pathstring)) var msgresp = toolbox.messageBox('warning', mywindow, "FILE CHECK", "Exsits",0,0);
+  else var msgresp = toolbox.messageBox('warning', mywindow, "FILE CHECK", "Not Found",0,0);
+}
+
+function filecopy()
+{
+  var oldpath = toolbox.fileDialog(mywindow, "SELECT FILE", "", "Text Files (*.txt)", 0,0);
+  var newpath = toolbox.fileDialog(mywindow, "SAVE COPY", "", "Text Files (*.txt)", 0,1);
+  var rtn = toolbox.copyFile(oldpath, newpath);
+  if(rtn) var msgresp = toolbox.messageBox('warning', mywindow, "FILE COPY", "complete",0,0);
+  else var msgresp = toolbox.messageBox('warning', mywindow, "FILE CHECK", "error",0,0);
+}
+
+function filedelete()
+{
+  var pathstring = toolbox.fileDialog(mywindow, "SELECT FILE TO DELETE", "", "Text Files (*.txt)", 0,0);
+  var rtn = toolbox.removeFile(pathstring);
+  if(rtn) var msgresp = toolbox.messageBox('warning', mywindow, "FILE DELETE", "complete",0,0);
+  else var msgresp = toolbox.messageBox('warning', mywindow, "FILE DELETE", "error",0,0);
+}
+
+function viewfile()
+{
+  var pathstring = toolbox.fileDialog(mywindow, "OPEN TEXT FILE", "", "Text Files (*.txt)", 0, 0);
+  mywindow.findChild("_CurrentPath").text = pathstring;
+  toolbox.openUrl(pathstring);
+
+}
+
+function readfile()
+{
+ var pathstring = toolbox.fileDialog(mywindow, "OPEN TEXT FILE", "", "Text Files (*.txt)", 0,0);
+ mywindow.findChild("_FileName").text = pathstring;
+ mywindow.findChild("_readText").plainText = toolbox.textStreamRead(pathstring);
+ if(pathstring == "error")var msgresp = toolbox.messageBox('warning', mywindow, "FILE READ", "file not found",0,0);
+ else var msgresp = toolbox.messageBox('warning', mywindow, "FILE READ", "Complete",0,0);
+}
+
+function writefile()
+{
+ var pathstring = toolbox.fileDialog(mywindow, "SAVE TEXT FILE", "", "Text Files (*.txt)", 0 , 1);
+ var optext = mywindow.findChild("_WriteText").plainText;
+ var rtn = toolbox.textStreamWrite(pathstring,optext);
+ if(rtn) var msgresp = toolbox.messageBox('warning', mywindow, "FILE COMPLETE", "Complete",0,0);
+ else var msgresp = toolbox.messageBox('warning', mywindow, "FILE READ", "Write Error",0,0);
+}
+
+
+function renamefile()
+{
+  var fold = toolbox.fileDialog(mywindow, "SELECT FILE", "", "Text Files (*.txt)", 0,0);
+  var fnew = toolbox.fileDialog(mywindow, "RENAME FILE", "", "Text Files (*.txt)", 0,1);
+  var rtn = toolbox.renameFile(fold, fnew);
+  if(rtn) var msgresp = toolbox.messageBox('warning', mywindow, "RENAME FILE", "complete",0,0);
+  else var msgresp = toolbox.messageBox('warning', mywindow, "RENAME FILE", "error",0,0);
+}
+
+function makepath()
+{
+  var pathstring = mywindow.findChild("_mkpathtext").text;
+  if(toolbox.makePath(pathstring, toolbox.getHomeDir())) var msgresp = toolbox.messageBox('warning', mywindow, "MAKE PATH", "Complete",0,0);
+  else var msgresp = toolbox.messageBox('warning', mywindow, "MAKE PATH", "error",0,0);
+}
+
+function removepath()
+{
+  var pathstring = mywindow.findChild("_mkpathtext").text;
+  if(toolbox.removePath(pathstring, toolbox.getHomeDir())) var msgresp = toolbox.messageBox('warning', mywindow, "REMOVE PATH", "Complete",0,0);
+  else var msgresp = toolbox.messageBox('warning', mywindow, "REMOVE PATH", "error",0,0);
+}
+
+mywindow.findChild("_close").clicked.connect(mywindow, "close");
+mywindow.findChild("_FileExsits").clicked.connect(filecheck);
+mywindow.findChild("_copy").clicked.connect(filecopy);
+mywindow.findChild("_delete").clicked.connect(filedelete);
+mywindow.findChild("_viewUrl").clicked.connect(viewfile);
+mywindow.findChild("_ReadFile").clicked.connect(readfile);
+mywindow.findChild("_WriteFile").clicked.connect(writefile);
+mywindow.findChild("_renameFile").clicked.connect(renamefile);
+mywindow.findChild("_makePath").clicked.connect(makepath);
+mywindow.findChild("_removePath").clicked.connect(removepath);
+
+mywindow.findChild("_HomePath").text = toolbox.getHomeDir();
+mywindow.findChild("_CurrentPath").text = toolbox.getCurrentDir();
+mywindow.findChild("_RootPath").text = toolbox.rootPath();

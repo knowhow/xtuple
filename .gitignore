@@ -1,0 +1,12 @@
+*/qrc_*.cpp
+bin/
+.svn
+Makefile
+*/Makefile
+*.o
+moc_*.cpp
+*/tmp/*
+tmp/*
+*/moc/*
+*/ui/ui_*.h
+lib/

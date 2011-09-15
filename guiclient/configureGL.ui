@@ -1,0 +1,1422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>configureGL</class>
+ <widget class="QWidget" name="configureGL">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>757</width>
+    <height>549</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Accounting Configuration</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_16">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="_tab">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="_gl">
+      <attribute name="title">
+       <string>General Ledger</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_15">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="_useCompanySegment">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Use Company Segment</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="_companySizeLit">
+            <property name="text">
+             <string>Company Segment Size:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_companySegmentSize</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout">
+            <item>
+             <widget class="QSpinBox" name="_companySegmentSize">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>10</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="_externalConsolidation">
+            <property name="text">
+             <string>Enable External Company Consolidation</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="_useProfitCenters">
+         <property name="title">
+          <string>Use Profit Centers</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="_profitCenterSizeLit">
+            <property name="text">
+             <string>Profit Center Segment Size:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_profitCenterSize</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="_profitCenterSize">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="value">
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="_ffProfitCenters">
+            <property name="text">
+             <string>Allow Free-Form Profit Centers</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="_mainGroup">
+         <property name="title">
+          <string>Main</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_12">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout">
+              <property name="spacing">
+               <number>5</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="_mainSizeLit">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="text">
+                 <string>Main Segment Size:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>_mainSize</cstring>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="_mainSize">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="minimum">
+                 <number>3</number>
+                </property>
+                <property name="maximum">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Expanding</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QGroupBox" name="_useSubaccounts">
+         <property name="title">
+          <string>Use Subaccounts</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="_subAccountSizeLit">
+            <property name="text">
+             <string>Subaccount Segment Size:</string>
+            </property>
+            <property name="buddy">
+             <cstring>_subaccountSize</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="_subaccountSize">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="_ffSubaccounts">
+            <property name="text">
+             <string>Allow Free-Form Subaccounts</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="_postGroup">
+         <property name="title">
+          <string>Transactions Post to</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_14">
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="_journal">
+            <property name="text">
+             <string>Journal</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="_generalLedger">
+            <property name="text">
+             <string>General Ledger</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QGroupBox" name="_miscGroup">
+         <property name="title">
+          <string>Options:</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_10">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="_manualFwdUpdate">
+            <property name="text">
+             <string>Manual Forward Update Trial Balances</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="_mandatoryNotes">
+            <property name="text">
+             <string>Mandatory notes for Manual Journal Entries</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QGroupBox" name="_assignGroup">
+         <property name="title">
+          <string>Assignments</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <layout class="QGridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="_yearendLit">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>Retained Earnings:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="GLCluster" name="_yearend">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="_gainLossLit">
+              <property name="text">
+               <string>Currency Gain/Loss:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="GLCluster" name="_gainLoss">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="_discrepancyLit">
+              <property name="text">
+               <string>G/L Series Discrepancy :</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="GLCluster" name="_discrepancy">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Accounts Payable</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_9">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
+            <widget class="QLabel" name="_nextAPMemoNumberLit">
+             <property name="text">
+              <string>Next Accounts Payable Memo #:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <property name="buddy">
+              <cstring>_nextAPMemoNumber</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <layout class="QHBoxLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="XLineEdit" name="_nextAPMemoNumber"/>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="0" colspan="2">
+            <layout class="QHBoxLayout">
+             <item>
+              <widget class="QGroupBox" name="_achGroup">
+               <property name="title">
+                <string>Enable EFT Check Printing</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <layout class="QGridLayout">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="_nextBatchNumberLit">
+                  <property name="text">
+                   <string>Next Batch #:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_nextACHBatchNumber</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="XLineEdit" name="_nextACHBatchNumber">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>1</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="_companyIdLit">
+                  <property name="text">
+                   <string>Company ID:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_companyId</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="_companyNameLit">
+                  <property name="text">
+                   <string>Company Name:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_companyName</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="XLineEdit" name="_companyId">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="defaultText">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1">
+                 <widget class="XLineEdit" name="_companyName">
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="maxLength">
+                   <number>23</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QLabel" name="label">
+                  <property name="text">
+                   <string>is a(n):</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="3">
+                 <widget class="QRadioButton" name="_companyIdIsEIN">
+                  <property name="text">
+                   <string>EIN/TIN</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="3">
+                 <widget class="QRadioButton" name="_companyIdIsDUNS">
+                  <property name="text">
+                   <string>DUNS Number</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="3">
+                 <widget class="QRadioButton" name="_companyIdIsOther">
+                  <property name="text">
+                   <string>Other</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0" colspan="4">
+                 <widget class="QGroupBox" name="_eftStyle">
+                  <property name="title">
+                   <string>Select an EFT Format</string>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout">
+                   <item row="1" column="0">
+                    <widget class="QRadioButton" name="_eftAch">
+                     <property name="text">
+                      <string>ACH</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QRadioButton" name="_eftAba">
+                     <property name="text">
+                      <string>ABA</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="0">
+                    <widget class="QRadioButton" name="_eftCustom">
+                     <property name="text">
+                      <string>Custom</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <widget class="XLabel" name="_eftAchSuffix">
+                     <property name="text">
+                      <string>.ach</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="1">
+                    <widget class="XLabel" name="_eftAbaSuffix">
+                     <property name="text">
+                      <string>.aba</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QLabel" name="_eftSuffixLit">
+                     <property name="text">
+                      <string>Default Suffix</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="1">
+                    <widget class="XComboBox" name="_eftCustomSuffix">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="editable">
+                      <bool>true</bool>
+                     </property>
+                     <item>
+                      <property name="text">
+                       <string>.aba</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>.ach</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>.dat</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>.txt</string>
+                      </property>
+                     </item>
+                    </widget>
+                   </item>
+                   <item row="3" column="2">
+                    <widget class="XLineEdit" name="_eftCustomRoutingRegex">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="text">
+                      <string>^\d+$</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="2">
+                    <widget class="XLabel" name="_eftAbaRoutingRegex">
+                     <property name="text">
+                      <string>^(\d{3}-\d{3})|(\d{6}000)$</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="XLabel" name="_eftAchRoutingRegex">
+                     <property name="text">
+                      <string>^\d{9}$</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="XLabel" name="_eftRoutingRegexLit">
+                     <property name="text">
+                      <string>Routing # Format</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="4">
+                    <widget class="XLabel" name="_eftFunctionLit">
+                     <property name="text">
+                      <string>Formatting Procedure</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="4">
+                    <widget class="XLabel" name="_eftAchFunction">
+                     <property name="text">
+                      <string>formatAchChecks</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="4">
+                    <widget class="XLabel" name="_eftAbaFunction">
+                     <property name="text">
+                      <string>formatAbaChecks</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="4">
+                    <widget class="XLineEdit" name="_eftCustomFunction">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="text">
+                      <string>stored procedure name</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="3">
+                    <widget class="XLabel" name="_eftAccountRegexLit">
+                     <property name="text">
+                      <string>Account # Format</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="XLabel" name="_eftAchAccountRegex">
+                     <property name="text">
+                      <string>^\d{4,17}$</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="3">
+                    <widget class="XLabel" name="_eftAbaAccountRegex">
+                     <property name="text">
+                      <string>^\d{1,9}$</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="3">
+                    <widget class="XLineEdit" name="_eftCustomAccountRegex">
+                     <property name="text">
+                      <string>^\d+$</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0" colspan="2">
+                <widget class="QLabel" name="_reqInvoiceLit">
+                 <property name="text">
+                  <string>Require Vendor Invoice # on:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QCheckBox" name="_reqInvoiceReg">
+                 <property name="text">
+                  <string>Regular Vouchers</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QCheckBox" name="_reqInvoiceMisc">
+                 <property name="text">
+                  <string>Miscellaneous Vouchers</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="_ar">
+      <attribute name="title">
+       <string>Accounts Receivable</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0" colspan="2">
+              <layout class="QGridLayout" name="gridLayout_4">
+               <item row="0" column="0">
+                <widget class="QLabel" name="_nextARMemoNumberLit">
+                 <property name="text">
+                  <string>Next Receivables Memo #:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>_nextARMemoNumber</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <layout class="QHBoxLayout">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="XLineEdit" name="_nextARMemoNumber">
+                   <property name="alignment">
+                    <set>Qt::AlignRight</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Expanding</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>34</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="_nextCashRcptNumberLit">
+                 <property name="text">
+                  <string>Next Cash Receipt #:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>_nextARMemoNumber</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <layout class="QHBoxLayout" name="_3">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="XLineEdit" name="_nextCashRcptNumber">
+                   <property name="alignment">
+                    <set>Qt::AlignRight</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Expanding</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>34</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="_hideApplyto">
+               <property name="text">
+                <string>Hide 'Apply to Balance' button</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QCheckBox" name="_customerDeposits">
+               <property name="text">
+                <string>Enable Customer Deposits</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QGroupBox" name="_remitToGroup">
+               <property name="title">
+                <string>Remit-To Address</string>
+               </property>
+               <layout class="QVBoxLayout">
+                <property name="spacing">
+                 <number>5</number>
+                </property>
+                <property name="margin">
+                 <number>5</number>
+                </property>
+                <item>
+                 <layout class="QHBoxLayout">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="_nameLit">
+                    <property name="text">
+                     <string>Name:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="XLineEdit" name="_name"/>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <widget class="AddressCluster" name="_address">
+                  <property name="focusPolicy">
+                   <enum>Qt::StrongFocus</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout">
+                  <property name="spacing">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="_phoneLit">
+                    <property name="text">
+                     <string>Phone:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="XLineEdit" name="_phone"/>
+                    </item>
+                    <item>
+                     <spacer>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Expanding</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>20</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="3" column="0" colspan="2">
+              <widget class="QGroupBox" name="_warnLate">
+               <property name="title">
+                <string>Credit Warn Customers when Late</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+               <layout class="QHBoxLayout">
+                <property name="margin">
+                 <number>5</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="_graceDaysLit">
+                  <property name="text">
+                   <string>Default Grace Period Days:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_graceDays</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="_graceDays">
+                  <property name="maximum">
+                   <number>9999</number>
+                  </property>
+                  <property name="value">
+                   <number>30</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="2">
+              <layout class="QHBoxLayout">
+               <item>
+                <widget class="QLabel" name="_recurringBufferLit">
+                 <property name="text">
+                  <string>Recurring Invoice Buffer:</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>_recurringBuffer</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QSpinBox" name="_recurringBuffer">
+                 <property name="maximum">
+                  <number>999</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="_recurringBufferDaysLit">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>days</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="5" column="0" colspan="2">
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QLabel" name="_incdtCategory_2">
+                 <property name="text">
+                  <string>Default Incident Category:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="XComboBox" name="_incdtCategory">
+                 <property name="allowNull">
+                  <bool>true</bool>
+                 </property>
+                 <property name="type">
+                  <enum>XComboBox::IncidentCategory</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="_closeARIncdt">
+                 <property name="text">
+                  <string>Auto Close Incidents when Invoice Paid</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="_globalTab">
+      <attribute name="title">
+       <string>Global</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_13">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QGroupBox" name="_exchangeRateSense">
+               <property name="title">
+                <string>Meaning of Currency Exchange Rates:</string>
+               </property>
+               <layout class="QVBoxLayout">
+                <item>
+                 <widget class="QRadioButton" name="_baseToLocal">
+                  <property name="text">
+                   <string>Base × Exchange Rate = Foreign</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QRadioButton" name="_localToBase">
+                  <property name="text">
+                   <string>Foreign × Exchange Rate = Base</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="_taxGroup">
+               <property name="title">
+                <string/>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_11">
+                <item row="0" column="0">
+                 <layout class="QHBoxLayout">
+                  <item>
+                   <widget class="QLabel" name="_taxauthLit">
+                    <property name="text">
+                     <string>Default Tax Authority:</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>_taxauth</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="XComboBox" name="_taxauth">
+                    <property name="allowNull">
+                     <bool>true</bool>
+                    </property>
+                    <property name="nullStr">
+                     <string>None</string>
+                    </property>
+                    <property name="type">
+                     <enum>XComboBox::TaxAuths</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::MinimumExpanding</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="5" margin="5"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>AddressCluster</class>
+   <extends>QWidget</extends>
+   <header>addresscluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GLCluster</class>
+   <extends>QWidget</extends>
+   <header>glcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLabel</class>
+   <extends>QLabel</extends>
+   <header>xlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_tab</tabstop>
+  <tabstop>_useCompanySegment</tabstop>
+  <tabstop>_companySegmentSize</tabstop>
+  <tabstop>_externalConsolidation</tabstop>
+  <tabstop>_useProfitCenters</tabstop>
+  <tabstop>_profitCenterSize</tabstop>
+  <tabstop>_ffProfitCenters</tabstop>
+  <tabstop>_mainSize</tabstop>
+  <tabstop>_useSubaccounts</tabstop>
+  <tabstop>_subaccountSize</tabstop>
+  <tabstop>_ffSubaccounts</tabstop>
+  <tabstop>_journal</tabstop>
+  <tabstop>_mandatoryNotes</tabstop>
+  <tabstop>_manualFwdUpdate</tabstop>
+  <tabstop>_yearend</tabstop>
+  <tabstop>_gainLoss</tabstop>
+  <tabstop>_discrepancy</tabstop>
+  <tabstop>_nextAPMemoNumber</tabstop>
+  <tabstop>_achGroup</tabstop>
+  <tabstop>_nextACHBatchNumber</tabstop>
+  <tabstop>_companyId</tabstop>
+  <tabstop>_companyIdIsEIN</tabstop>
+  <tabstop>_companyIdIsDUNS</tabstop>
+  <tabstop>_companyIdIsOther</tabstop>
+  <tabstop>_companyName</tabstop>
+  <tabstop>_eftAch</tabstop>
+  <tabstop>_eftAba</tabstop>
+  <tabstop>_eftCustom</tabstop>
+  <tabstop>_eftCustomSuffix</tabstop>
+  <tabstop>_eftCustomRoutingRegex</tabstop>
+  <tabstop>_eftCustomAccountRegex</tabstop>
+  <tabstop>_eftCustomFunction</tabstop>
+  <tabstop>_reqInvoiceReg</tabstop>
+  <tabstop>_reqInvoiceMisc</tabstop>
+  <tabstop>_nextARMemoNumber</tabstop>
+  <tabstop>_nextCashRcptNumber</tabstop>
+  <tabstop>_hideApplyto</tabstop>
+  <tabstop>_customerDeposits</tabstop>
+  <tabstop>_name</tabstop>
+  <tabstop>_address</tabstop>
+  <tabstop>_phone</tabstop>
+  <tabstop>_warnLate</tabstop>
+  <tabstop>_graceDays</tabstop>
+  <tabstop>_recurringBuffer</tabstop>
+  <tabstop>_incdtCategory</tabstop>
+  <tabstop>_closeARIncdt</tabstop>
+  <tabstop>_baseToLocal</tabstop>
+  <tabstop>_localToBase</tabstop>
+  <tabstop>_taxauth</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_eftCustom</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_eftCustomFunction</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>562</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_eftCustom</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_eftCustomRoutingRegex</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>376</x>
+     <y>384</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_eftCustom</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_eftCustomSuffix</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>209</x>
+     <y>385</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useCompanySegment</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_assignGroup</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>90</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>378</x>
+     <y>446</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

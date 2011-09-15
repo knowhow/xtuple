@@ -1,0 +1,84 @@
+<package id="resources"
+         name="sample_scripts"
+         developer="xTuple"
+         descrip="Examples of scripting xTuple ERP"
+         version="1.0alpha2"
+         updater="2.2.2">
+  <pkgnotes>
+    This package provides examples of how to modify the xTuple ERP application through scripting. The xTuple ERP Programmer Reference ( http://www.xtuple.org/ProgrammerReference ) includes portions of these examples.
+  </pkgnotes>
+  <prerequisite type="license">
+    <message>
+      This file is part of the xTuple ERP: PostBooks Edition, a free and open source Enterprise Resource Planning software suite, Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.  It is licensed to you under the Common Public Attribution  License version 1.0, the full text of which (including xTuple-specific Exhibits) is available at www.xtuple.com/CPAL. By using this software, you agree to be bound by its terms.
+    </message>
+  </prerequisite>
+  <prerequisite type="query" name="checking for db version">
+    <query>SELECT fetchMetricText('ServerVersion') ~* '^3.5';</query>
+    <message>
+      This version of sample_scripts is compatible with xTuple ERP 3.5.0.
+    </message>
+  </prerequisite>
+  <!--prerequisite type="dependency">
+    <dependson name="scriptlib" version="1.0" developer="xTuple"/>
+    <message>
+      Some of the examples in this package require features in
+      the scriptlib package. Please install the scriptlib package
+      from xTuple before loading these sample scripts.
+    </message>
+  </prerequisite-->
+
+  <loadreport file="client/reports/DisplayItemLocations.xml"	       >sample_scripts package</loadreport>
+
+  <loadappscript file="client/scripts/addButton.js"		name="addButton">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/addressCoordinates.js"	name="addressCoordinates">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/addressDialog.js"		name="addressDialog">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/addressQBE.js"		name="addressQBE">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/addressWindow.js"		name="addressWindow">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/ccvoid.js"		name="ccvoid">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/connectFunctions.js"	name="connectFunctions">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/disableDscntPrice.js"	name="disableDscntPrice">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/disableObject.js"		name="disableObject">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/discountSameProdcat.js"	name="discountSameProdcat">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/DisplayItemLocations.script"	name="DisplayItemLocations">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/dspBacklogByParameterList_Collapse.js"	name="dspBacklogByParameterList">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/dspBacklogByParameterList_Expand.js"	name="dspBacklogByParameterList">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/FileDemo.script"		name="FileDemo">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/hideSalesrepComm.js"	name="hideSalesrepComm">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/initMenu.js"		name="initMenu">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/initMenu_executeQueryExample.js" name="initMenu">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/itemSiteViewItem.js"	name="itemSiteViewItem">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/postOperations_disallowOverPost.js" name="postOperations">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/scriptCC.script"		name="scriptCC">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/soitemJumpWomatl.js"	name="soitemJumpWomatl">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/taxCodes_Copy.js"		name="taxCodes">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/testprocess.js"		name="testprocess">demonstrate script exposure of QProcess and QProcessEnvironment classes</loadappscript>
+  <loadappscript file="client/scripts/weatherForAddress.js"	name="weatherForAddress">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/windowSetTitle.js"	name="windowSetTitle">sample_scripts package</loadappscript>
+  <loadappscript file="client/scripts/xtreewidgetdemo.js"	name="xtreewidgetdemo">sample_scripts package</loadappscript>
+
+  <loadappui file="client/uiforms/addressCoordinates.ui"	>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/addressDialog.ui"		>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/addressQBE.ui"		>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/addressWindow.ui"		>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/ccvoid.ui"		        >sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/DisplayItemLocations.ui"	>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/FileDemo.ui"		>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/itemSiteViewItem.ui"	>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/scriptCC.ui"		>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/testprocess.ui"	>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/weatherForAddress.ui"	>sample_scripts package</loadappui>
+  <loadappui file="client/uiforms/xtreewidgetdemo.ui"	>sample_scripts package</loadappui>
+
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist00.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist01.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist02.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist03.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist04.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist05.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist06.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist07.mql">sample_scripts package</loadmetasql>
+  <loadmetasql file="client/metasql/xtreewidgetdemo-sohist08.mql">sample_scripts package</loadmetasql>
+
+  <finalscript file="database/misc/disablesamplescripts.sql"/>
+
+</package>

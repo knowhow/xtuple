@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/widgets">
+        <file>images/calendar_24.png</file>
+        <file>images/xcheckbox.png</file>
+        <file>images/magnifier.png</file>
+        <file>images/folder_zoom_64.png</file>
+        <file>images/edit.png</file>
+        <file>images/credit_warn.png</file>
+        <file>images/credit_hold.png</file>
+    </qresource>
+</RCC>

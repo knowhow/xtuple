@@ -1,0 +1,380 @@
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+  <exportmacro></exportmacro>
+  <class>createCountTagsByItem</class>
+  <widget class="QDialog" name="createCountTagsByItem" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>468</width>
+        <height>339</height>
+      </rect>
+    </property>
+    <property name="windowTitle" >
+      <string>Create Count Tag by Item/Site</string>
+    </property>
+    <layout class="QVBoxLayout" >
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="ItemCluster" name="_item" />
+          </item>
+          <item>
+            <layout class="QHBoxLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>0</number>
+              </property>
+              <item>
+                <spacer name="Spacer181" >
+                  <property name="sizeHint" >
+                    <size>
+                      <width>20</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="sizeType" >
+                    <enum>Expanding</enum>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Horizontal</enum>
+                  </property>
+                </spacer>
+              </item>
+              <item>
+                <layout class="QVBoxLayout" >
+                  <property name="margin" >
+                    <number>0</number>
+                  </property>
+                  <property name="spacing" >
+                    <number>0</number>
+                  </property>
+                  <item>
+                    <layout class="QVBoxLayout" >
+                      <property name="margin" >
+                        <number>0</number>
+                      </property>
+                      <item>
+                        <widget class="QPushButton" name="_close" >
+                          <property name="text" >
+                            <string>&amp;Close</string>
+                          </property>
+                        </widget>
+                      </item>
+                      <item>
+                        <widget class="QPushButton" name="_create" >
+                          <property name="enabled" >
+                            <bool>false</bool>
+                          </property>
+                          <property name="text" >
+                            <string>Create &amp;Tag</string>
+                          </property>
+                          <property name="default" >
+                            <bool>true</bool>
+                          </property>
+                        </widget>
+                      </item>
+                    </layout>
+                  </item>
+                  <item>
+                    <spacer name="Spacer5" >
+                      <property name="sizeHint" >
+                        <size>
+                          <width>20</width>
+                          <height>4</height>
+                        </size>
+                      </property>
+                      <property name="sizeType" >
+                        <enum>Fixed</enum>
+                      </property>
+                      <property name="orientation" >
+                        <enum>Vertical</enum>
+                      </property>
+                    </spacer>
+                  </item>
+                </layout>
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <layout class="QVBoxLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>0</number>
+              </property>
+              <item>
+                <layout class="QHBoxLayout" >
+                  <property name="margin" >
+                    <number>0</number>
+                  </property>
+                  <item>
+                    <widget class="QLabel" name="_warehouseLit" >
+                      <property name="text" >
+                        <string>Site:</string>
+                      </property>
+                      <property name="alignment" >
+                        <set>Qt::AlignVCenter|Qt::AlignRight</set>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="WComboBox" name="_warehouse" />
+                  </item>
+                </layout>
+              </item>
+              <item>
+                <spacer name="Spacer57" >
+                  <property name="sizeHint" >
+                    <size>
+                      <width>20</width>
+                      <height>0</height>
+                    </size>
+                  </property>
+                  <property name="sizeType" >
+                    <enum>Preferred</enum>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Vertical</enum>
+                  </property>
+                </spacer>
+              </item>
+            </layout>
+          </item>
+          <item>
+            <layout class="QVBoxLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>0</number>
+              </property>
+              <item>
+                <layout class="QHBoxLayout" >
+                  <property name="margin" >
+                    <number>0</number>
+                  </property>
+                  <property name="spacing" >
+                    <number>0</number>
+                  </property>
+                  <item>
+                    <widget class="QCheckBox" name="_priority" >
+                      <property name="text" >
+                        <string>Mark Created Count Tag as Priority</string>
+                      </property>
+                      <property name="checked" >
+                        <bool>true</bool>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <spacer name="Spacer3" >
+                      <property name="sizeHint" >
+                        <size>
+                          <width>20</width>
+                          <height>20</height>
+                        </size>
+                      </property>
+                      <property name="sizeType" >
+                        <enum>Expanding</enum>
+                      </property>
+                      <property name="orientation" >
+                        <enum>Horizontal</enum>
+                      </property>
+                    </spacer>
+                  </item>
+                </layout>
+              </item>
+              <item>
+                <layout class="QHBoxLayout" >
+                  <property name="margin" >
+                    <number>0</number>
+                  </property>
+                  <property name="spacing" >
+                    <number>0</number>
+                  </property>
+                  <item>
+                    <widget class="QCheckBox" name="_freeze" >
+                      <property name="text" >
+                        <string>Free&amp;ze Inventory</string>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <spacer name="Spacer4" >
+                      <property name="sizeHint" >
+                        <size>
+                          <width>20</width>
+                          <height>20</height>
+                        </size>
+                      </property>
+                      <property name="sizeType" >
+                        <enum>Expanding</enum>
+                      </property>
+                      <property name="orientation" >
+                        <enum>Horizontal</enum>
+                      </property>
+                    </spacer>
+                  </item>
+                </layout>
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="QCheckBox" name="_byLocation" >
+              <property name="text" >
+                <string>Only for Specified Location:</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <layout class="QHBoxLayout" >
+              <property name="spacing" >
+                <number>0</number>
+              </property>
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <item>
+                <widget class="XComboBox" name="_location" >
+                  <property name="enabled" >
+                    <bool>false</bool>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <spacer name="spacer6" >
+                  <property name="sizeHint" >
+                    <size>
+                      <width>51</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="sizeType" >
+                    <enum>MinimumExpanding</enum>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Horizontal</enum>
+                  </property>
+                </spacer>
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <layout class="QVBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <property name="spacing" >
+            <number>0</number>
+          </property>
+          <item>
+            <widget class="QLabel" name="_commentsLit" >
+              <property name="text" >
+                <string>Comments:</string>
+              </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QTextEdit" name="_comments" />
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="5" margin="5" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
+    <customwidget>
+      <class>WComboBox</class>
+      <extends>QComboBox</extends>
+      <header>wcombobox.h</header>
+      <container>0</container>
+      <pixmap></pixmap>
+    </customwidget>
+    <customwidget>
+      <class>XComboBox</class>
+      <extends>QComboBox</extends>
+      <header>xcombobox.h</header>
+      <container>0</container>
+      <pixmap></pixmap>
+    </customwidget>
+  </customwidgets>
+  <tabstops>
+    <tabstop>_item</tabstop>
+    <tabstop>_warehouse</tabstop>
+    <tabstop>_priority</tabstop>
+    <tabstop>_freeze</tabstop>
+    <tabstop>_byLocation</tabstop>
+    <tabstop>_location</tabstop>
+    <tabstop>_comments</tabstop>
+    <tabstop>_create</tabstop>
+    <tabstop>_close</tabstop>
+  </tabstops>
+  <includes>
+    <include location="global" >parameter.h</include>
+    
+  </includes>
+  <connections>
+    <connection>
+      <sender>_close</sender>
+      <signal>clicked()</signal>
+      <receiver>createCountTagsByItem</receiver>
+      <slot>reject()</slot>
+    </connection>
+    <connection>
+      <sender>_item</sender>
+      <signal>valid(bool)</signal>
+      <receiver>_create</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+      <sender>_item</sender>
+      <signal>warehouseIdChanged(int)</signal>
+      <receiver>_warehouse</receiver>
+      <slot>setId(int)</slot>
+    </connection>
+    <connection>
+      <sender>_item</sender>
+      <signal>newId(int)</signal>
+      <receiver>_warehouse</receiver>
+      <slot>findItemsites(int)</slot>
+    </connection>
+    <connection>
+      <sender>_byLocation</sender>
+      <signal>toggled(bool)</signal>
+      <receiver>_location</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+  </connections>
+</ui>

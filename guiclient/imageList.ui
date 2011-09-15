@@ -1,0 +1,123 @@
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+  <exportmacro></exportmacro>
+  <class>imageList</class>
+  <widget class="QDialog" name="imageList" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>511</width>
+        <height>483</height>
+      </rect>
+    </property>
+    <property name="windowTitle" >
+      <string>Image List</string>
+    </property>
+    <layout class="QHBoxLayout" >
+      <property name="margin" >
+        <number>5</number>
+      </property>
+      <property name="spacing" >
+        <number>7</number>
+      </property>
+      <item>
+        <widget class="XTreeWidget" name="_image" />
+      </item>
+      <item>
+        <layout class="QVBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <property name="spacing" >
+            <number>0</number>
+          </property>
+          <item>
+            <layout class="QVBoxLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>5</number>
+              </property>
+              <item>
+                <widget class="QPushButton" name="_close" >
+                  <property name="text" >
+                    <string>&amp;Cancel</string>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <widget class="QPushButton" name="_select" >
+                  <property name="enabled" >
+                    <bool>false</bool>
+                  </property>
+                  <property name="text" >
+                    <string>&amp;Select</string>
+                  </property>
+                </widget>
+              </item>
+            </layout>
+          </item>
+          <item>
+            <spacer name="Spacer57" >
+              <property name="sizeHint" >
+                <size>
+                  <width>20</width>
+                  <height>20</height>
+                </size>
+              </property>
+              <property name="sizeType" >
+                <enum>Expanding</enum>
+              </property>
+              <property name="orientation" >
+                <enum>Vertical</enum>
+              </property>
+            </spacer>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
+    <customwidget>
+      <class>XTreeWidget</class>
+      <extends>QTreeWidget</extends>
+      <header>xtreewidget.h</header>
+      <container>0</container>
+      <pixmap></pixmap>
+    </customwidget>
+  </customwidgets>
+  <tabstops>
+    <tabstop>_image</tabstop>
+    <tabstop>_select</tabstop>
+    <tabstop>_close</tabstop>
+  </tabstops>
+  <includes>
+    <include location="global" >parameter.h</include>
+    
+  </includes>
+  <connections>
+    <connection>
+      <sender>_image</sender>
+      <signal>valid(bool)</signal>
+      <receiver>_select</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+      <sender>_image</sender>
+      <signal>itemSelected(int)</signal>
+      <receiver>_select</receiver>
+      <slot>animateClick()</slot>
+    </connection>
+  </connections>
+</ui>

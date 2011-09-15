@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>atlasMap</class>
+ <widget class="QDialog" name="atlasMap">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>484</width>
+    <height>217</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CSV File to Atlas Map</string>
+  </property>
+  <layout class="QHBoxLayout">
+   <item>
+    <layout class="QGridLayout" name="_fieldsLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="_nameLit">
+       <property name="text">
+        <string>Name:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="_filterLit">
+       <property name="text">
+        <string>Pattern:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="_filterTypeLit">
+       <property name="text">
+        <string>Apply Pattern to:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="_atlasLit">
+       <property name="text">
+        <string>Atlas File:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="_mapLit">
+       <property name="text">
+        <string>Map:</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="_name"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="_filter"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="FileCluster" name="_atlas"/>
+     </item>
+     <item row="6" column="0">
+      <spacer name="_fieldsSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="2" column="1">
+      <widget class="XComboBox" name="_filtertype">
+       <property name="allowNull">
+        <bool>true</bool>
+       </property>
+       <property name="nullStr">
+        <string>[ Select how to apply the Pattern ]</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="XComboBox" name="_map">
+       <property name="allowNull">
+        <bool>true</bool>
+       </property>
+       <property name="nullStr">
+        <string>[ Select a Map from the Atlas ]</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="XCheckBox" name="_firstLine">
+       <property name="text">
+        <string>Treat first row as header information</string>
+       </property>
+       <property name="forgetful">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="_buttonBox">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FileCluster</class>
+   <extends>QWidget</extends>
+   <header>filecluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_name</tabstop>
+  <tabstop>_filter</tabstop>
+  <tabstop>_filtertype</tabstop>
+  <tabstop>_atlas</tabstop>
+  <tabstop>_map</tabstop>
+  <tabstop>_firstLine</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

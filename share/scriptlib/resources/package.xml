@@ -1,0 +1,10 @@
+<package id="resources"
+         name="scriptlib"
+         version="1.0.0alpha"
+         developer="xTuple"
+         updater=""
+         descrip="">
+  <loadappscript file="client/scripts/js2soap.js" name="js2soap">scriptlib package</loadappscript>
+  <loadappscript file="client/scripts/soap2js.js" name="soap2js">scriptlib package</loadappscript>
+  <loadappscript file="client/scripts/storedProcErrorLookup.js" name="storedProcErrorLookup">scriptlib package</loadappscript>
+</package>

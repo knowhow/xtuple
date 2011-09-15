@@ -1,0 +1,210 @@
+<ui version="4.0" stdsetdef="1" >
+  <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+  <exportmacro></exportmacro>
+  <class>printWoForm</class>
+  <widget class="QDialog" name="printWoForm" >
+    <property name="geometry" >
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>416</width>
+        <height>163</height>
+      </rect>
+    </property>
+    <property name="windowTitle" >
+      <string>Print Work Order Form</string>
+    </property>
+    <layout class="QHBoxLayout" >
+      <property name="margin" >
+        <number>5</number>
+      </property>
+      <property name="spacing" >
+        <number>7</number>
+      </property>
+      <item>
+        <layout class="QVBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <property name="spacing" >
+            <number>0</number>
+          </property>
+          <item>
+            <layout class="QVBoxLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>5</number>
+              </property>
+              <item>
+                <widget class="WoCluster" name="_wo" />
+              </item>
+              <item>
+                <layout class="QHBoxLayout" >
+                  <property name="margin" >
+                    <number>0</number>
+                  </property>
+                  <property name="spacing" >
+                    <number>5</number>
+                  </property>
+                  <item>
+                    <widget class="QLabel" name="_formLit" >
+                      <property name="text" >
+                        <string>Form Name:</string>
+                      </property>
+                      <property name="alignment" >
+                        <set>Qt::AlignVCenter|Qt::AlignRight</set>
+                      </property>
+                    </widget>
+                  </item>
+                  <item>
+                    <widget class="XComboBox" name="_report" >
+                      <property name="sizePolicy" >
+                        <sizepolicy>
+                          <hsizetype>7</hsizetype>
+                          <vsizetype>0</vsizetype>
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                        </sizepolicy>
+                      </property>
+                    </widget>
+                  </item>
+                </layout>
+              </item>
+            </layout>
+          </item>
+          <item>
+            <spacer name="Spacer4" >
+              <property name="sizeHint" >
+                <size>
+                  <width>20</width>
+                  <height>20</height>
+                </size>
+              </property>
+              <property name="sizeType" >
+                <enum>Expanding</enum>
+              </property>
+              <property name="orientation" >
+                <enum>Vertical</enum>
+              </property>
+            </spacer>
+          </item>
+        </layout>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" >
+          <property name="margin" >
+            <number>0</number>
+          </property>
+          <property name="spacing" >
+            <number>0</number>
+          </property>
+          <item>
+            <spacer name="Spacer39" >
+              <property name="sizeHint" >
+                <size>
+                  <width>0</width>
+                  <height>20</height>
+                </size>
+              </property>
+              <property name="sizeType" >
+                <enum>Preferred</enum>
+              </property>
+              <property name="orientation" >
+                <enum>Horizontal</enum>
+              </property>
+            </spacer>
+          </item>
+          <item>
+            <layout class="QVBoxLayout" >
+              <property name="margin" >
+                <number>0</number>
+              </property>
+              <property name="spacing" >
+                <number>5</number>
+              </property>
+              <item>
+                <widget class="QPushButton" name="_close" >
+                  <property name="text" >
+                    <string>Cancel</string>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <widget class="QPushButton" name="_print" >
+                  <property name="enabled" >
+                    <bool>false</bool>
+                  </property>
+                  <property name="text" >
+                    <string>&amp;Print</string>
+                  </property>
+                  <property name="default" >
+                    <bool>true</bool>
+                  </property>
+                </widget>
+              </item>
+              <item>
+                <spacer name="Spacer38" >
+                  <property name="sizeHint" >
+                    <size>
+                      <width>20</width>
+                      <height>20</height>
+                    </size>
+                  </property>
+                  <property name="sizeType" >
+                    <enum>Expanding</enum>
+                  </property>
+                  <property name="orientation" >
+                    <enum>Vertical</enum>
+                  </property>
+                </spacer>
+              </item>
+            </layout>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <layoutdefault spacing="6" margin="11" />
+  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+  <customwidgets>
+    <customwidget>
+      <class>XComboBox</class>
+      <extends>QComboBox</extends>
+      <header>xcombobox.h</header>
+      <container>0</container>
+      <pixmap></pixmap>
+    </customwidget>
+  </customwidgets>
+  <tabstops>
+    <tabstop>_wo</tabstop>
+    <tabstop>_report</tabstop>
+    <tabstop>_print</tabstop>
+    <tabstop>_close</tabstop>
+  </tabstops>
+  <includes>
+    <include location="local" />
+  </includes>
+  <connections>
+    <connection>
+      <sender>_wo</sender>
+      <signal>valid(bool)</signal>
+      <receiver>_print</receiver>
+      <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+      <sender>_close</sender>
+      <signal>clicked()</signal>
+      <receiver>printWoForm</receiver>
+      <slot>reject()</slot>
+    </connection>
+  </connections>
+</ui>

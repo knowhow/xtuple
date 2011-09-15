@@ -1,0 +1,311 @@
+<ui version="4.0" >
+ <author></author>
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>check</class>
+ <widget class="QWidget" name="check" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>754</width>
+    <height>483</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Check Information</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" colspan="2" >
+    <widget class="QLabel" name="_checkNumberLit" >
+     <property name="text" >
+      <string>Check Number:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" >
+    <widget class="QLabel" name="_checkNumber" >
+     <property name="text" >
+      <string>#</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QLabel" name="_recipLit" >
+     <property name="text" >
+      <string>Written To:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2" >
+    <widget class="QLabel" name="_recipNumber" >
+     <property name="text" >
+      <string>Recipient #</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3" >
+    <widget class="QLabel" name="_recipName" >
+     <property name="text" >
+      <string>Recipient Name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="7" >
+    <widget class="QPlainTextEdit" name="_notes" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+     <property name="maximumBlockCount" >
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" >
+    <widget class="QLabel" name="_notesLit" >
+     <property name="text" >
+      <string>Memo:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>_notes</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="0" colspan="7" >
+    <widget class="XTreeWidget" name="_items" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>10</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="0" >
+    <widget class="QLabel" name="_itemsLit" >
+     <property name="text" >
+      <string>Check Items:</string>
+     </property>
+     <property name="buddy" >
+      <cstring>_items</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1" colspan="6" >
+    <widget class="QLabel" name="_for" >
+     <property name="text" >
+      <string>For</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3" >
+    <widget class="DLineEdit" name="_checkdate" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4" >
+    <widget class="QLabel" name="_achBatchNumber" >
+     <property name="text" >
+      <string>Batch #</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4" >
+    <widget class="QLabel" name="_recipType" >
+     <property name="text" >
+      <string>Recipient Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" >
+    <widget class="QLabel" name="_bankaccntLit" >
+     <property name="text" >
+      <string>Bank Account:</string>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy" >
+      <cstring>_bankaccnt</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3" >
+    <widget class="XComboBox" name="_bankaccnt" >
+     <property name="type" >
+      <enum>XComboBox::APBankAccounts</enum>
+     </property>
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6" >
+    <widget class="QPushButton" name="_close" >
+     <property name="text" >
+      <string>Close</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QCheckBox" name="_posted" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="text" >
+      <string>Posted</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QCheckBox" name="_void" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="text" >
+      <string>Void</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="CurrCluster" name="_amount" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" >
+    <widget class="QCheckBox" name="_replaced" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="text" >
+      <string>Replaced</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="2" >
+    <widget class="QCheckBox" name="_misc" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="text" >
+      <string>Miscellaneous Expense:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="3" >
+    <widget class="XComboBox" name="_expcat" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="type" >
+      <enum>XComboBox::ExpenseCategories</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" >
+    <widget class="QCheckBox" name="_deleted" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="text" >
+      <string>Deleted</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <zorder>_checkNumberLit</zorder>
+  <zorder>_checkNumber</zorder>
+  <zorder>_recipLit</zorder>
+  <zorder>_recipNumber</zorder>
+  <zorder>_recipName</zorder>
+  <zorder>_notes</zorder>
+  <zorder>_notesLit</zorder>
+  <zorder>_items</zorder>
+  <zorder>_itemsLit</zorder>
+  <zorder>_for</zorder>
+  <zorder>_checkdate</zorder>
+  <zorder>_achBatchNumber</zorder>
+  <zorder>_recipType</zorder>
+  <zorder>_bankaccntLit</zorder>
+  <zorder>_bankaccnt</zorder>
+  <zorder>_close</zorder>
+  <zorder>_posted</zorder>
+  <zorder>_void</zorder>
+  <zorder>_amount</zorder>
+  <zorder>_replaced</zorder>
+  <zorder>_misc</zorder>
+  <zorder>_expcat</zorder>
+  <zorder>_deleted</zorder>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CurrCluster</class>
+   <extends>CurrDisplay</extends>
+   <header>currcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DLineEdit</class>
+   <extends>QWidget</extends>
+   <header>datecluster.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>xtreewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_notes</tabstop>
+  <tabstop>_items</tabstop>
+  <tabstop>_close</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>check</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>662</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>662</x>
+     <y>56</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
