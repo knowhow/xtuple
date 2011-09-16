@@ -7,7 +7,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
         <key>CFBundleGetInfoString</key>
-	<string>3.8.0Alpha</string>
+	<string>3.8.0Beta</string>
 	<key>CFBundleSignature</key>
 	<string>omfg</string>
 	<key>CFBundleExecutable</key>

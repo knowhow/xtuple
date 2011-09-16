@@ -76,7 +76,7 @@ enum SetResponse shipTo::set(const ParameterList &pParams)
 
       XSqlQuery cust;
       cust.prepare( "SELECT cust_number, cust_name, cust_taxzone_id, "
-                 "       cust_salesrep_id, cust_shipform_id, cust_shipvia, cust_shipchrg_id "
+                 "       cust_salesrep_id, cust_shipform_id, cust_shipvia, cust_shipchrg_id, "
                  "       crmacct_id "
                  "FROM custinfo "
                  "  JOIN crmacct ON (cust_id=crmacct_cust_id) "
