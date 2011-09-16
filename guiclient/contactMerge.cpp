@@ -298,10 +298,10 @@ void contactMerge::sPopulateCntctMenu(QMenu *pMenu)
   pMenu->addSeparator();
 
   menuItem = pMenu->addAction(tr("Edit..."), this, SLOT(sCntctEdit()));
-  menuItem->setEnabled(_privileges->check("MaintainContacts"));
+  menuItem->setEnabled(_privileges->check("MaintainAllContacts"));
 
   menuItem = pMenu->addAction(tr("View..."), this, SLOT(sCntctView()));
-  menuItem->setEnabled(_privileges->check("MaintainContacts") || _privileges->check("ViewContacts"));
+  menuItem->setEnabled(_privileges->check("MaintainAllContacts") || _privileges->check("ViewAllContacts"));
 
   if (_cntct->altId() != 3) // cMerged
   {
@@ -318,7 +318,7 @@ void contactMerge::sPopulateCntctMenu(QMenu *pMenu)
     if (q.first() && !q.value("used").toBool())
     {
         menuItem = pMenu->addAction(tr("Delete"), this, SLOT(sCntctDelete()));
-        menuItem->setEnabled(_privileges->check("MaintainContacts"));
+        menuItem->setEnabled(_privileges->check("MaintainAllContacts"));
     }
   }
 }
@@ -373,10 +373,10 @@ void contactMerge::sPopulateSrcMenu(QMenu *pMenu, QTreeWidgetItem *pItem, int pC
   pMenu->addSeparator();
 
   menuItem = pMenu->addAction(tr("Edit..."), this, SLOT(sCntctEdit()));
-  menuItem->setEnabled(_privileges->check("MaintainContacts"));
+  menuItem->setEnabled(_privileges->check("MaintainAllContacts"));
 
   menuItem = pMenu->addAction(tr("View..."), this, SLOT(sCntctView()));
-  menuItem->setEnabled(_privileges->check("MaintainContacts") || _privileges->check("ViewContacts"));
+  menuItem->setEnabled(_privileges->check("MaintainAllContacts") || _privileges->check("ViewAllContacts"));
 }
 
 void contactMerge::sPopulateSources()

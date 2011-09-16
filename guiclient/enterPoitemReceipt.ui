@@ -240,7 +240,7 @@ to be bound by its terms.</comment>
        </layout>
       </item>
       <item row="2" column="1">
-       <widget class="QTextEdit" name="_vendorDescrip">
+       <widget class="XTextEdit" name="_vendorDescrip">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
           <horstretch>0</horstretch>

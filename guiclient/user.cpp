@@ -11,21 +11,29 @@
 #include "user.h"
 
 #include <QMessageBox>
-#include <QSqlError>
 #include <QVariant>
 
 #include <qmd5.h>
 #include <metasql.h>
 
+#include "crmaccount.h"
+#include "errorReporter.h"
+#include "guiErrorCheck.h"
 #include "storedProcErrorLookup.h"
 
 user::user(QWidget* parent, const char * name, Qt::WindowFlags fl)
   : XDialog(parent, name, fl)
 {
-  _inTransaction = false;
   setupUi(this);
 
+  _authCache     = false;
+  _cUsername     = "";
+  _crmacctid     = -1;
+  _inTransaction = false;
+  _mode          = cView;
+
   connect(_close, SIGNAL(clicked()), this, SLOT(sClose()));
+  connect(_crmacct, SIGNAL(clicked()),   this,     SLOT(sCrmAccount()));
   connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
   connect(_add, SIGNAL(clicked()), this, SLOT(sAdd()));
   connect(_addAll, SIGNAL(clicked()), this, SLOT(sAddAll()));
@@ -57,17 +65,15 @@ user::user(QWidget* parent, const char * name, Qt::WindowFlags fl)
   _grantedGroup->addColumn("Granted Roles", -1, Qt::AlignLeft);
 
   _availableSite->addColumn("Available Sites", -1, Qt::AlignLeft);
-  _grantedSite->addColumn("Granted Sites", 	-1, Qt::AlignLeft);
-  
+  _grantedSite->addColumn("Granted Sites",      -1, Qt::AlignLeft);
+
   _locale->setType(XComboBox::Locales);
 
-  q.exec( "SELECT DISTINCT priv_module "
-          "FROM priv "
-          "ORDER BY priv_module;" );
-  for (int i = 0; q.next(); i++)
-    _module->append(i, q.value("priv_module").toString());
+  XSqlQuery modq;
+  modq.exec( "SELECT DISTINCT priv_module FROM priv ORDER BY priv_module;" );
+  for (int i = 0; modq.next(); i++)
+    _module->append(i, modq.value("priv_module").toString());
 
-  _authCache = false;
   if(_evaluation == true)
   {
     _enhancedAuth->setEnabled(false);
@@ -80,7 +86,7 @@ user::user(QWidget* parent, const char * name, Qt::WindowFlags fl)
     _enhancedAuth->setChecked(true);
     _enhancedAuth->setEnabled(false);
   }
-  
+
   if (!_metrics->boolean("MultiWhs"))
     _tab->removeTab(_tab->indexOf(_siteTab));
 }
@@ -89,7 +95,7 @@ user::~user()
 {
   // no need to delete child widgets, Qt does it all for us
   if(_inTransaction)
-    q.exec("ROLLBACK;");
+    XSqlQuery rollback("ROLLBACK;");
 }
 
 void user::languageChange()
@@ -103,13 +109,18 @@ enum SetResponse user::set(const ParameterList &pParams)
   QVariant param;
   bool     valid;
 
+  param = pParams.value("crmacct_id", &valid);
+  if (valid)
+    _crmacctid = param.toInt();
+
   param = pParams.value("username", &valid);
   if (valid)
-  {
     _cUsername = param.toString();
-    populate();
-  }
-      
+
+  if (! _cUsername.isEmpty() || _crmacctid > 0)
+    if (! sPopulate())
+      return UndefinedError;
+
   param = pParams.value("mode", &valid);
   if (valid)
   {
@@ -153,8 +164,45 @@ enum SetResponse user::set(const ParameterList &pParams)
     }
   }
 
-  if(cView != _mode)
-    _inTransaction = q.exec("BEGIN;");
+  bool canEdit = (cNew == _mode || cEdit == _mode);
+
+  _active->setEnabled(canEdit);
+  _add->setEnabled(canEdit);
+  _addAll->setEnabled(canEdit);
+  _addGroup->setEnabled(canEdit);
+//  _addSite->setEnabled(canEdit);
+  _agent->setEnabled(canEdit);
+  _allSites->setEnabled(canEdit);
+  _email->setEnabled(canEdit);
+  _employee->setReadOnly(! canEdit);
+  _enhancedAuth->setEnabled(canEdit);
+  _exportContents->setEnabled(canEdit);
+  _initials->setEnabled(canEdit);
+  _locale->setEnabled(canEdit);
+  _passwd->setEnabled(canEdit);
+  _properName->setEnabled(canEdit);
+  _revoke->setEnabled(canEdit);
+  _revokeAll->setEnabled(canEdit);
+  _revokeGroup->setEnabled(canEdit);
+//  _revokeSite->setEnabled(canEdit);
+  _save->setEnabled(canEdit);
+  _selectedSites->setEnabled(canEdit);
+  _verify->setEnabled(canEdit);
+  if (! canEdit)
+  {
+    _available->setSelectionMode(QAbstractItemView::NoSelection);
+    _availableGroup->setSelectionMode(QAbstractItemView::NoSelection);
+    _availableSite->setSelectionMode(QAbstractItemView::NoSelection);
+    _granted->setSelectionMode(QAbstractItemView::NoSelection);
+    _grantedGroup->setSelectionMode(QAbstractItemView::NoSelection);
+    _grantedSite->setSelectionMode(QAbstractItemView::NoSelection);
+  }
+
+  if(canEdit)
+  {
+    XSqlQuery begin;
+    _inTransaction = begin.exec("BEGIN;");
+  }
 
   return NoError;
 }
@@ -163,12 +211,12 @@ void user::sClose()
 {
   if (_mode == cNew)
   {
-    q.prepare( "DELETE FROM usrpriv "
-               "WHERE (usrpriv_username=:username);" );
-    q.bindValue(":username", _cUsername);
-    q.exec();
-    if (q.lastError().type() != QSqlError::NoError)
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    XSqlQuery delq;
+    delq.prepare( "DELETE FROM usrpriv WHERE (usrpriv_username=:username);" );
+    delq.bindValue(":username", _cUsername);
+    delq.exec();
+    ErrorReporter::error(QtCriticalMsg, this, tr("Deleting Privileges"),
+                         delq, __FILE__, __LINE__);
   }
 
   reject();
@@ -185,32 +233,24 @@ bool user::save()
   QString username = _username->text().trimmed().toLower();
   if(omfgThis->useCloud())
     username = username + "_" + omfgThis->company();
-  if (!username.contains(QRegExp("[A-Za-z]")))
+
+  QList<GuiErrorCheck> errors;
+  errors << GuiErrorCheck(! username.contains(QRegExp("[A-Za-z]")), _username,
+                          tr("You must enter a valid Username before you can save this User."))
+         << GuiErrorCheck(_passwd->text().isEmpty(), _passwd,
+                          tr("You must enter a valid Password before you can save this User."))
+         << GuiErrorCheck(_passwd->text() != _verify->text(), _passwd,
+                          tr("The entered password and verify do not match. "
+                             "Please enter both again carefully."))
+   ;
+
+  if (GuiErrorCheck::reportErrors(this, tr("Cannot save User"), errors))
   {
-    QMessageBox::warning( this, tr("Cannot save User"),
-                          tr( "You must enter a valid Username before you can save this User." ));
-    _username->setFocus();
-    return false;
-  }
-
-  if (_passwd->text().length() == 0)
-  {
-    QMessageBox::warning( this, tr("Cannot save User"),
-                          tr( "You must enter a valid Password before you can save this User." ));
-    _passwd->setFocus();
-    return false;
-  }
-
-  if (_passwd->text() != _verify->text())
-  {
-    QMessageBox::warning( this, tr("Password do not Match"),
-                          tr( "The entered password and verify do not match\n"
-                              "Please enter both again carefully." ));
-
-    _passwd->clear();
-    _verify->clear();
-    _passwd->setFocus();
-
+     if (_passwd->text() != _verify->text())
+     {
+      _passwd->clear();
+      _verify->clear();
+     }
     return false;
   }
 
@@ -224,73 +264,66 @@ bool user::save()
     passwd = QMd5(passwd);
   }
 
+  XSqlQuery usrq;
   if (_mode == cNew)
   {
-    q.prepare( "SELECT usesysid"
-               "  FROM pg_user"
-               " WHERE (usename=:username);" );
-    q.bindValue(":username", username);
-    q.exec();
-    if (!q.first())
+    usrq.prepare("SELECT usesysid"
+                 "  FROM pg_user"
+                 " WHERE (usename=:username);" );
+    usrq.bindValue(":username", username);
+    usrq.exec();
+    if (!usrq.first())
     {
-      q.prepare("SELECT createUser(:username, :createUsers);");
-      q.bindValue(":username", username);
-      q.bindValue(":createUsers", QVariant(_createUsers->isChecked()));
-      q.exec();
-      if (q.lastError().type() != QSqlError::NoError)
-      {
-	systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-	return false;
-      }
+      usrq.prepare("SELECT createUser(:username, :createUsers);");
+      usrq.bindValue(":username", username);
+      usrq.bindValue(":createUsers", QVariant(_createUsers->isChecked()));
+      usrq.exec();
+      if (ErrorReporter::error(QtCriticalMsg, this, tr("Creating User"),
+                               usrq, __FILE__, __LINE__))
+        return false;
     }
   }
   else if (_mode == cEdit)
   {
     if(_createUsers->isEnabled())
     {
-      q.prepare("SELECT setUserCanCreateUsers(:username, :createUsers);");
-      q.bindValue(":username", username);
-      q.bindValue(":createUsers", QVariant(_createUsers->isChecked()));
-      q.exec();
-      if (q.lastError().type() != QSqlError::NoError)
-      {
-        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+      usrq.prepare("SELECT setUserCanCreateUsers(:username, :createUsers);");
+      usrq.bindValue(":username", username);
+      usrq.bindValue(":createUsers", QVariant(_createUsers->isChecked()));
+      usrq.exec();
+      if (ErrorReporter::error(QtCriticalMsg, this, tr("Saving User"),
+                               usrq, __FILE__, __LINE__))
         return false;
-      }
     }
   }
 
   if(_createUsers->isEnabled())
   {
-    q.prepare("SELECT pg_has_role(:username,'xtrole','member') AS result;");
-    q.bindValue(":username", username);
-    q.exec();
-    if(q.first() && !q.value("result").toBool())
+    usrq.prepare("SELECT pg_has_role(:username,'xtrole','member') AS result;");
+    usrq.bindValue(":username", username);
+    usrq.exec();
+    if(usrq.first() && !usrq.value("result").toBool())
     {
-      q.exec( QString("ALTER GROUP xtrole ADD USER %1;")
+      usrq.exec( QString("ALTER GROUP xtrole ADD USER %1;")
               .arg(username) );
     }
-    if(q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    if (ErrorReporter::error(QtCriticalMsg, this, tr("Saving User"),
+                             usrq, __FILE__, __LINE__))
       return false;
-    }
   }
 
   if (_passwd->text() != "        ")
   {
-    q.prepare( QString( "ALTER USER %1 WITH PASSWORD :password;")
+    usrq.prepare( QString( "ALTER USER %1 WITH PASSWORD :password;")
                .arg(username) );
-    q.bindValue(":password", passwd);
-    q.exec();
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    usrq.bindValue(":password", passwd);
+    usrq.exec();
+    if (ErrorReporter::error(QtCriticalMsg, this, tr("Setting Password"),
+                             usrq, __FILE__, __LINE__))
       return false;
-    }
   }
 
-  q.prepare("SELECT setUserPreference(:username, 'DisableExportContents', :export),"
+  usrq.prepare("SELECT setUserPreference(:username, 'DisableExportContents', :export),"
             "       setUserPreference(:username, 'UseEnhancedAuthentication', :enhanced),"
             "       setUserPreference(:username, 'selectedSites', :sites),"
             "       setUserPreference(:username, 'propername', :propername),"
@@ -299,24 +332,22 @@ bool user::save()
             "       setUserPreference(:username, 'locale_id', text(:locale_id)),"
             "       setUserPreference(:username, 'agent', :agent),"
             "       setUserPreference(:username, 'active', :active);");
-  q.bindValue(":username", username);
-  q.bindValue(":export", (_exportContents->isChecked() ? "t" : "f"));
-  q.bindValue(":enhanced", (_enhancedAuth->isChecked() ? "t" : "f"));
-  q.bindValue(":sites", (_selectedSites->isChecked() ? "t" : "f"));
-  q.bindValue(":propername", _properName->text());
-  q.bindValue(":email", _email->text());
-  q.bindValue(":initials", _initials->text());
-  q.bindValue(":locale_id", _locale->id());
-  q.bindValue(":agent", (_agent->isChecked() ? "t" : "f"));
-  q.bindValue(":active", (_active->isChecked() ? "t" : "f"));
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  usrq.bindValue(":username", username);
+  usrq.bindValue(":export", (_exportContents->isChecked() ? "t" : "f"));
+  usrq.bindValue(":enhanced", (_enhancedAuth->isChecked() ? "t" : "f"));
+  usrq.bindValue(":sites", (_selectedSites->isChecked() ? "t" : "f"));
+  usrq.bindValue(":propername", _properName->text());
+  usrq.bindValue(":email", _email->text());
+  usrq.bindValue(":initials", _initials->text());
+  usrq.bindValue(":locale_id", _locale->id());
+  usrq.bindValue(":agent", (_agent->isChecked() ? "t" : "f"));
+  usrq.bindValue(":active", (_active->isChecked() ? "t" : "f"));
+  usrq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Saving User"),
+                           usrq, __FILE__, __LINE__))
     return false;
-  }
-//////////////
 
+  omfgThis->sUserUpdated(username);
   return true;
 }
 
@@ -340,6 +371,9 @@ void user::sModuleSelected(const QString &pModule)
     else
       granted = new XTreeWidgetItem(_grantedGroup, granted, groups.value("grp_id").toInt(), groups.value("grp_name"));
   }
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Groups"),
+                           groups, __FILE__, __LINE__))
+    return;
 
   _available->clear();
   _granted->clear();
@@ -395,114 +429,109 @@ void user::sModuleSelected(const QString &pModule)
 
 void user::sAdd()
 {
-  q.prepare("SELECT grantPriv(:username, :priv_id) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":priv_id", _available->id());
-  q.exec();
-  // no storedProcErrorLookup because the function returns bool, not int
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  XSqlQuery privq;
+  privq.prepare("SELECT grantPriv(:username, :priv_id) AS result;");
+  privq.bindValue(":username", _cUsername);
+  privq.bindValue(":priv_id", _available->id());
+  privq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Granting Privilege"),
+                           privq, __FILE__, __LINE__))
     return;
-  }
 
   sModuleSelected(_module->currentText());
 }
 
 void user::sAddAll()
 {
-  q.prepare("SELECT grantAllModulePriv(:username, :module) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":module", _module->currentText());
-  q.exec();
-  if (q.first())
+  XSqlQuery privq;
+  privq.prepare("SELECT grantAllModulePriv(:username, :module) AS result;");
+  privq.bindValue(":username", _cUsername);
+  privq.bindValue(":module", _module->currentText());
+  privq.exec();
+  if (privq.first())
   {
-    int result = q.value("result").toInt();
+    int result = privq.value("result").toInt();
     if (result < 0)
     {
-      systemError(this, storedProcErrorLookup("grantAllModulePriv", result),
-                  __FILE__, __LINE__);
+      ErrorReporter::error(QtCriticalMsg, this, tr("Granting Privileges"),
+                           storedProcErrorLookup("grantAllModulePriv", result),
+                           __FILE__, __LINE__);
       return;
     }
   }
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Granting Privileges"),
+                           privq, __FILE__, __LINE__))
     return;
-  }
 
   sModuleSelected(_module->currentText());
 }
 
 void user::sRevoke()
 {
-  q.prepare("SELECT revokePriv(:username, :priv_id) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":priv_id", _granted->id());
-  q.exec();
+  XSqlQuery privq;
+  privq.prepare("SELECT revokePriv(:username, :priv_id) AS result;");
+  privq.bindValue(":username", _cUsername);
+  privq.bindValue(":priv_id", _granted->id());
+  privq.exec();
   // no storedProcErrorLookup because the function returns bool, not int
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Revoking Privileges"),
+                           privq, __FILE__, __LINE__))
     return;
-  }
 
   sModuleSelected(_module->currentText());
 }
 
 void user::sRevokeAll()
 {
-  q.prepare("SELECT revokeAllModulePriv(:username, :module) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":module", _module->currentText());
-  q.exec();
-  if (q.first())
+  XSqlQuery privq;
+  privq.prepare("SELECT revokeAllModulePriv(:username, :module) AS result;");
+  privq.bindValue(":username", _cUsername);
+  privq.bindValue(":module", _module->currentText());
+  privq.exec();
+  if (privq.first())
   {
-    int result = q.value("result").toInt();
+    int result = privq.value("result").toInt();
     if (result < 0)
     {
-      systemError(this, storedProcErrorLookup("revokeAllModulePriv", result),
-                  __FILE__, __LINE__);
+      ErrorReporter::error(QtCriticalMsg, this, tr("Revoking Privileges"),
+                           storedProcErrorLookup("revokeAllModulePriv", result),
+                           __FILE__, __LINE__);
       return;
     }
   }
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Revoking Privileges"),
+                                privq, __FILE__, __LINE__))
     return;
-  }
 
   sModuleSelected(_module->currentText());
 }
 
 void user::sAddGroup()
 {
-  q.prepare("SELECT grantGroup(:username, :grp_id) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":grp_id", _availableGroup->id());
-  q.exec();
+  XSqlQuery grpq;
+  grpq.prepare("SELECT grantGroup(:username, :grp_id) AS result;");
+  grpq.bindValue(":username", _cUsername);
+  grpq.bindValue(":grp_id", _availableGroup->id());
+  grpq.exec();
   // no storedProcErrorLookup because the function returns bool, not int
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Granting Group Privileges"),
+                                grpq, __FILE__, __LINE__))
     return;
-  }
 
   sModuleSelected(_module->currentText());
 }
 
 void user::sRevokeGroup()
 {
-  q.prepare("SELECT revokeGroup(:username, :grp_id) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":grp_id", _grantedGroup->id());
-  q.exec();
+  XSqlQuery grpq;
+  grpq.prepare("SELECT revokeGroup(:username, :grp_id) AS result;");
+  grpq.bindValue(":username", _cUsername);
+  grpq.bindValue(":grp_id", _grantedGroup->id());
+  grpq.exec();
   // no storedProcErrorLookup because the function returns bool, not int
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Revoking Group Privileges"),
+                                grpq, __FILE__, __LINE__))
     return;
-  }
 
   sModuleSelected(_module->currentText());
 }
@@ -514,82 +543,110 @@ void user::sCheck()
     _cUsername = _cUsername + "_" + omfgThis->company();
   if (_cUsername.length() > 0)
   {
-    q.prepare( "SELECT * "
-               "FROM usr "
-               "WHERE (usr_username=:username);" );
-    q.bindValue(":username", _cUsername);
-    q.exec();
-    if (q.first())
+    XSqlQuery usrq;
+    usrq.prepare("SELECT * FROM usr WHERE (usr_username=:username);");
+    usrq.bindValue(":username", _cUsername);
+    usrq.exec();
+    if (usrq.first())
     {
-      populate();
+      sPopulate();
       _mode = cEdit;
       _username->setEnabled(FALSE);
       _properName->setFocus();
     }
+    else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting User"),
+                                  usrq, __FILE__, __LINE__))
+      return;
   }
 }
 
-void user::populate()
+bool user::sPopulate()
 {
-  q.prepare( "SELECT *, userCanCreateUsers(usr_username) AS createusers,"
-             "       userCanCreateUsers(CURRENT_USER) AS enablecreateusers,"
-             "       emp_id "
-             "FROM usr LEFT OUTER JOIN emp ON (usr_username=emp_username) "
-             "WHERE (usr_username=:usr_username);" );
-  q.bindValue(":usr_username", _cUsername);
-  q.exec();
-  if (q.first())
+  XSqlQuery usrq;
+  if (! _cUsername.isEmpty())
   {
-    if(omfgThis->useCloud() && q.value("usr_username").toString().endsWith("_"+omfgThis->company()))
-      _username->setText(q.value("usr_username").toString().left(q.value("usr_username").toString().length() - (omfgThis->company().length()+1)));
+    usrq.prepare("SELECT *, userCanCreateUsers(usr_username) AS createusers,"
+                 "       userCanCreateUsers(getEffectiveXtUser()) AS enablecreateusers,"
+                 "       crmacct_id, crmacct_emp_id, crmacct_owner_username"
+                 "  FROM usr"
+                 "  LEFT OUTER JOIN crmacct ON (usr_username=crmacct_usr_username) "
+                 "WHERE (usr_username=:usr_username);" );
+    usrq.bindValue(":usr_username", _cUsername);
+  }
+  else if (_crmacctid > 0)
+  {
+    usrq.prepare("SELECT LOWER(crmacct_number) AS usr_username,"
+                 "       crmacct_name          AS usr_propername,"
+                 "       (SELECT locale_id"
+                 "          FROM locale"
+                 "         WHERE locale_code='Default') AS usr_locale_id,"
+                 "       NULL  AS usr_passwd,  cntct_initials AS usr_initials,"
+                 "       FALSE AS usr_agent,   crmacct_active AS usr_active,"
+                 "       NULL  AS usr_window,  cntct_email AS usr_email,"
+                 "       FALSE AS createusers,"
+                 "       userCanCreateUsers(getEffectiveXtUser()) AS enablecreateusers,"
+                 "       crmacct_id, crmacct_emp_id, crmacct_owner_username"
+                 "  FROM crmacct"
+                 "  LEFT OUTER JOIN cntct ON (crmacct_cntct_id_1=cntct_id)"
+                 " WHERE (crmacct_id=:id);");
+    usrq.bindValue(":id", _crmacctid);
+  }
+
+  usrq.exec();
+  if (usrq.first())
+  {
+    if(omfgThis->useCloud() && usrq.value("usr_username").toString().endsWith("_"+omfgThis->company()))
+      _username->setText(usrq.value("usr_username").toString().left(usrq.value("usr_username").toString().length() - (omfgThis->company().length()+1)));
     else
-      _username->setText(q.value("usr_username"));
-    _active->setChecked(q.value("usr_active").toBool());
-    _properName->setText(q.value("usr_propername"));
-    _initials->setText(q.value("usr_initials"));
-    _email->setText(q.value("usr_email"));
-    _locale->setId(q.value("usr_locale_id").toInt());
-    _agent->setChecked(q.value("usr_agent").toBool());
-    _createUsers->setChecked(q.value("createusers").toBool());
-    _createUsers->setEnabled(q.value("enablecreateusers").toBool());
-    _employee->setId(q.value("emp_id").toInt());
+      _username->setText(usrq.value("usr_username"));
+    _active->setChecked(usrq.value("usr_active").toBool());
+    _properName->setText(usrq.value("usr_propername"));
+    _initials->setText(usrq.value("usr_initials"));
+    _email->setText(usrq.value("usr_email"));
+    _locale->setId(usrq.value("usr_locale_id").toInt());
+    _agent->setChecked(usrq.value("usr_agent").toBool());
+    _createUsers->setChecked(usrq.value("createusers").toBool());
+    _createUsers->setEnabled(usrq.value("enablecreateusers").toBool());
+    _employee->setId(usrq.value("crmacct_emp_id").toInt());
+    _crmacctid = usrq.value("crmacct_id").toInt();
+    _crmowner = usrq.value("crmacct_owner_username").toString();
 
     _passwd->setText("        ");
     _verify->setText("        ");
 
-    q.prepare( "SELECT usrpref_value "
+    usrq.prepare( "SELECT usrpref_value "
                "  FROM usrpref "
                " WHERE ( (usrpref_name = 'DisableExportContents') "
                "   AND (usrpref_username=:username) ); ");
-    q.bindValue(":username", _cUsername);
-    q.exec();
-    if(q.first())
-      _exportContents->setChecked(q.value("usrpref_value").toString()=="t");
+    usrq.bindValue(":username", _cUsername);
+    usrq.exec();
+    if(usrq.first())
+      _exportContents->setChecked(usrq.value("usrpref_value").toString()=="t");
     else
       _exportContents->setChecked(FALSE);
 
-    q.prepare( "SELECT usrpref_value "
+    usrq.prepare( "SELECT usrpref_value "
                "  FROM usrpref "
                " WHERE ( (usrpref_name = 'UseEnhancedAuthentication') "
                "   AND (usrpref_username=:username) ); ");
-    q.bindValue(":username", _cUsername);
-    q.exec();
+    usrq.bindValue(":username", _cUsername);
+    usrq.exec();
     _authCache = false;
-    if(q.first())
-      _authCache = (q.value("usrpref_value").toString()=="t");
+    if(usrq.first())
+      _authCache = (usrq.value("usrpref_value").toString()=="t");
     _enhancedAuth->setChecked(_authCache);
 
-    q.prepare( "SELECT priv_module "
+    usrq.prepare( "SELECT priv_module "
                "FROM usrpriv, priv "
                "WHERE ( (usrpriv_priv_id=priv_id)"
                " AND (usrpriv_username=:username) ) "
                "ORDER BY priv_module "
                "LIMIT 1;" );
-    q.bindValue(":username", _cUsername);
-    q.exec();
-    if (q.first())
+    usrq.bindValue(":username", _cUsername);
+    usrq.exec();
+    if (usrq.first())
     {
-      _module->setCode(q.value("priv_module").toString());
+      _module->setCode(usrq.value("priv_module").toString());
       sModuleSelected(_module->currentText());
     }
     else
@@ -598,27 +655,42 @@ void user::populate()
       sModuleSelected(_module->itemText(0));
     }
   }
-  
-  q.prepare( "SELECT usrpref_value "
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting User"),
+                                usrq, __FILE__, __LINE__))
+    return false;
+
+  usrq.prepare( "SELECT usrpref_value "
              "  FROM usrpref "
              " WHERE ( (usrpref_name = 'selectedSites') "
              "   AND (usrpref_username=:username) "
              "   AND (usrpref_value='t') ); ");
-  q.bindValue(":username", _cUsername);
-  q.exec();
-  if(q.first())
+  usrq.bindValue(":username", _cUsername);
+  usrq.exec();
+  if(usrq.first())
     _selectedSites->setChecked(TRUE);
-  
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting User Sites"),
+                                usrq, __FILE__, __LINE__))
+    return false;
+
   if (_metrics->boolean("MultiWhs"))
     populateSite();
+
+  _crmacct->setEnabled(_crmacctid > 0 &&
+                       (_privileges->check("MaintainAllCRMAccounts") ||
+                        _privileges->check("ViewAllCRMAccounts") ||
+                        (omfgThis->username() == _crmowner && _privileges->check("MaintainPersonalCRMAccounts")) ||
+                        (omfgThis->username() == _crmowner && _privileges->check("ViewPersonalCRMAccounts"))));
+
+
+  return true;
 }
 
 void user::sEnhancedAuthUpdate()
 {
   if((_mode == cEdit) && (_authCache != _enhancedAuth->isChecked()) && (_passwd->text() == "        "))
     QMessageBox::information( this, tr("Enhanced Authentication"),
-      tr("You have changed this user's Enhanced Authentication option.\n"
-         "The password must be updated in order for this change to take\n"
+      tr("<p>You have changed this user's Enhanced Authentication option. "
+         "The password must be updated in order for this change to take "
          "full effect.") );
 }
 
@@ -633,61 +705,54 @@ void user::sAddSite()
       _username->setEnabled(false);
     }
   }
-  
-  q.prepare("SELECT grantSite(:username, :warehous_id) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":warehous_id", _availableSite->id());
-  q.exec();
+
+  XSqlQuery siteq;
+  siteq.prepare("SELECT grantSite(:username, :warehous_id) AS result;");
+  siteq.bindValue(":username", _cUsername);
+  siteq.bindValue(":warehous_id", _availableSite->id());
+  siteq.exec();
   // no storedProcErrorLookup because the function returns bool, not int
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Granting Site Privilege"),
+                           siteq, __FILE__, __LINE__))
     return;
-  }
 
   populateSite();
 }
 
 void user::sRevokeSite()
 {
-  q.prepare("SELECT revokeSite(:username, :warehous_id) AS result;");
-  q.bindValue(":username", _cUsername);
-  q.bindValue(":warehous_id", _grantedSite->id());
-  q.exec();
+  XSqlQuery siteq;
+  siteq.prepare("SELECT revokeSite(:username, :warehous_id) AS result;");
+  siteq.bindValue(":username", _cUsername);
+  siteq.bindValue(":warehous_id", _grantedSite->id());
+  siteq.exec();
   // no storedProcErrorLookup because the function returns bool, not int
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Revoking Site Privilege"),
+                           siteq, __FILE__, __LINE__))
     return;
-  }
 
   populateSite();
 }
 
 void user::populateSite()
 {
-
-  ParameterList params;
-  QString sql;
-  MetaSQLQuery mql;
-
+  XSqlQuery siteq;
   if (_mode == cNew)
   {
-    sql = "SELECT warehous_id, warehous_code "
-          " FROM whsinfo ";
-  
-    mql.setQuery(sql);
-    q = mql.toQuery(params);
-    _availableSite->populate(q);
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    siteq.prepare("SELECT warehous_id, warehous_code"
+                  "  FROM whsinfo"
+                  " ORDER BY warehous_code;");
+    _availableSite->populate(siteq);
+    if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Sites"),
+                             siteq, __FILE__, __LINE__))
       return;
-    }
   }
-  else 
+  else
   {
-    
+    QString sql;
+    MetaSQLQuery mql;
+    ParameterList params;
+
     if(omfgThis->useCloud())
       params.append("username", _username->text().trimmed().toLower() + "_" + omfgThis->company());
     else
@@ -696,36 +761,30 @@ void user::populateSite()
     sql = "SELECT warehous_id, warehous_code "
           " FROM whsinfo "
           " WHERE warehous_id NOT IN ( "
-          "	SELECT warehous_id "
-          "	FROM whsinfo, usrsite "
-          "	WHERE ( (usrsite_warehous_id=warehous_id) "
-          "	AND (usrsite_username=<? value(\"username\") ?>))) ";
-  
+          "     SELECT warehous_id "
+          "     FROM whsinfo, usrsite "
+          "     WHERE ( (usrsite_warehous_id=warehous_id) "
+          "     AND (usrsite_username=<? value('username') ?>))) ";
+
     mql.setQuery(sql);
-    q = mql.toQuery(params);
-    _availableSite->populate(q);
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    siteq = mql.toQuery(params);
+    _availableSite->populate(siteq);
+    if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Ungranted Sites"),
+                             siteq, __FILE__, __LINE__))
       return;
-    }
-  
+
     sql = "SELECT warehous_id,warehous_code,0 AS warehous_level "
           "FROM whsinfo, usrsite "
           "WHERE ( (usrsite_warehous_id=warehous_id) "
-          " AND (usrsite_username=<? value(\"username\") ?>)) ";
-		
-    mql.setQuery(sql); 
-    q = mql.toQuery(params);
-    _grantedSite->populate(q);
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+          " AND (usrsite_username=<? value('username') ?>)) ";
+
+    mql.setQuery(sql);
+    siteq = mql.toQuery(params);
+    _grantedSite->populate(siteq);
+    if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Granted Sites"),
+                             siteq, __FILE__, __LINE__))
       return;
-    }
-
   }
-
 }
 
 void user::done(int result)
@@ -733,11 +792,42 @@ void user::done(int result)
   if(_inTransaction)
   {
     if(result == QDialog::Accepted)
-      q.exec("COMMIT;");
+      XSqlQuery commit("COMMIT;");
     else
-      q.exec("ROLLBACK;");
+      XSqlQuery rollback("ROLLBACK;");
     _inTransaction = false;
   }
   XDialog::done(result);
 }
 
+void user::sCrmAccount()
+{
+  ParameterList params;
+  params.append("crmacct_id", _crmacctid);
+  if ((cView == _mode && _privileges->check("ViewAllCRMAccounts")) ||
+      (cView == _mode && _privileges->check("ViewPersonalCRMAccounts")
+                      && omfgThis->username() == _crmowner) ||
+      (cEdit == _mode && _privileges->check("ViewAllCRMAccounts")
+                      && ! _privileges->check("MaintainAllCRMAccounts")) ||
+      (cEdit == _mode && _privileges->check("ViewPersonalCRMAccounts")
+                      && ! _privileges->check("MaintainPersonalCRMAccounts")
+                      && omfgThis->username() == _crmowner))
+    params.append("mode", "view");
+  else if ((cEdit == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
+           (cEdit == _mode && _privileges->check("MaintainPersonalCRMAccounts")
+                           && omfgThis->username() == _crmowner))
+    params.append("mode", "edit");
+  else if ((cNew == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
+           (cNew == _mode && _privileges->check("MaintainPersonalCRMAccounts")
+                          && omfgThis->username() == _crmowner))
+    params.append("mode", "edit");
+  else
+  {
+    qWarning("tried to open CRM Account window without privilege");
+    return;
+  }
+
+  crmaccount *newdlg = new crmaccount();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg, Qt::WindowModal);
+}

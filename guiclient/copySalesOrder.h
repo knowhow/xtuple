@@ -26,7 +26,7 @@ public:
     ~copySalesOrder();
 
 public slots:
-    virtual SetResponse set( ParameterList & pParams );
+    virtual SetResponse set(const ParameterList & pParams);
     virtual void sPopulateSoInfo( int pSoid );
     virtual void sCopy();
 

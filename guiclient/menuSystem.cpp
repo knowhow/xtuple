@@ -22,6 +22,7 @@
 
 #include "xtsettings.h"
 #include "guiclient.h"
+#include "helpDownload.h"
 
 #include <parameter.h>
 #include <openreports.h>
@@ -232,7 +233,8 @@ menuSystem::menuSystem(GUIClient *Pparent) :
 #ifndef Q_WS_MACX
     { "separator",		NULL,				NULL,		helpMenu, "true", NULL, NULL, true	},
 #endif
-    { "help.tableOfContents",	tr("Table of &Contents..."),	SLOT(sTOC()),	helpMenu, "true", NULL, NULL, true	}
+    { "help.tableOfContents",	tr("Table of &Contents..."),	SLOT(sTOC()),	helpMenu, "true", NULL, NULL, true	},
+    { "help.download",          tr("Download..."),           SLOT(sDownload()), helpMenu, "true", NULL, NULL, true      }
   };
   addActionsToMenu(help, sizeof(help) / sizeof(help[0]));
 
@@ -554,6 +556,11 @@ void menuSystem::sTOC()
   _help->show();
 }
 
+void menuSystem::sDownload()
+{
+  omfgThis->handleNewWindow(new helpDownload());
+}
+
 void menuSystem::sFixACL()
 {
   omfgThis->handleNewWindow(new fixACL());
@@ -571,6 +578,18 @@ void menuSystem::sExportData()
 
 void menuSystem::sCSVAtlases()
 {
+
+#ifdef Q_WS_MAC
+  if (_preferences->value("InterfaceWindowOption") == "Workspace")
+  {
+    QMessageBox::critical( parent, tr("Interface Option is Invalid"),
+                          tr("<p>The Maintain CSV Atlases utility "
+                             "is only available when user preferences "
+                             "are set to show windows as free-floating.") );
+    return;
+  }
+#endif
+
   omfgThis->handleNewWindow(ImportHelper::getCSVImpPlugin(parent)->getCSVToolWindow(omfgThis, 0));
   omfgThis->handleNewWindow(ImportHelper::getCSVImpPlugin(parent)->getCSVAtlasWindow(omfgThis, 0));
 }

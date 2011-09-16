@@ -15,6 +15,7 @@
 #include <QMessageBox>
 #include <QSqlError>
 #include <QVariant>
+#include <QDebug>
 
 #include <parameter.h>
 
@@ -282,10 +283,10 @@ void address::sPopulateMenu(QMenu *pMenu)
   switch (_uses->altId())
   {
     case 1:
-      if (_privileges->check("MaintainContacts") &&
+      if (_privileges->check("MaintainAllContacts") &&
 	  (cNew == _mode || cEdit == _mode))
 	menuItem = pMenu->addAction(editStr, this, SLOT(sEditContact()));
-      else if (_privileges->check("ViewContacts"))
+      else if (_privileges->check("ViewAllContacts"))
 	menuItem = pMenu->addAction(viewStr, this, SLOT(sViewContact()));
 
       break;
@@ -440,26 +441,22 @@ void address::sViewShipto()
 
 void address::sEditVendor()
 {
-  /* comment out until vendor becomes a XDialog or address a XMainWindow
   ParameterList params;
-  vendor newdlg(this, "", TRUE);
-  params.append("mode", "view");
+  vendor * newdlg = new vendor(this);
+  params.append("mode", "edit");
   params.append("vend_id", _uses->id());
-  newdlg.set(params);
-  newdlg.exec();
-  */
+  newdlg->set(params);
+  newdlg->show();
 }
 
 void address::sViewVendor()
 {
-  /* comment out until vendor becomes a XDialog or address a XMainWindow
   ParameterList params;
-  vendor newdlg(this, "", TRUE);
+  vendor * newdlg = new vendor(this);
   params.append("mode", "view");
   params.append("vend_id", _uses->id());
-  newdlg.set(params);
-  newdlg.exec();
-  */
+  newdlg->set(params);
+  newdlg->show();
 }
 
 void address::sEditVendorAddress()

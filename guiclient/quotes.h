@@ -28,7 +28,9 @@ public slots:
     virtual enum SetResponse set(const ParameterList&);
     virtual void sPopulateMenu(QMenu *, QTreeWidgetItem *, int);
     virtual void sPrint();
-    virtual void sConvert();
+    virtual void sConvert(int);
+    virtual void sConvertSalesOrder();
+    virtual void sConvertInvoice();
     virtual void sCopy();
     virtual void sNew();
     virtual void sEdit();

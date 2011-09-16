@@ -11,7 +11,7 @@
 #ifndef _crmaccttCluster_h
 #define _crmaccttCluster_h
 
-#include "virtualCluster.h"
+#include "crmcluster.h"
 #include "xcheckbox.h"
 
 class XComboBox;
@@ -23,16 +23,16 @@ class XTUPLEWIDGETS_EXPORT CRMAcctInfoAction
     virtual void crmacctInformation(QWidget* parent, int pCustid) = 0;
 };
 
-class XTUPLEWIDGETS_EXPORT CRMAcctLineEdit : public VirtualClusterLineEdit
+class XTUPLEWIDGETS_EXPORT CRMAcctLineEdit : public CrmClusterLineEdit
 {
     Q_OBJECT
 
     public:
 	CRMAcctLineEdit(QWidget*, const char* = 0);
 
-	enum CRMAcctSubtype { Crmacct,	Competitor,	Cust,	Partner,
-			      Prospect,	Taxauth,	Vend,
-			      CustAndProspect };
+        enum CRMAcctSubtype { Crmacct, Competitor, Cust,     Employee,
+                              Partner, Prospect,   SalesRep, Taxauth,
+                              User,    Vend,       CustAndProspect };
 
 	virtual void		setSubtype(const CRMAcctSubtype);
 	virtual CRMAcctSubtype	subtype()	const;
@@ -63,9 +63,9 @@ class XTUPLEWIDGETS_EXPORT CRMAcctList : public VirtualList
 
     protected:
 	QWidget* _parent;
-	QString	 _query;
 	bool	 _showInactive;
 	enum CRMAcctLineEdit::CRMAcctSubtype _subtype;
+        ParameterList *_queryParams;
 };
 
 class XTUPLEWIDGETS_EXPORT CRMAcctSearch : public VirtualSearch
@@ -100,6 +100,7 @@ class XTUPLEWIDGETS_EXPORT CRMAcctSearch : public VirtualSearch
         XComboBox*      _comboCombo;
 
 	enum CRMAcctLineEdit::CRMAcctSubtype _subtype;
+        ParameterList *_queryParams;
 
     private:
 };

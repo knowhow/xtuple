@@ -72,8 +72,8 @@
 // make sure COLROLE_COUNT = last COLROLE + 1
 #define COLROLE_COUNT         15
 
-static QString  yesStr = QObject::tr("Yes");
-static QString  noStr  = QObject::tr("No");
+#define yesStr QObject::tr("Yes")
+#define noStr  QObject::tr("No")
 
 GuiClientInterface *XTreeWidget::_guiClientInterface = 0;
 
@@ -2283,9 +2283,9 @@ QString XTreeWidget::toTxt() const
   for (counter = 0; counter < header->columnCount(); counter++)
   {
     if (!QTreeWidget::isColumnHidden(counter))
-      line = line + header->text(counter).replace("\n"," ") + "\t";
+      line = line + header->text(counter).replace("\r\n"," ") + "\t";
   }
-  opText = line + "\n";
+  opText = line + "\r\n";
 
   XTreeWidgetItem *item = topLevelItem(0);
   if (item)
@@ -2303,7 +2303,7 @@ QString XTreeWidget::toTxt() const
             line = line + item->text(counter) + "\t";
         }
       }
-      opText = opText + line + "\n";
+      opText = opText + line + "\r\n";
       idx    = indexBelow(idx);
     }
   }
@@ -2508,7 +2508,7 @@ XTreeWidgetItem *XTreeWidget::invisibleRootItem() const
 void XTreeWidget::sCurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
   if (dynamic_cast<XTreeWidgetItem *>(current) &&
-      dynamic_cast<XTreeWidgetItem *>(previous))
+      (dynamic_cast<XTreeWidgetItem *>(previous) || previous == 0))
 
     emit currentItemChanged(dynamic_cast<XTreeWidgetItem *>(current),
                             dynamic_cast<XTreeWidgetItem *>(previous));

@@ -229,7 +229,7 @@ to be bound by its terms.</comment>
                       </size>
                      </property>
                      <property name="format">
-                      <enum>CurrDisplay::Cost</enum>
+                      <enum>CurrDisplay::SalesPrice</enum>
                      </property>
                     </widget>
                    </item>
@@ -297,7 +297,7 @@ to be bound by its terms.</comment>
                  <item row="1" column="1">
                   <widget class="CurrCluster" name="_price">
                    <property name="format">
-                    <enum>CurrDisplay::Cost</enum>
+                    <enum>CurrDisplay::SalesPrice</enum>
                    </property>
                    <property name="currencyEditable" stdset="0">
                     <bool>false</bool>
@@ -759,23 +759,20 @@ to be bound by its terms.</comment>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="_fixedAmtDiscountLit">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
             <property name="text">
              <string>Discount By Fixed Amount:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="CurrCluster" name="_fixedAmtDiscount">
-              <property name="format">
-               <enum>CurrDisplay::Cost</enum>
-              </property>
-              <property name="currencyDisabled">
-               <bool>true</bool>
+             <widget class="XLineEdit" name="_fixedAmtDiscount">
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
@@ -1005,7 +1002,11 @@ to be bound by its terms.</comment>
                 <item row="1" column="1">
                  <layout class="QHBoxLayout">
                   <item>
-                   <widget class="XComboBox" name="_zoneFreight"/>
+                   <widget class="XComboBox" name="_zoneFreight">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer>
@@ -1051,7 +1052,11 @@ to be bound by its terms.</comment>
                 <item row="1" column="1">
                  <layout class="QHBoxLayout">
                   <item>
-                   <widget class="XComboBox" name="_shipViaFreight"/>
+                   <widget class="XComboBox" name="_shipViaFreight">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer>
@@ -1097,7 +1102,11 @@ to be bound by its terms.</comment>
                 <item row="1" column="1">
                  <layout class="QHBoxLayout">
                   <item>
-                   <widget class="XComboBox" name="_freightClass"/>
+                   <widget class="XComboBox" name="_freightClass">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <spacer>
@@ -1360,6 +1369,54 @@ to be bound by its terms.</comment>
     <hint type="destinationlabel">
      <x>267</x>
      <y>152</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_selectedFreightClass</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_freightClass</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>386</x>
+     <y>357</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>494</x>
+     <y>356</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_selectedShipViaFreight</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_shipViaFreight</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>357</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>176</x>
+     <y>356</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_selectedZoneFreight</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_zoneFreight</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>386</x>
+     <y>257</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>494</x>
+     <y>256</y>
     </hint>
    </hints>
   </connection>

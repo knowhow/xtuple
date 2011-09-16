@@ -52,6 +52,8 @@ login2::login2(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sLogin()));
   connect(_options, SIGNAL(clicked()), this, SLOT(sOptions()));
   connect(_cloudLink, SIGNAL(linkActivated(QString)), this, SLOT(cloudLink(QString)));
+  connect(_otherOption, SIGNAL(toggled(bool)), _options, SLOT(setEnabled(bool)));
+  connect(_otherOption, SIGNAL(toggled(bool)), _recent, SLOT(setEnabled(bool)));
 
   _splash = 0;
 
@@ -85,9 +87,9 @@ void login2::languageChange()
   retranslateUi(this);
 }
 
-int login2::set(ParameterList &pParams) { return set(pParams, 0); }
+int login2::set(const ParameterList &pParams) { return set(pParams, 0); }
 
-int login2::set(ParameterList &pParams, QSplashScreen *pSplash)
+int login2::set(const ParameterList &pParams, QSplashScreen *pSplash)
 {
   _splash = pSplash;
   
@@ -334,7 +336,7 @@ void login2::sLogin()
   if(!_nonxTupleDB)
   {
     XSqlQuery login( "SELECT login() AS result,"
-                     "       CURRENT_USER AS user;" );
+                     "       getEffectiveXtUser() AS user;" );
     setCursor(QCursor(Qt::ArrowCursor));
     if (login.first())
     {

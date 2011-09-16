@@ -12,12 +12,12 @@
 #define XERRORMESSAGE_H
 
 #include <QDialog>
-#include "qcheckbox.h"
-#include "qlabel.h"
-#include "qtextedit.h"
-#include "qpushbutton.h"
-#include "qstringlist.h"
-#include <qhash.h>
+#include <QStringList>
+
+class QCheckBox;
+class QLabel;
+class QPushButton;
+class QTextEdit;
 
 class XErrorMessage: public QDialog
 {

@@ -3,6 +3,12 @@
  <title>P/Os By Date</title>
  <name>POsByDate</name>
  <description></description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -27,40 +33,10 @@
        formatDate(&lt;? value("endDate") ?>, 'Latest') AS enddate
 </sql>
  </querysource>
- <querysource>
+ <querysource loadFromDb="true">
   <name>detail</name>
-  <sql>SELECT warehous_code AS warehousecode,
-       pohead_number as f_ponumber,
-       vend_name,
-       CASE WHEN(poitem_status='C') THEN TEXT('Closed')
-            WHEN(poitem_status='U') THEN TEXT('Unposted')
-            WHEN(poitem_status='O' AND (SUM(poitem_qty_received-poitem_qty_returned) > 0) AND (SUM(poitem_qty_ordered)>SUM(poitem_qty_received-poitem_qty_returned))) THEN TEXT('Partial')
-            WHEN(poitem_status='O' AND (SUM(poitem_qty_received-poitem_qty_returned) > 0) AND (SUM(poitem_qty_ordered)=SUM(poitem_qty_received-poitem_qty_returned))) THEN TEXT('Recieved')
-            WHEN(poitem_status='O') THEN TEXT('Open')
-            ELSE poitem_status
-       END AS poitemstatus,
-       formatDate(MIN(poitem_duedate)) as f_duedate,
-       MIN(poitem_duedate) AS min_duedate
-  FROM poitem, vend, pohead
-       LEFT OUTER JOIN
-         warehous
-         ON (pohead_warehous_id=warehous_id) 
- WHERE ((poitem_pohead_id=pohead_id)
-   AND (pohead_vend_id=vend_id)
-   AND (poitem_duedate BETWEEN &lt;? value("startDate") ?> AND &lt;? value("endDate") ?>)
-&lt;? if exists("warehous_id") ?>
-   AND ( pohead_warehous_id=&lt;? value("warehous_id") ?>)
-&lt;? endif ?>
-&lt;? if exists("agentUsername") ?>
-   AND (pohead_agent_username=&lt;? value("agentUsername") ?>)
-&lt;? endif ?>
-&lt;? if not exists("showClosed") ?>
-   AND (poitem_status!='C')
-&lt;? endif ?>
-)
-GROUP BY warehous_code, pohead_number, vend_name,
-         poitem_status
-ORDER BY min_duedate;</sql>
+  <mqlgroup>purchaseOrders</mqlgroup>
+  <mqlname>detail</mqlname>
  </querysource>
  <rpthead>
   <height>221</height>
@@ -86,7 +62,7 @@ ORDER BY min_duedate;</sql>
   <label>
    <rect>
     <x>330</x>
-    <y>200</y>
+    <y>198</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -102,7 +78,7 @@ ORDER BY min_duedate;</sql>
   <label>
    <rect>
     <x>80</x>
-    <y>200</y>
+    <y>198</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -118,7 +94,7 @@ ORDER BY min_duedate;</sql>
   <label>
    <rect>
     <x>200</x>
-    <y>200</y>
+    <y>198</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -134,7 +110,7 @@ ORDER BY min_duedate;</sql>
   <label>
    <rect>
     <x>650</x>
-    <y>200</y>
+    <y>198</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -158,7 +134,7 @@ ORDER BY min_duedate;</sql>
    <rect>
     <x>135</x>
     <y>75</y>
-    <width>300</width>
+    <width>275</width>
     <height>20</height>
    </rect>
    <font>
@@ -262,7 +238,7 @@ ORDER BY min_duedate;</sql>
   <label>
    <rect>
     <x>5</x>
-    <y>200</y>
+    <y>198</y>
     <width>40</width>
     <height>15</height>
    </rect>
@@ -289,13 +265,13 @@ ORDER BY min_duedate;</sql>
    </font>
    <right/>
    <vcenter/>
-   <string>End Due Date:</string>
+   <string>End Order Date:</string>
   </label>
   <label>
    <rect>
-    <x>442</x>
+    <x>432</x>
     <y>75</y>
-    <width>100</width>
+    <width>110</width>
     <height>20</height>
    </rect>
    <font>
@@ -305,7 +281,23 @@ ORDER BY min_duedate;</sql>
    </font>
    <right/>
    <vcenter/>
-   <string>Start Due Date:</string>
+   <string>Start Order Date:</string>
+  </label>
+  <label>
+   <rect>
+    <x>560</x>
+    <y>198</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Order Date</string>
   </label>
  </rpthead>
  <pghead>
@@ -412,7 +404,7 @@ ORDER BY min_duedate;</sql>
    <field>
     <rect>
      <x>5</x>
-     <y>0</y>
+     <y>2</y>
      <width>70</width>
      <height>15</height>
     </rect>
@@ -430,9 +422,9 @@ ORDER BY min_duedate;</sql>
    </field>
    <field>
     <rect>
-     <x>330</x>
-     <y>0</y>
-     <width>250</width>
+     <x>325</x>
+     <y>2</y>
+     <width>230</width>
      <height>15</height>
     </rect>
     <font>
@@ -450,7 +442,7 @@ ORDER BY min_duedate;</sql>
    <field>
     <rect>
      <x>650</x>
-     <y>0</y>
+     <y>2</y>
      <width>80</width>
      <height>15</height>
     </rect>
@@ -469,7 +461,7 @@ ORDER BY min_duedate;</sql>
    <field>
     <rect>
      <x>80</x>
-     <y>0</y>
+     <y>2</y>
      <width>80</width>
      <height>15</height>
     </rect>
@@ -482,13 +474,13 @@ ORDER BY min_duedate;</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_ponumber</column>
+     <column>pohead_number</column>
     </data>
    </field>
    <field>
     <rect>
      <x>200</x>
-     <y>0</y>
+     <y>2</y>
      <width>80</width>
      <height>15</height>
     </rect>
@@ -501,7 +493,26 @@ ORDER BY min_duedate;</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>poitemstatus</column>
+     <column>f_status</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>565</x>
+     <y>2</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_orderdate</column>
     </data>
    </field>
   </detail>

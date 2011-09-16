@@ -26,17 +26,14 @@ to be bound by its terms.</comment>
   <property name="windowTitle">
    <string>Account</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_5">
+  <layout class="QGridLayout" name="gridLayout_14">
    <item row="0" column="0">
-    <layout class="QGridLayout">
-     <property name="margin">
+    <layout class="QGridLayout" name="gridLayout_13">
+     <property name="verticalSpacing">
       <number>12</number>
      </property>
-     <property name="spacing">
-      <number>12</number>
-     </property>
-     <item row="0" column="0" rowspan="2">
-      <layout class="QVBoxLayout">
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <layout class="QGridLayout">
          <item row="0" column="0">
@@ -105,229 +102,224 @@ to be bound by its terms.</comment>
         </layout>
        </item>
        <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QPushButton" name="_save">
+           <property name="text">
+            <string>Save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_close">
+           <property name="text">
+            <string>Close</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
-       <item>
-        <layout class="QGridLayout">
-         <item row="0" column="0">
-          <widget class="QGroupBox" name="_typeBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="title">
-            <string>Type</string>
-           </property>
-           <layout class="QGridLayout">
-            <item row="0" column="0">
-             <layout class="QHBoxLayout">
-              <property name="spacing">
-               <number>12</number>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="_typeBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Type</string>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
+             <widget class="QRadioButton" name="_organization">
+              <property name="text">
+               <string>Organization</string>
               </property>
-              <item>
-               <widget class="QRadioButton" name="_organization">
-                <property name="text">
-                 <string>Organization</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QRadioButton" name="_individual">
-                <property name="text">
-                 <string>Individual</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>16</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="0" column="1" rowspan="2">
-          <widget class="QGroupBox" name="_parentGroup">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="title">
-            <string>Parent Account</string>
-           </property>
-           <layout class="QGridLayout">
-            <item row="0" column="0">
-             <layout class="QVBoxLayout">
-              <item>
-               <widget class="CRMAcctCluster" name="_parentCrmacct">
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-                <property name="label">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>0</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QGroupBox" name="_ownerGroup">
-           <property name="title">
-            <string>Owner</string>
-           </property>
-           <layout class="QGridLayout">
-            <item row="0" column="0">
-             <widget class="UsernameCluster" name="_owner">
-              <property name="focusPolicy">
-               <enum>Qt::StrongFocus</enum>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item>
+             <widget class="QRadioButton" name="_individual">
+              <property name="text">
+               <string>Individual</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>16</width>
+                <width>40</width>
                 <height>16</height>
                </size>
               </property>
              </spacer>
             </item>
            </layout>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-     <item row="0" column="1">
-      <layout class="QHBoxLayout">
-       <item>
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Preferred</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="_save">
-         <property name="text">
-          <string>Save</string>
-         </property>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="_close">
-         <property name="text">
-          <string>Close</string>
+       <item row="0" column="1" rowspan="2">
+        <widget class="QGroupBox" name="_relationshipsGroup">
+         <property name="title">
+          <string>Roles</string>
          </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="1" column="1">
-      <widget class="QGroupBox" name="_relationshipsGroup">
-       <property name="title">
-        <string>Relationships</string>
-       </property>
-       <layout class="QGridLayout">
-        <item row="0" column="0">
-         <layout class="QVBoxLayout">
-          <item>
-           <layout class="QGridLayout">
-            <property name="verticalSpacing">
-             <number>0</number>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <property name="spacing">
+             <number>12</number>
             </property>
-            <item row="0" column="0">
+            <item>
              <widget class="QCheckBox" name="_prospect">
               <property name="text">
                <string/>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
+            <item>
              <widget class="QPushButton" name="_prospectButton">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="text">
                <string>Prospect...</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="_salesrep">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="_salesrepButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Sales Rep...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
              <widget class="QCheckBox" name="_customer">
               <property name="text">
                <string/>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item>
              <widget class="QPushButton" name="_customerButton">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="text">
                <string>Customer...</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+           </layout>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="_employee">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="_employeeButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Employee...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
              <widget class="QCheckBox" name="_vendor">
               <property name="enabled">
                <bool>false</bool>
@@ -337,17 +329,60 @@ to be bound by its terms.</comment>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item>
              <widget class="QPushButton" name="_vendorButton">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="text">
                <string>Vendor...</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+           </layout>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="_user">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="_userButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>User...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
              <widget class="QCheckBox" name="_taxauth">
               <property name="enabled">
                <bool>false</bool>
@@ -357,17 +392,30 @@ to be bound by its terms.</comment>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item>
              <widget class="QPushButton" name="_taxauthButton">
               <property name="enabled">
                <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="text">
                <string>Tax Authority...</string>
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+           </layout>
+          </item>
+          <item row="1" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
              <widget class="QCheckBox" name="_competitor">
               <property name="enabled">
                <bool>false</bool>
@@ -377,8 +425,14 @@ to be bound by its terms.</comment>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item>
              <widget class="QLabel" name="_competitorLit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -390,7 +444,14 @@ to be bound by its terms.</comment>
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
+           </layout>
+          </item>
+          <item row="2" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item>
              <widget class="QCheckBox" name="_partner">
               <property name="enabled">
                <bool>false</bool>
@@ -400,8 +461,14 @@ to be bound by its terms.</comment>
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
+            <item>
              <widget class="QLabel" name="_partnerLit">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -415,25 +482,64 @@ to be bound by its terms.</comment>
             </item>
            </layout>
           </item>
-          <item>
-           <spacer>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="_ownerGroup">
+         <property name="title">
+          <string/>
+         </property>
+         <layout class="QGridLayout">
+          <item row="1" column="1">
+           <widget class="UsernameCluster" name="_owner">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Horizontal</enum>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>0</height>
-             </size>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="CRMAcctCluster" name="_parentCrmacct">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
-           </spacer>
+            <property name="label">
+             <string/>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="_parentLit">
+            <property name="text">
+             <string>Parent:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="_ownerLit">
+            <property name="text">
+             <string>Owner:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
           </item>
          </layout>
-        </item>
-       </layout>
-      </widget>
+        </widget>
+       </item>
+      </layout>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="2" column="0">
       <widget class="QTabWidget" name="_tab">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -703,15 +809,9 @@ to be bound by its terms.</comment>
        </widget>
        <widget class="QWidget" name="_todoListTab">
         <attribute name="title">
-         <string>To-Do List</string>
+         <string>Activities</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_9"/>
-       </widget>
-       <widget class="QWidget" name="_oplistTab">
-        <attribute name="title">
-         <string>Opportunities</string>
-        </attribute>
-        <layout class="QGridLayout" name="gridLayout"/>
        </widget>
        <widget class="QWidget" name="_registrationsTab">
         <attribute name="title">
@@ -848,24 +948,23 @@ to be bound by its terms.</comment>
   <tabstop>_name</tabstop>
   <tabstop>_organization</tabstop>
   <tabstop>_individual</tabstop>
-  <tabstop>_owner</tabstop>
   <tabstop>_parentCrmacct</tabstop>
+  <tabstop>_owner</tabstop>
   <tabstop>_tab</tabstop>
   <tabstop>_primaryButton</tabstop>
   <tabstop>_secondaryButton</tabstop>
   <tabstop>_allButton</tabstop>
-  <tabstop>_secondary</tabstop>
   <tabstop>_primary</tabstop>
   <tabstop>_notes</tabstop>
   <tabstop>_comments</tabstop>
   <tabstop>_charass</tabstop>
+  <tabstop>_newCharacteristic</tabstop>
+  <tabstop>_editCharacteristic</tabstop>
+  <tabstop>_deleteCharacteristic</tabstop>
   <tabstop>_reg</tabstop>
   <tabstop>_newReg</tabstop>
   <tabstop>_editReg</tabstop>
   <tabstop>_deleteReg</tabstop>
-  <tabstop>_save</tabstop>
-  <tabstop>_close</tabstop>
-  <tabstop>_deleteCharacteristic</tabstop>
   <tabstop>_prospect</tabstop>
   <tabstop>_prospectButton</tabstop>
   <tabstop>_customer</tabstop>
@@ -876,8 +975,15 @@ to be bound by its terms.</comment>
   <tabstop>_taxauthButton</tabstop>
   <tabstop>_competitor</tabstop>
   <tabstop>_partner</tabstop>
-  <tabstop>_editCharacteristic</tabstop>
-  <tabstop>_newCharacteristic</tabstop>
+  <tabstop>_salesrep</tabstop>
+  <tabstop>_salesrepButton</tabstop>
+  <tabstop>_employee</tabstop>
+  <tabstop>_employeeButton</tabstop>
+  <tabstop>_user</tabstop>
+  <tabstop>_userButton</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_close</tabstop>
+  <tabstop>_secondary</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -888,12 +994,12 @@ to be bound by its terms.</comment>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>676</x>
-     <y>148</y>
+     <x>530</x>
+     <y>158</y>
     </hint>
     <hint type="destinationlabel">
-     <x>766</x>
-     <y>152</y>
+     <x>573</x>
+     <y>151</y>
     </hint>
    </hints>
   </connection>
@@ -904,28 +1010,12 @@ to be bound by its terms.</comment>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>676</x>
-     <y>171</y>
+     <x>530</x>
+     <y>183</y>
     </hint>
     <hint type="destinationlabel">
-     <x>766</x>
-     <y>175</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_charass</sender>
-   <signal>itemSelected(int)</signal>
-   <receiver>_editCharacteristic</receiver>
-   <slot>animateClick()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>387</x>
-     <y>489</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1123</x>
-     <y>488</y>
+     <x>573</x>
+     <y>174</y>
     </hint>
    </hints>
   </connection>
@@ -936,12 +1026,12 @@ to be bound by its terms.</comment>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>676</x>
-     <y>125</y>
+     <x>530</x>
+     <y>133</y>
     </hint>
     <hint type="destinationlabel">
-     <x>766</x>
-     <y>129</y>
+     <x>573</x>
+     <y>128</y>
     </hint>
    </hints>
   </connection>
@@ -952,12 +1042,28 @@ to be bound by its terms.</comment>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>676</x>
-     <y>102</y>
+     <x>530</x>
+     <y>108</y>
     </hint>
     <hint type="destinationlabel">
-     <x>766</x>
-     <y>106</y>
+     <x>573</x>
+     <y>105</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_charass</sender>
+   <signal>itemSelected(int)</signal>
+   <receiver>_editCharacteristic</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>71</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>181</x>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -968,12 +1074,12 @@ to be bound by its terms.</comment>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>458</x>
-     <y>552</y>
+     <x>71</x>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1035</x>
-     <y>372</y>
+     <x>181</x>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -984,12 +1090,12 @@ to be bound by its terms.</comment>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>447</x>
-     <y>570</y>
+     <x>71</x>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1035</x>
-     <y>372</y>
+     <x>181</x>
+     <y>351</y>
     </hint>
    </hints>
   </connection>
@@ -1000,12 +1106,60 @@ to be bound by its terms.</comment>
    <slot>animateClick()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>506</x>
-     <y>505</y>
+     <x>71</x>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1035</x>
-     <y>372</y>
+     <x>181</x>
+     <y>351</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_employee</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_employeeButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>723</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>836</x>
+     <y>142</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_user</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_userButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>723</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>836</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_salesrep</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_salesrepButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>707</x>
+     <y>99</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>742</x>
+     <y>98</y>
     </hint>
    </hints>
   </connection>

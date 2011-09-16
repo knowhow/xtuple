@@ -382,7 +382,7 @@ void dspGLTransactions::sViewSeries()
 
   dspGLSeries *newdlg = new dspGLSeries();
   newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg);
+  omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
 }
 
 void dspGLTransactions::sViewDocument()
@@ -409,13 +409,13 @@ void dspGLTransactions::sViewDocument()
     {
       miscVoucher *newdlg = new miscVoucher();
       newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg);
+      omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
     }
     else
     {
       voucher *newdlg = new voucher();
       newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg);
+      omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
     }
 
   }
@@ -447,7 +447,7 @@ void dspGLTransactions::sViewDocument()
 
     purchaseOrder *newdlg = new purchaseOrder();
     newdlg->set(params);
-    omfgThis->handleNewWindow(newdlg);
+    omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
   }
   else if(item->rawValue("gltrans_doctype").toString() == "SH")
   {
@@ -463,7 +463,7 @@ void dspGLTransactions::sViewDocument()
 
     dspShipmentsByShipment *newdlg = new dspShipmentsByShipment();
     newdlg->set(params);
-    omfgThis->handleNewWindow(newdlg);
+    omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
   }
   else if( (item->rawValue("gltrans_doctype").toString() == "CM") || (item->rawValue("gltrans_doctype").toString() == "DM") )
   {
@@ -515,7 +515,7 @@ void dspGLTransactions::sViewDocument()
       params.append("cmhead_id", q.value("cmhead_id").toInt());
       creditMemo *newdlg = new creditMemo();
       newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg);
+      omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
     }
   }
   else if(item->rawValue("gltrans_doctype").toString() == "SO")
@@ -536,7 +536,7 @@ void dspGLTransactions::sViewDocument()
 
     dspWoHistoryByNumber *newdlg = new dspWoHistoryByNumber();
     newdlg->set(params);
-    omfgThis->handleNewWindow(newdlg);
+    omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
   }
   else if(item->rawValue("gltrans_source").toString() == "I/M")
   {
@@ -569,7 +569,7 @@ void dspGLTransactions::sViewJournal()
 
   dspJournals *newdlg = new dspJournals();
   newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg);
+  omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
 }
 
 bool dspGLTransactions::forwardUpdate()

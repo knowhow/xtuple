@@ -33,7 +33,7 @@ class login2 : public QDialog, public Ui::login2
     QString _databaseURL;
     QString _user;
 
-    virtual int set( ParameterList & pParams, QSplashScreen * pSplash );
+    virtual int set(const ParameterList & pParams, QSplashScreen * pSplash);
     virtual void populateDatabaseInfo();
     virtual QString username();
     virtual QString password();
@@ -46,7 +46,7 @@ class login2 : public QDialog, public Ui::login2
     QPushButton* _options;
 
   public slots:
-    virtual int set( ParameterList & pParams );
+    virtual int set(const ParameterList & pParams);
     virtual void setLogo( const QImage & );
     virtual void setEnhancedAuth(bool);
     virtual void setRequireSSL(bool);

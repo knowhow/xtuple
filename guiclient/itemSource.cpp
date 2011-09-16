@@ -76,7 +76,7 @@ itemSource::itemSource(QWidget* parent, const char* name, bool modal, Qt::WFlags
   _vendorCurrency->setType(XComboBox::Currencies);
   _vendorCurrency->setLabel(_vendorCurrencyLit);
   
-  q.exec("SELECT MAX(itemsrc_id),itemsrc_manuf_name, itemsrc_manuf_name FROM itemsrc GROUP BY itemsrc_manuf_name;");
+  q.exec("SELECT MAX(itemsrc_id),itemsrc_manuf_name, itemsrc_manuf_name FROM itemsrc GROUP BY itemsrc_manuf_name ORDER BY itemsrc_manuf_name;");
   _manufName->populate(q);
   _manufName->setCurrentIndex(0);
 }

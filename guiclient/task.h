@@ -42,9 +42,6 @@ private:
     int _mode;
     int _prjid;
     int _prjtaskid;
-
-    void init();
-
 };
 
 #endif // TASK_H

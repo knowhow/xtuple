@@ -130,7 +130,7 @@ to be bound by its terms.</comment>
         </layout>
        </item>
        <item>
-        <widget class="QTextEdit" name="_descrip" />
+        <widget class="XTextEdit" name="_descrip" />
        </item>
       </layout>
      </item>
@@ -190,6 +190,11 @@ to be bound by its terms.</comment>
    <header>xlineedit.h</header>
    <container>0</container>
    <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

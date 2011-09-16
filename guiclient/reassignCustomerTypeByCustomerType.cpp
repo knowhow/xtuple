@@ -11,51 +11,30 @@
 #include "reassignCustomerTypeByCustomerType.h"
 
 #include <QMessageBox>
-#include <qvariant.h>
 
-/*
- *  Constructs a reassignCustomerTypeByCustomerType as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 reassignCustomerTypeByCustomerType::reassignCustomerTypeByCustomerType(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_customerTypePattern, SIGNAL(toggled(bool)), _customerType, SLOT(setEnabled(bool)));
+  connect(_selectedCustomerType, SIGNAL(toggled(bool)), _customerTypes, SLOT(setEnabled(bool)));
+  connect(_reassign, SIGNAL(clicked()), this, SLOT(sReassign()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
 
-    // signals and slots connections
-    connect(_customerTypePattern, SIGNAL(toggled(bool)), _customerType, SLOT(setEnabled(bool)));
-    connect(_selectedCustomerType, SIGNAL(toggled(bool)), _customerTypes, SLOT(setEnabled(bool)));
-    connect(_reassign, SIGNAL(clicked()), this, SLOT(sReassign()));
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-reassignCustomerTypeByCustomerType::~reassignCustomerTypeByCustomerType()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void reassignCustomerTypeByCustomerType::languageChange()
-{
-    retranslateUi(this);
-}
-
-
-void reassignCustomerTypeByCustomerType::init()
-{
   _customerTypes->setType(XComboBox::CustomerTypes);
   _newCustomerType->setType(XComboBox::CustomerTypes);
+}
+
+reassignCustomerTypeByCustomerType::~reassignCustomerTypeByCustomerType()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void reassignCustomerTypeByCustomerType::languageChange()
+{
+  retranslateUi(this);
 }
 
 void reassignCustomerTypeByCustomerType::sReassign()

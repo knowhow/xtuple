@@ -13,7 +13,7 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
+    <width>460</width>
     <height>87</height>
    </rect>
   </property>
@@ -43,6 +43,13 @@ to be bound by its terms.</comment>
          </widget>
         </item>
         <item>
+         <widget class="XCheckBox" name="_opportunities">
+          <property name="text">
+           <string>Opportunities</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="XCheckBox" name="_incidents">
           <property name="text">
            <string>Incidents</string>
@@ -53,16 +60,6 @@ to be bound by its terms.</comment>
          <widget class="XCheckBox" name="_projects">
           <property name="text">
            <string>Projects</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="XCheckBox" name="_completed">
-          <property name="text">
-           <string>Completed</string>
-          </property>
-          <property name="forgetful">
-           <bool>true</bool>
           </property>
          </widget>
         </item>

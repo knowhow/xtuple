@@ -84,6 +84,7 @@ enum SetResponse characteristic::set(const ParameterList &pParams)
     {
       _mode = cView;
       _name->setEnabled(FALSE);
+      _search->setEnabled(false);
       _useGroup->setEnabled(FALSE);
       _mask->setEnabled(FALSE);
       _validator->setEnabled(FALSE);
@@ -151,7 +152,7 @@ void characteristic::sSave()
                "  char_attributes, char_lotserial, char_employees,"
                "  char_incidents, "
                "  char_notes, char_mask, char_validator, char_type, "
-               "  char_order ) "
+               "  char_order, char_search ) "
                "VALUES "
                "( :char_id, :char_name, :char_items, :char_customers, "
                "  :char_contacts, :char_crmaccounts, :char_addresses, "
@@ -159,7 +160,7 @@ void characteristic::sSave()
                "  :char_attributes, :char_lotserial, :char_employees,"
                "  :char_incidents, "
                "  :char_notes, :char_mask, :char_validator, :char_type, "
-               "  :char_order );" );
+               "  :char_order, :char_search );" );
 
     q.bindValue(":char_type", _type->currentIndex());
   }
@@ -179,7 +180,8 @@ void characteristic::sSave()
                "    char_notes=:char_notes,"
                "    char_mask=:char_mask,"
                "    char_validator=:char_validator, "
-               "    char_order=:char_order "
+               "    char_order=:char_order, "
+               "    char_search=:char_search "
                "WHERE (char_id=:char_id);" );
 
   q.bindValue(":char_id", _charid);
@@ -201,6 +203,7 @@ void characteristic::sSave()
   if (_validator->currentText().trimmed().size() > 0)
     q.bindValue(":char_validator",   _validator->currentText());
   q.bindValue(":char_order", _order->value());
+  q.bindValue(":char_search", QVariant(_search->isChecked()));
   q.exec();
   if (q.lastError().type() != QSqlError::NoError)
   {
@@ -260,6 +263,7 @@ void characteristic::populate()
     _type->setCurrentIndex(q.value("char_type").toInt());
     _type->setEnabled(false);
     _order->setValue(q.value("char_order").toInt());
+    _search->setChecked(q.value("char_search").toBool());
   }
   else if (q.lastError().type() != QSqlError::NoError)
   {

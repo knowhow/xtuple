@@ -125,7 +125,7 @@ checkForUpdates::checkForUpdates(QWidget* parent, Qt::WFlags fl)
                 "  JOIN usr ON (locale_id=usr_locale_id)"
                 "  JOIN lang ON (locale_lang_id=lang_id)"
                 "  LEFT OUTER JOIN country ON (locale_country_id=country_id)"
-                " WHERE (usr_username=CURRENT_USER);");
+                " WHERE (usr_username=getEffectiveXtUser());");
   if (versions.first())
   {
     QString tmp = versions.value("lang_abbr2").toString();

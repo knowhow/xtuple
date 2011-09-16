@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>772</width>
-    <height>577</height>
+    <height>634</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -421,6 +421,54 @@ to be bound by its terms.</comment>
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="advancedTab">
+        <attribute name="title">
+         <string>Advanced</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="RecurrenceWidget" name="_recurring">
+               <property name="minPeriod">
+                <enum>RecurrenceWidget::Daily</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </item>
     </layout>
@@ -445,6 +493,11 @@ to be bound by its terms.</comment>
    <extends>QWidget</extends>
    <header>datecluster.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RecurrenceWidget</class>
+   <extends>QWidget</extends>
+   <header>recurrencewidget.h</header>
   </customwidget>
   <customwidget>
    <class>VendorCluster</class>

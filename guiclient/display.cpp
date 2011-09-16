@@ -19,6 +19,7 @@
 #include <QPrintDialog>
 #include <QShortcut>
 #include <QToolButton>
+#include <QDebug>
 
 #include <metasql.h>
 #include <mqlutil.h>
@@ -27,6 +28,8 @@
 #include <renderobjects.h>
 #include <parameter.h>
 #include <previewdialog.h>
+
+#include "../scriptapi/parameterlistsetup.h"
 
 class displayPrivate : public Ui::display
 {
@@ -270,6 +273,7 @@ void displayPrivate::setupCharacteristics(unsigned int use)
   QString sql = QString("SELECT char_id, char_name, char_type "
                         "FROM char "
                         "WHERE (%1) "
+                        " AND (char_search) "
                         "ORDER BY char_name;").arg(uses.join(" AND "));
   XSqlQuery chars;
   chars.exec(sql);
@@ -442,7 +446,7 @@ void display::showEvent(QShowEvent * e)
 
   if (_data->_queryOnStartEnabled &&
       _data->_queryonstart->isChecked())
-    sFillList();
+    emit fillList();
 }
 
 QWidget * display::optionsWidget()
@@ -519,7 +523,16 @@ QString display::searchText()
 
 bool display::setParams(ParameterList & params)
 {
-  return _data->setParams(params);
+  bool ret = _data->setParams(params);
+  if(engine() && engine()->globalObject().property("setParams").isFunction())
+  {
+    QScriptValue paramArg = ParameterListtoScriptValue(engine(), params);
+    QScriptValue tmp = engine()->globalObject().property("setParams").call(QScriptValue(), QScriptValueList() << paramArg);
+    ret = ret && tmp.toBool();
+    params.clear();
+    ParameterListfromScriptValue(paramArg, params);
+  }
+  return ret;
 }
 
 void display::setupCharacteristics(unsigned int uses)
@@ -638,7 +651,7 @@ void display::setQueryOnStartEnabled(bool on)
     XSqlQuery qry;
     qry.prepare("SELECT usrpref_id "
                 "FROM usrpref "
-                "WHERE ((usrpref_username=current_user) "
+                "WHERE ((usrpref_username=getEffectiveXtUser()) "
                 " AND (usrpref_name=:prefname));");
     qry.bindValue(":prefname", prefname);
     qry.exec();
@@ -708,6 +721,7 @@ void display::sFillList()
 
 void display::sFillList(ParameterList pParams, bool forceSetParams)
 {
+  emit fillListBefore();
   if (forceSetParams || !pParams.count())
   {
     if (!setParams(pParams))
@@ -729,6 +743,7 @@ void display::sFillList(ParameterList pParams, bool forceSetParams)
     systemError(this, xq.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
+  emit fillListAfter();
 }
 
 void display::sPopulateMenu(QMenu *, QTreeWidgetItem *, int)

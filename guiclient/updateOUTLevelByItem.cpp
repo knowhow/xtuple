@@ -11,62 +11,40 @@
 #include "updateOUTLevelByItem.h"
 
 #include <QMessageBox>
-#include <qvariant.h>
 #include <parameter.h>
 #include "submitAction.h"
 
-/*
- *  Constructs a updateOUTLevelByItem as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 updateOUTLevelByItem::updateOUTLevelByItem(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
-    _daysGroupInt = new QButtonGroup(this);
-    _daysGroupInt->addButton(_leadTime);
-    _daysGroupInt->addButton(_fixedDays);
+  _daysGroupInt = new QButtonGroup(this);
+  _daysGroupInt->addButton(_leadTime);
+  _daysGroupInt->addButton(_fixedDays);
 
-    // signals and slots connections
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(_update, SIGNAL(clicked()), this, SLOT(sUpdate()));
-    connect(_calendar, SIGNAL(newCalendarId(int)), _periods, SLOT(populate(int)));
-    connect(_fixedDays, SIGNAL(toggled(bool)), _days, SLOT(setEnabled(bool)));
-    connect(_leadTime, SIGNAL(toggled(bool)), _leadTimePad, SLOT(setEnabled(bool)));
-    connect(_item, SIGNAL(valid(bool)), _update, SLOT(setEnabled(bool)));
-    connect(_item, SIGNAL(valid(bool)), _submit, SLOT(setEnabled(bool)));
-    connect(_submit, SIGNAL(clicked()), this, SLOT(sSubmit()));
-    
-    if (!_metrics->boolean("EnableBatchManager"))
-      _submit->hide();
-    
-    init();
+  // signals and slots connections
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_update, SIGNAL(clicked()), this, SLOT(sUpdate()));
+  connect(_calendar, SIGNAL(newCalendarId(int)), _periods, SLOT(populate(int)));
+  connect(_fixedDays, SIGNAL(toggled(bool)), _days, SLOT(setEnabled(bool)));
+  connect(_leadTime, SIGNAL(toggled(bool)), _leadTimePad, SLOT(setEnabled(bool)));
+  connect(_item, SIGNAL(valid(bool)), _update, SLOT(setEnabled(bool)));
+  connect(_item, SIGNAL(valid(bool)), _submit, SLOT(setEnabled(bool)));
+  connect(_submit, SIGNAL(clicked()), this, SLOT(sSubmit()));
+  
+  if (!_metrics->boolean("EnableBatchManager"))
+    _submit->hide();
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 updateOUTLevelByItem::~updateOUTLevelByItem()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void updateOUTLevelByItem::languageChange()
 {
-    retranslateUi(this);
-}
-
-
-void updateOUTLevelByItem::init()
-{
+  retranslateUi(this);
 }
 
 void updateOUTLevelByItem::sUpdate()

@@ -20,16 +20,22 @@
 
 #include "addresscluster.h"
 #include "comment.h"
+#include "crmaccount.h"
+#include "errorReporter.h"
+#include "guiErrorCheck.h"
 #include "storedProcErrorLookup.h"
 #include "taxRegistration.h"
 #include "vendorAddress.h"
 #include "xcombobox.h"
+
+#define DEBUG false
 
 vendor::vendor(QWidget* parent, const char* name, Qt::WFlags fl)
     : XWidget(parent, name, fl)
 {
   setupUi(this);
 
+  connect(_crmacct, SIGNAL(clicked()), this, SLOT(sCrmAccount()));
   connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
   connect(_printAddresses, SIGNAL(clicked()), this, SLOT(sPrintAddresses()));
   connect(_newAddress, SIGNAL(clicked()), this, SLOT(sNewAddress()));
@@ -66,10 +72,10 @@ vendor::vendor(QWidget* parent, const char* name, Qt::WFlags fl)
 
   _vendaddr->addColumn(tr("Number"), 70, Qt::AlignLeft, true, "vendaddr_code");
   _vendaddr->addColumn(tr("Name"),   50, Qt::AlignLeft, true, "vendaddr_name");
-  _vendaddr->addColumn(tr("City"),   -1, Qt::AlignLeft, true, "vendaddr_city");
-  _vendaddr->addColumn(tr("State"),  -1, Qt::AlignLeft, true, "vendaddr_state");
-  _vendaddr->addColumn(tr("Country"),-1, Qt::AlignLeft, true, "vendaddr_country");
-  _vendaddr->addColumn(tr("Postal Code"),-1, Qt::AlignLeft, true, "vendaddr_zipcode");
+  _vendaddr->addColumn(tr("City"),   -1, Qt::AlignLeft, true, "addr_city");
+  _vendaddr->addColumn(tr("State"),  -1, Qt::AlignLeft, true, "addr_state");
+  _vendaddr->addColumn(tr("Country"),-1, Qt::AlignLeft, true, "addr_country");
+  _vendaddr->addColumn(tr("Postal Code"),-1, Qt::AlignLeft, true, "addr_postalcode");
 
   _taxreg->addColumn(tr("Tax Authority"), 100, Qt::AlignLeft, true, "taxauth_code");
   _taxreg->addColumn(tr("Tax Zone"),      100, Qt::AlignLeft, true, "taxzone_code");
@@ -78,10 +84,6 @@ vendor::vendor(QWidget* parent, const char* name, Qt::WFlags fl)
   _accountType->append(0, "Checking", "K");
   _accountType->append(1, "Savings",  "C");
 
-  _crmacctid = -1;
-  _ignoreClose = false;
-  _NumberGen = -1;
-  
   _transmitStack->setCurrentIndex(0);
   if (_metrics->boolean("EnableBatchManager") &&
       ! (_metrics->boolean("ACHSupported") && _metrics->boolean("ACHEnabled")))
@@ -102,7 +104,13 @@ vendor::vendor(QWidget* parent, const char* name, Qt::WFlags fl)
   if (_metrics->boolean("ACHSupported") && _metrics->boolean("ACHEnabled") && omfgThis->_key.isEmpty())
     _checksButton->setEnabled(false);
 
-  _vendid = -1;
+  _account->setType(GLCluster::cRevenue | GLCluster::cExpense |
+                    GLCluster::cAsset | GLCluster::cLiability);
+
+  _vendid      = -1;
+  _crmacctid   = -1;
+  _ignoreClose = false;
+  _NumberGen   = -1;
 }
 
 vendor::~vendor()
@@ -121,28 +129,17 @@ SetResponse vendor::set(const ParameterList &pParams)
   QVariant param;
   bool     valid;
 
-  param = pParams.value("crmacct_number", &valid);
-  if (valid)
-    _number->setText(param.toString());
-
-  param = pParams.value("crmacct_name", &valid);
-  if (valid)
-    _name->setText(param.toString());
-
   param = pParams.value("crmacct_id", &valid);
   if (valid)
-  {
     _crmacctid = param.toInt();
-    _contact1->setSearchAcct(param.toInt());
-    _contact2->setSearchAcct(param.toInt());
-  }
 
   param = pParams.value("vend_id", &valid);
   if (valid)
-  {
     _vendid = param.toInt();
-    populate();
-  }
+
+  if (_vendid > 0 || _crmacctid > 0)
+    if (! sPopulate())
+      return UndefinedError;
 
   param = pParams.value("mode", &valid);
   if (valid)
@@ -151,27 +148,26 @@ SetResponse vendor::set(const ParameterList &pParams)
     {
       _mode = cNew;
 
-      q.exec("SELECT NEXTVAL('vend_vend_id_seq') AS vend_id;");
-      if (q.first())
-        _vendid = q.value("vend_id").toInt();
-      else
-        systemError(this, tr("A System Error occurred at %1::%2.")
-                          .arg(__FILE__)
-                          .arg(__LINE__) );
+      XSqlQuery idq;
+      idq.exec("SELECT NEXTVAL('vend_vend_id_seq') AS vend_id;");
+      if (idq.first())
+        _vendid = idq.value("vend_id").toInt();
+      else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Id"),
+                                    idq, __FILE__, __LINE__))
+        return UndefinedError;
 
       if(((_metrics->value("CRMAccountNumberGeneration") == "A") ||
           (_metrics->value("CRMAccountNumberGeneration") == "O"))
        && _number->text().isEmpty() )
       {
-        q.exec("SELECT fetchCRMAccountNumber() AS number;");
-        if (q.first())
+        XSqlQuery numq;
+        numq.exec("SELECT fetchCRMAccountNumber() AS number;");
+        if (numq.first())
         {
-          _number->setText(q.value("number"));
-          _NumberGen = q.value("number").toInt();
+          _number->setText(numq.value("number"));
+          _NumberGen = numq.value("number").toInt();
         }
       }
-
-      _defaultShipVia->setText(_metrics->value("DefaultPOShipVia"));
 
       if (_privileges->check("MaintainVendorAddresses"))
       {
@@ -240,6 +236,7 @@ SetResponse vendor::set(const ParameterList &pParams)
       _individualId->setEnabled(false);
       _individualName->setEnabled(false);
       _accountType->setEnabled(false);
+      _distribGroup->setEnabled(false);
 
       _save->hide();
       _close->setText(tr("&Close"));
@@ -272,79 +269,74 @@ int vendor::id() const
 
 void vendor::sSave()
 {
-  struct {
-    bool        condition;
-    QString     msg;
-    QWidget    *widget;
-  } error[] = {
-    { _number->text().trimmed().length() == 0,
-      tr("Please enter a Number for this new Vendor."),
-      _number },
-    { _name->text().trimmed().length() == 0,
-      tr("Please enter a Name for this new Vendor."),
-      _name },
-    { _defaultTerms->id() == -1,
-      tr("You must select a Terms code for this Vendor before continuing."),
-      _defaultTerms },
-    { _vendtype->id() == -1,
-      tr("You must select a Vendor Type for this Vendor before continuing."),
-      _vendtype },
-    { _achGroup->isChecked() &&
-      ! _routingNumber->hasAcceptableInput() &&
-      !omfgThis->_key.isEmpty(),
-      tr("The Routing Number is not valid."),
-      _routingNumber },
-    { _achGroup->isChecked() &&
-      ! _achAccountNumber->hasAcceptableInput() &&
-      !omfgThis->_key.isEmpty(),
-      tr("The Account Number is not valid."),
-      _achAccountNumber },
-    { _achGroup->isChecked() && _useACHSpecial->isChecked() &&
-      _individualName->text().trimmed().length() == 0 &&
-      !omfgThis->_key.isEmpty(),
-      tr("Please enter an Individual Name if EFT Check Printing is enabled and "
-         "'%1' is checked.").arg(_useACHSpecial->title()),
-      _individualName }
-  };
-
-  for (unsigned int i = 0; i < sizeof(error) / sizeof(error[0]); i++)
-    if (error[i].condition)
-    {
-      QMessageBox::critical(this, tr("Cannot Save Vendor"),
-                            error[i].msg);
-      error[i].widget->setFocus();
-      return;
-    }
+  QList<GuiErrorCheck> errors;
+  errors << GuiErrorCheck(_number->text().trimmed().isEmpty(), _number,
+                          tr("Please enter a Number for this new Vendor."))
+         << GuiErrorCheck(_name->text().trimmed().isEmpty(), _name,
+                          tr("Please enter a Name for this new Vendor."))
+         << GuiErrorCheck(_defaultTerms->id() == -1, _defaultTerms,
+                          tr("You must select a Terms code for this Vendor."))
+         << GuiErrorCheck(_vendtype->id() == -1, _vendtype,
+                          tr("You must select a Vendor Type for this Vendor."))
+//         << GuiErrorCheck(_accountSelected->isChecked() &&
+//                          !_account->isValid(),
+//                          _account
+//                          tr("You must select a Default Distribution Account for this Vendor."))
+//         << GuiErrorCheck(_expcatSelected->isChecked() &&
+//                          !_expcat->isValid(),
+//                          _expcat
+//                          tr("You must select a Default Distribution Expense Category for this Vendor."))
+//         << GuiErrorCheck(_taxSelected->isChecked() &&
+//                          !_taxCode->isValid(),
+//                          _taxCode
+//                          tr("You must select a Default Distribution Tax Code for this Vendor."))
+         << GuiErrorCheck(_achGroup->isChecked() &&
+                          ! _routingNumber->hasAcceptableInput() &&
+                          !omfgThis->_key.isEmpty(),
+                          _routingNumber,
+                          tr("The Routing Number is not valid."))
+         << GuiErrorCheck(_achGroup->isChecked() &&
+                          ! _achAccountNumber->hasAcceptableInput() &&
+                          !omfgThis->_key.isEmpty(), _achAccountNumber,
+                          tr("The Account Number is not valid."))
+         << GuiErrorCheck(_achGroup->isChecked() &&
+                          _useACHSpecial->isChecked() &&
+                          _individualName->text().trimmed().isEmpty() &&
+                          !omfgThis->_key.isEmpty(),
+                          _individualName,
+                          tr("Please enter an Individual Name if EFT Check "
+                             "Printing is enabled and '%1' is checked.")
+                            .arg(_useACHSpecial->title()))
+    ;
 
   if (_number->text().trimmed().toUpper() != _cachedNumber.toUpper())
   {
-    q.prepare( "SELECT vend_name "
-	       "FROM vendinfo "
-	       "WHERE (UPPER(vend_number)=UPPER(:vend_number)) "
-	       "  AND (vend_id<>:vend_id);" );
-    q.bindValue(":vend_number", _number->text().trimmed());
-    q.bindValue(":vend_id", _vendid);
-    q.exec();
-    if (q.first())
-    {
-      QMessageBox::critical(this, tr("Vendor Number Used"),
+    XSqlQuery dupq;
+    dupq.prepare("SELECT vend_name "
+                 "FROM vendinfo "
+                 "WHERE (UPPER(vend_number)=UPPER(:vend_number)) "
+                 "  AND (vend_id<>:vend_id);" );
+    dupq.bindValue(":vend_number", _number->text().trimmed());
+    dupq.bindValue(":vend_id", _vendid);
+    dupq.exec();
+    if (dupq.first())
+      GuiErrorCheck(true, _number,
 			    tr("<p>The newly entered Vendor Number cannot be "
                                "used as it is already used by the Vendor '%1'. "
                                "Please correct or enter a new Vendor Number." )
 			     .arg(q.value("vend_name").toString()) );
-      _number->setFocus();
-      return;
-    }
   }
+
+  if (GuiErrorCheck::reportErrors(this, tr("Cannot Save Vendor"), errors))
+    return;
 
   XSqlQuery rollback;
   rollback.prepare("ROLLBACK;");
 
-  if (! q.exec("BEGIN"))
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  XSqlQuery begin("BEGIN;");
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Database Error"),
+                           begin, __FILE__, __LINE__))
     return;
-  }
 
   int saveResult = _address->save(AddressCluster::CHECK);
   if (-2 == saveResult)
@@ -364,10 +356,11 @@ void vendor::sSave()
   }
   if (saveResult < 0)	// not else-if: this is error check for CHANGE{ONE,ALL}
   {
-    systemError(this, tr("There was an error saving this address (%1).\n"
-			 "Check the database server log for errors.")
-		      .arg(saveResult), __FILE__, __LINE__);
     rollback.exec();
+    ErrorReporter::error(QtCriticalMsg, this, tr("Error Saving Address"),
+                         tr("<p>There was an error saving this address (%1). "
+			 "Check the database server log for errors.")
+                         .arg(saveResult), __FILE__, __LINE__);
     _address->setFocus();
     return;
   }
@@ -407,7 +400,10 @@ void vendor::sSave()
           "    vend_ach_use_vendinfo=<? value(\"vend_ach_use_vendinfo\") ?>,"
           "    vend_ach_accnttype=<? value(\"vend_ach_accnttype\") ?>,"
           "    vend_ach_indiv_number=<? value(\"vend_ach_indiv_number\") ?>,"
-          "    vend_ach_indiv_name=<? value(\"vend_ach_indiv_name\") ?> "
+          "    vend_ach_indiv_name=<? value(\"vend_ach_indiv_name\") ?>,"
+          "    vend_accnt_id=<? value(\"vend_accnt_id\") ?>,"
+          "    vend_expcat_id=<? value(\"vend_expcat_id\") ?>,"
+          "    vend_tax_id=<? value(\"vend_tax_id\") ?> "
           "WHERE (vend_id=<? value(\"vend_id\") ?>);" ;
   }
   else if (_mode == cNew)
@@ -424,7 +420,8 @@ void vendor::sSave()
           "  vend_ach_routingnumber, vend_ach_accntnumber,"
           "  vend_ach_use_vendinfo,"
           "  vend_ach_accnttype, vend_ach_indiv_number,"
-          "  vend_ach_indiv_name ) "
+          "  vend_ach_indiv_name,"
+          "  vend_accnt_id, vend_expcat_id, vend_tax_id) "
           "VALUES "
           "( <? value(\"vend_id\") ?>,"
           "  <? value(\"vend_number\") ?>,"
@@ -461,9 +458,12 @@ void vendor::sSave()
           "  <? value(\"vend_ach_use_vendinfo\") ?>,"
           "  <? value(\"vend_ach_accnttype\") ?>,"
           "  <? value(\"vend_ach_indiv_number\") ?>,"
-          "  <? value(\"vend_ach_indiv_name\") ?>"
+          "  <? value(\"vend_ach_indiv_name\") ?>,"
+          "  <? value(\"vend_accnt_id\") ?>,"
+          "  <? value(\"vend_expcat_id\") ?>,"
+          "  <? value(\"vend_tax_id\") ?> "
           "   );"  ;
- 
+
   ParameterList params;
   params.append("vend_id", _vendid);
   params.append("vend_vendtype_id", _vendtype->id());
@@ -517,17 +517,43 @@ void vendor::sSave()
     params.append("vend_fob", _vendorFOB->text().trimmed());
   }
 
+  if(_accountSelected->isChecked() && _account->isValid())
+  {
+    params.append("vend_accnt_id", _account->id());
+    params.append("vend_expcat_id", -1);
+    params.append("vend_tax_id", -1);
+  }
+  else if (_expcatSelected->isChecked() && _expcat->isValid())
+  {
+    params.append("vend_accnt_id", -1);
+    params.append("vend_expcat_id", _expcat->id());
+    params.append("vend_tax_id", -1);
+  }
+  else if (_taxSelected->isChecked() && _taxCode->isValid())
+  {
+    params.append("vend_accnt_id", -1);
+    params.append("vend_expcat_id", -1);
+    params.append("vend_tax_id", _taxCode->id());
+  }
+  else
+  {
+    params.append("vend_accnt_id", -1);
+    params.append("vend_expcat_id", -1);
+    params.append("vend_tax_id", -1);
+  }
+
   MetaSQLQuery mql(sql);
-  q = mql.toQuery(params);
-  if (q.lastError().type() != QSqlError::NoError)
+  XSqlQuery upsq = mql.toQuery(params);
+  if (upsq.lastError().type() != QSqlError::NoError)
   {
     rollback.exec();
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    ErrorReporter::error(QtCriticalMsg, this, tr("Error Saving Vendor"),
+                         q, __FILE__, __LINE__);
     return;
   }
 
 
-  q.exec("COMMIT;");
+  XSqlQuery commit("COMMIT;");
   _NumberGen = -1;
   omfgThis->sVendorsUpdated();
   emit saved(_vendid);
@@ -540,9 +566,6 @@ void vendor::sSave()
 
 void vendor::sCheck()
 {
-//  Make sure that the newly entered vend_number is not already in use.
-//  Switch to cEdit and populate if so.
-
   _number->setText(_number->text().trimmed().toUpper());
   if (_number->text().length() && _cachedNumber != _number->text())
   {
@@ -552,22 +575,28 @@ void vendor::sCheck()
       query.prepare( "SELECT releaseCRMAccountNumber(:Number);" );
       query.bindValue(":Number", _NumberGen);
       query.exec();
+      ErrorReporter::error(QtCriticalMsg, this, tr("Releasing Number"),
+                            query, __FILE__, __LINE__);
       _NumberGen = -1;
     }
 
-    q.prepare( "SELECT vend_id, 1 AS type "
-               "FROM vendinfo "
-               "WHERE (vend_number=:vend_number) "
-               "UNION "
-               "SELECT crmacct_id, 2 AS type "
-               "FROM crmacct "
-               "WHERE (crmacct_number=:vend_number) "
-               "ORDER BY type; ");
-    q.bindValue(":vend_number", _number->text());
-    q.exec();
-    if (q.first())
+    XSqlQuery dupq;
+    dupq.prepare("SELECT vend_id, 1 AS type"
+                 "  FROM vendinfo "
+                 " WHERE (vend_number=:vend_number)"
+                 "  AND (vend_id!=:vendid)"
+                 " UNION "
+                 "SELECT crmacct_id, 2 AS type "
+                 "  FROM crmacct "
+                 " WHERE (crmacct_number=:vend_number)"
+                 "  AND (crmacct_vend_id!=:vendid)"
+                 " ORDER BY type;");
+    dupq.bindValue(":vend_number", _number->text());
+    dupq.bindValue(":vendid",      _vendid);
+    dupq.exec();
+    if (dupq.first())
     {
-      if ((q.value("type").toInt() == 1) && (_notice))
+      if ((dupq.value("type").toInt() == 1) && (_notice))
       {
         if (QMessageBox::question(this, tr("Vendor Exists"),
                 tr("<p>This number is currently "
@@ -581,119 +610,161 @@ void vendor::sCheck()
           _number->setFocus();
           return;
         }
-        else
-        {
-          _vendid = q.value("vend_id").toInt();
-          _mode = cEdit;
-          populate();
-          _name->setFocus();
-        }
+        _vendid = dupq.value("vend_id").toInt();
+        _mode = cEdit;
+        sPopulate();
+        _name->setFocus();
       }
-      else if ( (_mode == cEdit) && 
-                ((q.value("type").toInt() == 2) ) && 
+      else if ( (_mode == cEdit) &&
+                ((dupq.value("type").toInt() == 2) ) &&
                 (_notice))
       {
-        if (QMessageBox::critical(this, tr("Invalid Number"),
-                tr("<p>This number is currently "
-                     "assigned to another CRM account.")))
-        {
-          _number->setText(_cachedNumber);
-          _number->setFocus();
-          _notice = false;
-          return;
-        }
+        QMessageBox::critical(this, tr("Invalid Number"),
+                              tr("<p>This number is currently "
+                                 "assigned to another CRM account."));
+        _number->setText(_cachedNumber);
+        _number->setFocus();
+        _notice = false;
+        return;
       }
-      else if ((q.value("type").toInt() == 2) && (_notice))
+      else if ((dupq.value("type").toInt() == 2) && (_notice))
       {
         if (QMessageBox::question(this, tr("Convert"),
-                tr("<p>This number is currently "
-                   "assigned to CRM Account. "
-                   "Do you want to convert the "
-                   "CRM Account to a Vendor?"),
+                tr("<p>This number is currently assigned to CRM Account. "
+                   "Do you want to convert the CRM Account to a Vendor?"),
                 QMessageBox::Yes,
                 QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
-       {
+        {
           _number->clear();
           _number->setFocus();
           return;
         }
-        else
-          sLoadCrmAcct(q.value("vend_id").toInt());
+        _vendid = -1;
+        _crmacctid = dupq.value("vend_id").toInt();
+        sPopulate();
       }
     }
+    else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Vendor"),
+                                  dupq, __FILE__, __LINE__))
+      return;
   }
 }
 
-void vendor::populate()
+bool vendor::sPopulate()
 {
+  if (DEBUG)
+    qDebug("vendor::sPopulate() entered with _vendid %d and _crmacctid %d",
+           _vendid, _crmacctid);
+
   MetaSQLQuery mql(
-            "SELECT vendinfo.*, crmacct_id, "
-            "<? if exists(\"key\") ?>"
+            "<? if exists('vend_id') ?>"
+            "SELECT vendinfo.*, crmacct_id, crmacct_owner_username, "
+            "<? if exists('key') ?>"
             "       CASE WHEN LENGTH(vend_ach_routingnumber) > 0 THEN"
             "       formatbytea(decrypt(setbytea(vend_ach_routingnumber),"
-            "                           setbytea(<? value(\"key\") ?>), 'bf'))"
+            "                           setbytea(<? value('key') ?>), 'bf'))"
             "            ELSE '' END AS routingnum,"
             "       CASE WHEN LENGTH(vend_ach_accntnumber) > 0 THEN"
             "       formatbytea(decrypt(setbytea(vend_ach_accntnumber),"
-            "                           setbytea(<? value(\"key\") ?>), 'bf'))"
+            "                           setbytea(<? value('key') ?>), 'bf'))"
             "            ELSE '' END AS accntnum "
             "<? else ?>"
-            "       <? value(\"na\") ?> AS routingnum,"
-            "       <? value(\"na\") ?> AS accntnum "
+            "       <? value('na') ?> AS routingnum,"
+            "       <? value('na') ?> AS accntnum "
             "<? endif ?>"
             "FROM vendinfo "
             "  JOIN crmacct ON (vend_id=crmacct_vend_id) "
-            "WHERE (vend_id=<? value(\"vend_id\") ?>);" );
+            "WHERE (vend_id=<? value('vend_id') ?>);"
+            "<? elseif exists('crmacct_id') ?>"
+            "SELECT crmacct_number AS vend_number, crmacct_name   AS vend_name,"
+            "       crmacct_active AS vend_active,"
+            "       crmacct_cntct_id_1 AS vend_cntct1_id,"
+            "       crmacct_cntct_id_2 AS vend_cntct2_id,"
+            "       fetchMetricText('DefaultPOShipVia') AS vend_shipvia,"
+            "       NULL AS vend_accntnum,    NULL AS vend_vendtype_id,"
+            "       NULL AS vend_name,        NULL AS vend_addr_id,"
+            "       fetchMetricValue('DefaultTerms') AS vend_terms_id,"
+            "       NULL  AS vend_curr_id,"
+            "       FALSE AS vend_po,         FALSE AS vend_restrictpurch,"
+            "       FALSE AS vend_1099,       NULL AS vend_match,"
+            "       FALSE  AS vend_qualified, NULL AS vend_comments,"
+            "       NULL AS vend_pocomments,  NULL AS vend_taxzone_id,"
+            "       'W'  AS vend_fobsource,   NULL AS vend_fob,"
+            "       NULL AS vend_ach_enabled, NULL AS routingnum,"
+            "       NULL AS accntnum,         NULL AS vend_ach_use_vendinfo,"
+            "       NULL AS vend_ach_indiv_number, NULL AS vend_ach_indiv_name,"
+            "       NULL AS vend_ach_accnttype,"
+            "       crmacct_id, crmacct_owner_username"
+            "  FROM crmacct"
+            " WHERE crmacct_id=<? value('crmacct_id') ?>;"
+            "<? endif ?>");
   ParameterList params;
-  params.append("vend_id", _vendid);
+  if (_vendid > 0)
+    params.append("vend_id", _vendid);
+  else if (_crmacctid > 0)
+    params.append("crmacct_id", _crmacctid);
+
   params.append("key",     omfgThis->_key);
   params.append("na",      tr("N/A"));
-  q = mql.toQuery(params);
-  if (q.first())
+  XSqlQuery getq = mql.toQuery(params);
+  if (getq.first())
   {
     _notice = FALSE;
-    _cachedNumber = q.value("vend_number").toString();
+    _cachedNumber = getq.value("vend_number").toString();
 
-    _crmacctid = q.value("crmacct_id").toInt();
-    _number->setText(q.value("vend_number"));
-    _accountNumber->setText(q.value("vend_accntnum"));
-    _vendtype->setId(q.value("vend_vendtype_id").toInt());
-    _active->setChecked(q.value("vend_active").toBool());
-    _name->setText(q.value("vend_name"));
-    _contact1->setId(q.value("vend_cntct1_id").toInt());
+    _crmacctid = getq.value("crmacct_id").toInt();
+    _crmowner = getq.value("crmacct_owner_username").toString();
+    _number->setText(getq.value("vend_number"));
+    _accountNumber->setText(getq.value("vend_accntnum"));
+    _vendtype->setId(getq.value("vend_vendtype_id").toInt());
+    _active->setChecked(getq.value("vend_active").toBool());
+    _name->setText(getq.value("vend_name"));
+    _contact1->setId(getq.value("vend_cntct1_id").toInt());
     _contact1->setSearchAcct(_crmacctid);
-    _contact2->setId(q.value("vend_cntct2_id").toInt());
+    _contact2->setId(getq.value("vend_cntct2_id").toInt());
     _contact2->setSearchAcct(_crmacctid);
-    _address->setId(q.value("vend_addr_id").toInt());
-    _defaultTerms->setId(q.value("vend_terms_id").toInt());
-    _defaultShipVia->setText(q.value("vend_shipvia").toString());
-    _defaultCurr->setId(q.value("vend_curr_id").toInt());
-    _poItems->setChecked(q.value("vend_po").toBool());
-    _restrictToItemSource->setChecked(q.value("vend_restrictpurch").toBool());
-    _receives1099->setChecked(q.value("vend_1099").toBool());
-    _match->setChecked(q.value("vend_match").toBool());
-    _qualified->setChecked(q.value("vend_qualified").toBool());
-    _notes->setText(q.value("vend_comments").toString());
-    _poComments->setText(q.value("vend_pocomments").toString());
-    
-    _taxzone->setId(q.value("vend_taxzone_id").toInt());
+    _address->setId(getq.value("vend_addr_id").toInt());
+    _defaultTerms->setId(getq.value("vend_terms_id").toInt());
+    _defaultShipVia->setText(getq.value("vend_shipvia").toString());
+    _defaultCurr->setId(getq.value("vend_curr_id").toInt());
+    _poItems->setChecked(getq.value("vend_po").toBool());
+    _restrictToItemSource->setChecked(getq.value("vend_restrictpurch").toBool());
+    _receives1099->setChecked(getq.value("vend_1099").toBool());
+    _match->setChecked(getq.value("vend_match").toBool());
+    _qualified->setChecked(getq.value("vend_qualified").toBool());
+    _notes->setText(getq.value("vend_comments").toString());
+    _poComments->setText(getq.value("vend_pocomments").toString());
 
-    if (q.value("vend_fobsource").toString() == "V")
+    _taxzone->setId(getq.value("vend_taxzone_id").toInt());
+
+    if (getq.value("vend_fobsource").toString() == "V")
     {
       _useVendorFOB->setChecked(TRUE);
-      _vendorFOB->setText(q.value("vend_fob"));
+      _vendorFOB->setText(getq.value("vend_fob"));
     }
     else
       _useWarehouseFOB->setChecked(TRUE);
 
-    _achGroup->setChecked(q.value("vend_ach_enabled").toBool());
-    _routingNumber->setText(q.value("routingnum").toString());
-    _achAccountNumber->setText(q.value("accntnum").toString());
-    _useACHSpecial->setChecked(! q.value("vend_ach_use_vendinfo").toBool());
-    _individualId->setText(q.value("vend_ach_indiv_number").toString());
-    _individualName->setText(q.value("vend_ach_indiv_name").toString());
+    _achGroup->setChecked(getq.value("vend_ach_enabled").toBool());
+    _routingNumber->setText(getq.value("routingnum").toString());
+    _achAccountNumber->setText(getq.value("accntnum").toString());
+    _useACHSpecial->setChecked(! getq.value("vend_ach_use_vendinfo").toBool());
+    _individualId->setText(getq.value("vend_ach_indiv_number").toString());
+    _individualName->setText(getq.value("vend_ach_indiv_name").toString());
 
-    _accountType->setCode(q.value("vend_ach_accnttype").toString());
+    _accountType->setCode(getq.value("vend_ach_accnttype").toString());
+
+    _account->setId(getq.value("vend_accnt_id").toInt());
+    if(getq.value("vend_expcat_id").toInt() != -1)
+    {
+      _expcatSelected->setChecked(TRUE);
+      _expcat->setId(getq.value("vend_expcat_id").toInt());
+    }
+    if(getq.value("vend_tax_id").toInt() != -1)
+    {
+      _taxSelected->setChecked(TRUE);
+      _taxCode->setId(getq.value("vend_tax_id").toInt());
+    }
 
     sFillAddressList();
     sFillTaxregList();
@@ -703,20 +774,26 @@ void vendor::populate()
 
     emit newId(_vendid);
   }
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Vendor"),
+                                getq, __FILE__, __LINE__))
+    return false;
   else
   {
-    systemError(this, tr("Could not find the Vendor information. Perhaps the "
-                         "Vendor and CRM Account have been disconnected."),
+    ErrorReporter::error(QtCriticalMsg, this, tr("Getting Vendor"),
+                         tr("Could not find the Vendor information. Perhaps "
+                            "the Vendor and CRM Account have been disconnected."),
                 __FILE__, __LINE__);
-    return;
+    return false;
   }
 
+  _crmacct->setEnabled(_crmacctid > 0 &&
+                       (_privileges->check("MaintainAllCRMAccounts") ||
+                        _privileges->check("ViewAllCRMAccounts") ||
+                        (omfgThis->username() == _crmowner && _privileges->check("MaintainPersonalCRMAccounts")) ||
+                        (omfgThis->username() == _crmowner && _privileges->check("ViewPersonalCRMAccounts"))));
+
   emit populated();
+  return true;
 }
 
 void vendor::sPrintAddresses()
@@ -770,24 +847,33 @@ void vendor::sViewAddress()
 
 void vendor::sDeleteAddress()
 {
-  q.prepare( "DELETE FROM vendaddrinfo "
+  XSqlQuery delq;
+  delq.prepare( "DELETE FROM vendaddrinfo "
              "WHERE (vendaddr_id=:vendaddr_id);" );
-  q.bindValue(":vendaddr_id", _vendaddr->id());
-  q.exec();
+  delq.bindValue(":vendaddr_id", _vendaddr->id());
+  delq.exec();
   sFillAddressList();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Vendor Addresses"),
+                           delq, __FILE__, __LINE__))
+    return;
 }
 
 void vendor::sFillAddressList()
 {
-  q.prepare( "SELECT vendaddr_id, vendaddr_code, vendaddr_name,"
-             "       vendaddr_city, vendaddr_state, vendaddr_country,"
-             "       vendaddr_zipcode "
-             "FROM vendaddr "
-             "WHERE (vendaddr_vend_id=:vend_id) "
-             "ORDER BY vendaddr_code;" );
-  q.bindValue(":vend_id", _vendid);
-  q.exec();
-  _vendaddr->populate(q);
+  XSqlQuery addrq;
+  addrq.prepare("SELECT vendaddr_id, vendaddr_code, vendaddr_name,"
+                "       addr_city,   addr_state,    addr_country,"
+                "       addr_postalcode"
+                " FROM vendaddrinfo"
+                " LEFT OUTER JOIN addr ON (vendaddr_addr_id=addr_id)"
+                " WHERE (vendaddr_vend_id=:vend_id)"
+                " ORDER BY vendaddr_code;" );
+  addrq.bindValue(":vend_id", _vendid);
+  addrq.exec();
+  _vendaddr->populate(addrq);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Vendor Addresses"),
+                           addrq, __FILE__, __LINE__))
+    return;
 }
 
 void vendor::sFillTaxregList()
@@ -804,11 +890,9 @@ void vendor::sFillTaxregList()
   taxreg.exec();
   _taxreg->clear();
   _taxreg->populate(taxreg, true);
-  if (taxreg.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, taxreg.lastError().databaseText(), __FILE__, __LINE__);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Tax Registrations"),
+                           taxreg, __FILE__, __LINE__))
     return;
-  }
 }
 
 void vendor::sNewTaxreg()
@@ -849,21 +933,20 @@ void vendor::sViewTaxreg()
 
 void vendor::sDeleteTaxreg()
 {
-  q.prepare("DELETE FROM taxreg "
-            "WHERE (taxreg_id=:taxreg_id);");
-  q.bindValue(":taxreg_id", _taxreg->id());
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  XSqlQuery delq;
+  delq.prepare("DELETE FROM taxreg WHERE (taxreg_id=:taxreg_id);");
+  delq.bindValue(":taxreg_id", _taxreg->id());
+  delq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Deleting Tax Registration"),
+                           delq, __FILE__, __LINE__))
     return;
-  }
+
   sFillTaxregList();
 }
 
 void vendor::sNext()
 {
-  // Find Next 
+  // Find Next
   q.prepare("SELECT vend_id "
             "  FROM vendinfo"
             " WHERE (:number < vend_number)"
@@ -885,25 +968,28 @@ void vendor::sNext()
   clear();
 
   _vendid = newid;
-  populate();
+  sPopulate();
 }
 
 void vendor::sPrevious()
 {
-  // Find Next 
-  q.prepare("SELECT vend_id "
+  XSqlQuery nextq;
+  nextq.prepare("SELECT vend_id "
             "  FROM vendinfo"
             " WHERE (:number > vend_number)"
             " ORDER BY vend_number DESC"
             " LIMIT 1;");
-  q.bindValue(":number", _number->text());
-  q.exec();
-  if(!q.first())
+  nextq.bindValue(":number", _number->text());
+  nextq.exec();
+  if (!nextq.first() && nextq.lastError().type() == QSqlError::NoError)
   {
     QMessageBox::information(this, tr("At First Record"),
-       tr("You are already on the first record.") );
+                             tr("You are already on the first record.") );
     return;
   }
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Vendor"),
+                                nextq, __FILE__, __LINE__))
+    return;
   int newid = q.value("vend_id").toInt();
 
   if(!sCheckSave())
@@ -912,7 +998,7 @@ void vendor::sPrevious()
   clear();
 
   _vendid = newid;
-  populate();
+  sPopulate();
 }
 
 bool vendor::sCheckSave()
@@ -961,9 +1047,9 @@ void vendor::clear()
   _name->clear();
   _accountNumber->clear();
   _defaultShipVia->clear();
-  _vendorFOB->clear(); 
+  _vendorFOB->clear();
   _notes->clear();
-  _poComments->clear(); 
+  _poComments->clear();
 
   _address->clear();
   _contact1->clear();
@@ -1002,29 +1088,11 @@ void vendor::sHandleButtons()
     _addressStack->setCurrentIndex(0);
   else
     _addressStack->setCurrentIndex(1);
-    
+
   if (_checksButton->isChecked())
     _transmitStack->setCurrentIndex(1);
   else
     _transmitStack->setCurrentIndex(1);
-}
-
-void vendor::sLoadCrmAcct(int crmacctId )
-{
-  _notice = FALSE;
-  _crmacctid = crmacctId;
-  _contact1->setSearchAcct(_crmacctid);
-  _contact2->setSearchAcct(_crmacctid);
-  q.prepare("SELECT * FROM crmacct WHERE (crmacct_id=:crmacct_id);");
-  q.bindValue(":crmacct_id", crmacctId);
-  q.exec();
-  if (q.first())
-  {
-    _number->setText(q.value("crmacct_number").toString());
-    _name->setText(q.value("crmacct_name").toString());
-    _active->setChecked(q.value("crmacct_active").toBool());
-  }
-  _name->setFocus();
 }
 
 void vendor::sNumberEdited()
@@ -1033,3 +1101,34 @@ void vendor::sNumberEdited()
   _number->setText(_number->text().toUpper());
 }
 
+void vendor::sCrmAccount()
+{
+  ParameterList params;
+  params.append("crmacct_id", _crmacctid);
+  if ((cView == _mode && _privileges->check("ViewAllCRMAccounts")) ||
+      (cView == _mode && _privileges->check("ViewPersonalCRMAccounts")
+                      && omfgThis->username() == _crmowner) ||
+      (cEdit == _mode && _privileges->check("ViewAllCRMAccounts")
+                      && ! _privileges->check("MaintainAllCRMAccounts")) ||
+      (cEdit == _mode && _privileges->check("ViewPersonalCRMAccounts")
+                      && ! _privileges->check("MaintainPersonalCRMAccounts")
+                      && omfgThis->username() == _crmowner))
+    params.append("mode", "view");
+  else if ((cEdit == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
+           (cEdit == _mode && _privileges->check("MaintainPersonalCRMAccounts")
+                           && omfgThis->username() == _crmowner))
+    params.append("mode", "edit");
+  else if ((cNew == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
+           (cNew == _mode && _privileges->check("MaintainPersonalCRMAccounts")
+                          && omfgThis->username() == _crmowner))
+    params.append("mode", "edit");
+  else
+  {
+    qWarning("tried to open CRM Account window without privilege");
+    return;
+  }
+
+  crmaccount *newdlg = new crmaccount();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}

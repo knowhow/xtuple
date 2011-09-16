@@ -21,7 +21,7 @@ class filterSave : public QDialog, public Ui::filterSave
 
 public:
     filterSave(QWidget* parent = 0, const char* name = 0);
-    void set( ParameterList & pParams );
+    void set(const ParameterList & pParams);
 	
 public slots:
     void save();

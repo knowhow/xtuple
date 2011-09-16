@@ -448,7 +448,23 @@ void syncCompanies::sSync()
       for (int i = 0; i < _period->topLevelItemCount(); i++)
       {
         if (_period->topLevelItem(i)->isSelected())
-          period.append(_period->topLevelItem(i));
+        {
+          bool inserted = false;
+          QDate _periodStart = _period->topLevelItem(i)->rawValue("period_start").toDate();
+          for (int j = 0; j < period.size(); j++)
+          {
+            XTreeWidgetItem *p = (XTreeWidgetItem*)(period[j]);
+            QDate periodStart = p->rawValue("period_start").toDate();
+            if (_periodStart < periodStart)
+            {
+              period.insert(j, _period->topLevelItem(i));
+              inserted = true;
+              break;
+            }
+          }
+          if (!inserted)
+            period.append(_period->topLevelItem(i));
+        }
       }
 
       for (int j = 0; j < period.size(); j++)
@@ -759,7 +775,7 @@ void syncCompanies::sSync()
                         "  :accnt_id,:source, '', -1, "
                         "  currToBase(:curr_id, :amount, :date), "
                         "  :notes, -1, false, "
-                        "  '', false, current_user, false, "
+                        "  '', false, getEffectiveXtUser(), false, "
                         "  :company_id, :period_id, "
                         "  :amount, :curr_id, :curr_rate);");
             lgl.bindValue(":sequence", sequence);

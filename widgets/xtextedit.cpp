@@ -19,6 +19,7 @@ GuiClientInterface* XTextEdit::_guiClientInterface = 0;
 XTextEdit::XTextEdit(QWidget *pParent) :
   QTextEdit(pParent)
 {
+  _spellStatus = true;
   _mapper = 0;  
   _highlighter = 0;
   _highlighter = new XTextEditHighlighter(this);

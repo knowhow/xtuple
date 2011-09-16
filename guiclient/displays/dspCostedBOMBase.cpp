@@ -50,6 +50,7 @@ dspCostedBOMBase::dspCostedBOMBase(QWidget* parent, const char* name, Qt::WFlags
   list()->addColumn(tr("Expires"),    _dateColumn, Qt::AlignCenter,true, "bomdata_expires");
   list()->addColumn(tr("Unit Cost"),  _costColumn, Qt::AlignRight, true, "unitcost");
   list()->addColumn(tr("Ext. Cost"),  _priceColumn,Qt::AlignRight, true, "extendedcost");
+  list()->setPopulateLinear();
 
   connect(omfgThis, SIGNAL(bomsUpdated(int, bool)), this, SLOT(sFillList(int, bool)));
 

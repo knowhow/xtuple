@@ -75,7 +75,8 @@ incident::incident(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _incdthist->addColumn(tr("Description"),           -1, Qt::AlignLeft, true, "incdthist_descrip");
 
   _todoList->addColumn(tr("Priority"),      _userColumn, Qt::AlignRight, true, "incdtpriority_name");
-  _todoList->addColumn(tr("User"),          _userColumn, Qt::AlignLeft,  true, "todoitem_username");
+  _todoList->addColumn(tr("Owner"),         _userColumn, Qt::AlignLeft, false, "todoitem_owner_username");
+  _todoList->addColumn(tr("Assigned"),      _userColumn, Qt::AlignLeft,  true, "todoitem_username");
   _todoList->addColumn(tr("Name"),                  100, Qt::AlignLeft,  true, "todoitem_name");
   _todoList->addColumn(tr("Description"),            -1, Qt::AlignLeft,  true, "todoitem_description");
   _todoList->addColumn(tr("Status"),      _statusColumn, Qt::AlignLeft,  true, "todoitem_status");
@@ -649,16 +650,20 @@ void incident::sPopulateTodoMenu(QMenu *pMenu)
   QAction *menuItem;
 
   bool newPriv = (cNew == _mode || cEdit == _mode) &&
-      (_privileges->check("MaintainPersonalTodoList") ||
-       _privileges->check("MaintainOtherTodoLists") );
+      (_privileges->check("MaintainPersonalToDoItems") ||
+       _privileges->check("MaintainAllToDoItems") );
 
   bool editPriv = (cNew == _mode || cEdit == _mode) && (
-      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainPersonalTodoList")) ||
-      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainOtherTodoLists")) );
+      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+      (_privileges->check("MaintainAllToDoItems")) );
 
   bool viewPriv =
-      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewPersonalTodoList")) ||
-      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewOtherTodoLists"));
+      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("ViewPersonalToDoItems")) ||
+      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("ViewPersonalToDoItems")) ||
+      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+      (_privileges->check("ViewAllToDoItems")) || (_privileges->check("MaintainAllToDoItems"));
 
   menuItem = pMenu->addAction(tr("New..."), this, SLOT(sNewTodoItem()));
   menuItem->setEnabled(newPriv);
@@ -676,8 +681,8 @@ void incident::sPopulateTodoMenu(QMenu *pMenu)
 void incident::sHandleTodoPrivs()
 {
   bool newPriv = (cNew == _mode || cEdit == _mode) &&
-      (_privileges->check("MaintainPersonalTodoList") ||
-       _privileges->check("MaintainOtherTodoLists") );
+      (_privileges->check("MaintainPersonalToDoItems") ||
+       _privileges->check("MaintainAllToDoItems") );
 
   bool editPriv = false;
   bool viewPriv = false;
@@ -685,12 +690,16 @@ void incident::sHandleTodoPrivs()
   if(_todoList->currentItem())
   {
     editPriv = (cNew == _mode || cEdit == _mode) && (
-      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainPersonalTodoList")) ||
-      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainOtherTodoLists")) );
+        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+        (_privileges->check("MaintainAllToDoItems")) );
 
     viewPriv =
-      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewPersonalTodoList")) ||
-      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewOtherTodoLists"));
+        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("ViewPersonalToDoItems")) ||
+        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("ViewPersonalToDoItems")) ||
+        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
+        (_privileges->check("ViewAllToDoItems")) || (_privileges->check("MaintainAllToDoItems"));
   }
 
   _newTodoItem->setEnabled(newPriv);
@@ -774,6 +783,9 @@ void incident::sAssigned()
 
 void incident::sNewCharacteristic()
 {
+  if (! save(true))
+    return;
+
   ParameterList params;
   params.append("mode", "new");
   params.append("incdt_id", _incdtid);

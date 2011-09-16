@@ -31,7 +31,7 @@ void ContactWidget::init()
     _titleSingular = tr("Contact");
     _titlePlural = tr("Contacts");
     _query = "SELECT cntct.*, crmacct_name "
-	     "FROM cntct LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) ";
+             "FROM cntct() LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) ";
 
     _layoutDone = false;
     _minimalLayout = false;
@@ -369,7 +369,9 @@ void ContactWidget::silentSetId(const int pId)
   else
   {   
       XSqlQuery idQ;
+      _query.replace("cntct()","cntct"); // Switch to non-restrictive table
       idQ.prepare(_query + " WHERE cntct_id = :id;");
+      _query.replace("FROM cntct", "FROM cntct()"); // Switch back to restrictive table function
       idQ.bindValue(":id", pId);
       idQ.exec();
       if (idQ.first())
@@ -1042,7 +1044,10 @@ void ContactWidget::sLaunchEmail()
 
 void ContactWidget::sLaunchWebaddr()
 {
-  QDesktopServices::openUrl(QUrl("http://" + _webaddr->text()));
+    QUrl url(_webaddr->text());
+    if(url.scheme().isEmpty())
+      url.setScheme("http");
+  QDesktopServices::openUrl(url);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1075,7 +1080,7 @@ ContactList::ContactList(QWidget* pParent, const char* pName, bool, Qt::WFlags)
     setWindowTitle(tr("Contact List"));
 }
 
-void ContactList::set(ParameterList &pParams)
+void ContactList::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -1255,7 +1260,7 @@ ContactSearch::ContactSearch(QWidget* pParent, Qt::WindowFlags pFlags)
              "FROM cntct LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) ";
   }
 
-void ContactSearch::set(ParameterList &pParams)
+void ContactSearch::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

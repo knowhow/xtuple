@@ -10,55 +10,33 @@
 
 #include "thawItemSitesByClassCode.h"
 
-#include <qvariant.h>
-
-/*
- *  Constructs a thawItemSitesByClassCode as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 thawItemSitesByClassCode::thawItemSitesByClassCode(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_thaw, SIGNAL(clicked()), this, SLOT(sThaw()));
 
-    // signals and slots connections
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(_thaw, SIGNAL(clicked()), this, SLOT(sThaw()));
-    init();
+  _classCode->setType(ParameterGroup::ClassCode);
 
-    //If not multi-warehouse hide whs control
-    if (!_metrics->boolean("MultiWhs"))
-    {
-      _warehouseLit->hide();
-      _warehouse->hide();
-    }
+  //If not multi-warehouse hide whs control
+  if (!_metrics->boolean("MultiWhs"))
+  {
+    _warehouseLit->hide();
+    _warehouse->hide();
+  }
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 thawItemSitesByClassCode::~thawItemSitesByClassCode()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void thawItemSitesByClassCode::languageChange()
 {
-    retranslateUi(this);
-}
-
-
-void thawItemSitesByClassCode::init()
-{
-  _classCode->setType(ParameterGroup::ClassCode);
+  retranslateUi(this);
 }
 
 void thawItemSitesByClassCode::sThaw()

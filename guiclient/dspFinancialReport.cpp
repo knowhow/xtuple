@@ -747,7 +747,7 @@ void dspFinancialReport::sFillListTrend()
     q1w += QString(" AND (r%1.flrpt_type_id=flgrp_id)").arg(c);
     q1w += QString(" AND (r%1.flrpt_flhead_id=:flhead_id)").arg(c);
     q1w += QString(" AND (r%1.flrpt_period_id=%2)").arg(c).arg(periodsRef.at(c));
-    q1w += QString(" AND (r%1.flrpt_username=CURRENT_USER)").arg(c);
+    q1w += QString(" AND (r%1.flrpt_username=getEffectiveXtUser())").arg(c);
     q1w += QString(" AND (r%1.flrpt_interval='%2')").arg(c).arg(interval);
     if(c > 0)
       q1w += QString(" AND (r0.flrpt_order=r%1.flrpt_order)").arg(c);
@@ -759,7 +759,7 @@ void dspFinancialReport::sFillListTrend()
     q2w += QString(" AND (r%1.flrpt_type_id=flitem_id)").arg(c);
     q2w += QString(" AND (r%1.flrpt_flhead_id=:flhead_id)").arg(c);
     q2w += QString(" AND (r%1.flrpt_period_id=%2)").arg(c).arg(periodsRef.at(c));
-    q2w += QString(" AND (r%1.flrpt_username=CURRENT_USER)").arg(c);
+    q2w += QString(" AND (r%1.flrpt_username=getEffectiveXtUser())").arg(c);
     q2w += QString(" AND (r%1.flrpt_accnt_id=accnt_id)").arg(c);
     q2w += QString(" AND (r%1.flrpt_interval='%2')").arg(c).arg(interval);
     if(c > 0)
@@ -772,7 +772,7 @@ void dspFinancialReport::sFillListTrend()
     q3w += QString(" AND (r%1.flrpt_type_id=flspec_id)").arg(c);
     q3w += QString(" AND (r%1.flrpt_flhead_id=:flhead_id)").arg(c);
     q3w += QString(" AND (r%1.flrpt_period_id=%2)").arg(c).arg(periodsRef.at(c));
-    q3w += QString(" AND (r%1.flrpt_username=CURRENT_USER)").arg(c);
+    q3w += QString(" AND (r%1.flrpt_username=getEffectiveXtUser())").arg(c);
     q3w += QString(" AND (r%1.flrpt_interval='%2')").arg(c).arg(interval);
     if(c > 0)
       q3w += QString(" AND (r0.flrpt_order=r%1.flrpt_order)").arg(c);
@@ -785,7 +785,7 @@ void dspFinancialReport::sFillListTrend()
     q4w += QString(" AND (NOT (r%1.flrpt_type IN ('G','I','S')))").arg(c);
     q4w += QString(" AND (r%1.flrpt_flhead_id=:flhead_id)").arg(c);
     q4w += QString(" AND (r%1.flrpt_period_id=%2)").arg(c).arg(periodsRef.at(c));
-    q4w += QString(" AND (r%1.flrpt_username=CURRENT_USER)").arg(c);
+    q4w += QString(" AND (r%1.flrpt_username=getEffectiveXtUser())").arg(c);
     q4w += QString(" AND (r%1.flrpt_interval='%2')").arg(c).arg(interval);
     if(c > 0)
       q4w += QString(" AND (r0.flrpt_order=r%1.flrpt_order)").arg(c);

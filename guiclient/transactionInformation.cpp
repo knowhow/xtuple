@@ -55,7 +55,10 @@ enum SetResponse transactionInformation::set(const ParameterList &pParams)
   {
     _invhistid = param.toInt();
 
-    q.prepare( "SELECT * "
+    q.prepare( "SELECT *, "
+               "       CASE WHEN (invhist_transtype IN ('EX', 'IM', 'SH', 'SI')) THEN (invhist_invqty * -1.0)"
+               "            ELSE invhist_invqty"
+               "       END AS adjinvqty "
                "FROM invhist "
                "WHERE (invhist_id=:invhist_id);" );
     q.bindValue(":invhist_id", _invhistid);
@@ -68,7 +71,7 @@ enum SetResponse transactionInformation::set(const ParameterList &pParams)
       _createdDate->setDate(q.value("invhist_created").toDate());
       _username->setText(q.value("invhist_user").toString());
       _item->setItemsiteid(q.value("invhist_itemsite_id").toInt());
-      _transactionQty->setText(formatQty(q.value("invhist_invqty").toDouble()));
+      _transactionQty->setText(formatQty(q.value("adjinvqty").toDouble()));
       _qohBefore->setText(formatQty(q.value("invhist_qoh_before").toDouble()));
       _qohAfter->setText(formatQty(q.value("invhist_qoh_after").toDouble()));
       _notes->setText(q.value("invhist_comments").toString());

@@ -443,7 +443,7 @@ bool transferOrder::insertPlaceholder()
   else if (q.lastError().type() != QSqlError::NoError)
   {
     systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-    return UndefinedError;
+    return false;
   }
 
   _ignoreSignals = TRUE;
@@ -592,6 +592,10 @@ bool transferOrder::save(bool partial)
   _dstAddr->save(AddressCluster::CHANGEONE);
   _ignoreSignals = FALSE;
 
+  XSqlQuery rollback;
+  rollback.prepare("ROLLBACK;");
+
+  q.exec("BEGIN;");
   q.prepare("UPDATE tohead "
 	    "SET tohead_number=:number,"
 	    "    tohead_status=:status,"
@@ -699,6 +703,7 @@ bool transferOrder::save(bool partial)
   q.exec();
   if (q.lastError().type() != QSqlError::NoError)
   {
+    rollback.exec();
     systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return false;
   }
@@ -717,6 +722,7 @@ bool transferOrder::save(bool partial)
       _locked = q.value("locked").toBool();
     else if (q.lastError().type() != QSqlError::NoError)
     {
+      rollback.exec();
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
       return false;
     }
@@ -730,6 +736,7 @@ bool transferOrder::save(bool partial)
     q.exec();
     if (q.lastError().type() != QSqlError::NoError)
     {
+      rollback.exec();
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
       return false;
     }
@@ -741,6 +748,7 @@ bool transferOrder::save(bool partial)
     q.exec();
     if (q.lastError().type() != QSqlError::NoError)
     {
+      rollback.exec();
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
       return false;
     }
@@ -752,11 +760,13 @@ bool transferOrder::save(bool partial)
     q.exec();
     if (q.lastError().type() != QSqlError::NoError)
     {
+      rollback.exec();
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
       return false;
     }
   }
 
+  q.exec("COMMIT;");
   _saved = true;
   omfgThis->sTransferOrdersUpdated(_toheadid);
 
@@ -1822,14 +1832,14 @@ void transferOrder::viewTransferOrder( int pId )
 
 void transferOrder::sReturnStock()
 {
+  XSqlQuery rollback;
+  rollback.prepare("ROLLBACK;");
+
   q.exec("BEGIN;");	// because of possible lot, serial, or location distribution cancelations
   q.prepare("SELECT returnItemShipments('TO', :toitem_id, 0, CURRENT_TIMESTAMP) AS result;");
   QList<XTreeWidgetItem*> selected = _toitem->selectedItems();
   for (int i = 0; i < selected.size(); i++)
   {
-    XSqlQuery rollback;
-    rollback.prepare("ROLLBACK;");
-
     q.bindValue(":toitem_id", ((XTreeWidgetItem*)(selected[i]))->id());
     q.exec();
     if (q.first())
@@ -1850,7 +1860,6 @@ void transferOrder::sReturnStock()
         return;
       }
 
-      q.exec("COMMIT;");
     }
     else if (q.lastError().type() != QSqlError::NoError)
     {
@@ -1860,6 +1869,8 @@ void transferOrder::sReturnStock()
       return;
     }
   }
+
+  q.exec("COMMIT;");
 
   sFillItemList();
 }

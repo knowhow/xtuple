@@ -35,7 +35,7 @@ void customerTypeList::languageChange()
   retranslateUi(this);
 }
 
-enum SetResponse customerTypeList::set(ParameterList &pParams)
+enum SetResponse customerTypeList::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

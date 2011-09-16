@@ -16,9 +16,10 @@
 #include <QSqlError>
 #include <QVariant>
 
+#include "errorReporter.h"
+#include "parameterwidget.h"
 #include "prospect.h"
 #include "storedProcErrorLookup.h"
-#include "parameterwidget.h"
 
 prospects::prospects(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "prospects", fl)
@@ -99,26 +100,20 @@ void prospects::sView()
 
 void prospects::sDelete()
 {
-  q.prepare("SELECT deleteProspect(:prospect_id) AS result;");
-  q.bindValue(":prospect_id", list()->id());
-  q.exec();
-  if (q.first())
-  {
-    int returnVal = q.value("result").toInt();
-    if (returnVal < 0)
-    {
-        systemError(this, storedProcErrorLookup("deleteProspect", returnVal),
-		    __FILE__, __LINE__);
-        return;
-    }
-    omfgThis->sProspectsUpdated();
-    omfgThis->sCrmAccountsUpdated(-1);
-  }
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  if (QMessageBox::question(this, tr("Delete?"),
+                            tr("<p>Are you sure you want to delete the "
+                               "selected Prospect?"),
+                            QMessageBox::Yes,
+                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
     return;
-  }
+
+  XSqlQuery delq;
+  delq.prepare("DELETE FROM prospect WHERE (prospect_id=:prospect_id);");
+  delq.bindValue(":prospect_id", list()->id());
+  delq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error deleting"),
+                           delq, __FILE__, __LINE__))
+    return;
 }
 
 void prospects::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)

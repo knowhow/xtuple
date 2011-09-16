@@ -37,6 +37,7 @@ protected slots:
 private:
     bool	_captive;
     QString	_headtype;
+    int         _shipformid;
 
 };
 

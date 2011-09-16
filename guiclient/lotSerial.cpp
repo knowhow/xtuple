@@ -122,7 +122,8 @@ void lotSerial::sSave()
 
 void lotSerial::sChanged()
 {
-  _changed=true;
+  if (_notes->toPlainText().length() > 0)
+    _changed=true;
 }
 
 void lotSerial::sNewCharass()

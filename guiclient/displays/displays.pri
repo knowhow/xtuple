@@ -24,7 +24,6 @@ FORMS   += displays/dspAllocations.ui \
            displays/dspFrozenItemSites.ui \
            displays/dspGLSeries.ui \
            displays/dspGLTransactions.ui \
-           displays/dspIncidentsByCRMAccount.ui \
            displays/dspIndentedWhereUsed.ui \
            displays/dspInvalidBillsOfMaterials.ui \
            displays/dspInventoryAvailability.ui \
@@ -94,7 +93,6 @@ FORMS   += displays/dspAllocations.ui \
            displays/dspTimePhasedOpenAPItems.ui \
            displays/dspTimePhasedOpenARItems.ui \
            displays/dspTimePhasedUsageStatisticsByItem.ui \
-           displays/dspTodoByUserAndIncident.ui \
            displays/dspUnbalancedQOHByClassCode.ui \
            displays/dspUndefinedManufacturedItems.ui \
            displays/dspUninvoicedReceivings.ui \
@@ -141,7 +139,6 @@ HEADERS += displays/dspAllocations.h \
            displays/dspFrozenItemSites.h \
            displays/dspGLSeries.h \
            displays/dspGLTransactions.h \
-           displays/dspIncidentsByCRMAccount.h \
            displays/dspIndentedBOM.h \
            displays/dspIndentedWhereUsed.h \
            displays/dspInvalidBillsOfMaterials.h \
@@ -222,7 +219,6 @@ HEADERS += displays/dspAllocations.h \
            displays/dspTimePhasedOpenARItems.h \
            displays/dspTimePhasedSales.h \
            displays/dspTimePhasedUsageStatisticsByItem.h \
-           displays/dspTodoByUserAndIncident.h \
            displays/dspTrialBalances.h \
            displays/dspUnbalancedQOHByClassCode.h \
            displays/dspUndefinedManufacturedItems.h \
@@ -272,7 +268,6 @@ SOURCES += displays/dspAllocations.cpp \
            displays/dspFrozenItemSites.cpp \
            displays/dspGLSeries.cpp \
            displays/dspGLTransactions.cpp \
-           displays/dspIncidentsByCRMAccount.cpp \
            displays/dspIndentedBOM.cpp \
            displays/dspIndentedWhereUsed.cpp \
            displays/dspInvalidBillsOfMaterials.cpp \
@@ -353,7 +348,6 @@ SOURCES += displays/dspAllocations.cpp \
            displays/dspTimePhasedBookings.cpp \
            displays/dspTimePhasedSales.cpp \
            displays/dspTimePhasedUsageStatisticsByItem.cpp \
-           displays/dspTodoByUserAndIncident.cpp \
            displays/dspTrialBalances.cpp \
            displays/dspUnbalancedQOHByClassCode.cpp \
            displays/dspUndefinedManufacturedItems.cpp \

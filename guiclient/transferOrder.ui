@@ -883,7 +883,7 @@ to be bound by its terms.</comment>
         <number>5</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="_orderComments"/>
+        <widget class="XTextEdit" name="_orderComments"/>
        </item>
       </layout>
      </widget>
@@ -919,7 +919,7 @@ to be bound by its terms.</comment>
         <number>5</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="_shippingComments"/>
+        <widget class="XTextEdit" name="_shippingComments"/>
        </item>
       </layout>
      </widget>
@@ -1088,6 +1088,11 @@ to be bound by its terms.</comment>
    <class>ToitemTableView</class>
    <extends>QTableView</extends>
    <header>toitemTableView.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -351,7 +351,7 @@ to be bound by its terms.</comment>
         </attribute>
         <layout class="QGridLayout" name="gridLayout" >
          <item row="0" column="0" >
-          <widget class="QTextEdit" name="_comments" >
+          <widget class="XTextEdit" name="_comments" >
            <property name="sizePolicy" >
             <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
              <horstretch>0</horstretch>
@@ -390,6 +390,11 @@ to be bound by its terms.</comment>
    <class>XComboBox</class>
    <extends>QComboBox</extends>
    <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

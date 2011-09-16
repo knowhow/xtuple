@@ -12,9 +12,9 @@
 
 #define _projectCluster_h
 
-#include "virtualCluster.h"
+#include "crmcluster.h"
 
-class XTUPLEWIDGETS_EXPORT ProjectLineEdit : public VirtualClusterLineEdit
+class XTUPLEWIDGETS_EXPORT ProjectLineEdit : public CrmClusterLineEdit
 {
     Q_OBJECT
 

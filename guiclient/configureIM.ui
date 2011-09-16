@@ -311,6 +311,13 @@ to be bound by its terms.</comment>
           </layout>
          </item>
          <item>
+          <widget class="QCheckBox" name="_asOfQOH">
+           <property name="text">
+            <string>Enable As-Of QOH reporting</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0" rowspan="2">
             <widget class="QGroupBox" name="_cost">
@@ -874,6 +881,7 @@ to be bound by its terms.</comment>
   <tabstop>_transferOrderChangeLog</tabstop>
   <tabstop>_lotSerial</tabstop>
   <tabstop>_setDefLoc</tabstop>
+  <tabstop>_asOfQOH</tabstop>
   <tabstop>_costAvg</tabstop>
   <tabstop>_costStd</tabstop>
   <tabstop>_costJob</tabstop>
@@ -894,6 +902,10 @@ to be bound by its terms.</comment>
   <tabstop>_tolerance</tabstop>
   <tabstop>_shipformNumOfCopies</tabstop>
   <tabstop>_shipformWatermarks</tabstop>
+  <tabstop>_useStdCost</tabstop>
+  <tabstop>_useAvgCost</tabstop>
+  <tabstop>_useActCost</tabstop>
+  <tabstop>_recordPpvOnReceipt</tabstop>
  </tabstops>
  <resources/>
  <connections>

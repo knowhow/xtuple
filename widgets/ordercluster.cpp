@@ -356,11 +356,11 @@ void OrderLineEdit::sParse()
           else if (result == 1)
           {
             _valid = true;
-            setId(numQ.value("id").toInt(), numQ.value("name").toString());
             _name = (numQ.value("name").toString());
             _description = numQ.value("description").toString();
             _from = numQ.value("orderhead_from").toString();
             _to	= numQ.value("orderhead_to").toString();
+            setId(numQ.value("id").toInt(), numQ.value("name").toString());
           }
           else
           {

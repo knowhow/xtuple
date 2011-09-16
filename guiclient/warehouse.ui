@@ -754,7 +754,7 @@ to be bound by its terms.</comment>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QTextEdit" name="_shipcomments"/>
+                   <widget class="XTextEdit" name="_shipcomments"/>
                   </item>
                  </layout>
                 </item>
@@ -1176,6 +1176,11 @@ to be bound by its terms.</comment>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -435,7 +435,7 @@ to be bound by its terms.</comment>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="0" column="0">
-          <widget class="QTextEdit" name="_notes"/>
+          <widget class="XTextEdit" name="_notes"/>
          </item>
         </layout>
        </widget>
@@ -482,6 +482,11 @@ to be bound by its terms.</comment>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

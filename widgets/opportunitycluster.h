@@ -12,9 +12,9 @@
 
 #define _opportunityCluster_h
 
-#include "virtualCluster.h"
+#include "crmcluster.h"
 
-class XTUPLEWIDGETS_EXPORT OpportunityClusterLineEdit : public VirtualClusterLineEdit
+class XTUPLEWIDGETS_EXPORT OpportunityClusterLineEdit : public CrmClusterLineEdit
 {
     Q_OBJECT
 

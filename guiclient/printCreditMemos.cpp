@@ -21,6 +21,7 @@
 #include "editICMWatermark.h"
 #include "guiclient.h"
 #include "storedProcErrorLookup.h"
+#include "distributeInventory.h"
 
 printCreditMemos::printCreditMemos(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
     : XDialog(parent, name, modal, fl)
@@ -77,7 +78,6 @@ void printCreditMemos::sPrint()
   {
     QPrinter printer(QPrinter::HighResolution);
     bool     setupPrinter  = TRUE;
-    int      itemlocSeries = 0;
     bool userCanceled = false;
     if (orReport::beginMultiPrint(&printer, userCanceled) == false)
     {
@@ -120,23 +120,40 @@ void printCreditMemos::sPrint()
           }
         }
 
-        if (_post->isChecked())
+        if ( (_post->isChecked()) && (i == 0) )
         {
-          XSqlQuery postCreditMemo;
-          postCreditMemo.prepare("SELECT postCreditMemo(:cmhead_id, :itemlocSeries) AS result;");
-          postCreditMemo.bindValue(":cmhead_id", cmhead.value("cmhead_id").toInt());
-          postCreditMemo.bindValue(":itemlocSeries", itemlocSeries);
-          postCreditMemo.exec();
-          if (postCreditMemo.first())
+          q.exec("BEGIN;");
+          //TO DO:  Replace this method with commit that doesn't require transaction
+          //block that can lead to locking issues
+          XSqlQuery rollback;
+          rollback.prepare("ROLLBACK;");
+
+          q.prepare("SELECT postCreditMemo(:cmhead_id, 0) AS result;");
+          q.bindValue(":cmhead_id", cmhead.value("cmhead_id").toInt());
+          q.exec();
+          q.first();
+          int result = q.value("result").toInt();
+          if (result < 0)
           {
-            itemlocSeries = postCreditMemo.value("result").toInt();
-            if (itemlocSeries < 0)
-              systemError(this, storedProcErrorLookup("postCreditMemo",
-                                                      itemlocSeries));
+            rollback.exec();
+            systemError( this, storedProcErrorLookup("postCreditMemo", result),
+                  __FILE__, __LINE__);
+          }
+          else if (q.lastError().type() != QSqlError::NoError)
+          {
+            systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+            rollback.exec();
           }
           else
-            systemError(this, postCreditMemo.lastError().databaseText(),
-                        __FILE__, __LINE__);
+          {
+            if (distributeInventory::SeriesAdjust(result, this) == XDialog::Rejected)
+            {
+              rollback.exec();
+              QMessageBox::information( this, tr("Post Credit Memo"), tr("Transaction Canceled") );
+            }
+
+            q.exec("COMMIT;");
+          }
         }
       }
 
@@ -151,7 +168,7 @@ void printCreditMemos::sPrint()
                               QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
       XSqlQuery().exec( "UPDATE cmhead "
                         "SET cmhead_printed=TRUE "
-                        "WHERE (NOT cmhead_printed);" );
+                        "WHERE (NOT COALESCE(cmhead_printed,false));" );
 
     omfgThis->sCreditMemosUpdated();
   }

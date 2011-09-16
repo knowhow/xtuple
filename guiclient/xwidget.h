@@ -15,6 +15,7 @@
 #include <parameter.h>
 #include <guiclient.h>
 
+class QScriptEngine;
 class XWidgetPrivate;
 
 class XWidget : public QWidget
@@ -34,6 +35,7 @@ class XWidget : public QWidget
   protected:
     void closeEvent(QCloseEvent * event);
     void showEvent(QShowEvent * event);
+    QScriptEngine *engine();
 
   protected slots:
     virtual enum SetResponse postSet();

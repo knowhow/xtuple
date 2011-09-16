@@ -10,10 +10,10 @@
 
 #include "qbase64encode.h"
 
-#include <qstring.h>
-#include <qiodevice.h>
-#include <qtextstream.h>
-#include <qbuffer.h>
+#include <QString>
+#include <QIODevice>
+#include <QTextStream>
+#include <QBuffer>
 
 static const char _base64Table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

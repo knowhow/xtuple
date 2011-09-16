@@ -19,7 +19,10 @@
        END AS debit,
        CASE WHEN (gltrans_amount > 0) THEN formatExtPrice(gltrans_amount)
             ELSE ''
-       END AS credit
+       END AS credit,
+       CASE WHEN (aropen_doctype IN ('C', 'R')) THEN 'CR'
+            WHEN (aropen_doctype='I') THEN '  '
+       END AS docsence
 FROM aropen, gltrans, cust, accnt
 WHERE ( (aropen_cust_id=cust_id)
  AND (aropen_docnumber=gltrans_docnumber)
@@ -33,7 +36,7 @@ ORDER BY aropen_docnumber, gltrans_amount, accnt_number;
  </querysource>
  <querysource>
   <name>distributions</name>
-  <sql>SELECT (formatGLAccount(accnt_id) || ' - ' || accnt_descrip) AS accntnumber,
+  <sql>SELECT 1 as gid, (formatGLAccount(accnt_id) || ' - ' || accnt_descrip) AS accntnumber,
        formatExtPrice(SUM(ABS(gltrans_amount))) AS debit,
        '' AS credit
 FROM gltrans, accnt
@@ -43,7 +46,7 @@ WHERE ( (gltrans_accnt_id=accnt_id)
 GROUP BY accntnumber
 
 UNION
-SELECT (formatGLAccount(accnt_id) || ' - ' || accnt_descrip) AS accntnumber,
+SELECT 1 as gid, (formatGLAccount(accnt_id) || ' - ' || accnt_descrip) AS accntnumber,
        '' AS debit,
        formatExtPrice(SUM(gltrans_amount)) AS credit
 FROM gltrans, accnt

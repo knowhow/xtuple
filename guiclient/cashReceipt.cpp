@@ -71,7 +71,11 @@ cashReceipt::cashReceipt(QWidget* parent, const char* name, Qt::WFlags fl)
   connect(_distDate, SIGNAL(newDate(QDate)), this, SLOT(sDateChanged()));
   connect(_applDate, SIGNAL(newDate(QDate)), this, SLOT(sDateChanged()));
   connect(_credits, SIGNAL(toggled(bool)), this, SLOT(sFillApplyList()));
-  if (_metrics->boolean("CCAccept"))
+  if (!_metrics->boolean("CCAccept") || !_privileges->check("ProcessCreditCards"))
+  {
+    _tab->removeTab(_tab->indexOf(_creditCardTab));
+  }
+  else
   {
     connect(_newCC, SIGNAL(clicked()), this, SLOT(sNewCreditCard()));
     connect(_editCC, SIGNAL(clicked()), this, SLOT(sEditCreditCard()));
@@ -202,7 +206,7 @@ enum SetResponse cashReceipt::set(const ParameterList &pParams)
     {
       _mode = cEdit;
 	  _transType = cEdit;
-      _tab->removeTab(_tab->indexOf(_creditCardTab));
+      //_tab->removeTab(_tab->indexOf(_creditCardTab));
 
       _cust->setReadOnly(TRUE);
 

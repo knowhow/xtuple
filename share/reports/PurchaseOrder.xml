@@ -13,6 +13,12 @@
   </data>
   <opacity>25</opacity>
  </watermark>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>28</topmargin>
@@ -70,7 +76,7 @@
        CASE WHEN (poitem_vend_uom LIKE '') THEN (uom_name)
             ELSE (poitem_vend_uom)
        END AS itemuom,
-       formatPrice(poitem_unitprice) AS f_price,
+       formatPurchPrice(poitem_unitprice) AS f_price,
        formatExtPrice(poitem_unitprice * poitem_qty_ordered) AS f_extended,
        formatDate(poitem_duedate) AS f_duedate,
        characteristicsToString('PI', poitem_id, '=', ', ') AS poitem_characteristics

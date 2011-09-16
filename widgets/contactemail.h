@@ -11,7 +11,7 @@
 #ifndef CONTACTEMAIL_H
 #define CONTACTEMAIL_H
 
-#include <QSqlQueryModel>;
+#include <QSqlQueryModel>
 
 #include "documents.h"
 #include "ui_contactemail.h"

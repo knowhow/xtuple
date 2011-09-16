@@ -1514,7 +1514,7 @@ void ParameterWidget::setSavedFilters(int defaultId)
             " UNION "
             " SELECT filter_id, filter_name, 2 AS seq "
             " FROM filter "
-            " WHERE COALESCE(filter_username,current_user)=current_user "
+            " WHERE COALESCE(filter_username,getEffectiveXtUser())=getEffectiveXtUser() "
             " AND filter_screen=:screen "
             " ORDER BY seq, filter_name ";
 
@@ -1767,9 +1767,9 @@ void ParameterWidget::setSelectedFilter(int filter_id)
     classname = parent()->metaObject()->className();
 
   QString query = "UPDATE filter SET filter_selected=false "
-                  "WHERE filter_screen=:screen AND filter_username=current_user";
+                  "WHERE filter_screen=:screen AND filter_username=getEffectiveXtUser()";
   QString query2 = "UPDATE filter SET filter_selected=true "
-                   "WHERE filter_screen=:screen AND filter_id=:id AND filter_username=current_user";
+                   "WHERE filter_screen=:screen AND filter_id=:id AND filter_username=getEffectiveXtUser()";
   qry.prepare(query);
   qry.bindValue(":screen", classname);
 

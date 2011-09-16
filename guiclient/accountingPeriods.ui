@@ -106,7 +106,7 @@ to be bound by its terms.</comment>
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Close</string>
+        <string>Close Period</string>
        </property>
       </widget>
      </item>
@@ -116,7 +116,7 @@ to be bound by its terms.</comment>
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Freeze</string>
+        <string>Freeze Period</string>
        </property>
       </widget>
      </item>
@@ -173,6 +173,7 @@ to be bound by its terms.</comment>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -13,7 +13,7 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>614</width>
     <height>519</height>
    </rect>
   </property>
@@ -64,32 +64,6 @@ to be bound by its terms.</comment>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Minimum</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>10</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="_active">
-           <property name="text">
-            <string>&amp;Active</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
           <spacer>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -104,6 +78,16 @@ to be bound by its terms.</comment>
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_crmacct">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>CRM Account...</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -163,6 +147,16 @@ to be bound by its terms.</comment>
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="_active">
+           <property name="text">
+            <string>&amp;Active</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -710,16 +704,17 @@ to be bound by its terms.</comment>
    <class>XLineEdit</class>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_username</tabstop>
-  <tabstop>_active</tabstop>
   <tabstop>_properName</tabstop>
   <tabstop>_initials</tabstop>
   <tabstop>_email</tabstop>

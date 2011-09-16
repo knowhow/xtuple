@@ -94,10 +94,12 @@ class XTUPLEWIDGETS_EXPORT Documents : public QWidget, public Ui::documents
 
   private slots:
     void handleSelection(bool = false);
+    void handleItemSelected();
 
   private:
     enum DocumentSources _source;
     int                  _sourceid;
+    bool                 _readOnly;
 
 };
 

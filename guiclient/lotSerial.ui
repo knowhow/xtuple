@@ -229,7 +229,7 @@ to be bound by its terms.</comment>
         </attribute>
         <layout class="QGridLayout">
          <item row="0" column="0">
-          <widget class="QTextEdit" name="_notes">
+          <widget class="XTextEdit" name="_notes">
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
            </property>
@@ -284,6 +284,11 @@ to be bound by its terms.</comment>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

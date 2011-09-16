@@ -293,7 +293,7 @@ to be bound by its terms.</comment>
         <widget class="QLabel" name="_vendorItemNumber" />
        </item>
        <item>
-        <widget class="QTextEdit" name="_vendorDescrip" >
+        <widget class="XTextEdit" name="_vendorDescrip" >
          <property name="readOnly" >
           <bool>true</bool>
          </property>
@@ -593,6 +593,11 @@ to be bound by its terms.</comment>
    <header>itemcluster.h</header>
    <container>0</container>
    <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

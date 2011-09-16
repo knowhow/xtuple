@@ -42,6 +42,7 @@ class menuInventory : public QObject
     void sItemSites();
 
     void sAdjustmentTrans();
+    void sAdjustInvValue();
     void sTransferTrans();
     void sNewTransferOrder();
     void sTransferOrders();

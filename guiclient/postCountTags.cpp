@@ -10,8 +10,13 @@
 
 #include "postCountTags.h"
 
-#include <QVariant>
 #include <QMessageBox>
+#include <QSqlError>
+#include <QVariant>
+
+#include <mqlutil.h>
+
+#include "storedProcErrorLookup.h"
 
 postCountTags::postCountTags(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   : XDialog(parent, name, modal, fl)
@@ -22,13 +27,11 @@ postCountTags::postCountTags(QWidget* parent, const char* name, bool modal, Qt::
   _codeGroup->addButton(_plancode);
   _codeGroup->addButton(_classcode);
 
-  // signals and slots connections
-  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
   connect(_post, SIGNAL(clicked()), this, SLOT(sPost()));
   connect(_codeGroup, SIGNAL(buttonClicked(int)), this, SLOT(sParameterTypeChanged()));
 
   _parameter->setType(ParameterGroup::ClassCode);
-  
+
   if(!_privileges->check("ThawInventory"))
   {
     _thaw->setChecked(FALSE);
@@ -46,49 +49,47 @@ void postCountTags::languageChange()
   retranslateUi(this);
 }
 
+bool postCountTags::setParams(ParameterList &params)
+{
+  params.append("thaw", QVariant(_thaw->isChecked()));
+  _warehouse->appendValue(params);
+  _parameter->appendValue(params);
+
+  return true;
+}
+
 void postCountTags::sPost()
 {
-  QString sql( "SELECT MIN(postCountTag(invcnt_id, :thaw)) AS result "
-               "FROM invcnt, itemsite, item "
-               "WHERE ( (invcnt_itemsite_id=itemsite_id)"
-               " AND (invcnt_qoh_after IS NOT NULL)"
-               " AND (NOT invcnt_posted)"
-               " AND (itemsite_item_id=item_id)" );
+  ParameterList postp;
+  if (! setParams(postp))
+    return;
 
-  if (_warehouse->isSelected())
-    sql += " AND (itemsite_warehous_id=:warehous_id)";
-  
-    if ((_parameter->type() == ParameterGroup::ClassCode) && _parameter->isSelected())
-      sql += " AND (item_classcode_id=:classcode_id)";
-    else if ((_parameter->type() == ParameterGroup::ClassCode) && _parameter->isPattern())
-      sql += " AND (item_classcode_id IN (SELECT classcode_id FROM classcode WHERE (classcode_code ~ :classcode_pattern)))";
-    else if ((_parameter->type() == ParameterGroup::PlannerCode) && _parameter->isSelected())
-      sql += " AND (itemsite_plancode_id=:plancode_id)";
-    else if ((_parameter->type() == ParameterGroup::PlannerCode) && _parameter->isPattern())
-      sql += " AND (itemsite_plancode_id IN (SELECT plancode_id FROM plancode WHERE (plancode_code ~ :plancode_pattern)))";
-  
-  sql += ");";
-  
-  q.prepare(sql);
-  q.bindValue(":thaw", QVariant(_thaw->isChecked()));
-  _warehouse->bindValue(q);
-  _parameter->bindValue(q);
-  q.exec();
-
-  if (q.first())
+  bool    valid = false;
+  QString errmsg;
+  MetaSQLQuery postm = MQLUtil::mqlLoad("postCountTags", "post",
+                                        errmsg, &valid);
+  if (! valid)
   {
-    if (q.value("result").toInt() < 0)
-      QMessageBox::information( this, tr("One or More Posts Failed"),
-        tr("One or more of your Count Tags could not be posted. Review\n"
-           "the Count Tag Edit list to ensure your Count Tags and\n"
-           "Count Slips have been entered properly. Or contact your\n"
-           "Systems Administrator for more information. The function\n"
-           "postCountTag returned the error #%1." )
-           .arg(q.value("result").toInt()) );
+    QMessageBox::critical(this, tr("Query Error"), errmsg);
+    return;
   }
-  else
-    systemError( this, tr("A System Error occurred at postCountTags::%1.")
-                       .arg(__LINE__) );
+
+  XSqlQuery postq = postm.toQuery(postp);
+  if (postq.first())
+  {
+    int result = postq.value("result").toInt();
+    if (result < 0)
+    {
+      QMessageBox::critical(this, tr("One or More Posts Failed"),
+                            storedProcErrorLookup("postCountTag", result));
+      return;
+    }
+  }
+  else if (postq.lastError().type() != QSqlError::NoError)
+  {
+    QMessageBox::critical(this, tr("Database Error"), postq.lastError().text());
+    return;
+  }
 
   accept();
 }
@@ -99,5 +100,5 @@ void postCountTags::sParameterTypeChanged()
     _parameter->setType(ParameterGroup::PlannerCode);
   else
     _parameter->setType(ParameterGroup::ClassCode);
-
 }
+

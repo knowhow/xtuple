@@ -717,7 +717,7 @@ to be bound by its terms.</comment>
              </item>
             </layout>
            </item>
-           <item row="2" column="0" colspan="2">
+           <item row="3" column="0" colspan="2">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
               <layout class="QGridLayout" name="gridLayout_7">
@@ -756,6 +756,40 @@ to be bound by its terms.</comment>
                 </size>
                </property>
               </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0">
+            <layout class="QHBoxLayout" name="_4">
+             <item>
+              <widget class="QLabel" name="_recurringVoucherBufferLit">
+               <property name="text">
+                <string>Recurring Voucher Buffer:</string>
+               </property>
+               <property name="buddy">
+                <cstring>_recurringVoucherBuffer</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="_recurringVoucherBuffer">
+               <property name="maximum">
+                <number>999</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="_recurringVoucherBufferDaysLit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>days</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -1151,119 +1185,131 @@ to be bound by its terms.</comment>
       <attribute name="title">
        <string>Global</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_13">
-       <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <widget class="QGroupBox" name="_exchangeRateSense">
-               <property name="title">
-                <string>Meaning of Currency Exchange Rates:</string>
-               </property>
-               <layout class="QVBoxLayout">
-                <item>
-                 <widget class="QRadioButton" name="_baseToLocal">
-                  <property name="text">
-                   <string>Base × Exchange Rate = Foreign</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QRadioButton" name="_localToBase">
-                  <property name="text">
-                   <string>Foreign × Exchange Rate = Base</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="_taxGroup">
-               <property name="title">
-                <string/>
-               </property>
-               <layout class="QGridLayout" name="gridLayout_11">
-                <item row="0" column="0">
-                 <layout class="QHBoxLayout">
-                  <item>
-                   <widget class="QLabel" name="_taxauthLit">
-                    <property name="text">
-                     <string>Default Tax Authority:</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>_taxauth</cstring>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="XComboBox" name="_taxauth">
-                    <property name="allowNull">
-                     <bool>true</bool>
-                    </property>
-                    <property name="nullStr">
-                     <string>None</string>
-                    </property>
-                    <property name="type">
-                     <enum>XComboBox::TaxAuths</enum>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <spacer>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::MinimumExpanding</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QGroupBox" name="_exchangeRateSense">
+             <property name="title">
+              <string>Meaning of Currency Exchange Rates:</string>
+             </property>
+             <layout class="QVBoxLayout">
+              <item>
+               <widget class="QRadioButton" name="_baseToLocal">
+                <property name="text">
+                 <string>Base × Exchange Rate = Foreign</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="_localToBase">
+                <property name="text">
+                 <string>Foreign × Exchange Rate = Base</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
            <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+            <widget class="QGroupBox" name="_taxGroup">
+             <property name="title">
+              <string/>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout">
+                <item>
+                 <widget class="QLabel" name="_taxauthLit">
+                  <property name="text">
+                   <string>Default Tax Authority:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_taxauth</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="XComboBox" name="_taxauth">
+                  <property name="allowNull">
+                   <bool>true</bool>
+                  </property>
+                  <property name="nullStr">
+                   <string>None</string>
+                  </property>
+                  <property name="type">
+                   <enum>XComboBox::TaxAuths</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::MinimumExpanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="_interfaceGroup">
+             <property name="title">
+              <string>Interface Control</string>
              </property>
-            </spacer>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <widget class="QCheckBox" name="_int2gl">
+                <property name="text">
+                 <string>Interface Inventory to General Ledger</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </item>
          <item>
-          <spacer name="horizontalSpacer_4">
+          <spacer name="verticalSpacer">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
          </item>
         </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>335</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

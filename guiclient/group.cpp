@@ -161,6 +161,8 @@ void group::reject()
         break;
 
       case QMessageBox::Cancel:
+        return;
+
       default:
         break;
 

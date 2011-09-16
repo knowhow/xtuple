@@ -34,7 +34,7 @@ void postPurchaseOrder::languageChange()
   retranslateUi(this);
 }
 
-enum SetResponse postPurchaseOrder::set(ParameterList &pParams)
+enum SetResponse postPurchaseOrder::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   _captive = true;

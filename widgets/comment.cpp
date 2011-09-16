@@ -153,7 +153,7 @@ comment::comment( QWidget* parent, const char* name, bool modal, Qt::WindowFlags
   shortcuts::setStandardKeys(this);
 }
 
-void comment::set(ParameterList &pParams)
+void comment::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -315,7 +315,7 @@ void comment::set(ParameterList &pParams)
   if (valid)
   {
     _source = Comments::Warehouse;
-    _cmnttype->setType(XComboBox::ProjectCommentTypes);
+    _cmnttype->setType(XComboBox::WarehouseCommentTypes);
     _targetId = param.toInt();
   }
 

@@ -16,8 +16,10 @@
 #include <QSqlError>
 #include <QVariant>
 
+#include <metasql.h>
 #include <parameter.h>
 
+#include "mqlutil.h"
 #include "bankAdjustment.h"
 #include "storedProcErrorLookup.h"
 
@@ -38,18 +40,30 @@ reconcileBankaccount::reconcileBankaccount(QWidget* parent, const char* name, Qt
     connect(_update,	SIGNAL(clicked()),      this, SLOT(populate()));
     connect(_startDate, SIGNAL(newDate(QDate)), this, SLOT(sDateChanged()));
     connect(_endDate,   SIGNAL(newDate(QDate)), this, SLOT(sDateChanged()));
+    connect(_checks,    SIGNAL(currentItemChanged(XTreeWidgetItem*, XTreeWidgetItem*)), this, SLOT(sChecksCloseEdit(XTreeWidgetItem*,XTreeWidgetItem*)));
+    connect(_checks,    SIGNAL(itemClicked(XTreeWidgetItem*, int)), this, SLOT(sChecksOpenEdit(XTreeWidgetItem*, int)));
+    connect(_receipts,  SIGNAL(currentItemChanged(XTreeWidgetItem*, XTreeWidgetItem*)), this, SLOT(sReceiptsCloseEdit(XTreeWidgetItem*,XTreeWidgetItem*)));
+    connect(_receipts,  SIGNAL(itemClicked(XTreeWidgetItem*, int)), this, SLOT(sReceiptsOpenEdit(XTreeWidgetItem*, int)));
+
+    _receipts->addColumn(tr("Cleared"),       _ynColumn * 2, Qt::AlignCenter );
+    _receipts->addColumn(tr("Date"),            _dateColumn, Qt::AlignCenter );
+    _receipts->addColumn(tr("Doc. Type"),     _ynColumn * 2, Qt::AlignCenter );
+    _receipts->addColumn(tr("Doc. Number"),     _itemColumn, Qt::AlignLeft   );
+    _receipts->addColumn(tr("Notes"),                    -1, Qt::AlignLeft   );
+    _receipts->addColumn(tr("Currency"),    _currencyColumn, Qt::AlignCenter );
+    _receipts->addColumn(tr("Exch. Rate"),  _bigMoneyColumn, Qt::AlignRight  );
+    _receipts->addColumn(tr("Base Amount"), _bigMoneyColumn, Qt::AlignRight  );
+    _receipts->addColumn(tr("Amount"),      _bigMoneyColumn, Qt::AlignRight  );
     
-    _receipts->addColumn(tr("Cleared"),   _ynColumn * 2, Qt::AlignCenter );
-    _receipts->addColumn(tr("Date"),        _dateColumn, Qt::AlignCenter );
-    _receipts->addColumn(tr("Doc. Number"), _itemColumn, Qt::AlignLeft   );
-    _receipts->addColumn(tr("Notes"),                -1, Qt::AlignLeft   );
-    _receipts->addColumn(tr("Amount"),  _bigMoneyColumn, Qt::AlignRight  );
-    
-    _checks->addColumn(tr("Cleared"),   _ynColumn * 2, Qt::AlignCenter , true, "cleared");
-    _checks->addColumn(tr("Date"),        _dateColumn, Qt::AlignCenter , true, "transdate");
-    _checks->addColumn(tr("Doc. Number"), _itemColumn, Qt::AlignLeft   , true, "docnumber");
-    _checks->addColumn(tr("Notes"),                -1, Qt::AlignLeft   , true, "notes");
-    _checks->addColumn(tr("Amount"),  _bigMoneyColumn, Qt::AlignRight  , true, "amount");
+    _checks->addColumn(tr("Cleared"),       _ynColumn * 2, Qt::AlignCenter , true, "cleared");
+    _checks->addColumn(tr("Date"),            _dateColumn, Qt::AlignCenter , true, "transdate");
+    _checks->addColumn(tr("Doc. Type"),     _ynColumn * 2, Qt::AlignCenter , true, "doc_type");
+    _checks->addColumn(tr("Doc. Number"),     _itemColumn, Qt::AlignLeft   , true, "doc_number");
+    _checks->addColumn(tr("Notes"),                    -1, Qt::AlignLeft   , true, "notes");
+    _checks->addColumn(tr("Currency"),    _currencyColumn, Qt::AlignCenter , true, "doc_curr");
+    _checks->addColumn(tr("Exch. Rate"),  _bigMoneyColumn, Qt::AlignRight  , true, "doc_exchrate");
+    _checks->addColumn(tr("Base Amount"), _bigMoneyColumn, Qt::AlignRight  , true, "base_amount");
+    _checks->addColumn(tr("Amount"),      _bigMoneyColumn, Qt::AlignRight  , true, "amount");
 
     _clearedReceipts->setPrecision(omfgThis->moneyVal());
     _clearedChecks->setPrecision(omfgThis->moneyVal());
@@ -183,17 +197,6 @@ bool reconcileBankaccount::sSave(bool closeWhenDone)
 
 void reconcileBankaccount::sReconcile()
 {
-  if(!_datesAreOK)
-  {
-    QMessageBox::critical( this, tr("Dates already reconciled"),
-	        tr("The date range you have entered already has "
-	           "reconciled dates in it. Please choose a different "
-	           "date range.") );
-    _startDate->setFocus();
-    _datesAreOK = false;
-    return;
-  }
-	
   if(_bankrecid == -1)
   {
     QMessageBox::critical( this, tr("Cannot Reconcile Account"),
@@ -218,45 +221,46 @@ void reconcileBankaccount::sReconcile()
     return;
   }
 
+  if (_endDate->date() < _startDate->date())
+  {
+    QMessageBox::warning( this, tr("Invalid End Date"),
+                           tr("The end date cannot be earlier than the start date.") );
+    _endDate->setFocus();
+    return;
+  }
+
+  if(!_datesAreOK)
+  {
+    QMessageBox::critical( this, tr("Dates already reconciled"),
+                tr("The date range you have entered already has "
+                   "reconciled dates in it. Please choose a different "
+                   "date range.") );
+    _startDate->setFocus();
+    _datesAreOK = false;
+    return;
+  }
+
   double begBal = _openBal->localValue();
   double endBal = _endBal->localValue();
 
   // calculate cleared balance
-  q.prepare("SELECT round(:endBal - (:begBal + COALESCE(SUM(amount),0.0)), 2) AS diff_value"
-            "  FROM ( SELECT currToLocal(bankaccnt_curr_id, gltrans_amount * -1, gltrans_date) AS amount"
-            "           FROM bankaccnt, gltrans, bankrecitem"
-            "          WHERE ((gltrans_accnt_id=bankaccnt_accnt_id)"
-            "            AND (bankrecitem_source='GL')"
-            "            AND (bankrecitem_source_id=gltrans_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (NOT gltrans_rec)"
-            "            AND (bankaccnt_id=:bankaccntid) ) "
-            "          UNION ALL"
-            "         SELECT CASE WHEN(bankadjtype_iscredit=true) THEN (bankadj_amount * -1) ELSE bankadj_amount END AS amount"
-            "           FROM bankadj, bankadjtype, bankrecitem"
-            "          WHERE ( (bankrecitem_source='AD')"
-            "            AND (bankrecitem_source_id=bankadj_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (bankadj_bankadjtype_id=bankadjtype_id)"
-            "            AND (NOT bankadj_posted)"
-            "            AND (bankadj_bankaccnt_id=:bankaccntid) ) ) AS data;");
-  q.bindValue(":bankaccntid", _bankaccnt->id());
-  q.bindValue(":bankrecid", _bankrecid);
-  q.bindValue(":endBal", endBal);
-  q.bindValue(":begBal", begBal);
-  q.bindValue(":curr_id",   _currency->id());
-  q.bindValue(":effective", _startDate->date());
-  q.bindValue(":expires",   _endDate->date());
-  q.exec();
-  if(!q.exec() || !q.first())
+  MetaSQLQuery mbal = mqlLoad("bankrec", "clearedbalance");
+  ParameterList params;
+  params.append("bankaccntid", _bankaccnt->id());
+  params.append("bankrecid", _bankrecid);
+  params.append("endBal", endBal);
+  params.append("begBal", begBal);
+  params.append("curr_id",   _currency->id());
+  params.append("effective", _startDate->date());
+  params.append("expires",   _endDate->date());
+  XSqlQuery bal = mbal.toQuery(params);
+  if(!bal.first())
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    systemError(this, bal.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
 
-  if(q.value("diff_value").toDouble() != 0.0)
+  if(bal.value("diff_value").toDouble() != 0.0)
   {
     QMessageBox::critical( this, tr("Balances Do Not Match"),
       tr("The cleared amounts do not balance with the specified\n"
@@ -292,7 +296,8 @@ void reconcileBankaccount::sReconcile()
 
 /* 
    Note that the SELECTs here are UNIONs of the gltrans table (in the base
-   currency) and the bankadj table (in the bank account's currency).
+   currency), sltrans table (in the base currency) and the bankadj table
+   (in the bank account's currency).
 */
 void reconcileBankaccount::populate()
 {
@@ -303,53 +308,18 @@ void reconcileBankaccount::populate()
 
   int currid = -1;
 
+  ParameterList params;
+  params.append("bankaccntid", _bankaccnt->id());
+  params.append("bankrecid", _bankrecid);
+
   // fill receipts list
   currid = _receipts->id();
   _receipts->clear();
-  q.prepare("SELECT gltrans_id AS id, 1 AS altid,"
-            "       jrnluse_use AS use, gltrans_journalnumber AS jrnlnum,"
-            "       COALESCE(date(jrnluse_date), gltrans_date) AS f_jrnldate,"
-            "       COALESCE(bankrecitem_cleared, FALSE) AS cleared,"
-            "       gltrans_date AS f_date,"
-            "       gltrans_docnumber AS docnumber,"
-            "       gltrans_notes AS notes,"
-            "       currToLocal(bankaccnt_curr_id, gltrans_amount, gltrans_date) * -1 AS amount,"
-            "       COALESCE(date(jrnluse_date), gltrans_date) AS jrnldate,"
-            "       gltrans_date AS sortdate "
-            "  FROM (bankaccnt CROSS JOIN gltrans) LEFT OUTER JOIN bankrecitem "
-            "    ON ((bankrecitem_source='GL') AND (bankrecitem_source_id=gltrans_id)"
-            "        AND (bankrecitem_bankrec_id=:bankrecid)) "
-            "       LEFT OUTER JOIN jrnluse ON (jrnluse_number=gltrans_journalnumber AND jrnluse_use='C/R')"
-            " WHERE ((gltrans_accnt_id=bankaccnt_accnt_id)"
-            "   AND (NOT gltrans_deleted) "
-            "   AND (NOT gltrans_rec)"
-            "   AND (gltrans_amount < 0)"
-            "   AND (bankaccnt_id=:bankaccntid) ) "
-            " UNION ALL "
-            "SELECT bankadj_id AS id, 2 AS altid,"
-            "       '' AS use, NULL AS jrnlnum, bankadj_date AS f_jrnldate,"
-            "       COALESCE(bankrecitem_cleared, FALSE) AS cleared,"
-            "       bankadj_date AS f_date,"
-            "       bankadj_docnumber AS docnumber,"
-            "       bankadjtype_name AS notes,"
-            "       (CASE WHEN(bankadjtype_iscredit=true) THEN (bankadj_amount * -1) ELSE bankadj_amount END) AS amount,"
-            "       bankadj_date AS jrnldate,"
-            "       bankadj_date AS sortdate "
-            "  FROM (bankadjtype CROSS JOIN bankadj) "
-            "               LEFT OUTER JOIN bankrecitem ON ((bankrecitem_source='AD') "
-            "                 AND (bankrecitem_source_id=bankadj_id) "
-            "                 AND (bankrecitem_bankrec_id=:bankrecid)) "
-            " WHERE ( (((bankadjtype_iscredit=false) AND (bankadj_amount > 0)) OR ((bankadjtype_iscredit=true) AND (bankadj_amount < 0))) "
-            "   AND (bankadj_bankadjtype_id=bankadjtype_id) "
-            "   AND (NOT bankadj_posted) "
-            "   AND (bankadj_bankaccnt_id=:bankaccntid) ) "
-            "ORDER BY jrnldate, jrnlnum, sortdate; ");
-  q.bindValue(":bankaccntid", _bankaccnt->id());
-  q.bindValue(":bankrecid", _bankrecid);
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
+  MetaSQLQuery mrcp = mqlLoad("bankrec", "receipts");
+  XSqlQuery rcp = mrcp.toQuery(params);
+  if (rcp.lastError().type() != QSqlError::NoError)
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    systemError(this, rcp.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
 
@@ -360,43 +330,46 @@ void reconcileBankaccount::populate()
   bool cleared = TRUE;
   double amount = 0.0;
   bool amountNull = true;
-  while (q.next())
+  while (rcp.next())
   {
-    if(q.value("use").toString() == "C/R")
+    if(rcp.value("use").toString() == "C/R")
     {
-      if(q.value("jrnlnum").toInt() != jrnlnum || (0 == parent))
+      if(rcp.value("jrnlnum").toInt() != jrnlnum || (0 == parent))
       {
         if(parent != 0)
         {
           parent->setText(0, (cleared ? tr("Yes") : tr("No")));
-          parent->setText(4, amountNull ? tr("?????") : formatMoney(amount));
+          parent->setText(8, amountNull ? tr("?????") : formatMoney(amount));
         }
-        jrnlnum = q.value("jrnlnum").toInt();
+        jrnlnum = rcp.value("jrnlnum").toInt();
         last = new XTreeWidgetItem( _receipts, last,
-          jrnlnum, 3, "", formatDate(q.value("f_jrnldate").toDate()), q.value("jrnlnum"));
+          jrnlnum, 9, "", formatDate(rcp.value("f_jrnldate").toDate()), tr("JS"), rcp.value("jrnlnum"));
         parent = last;
         cleared = true;
         amount = 0.0;
 	amountNull = true;
         lastChild = 0;
       }
-      cleared = (cleared && q.value("cleared").toBool());
-      amount += q.value("amount").toDouble();
-      amountNull = q.value("amount").isNull();
+      cleared = (cleared && rcp.value("cleared").toBool());
+      amount += rcp.value("amount").toDouble();
+      amountNull = rcp.value("amount").isNull();
       
       lastChild = new XTreeWidgetItem( parent, lastChild,
-        q.value("id").toInt(), q.value("altid").toInt(),
-        (q.value("cleared").toBool() ? tr("Yes") : tr("No")),
-        formatDate(q.value("f_date").toDate()), q.value("docnumber"),
-        q.value("notes"),
-	q.value("amount").isNull() ? tr("?????") : formatMoney(q.value("amount").toDouble()) );
+        rcp.value("id").toInt(), rcp.value("altid").toInt(),
+        (rcp.value("cleared").toBool() ? tr("Yes") : tr("No")),
+        formatDate(rcp.value("f_date").toDate()), rcp.value("doc_type"), rcp.value("docnumber"),
+        rcp.value("notes"),
+        rcp.value("doc_curr"),
+        rcp.value("doc_exchrate").isNull() ? tr("?????") : formatUOMRatio(rcp.value("doc_exchrate").toDouble()),
+        rcp.value("base_amount").isNull() ? tr("?????") : formatMoney(rcp.value("base_amount").toDouble()),
+        rcp.value("amount").isNull() ? tr("?????") : formatMoney(rcp.value("amount").toDouble()) );
     }
     else
     {
       if(parent != 0)
       {
         parent->setText(0, (cleared ? tr("Yes") : tr("No")));
-        parent->setText(4, formatMoney(amount));
+        parent->setText(8, formatMoney(amount));
       }
       parent = 0;
       cleared = true;
@@ -404,188 +377,90 @@ void reconcileBankaccount::populate()
       amountNull = true;
       lastChild = 0;
       last = new XTreeWidgetItem( _receipts, last,
-        q.value("id").toInt(), q.value("altid").toInt(),
-        (q.value("cleared").toBool() ? tr("Yes") : tr("No")),
-        formatDate(q.value("f_date").toDate()), q.value("docnumber"),
-        q.value("notes"),
-	q.value("amount").isNull() ? tr("?????") : formatMoney(q.value("amount").toDouble()) );
+        rcp.value("id").toInt(), rcp.value("altid").toInt(),
+        (rcp.value("cleared").toBool() ? tr("Yes") : tr("No")),
+        formatDate(rcp.value("f_date").toDate()), rcp.value("doc_type"), rcp.value("docnumber"),
+        rcp.value("notes"),
+        rcp.value("doc_curr"),
+        rcp.value("doc_exchrate").isNull() ? tr("?????") : formatUOMRatio(rcp.value("doc_exchrate").toDouble()),
+        rcp.value("base_amount").isNull() ? tr("?????") : formatMoney(rcp.value("base_amount").toDouble()),
+        rcp.value("amount").isNull() ? tr("?????") : formatMoney(rcp.value("amount").toDouble()) );
     }
   }
   if(parent != 0)
   {
     parent->setText(0, (cleared ? tr("Yes") : tr("No")));
-    parent->setText(4, amountNull ? tr("?????") : formatMoney(amount));
+    parent->setText(8, amountNull ? tr("?????") : formatMoney(amount));
   }
+
+  disconnect(_receipts, SIGNAL(itemChanged(XTreeWidgetItem*, int)), this, SLOT(sReceiptsItemChanged(XTreeWidgetItem*, int)));
+  connect(_receipts, SIGNAL(itemChanged(XTreeWidgetItem*, int)), this, SLOT(sReceiptsItemChanged(XTreeWidgetItem*, int)));
+
   if(currid != -1)
     _receipts->setCurrentItem(_receipts->topLevelItem(currid));
   if(_receipts->currentItem())
     _receipts->scrollToItem(_receipts->currentItem());
 
-
-  // fill receipts cleared value
-  q.prepare("SELECT COALESCE(SUM(amount),0.0) AS cleared_amount"
-            "  FROM ( SELECT currToLocal(bankaccnt_curr_id, gltrans_amount * -1, gltrans_date) AS amount"
-            "           FROM bankaccnt, gltrans, bankrecitem"
-            "          WHERE ((gltrans_accnt_id=bankaccnt_accnt_id)"
-            "            AND (bankrecitem_source='GL')"
-            "            AND (bankrecitem_source_id=gltrans_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (NOT gltrans_deleted)"
-            "            AND (NOT gltrans_rec)"
-            "            AND (gltrans_amount < 0)"
-            "            AND (bankaccnt_id=:bankaccntid) ) "
-            "          UNION ALL"
-            "         SELECT CASE WHEN(bankadjtype_iscredit=true) THEN (bankadj_amount * -1) ELSE bankadj_amount END AS amount"
-            "           FROM bankrecitem, bankadj, bankadjtype "
-            "          WHERE ( (bankrecitem_source='AD')"
-            "            AND (bankrecitem_source_id=bankadj_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (bankadj_bankadjtype_id=bankadjtype_id)"
-            "            AND (NOT bankadj_posted)"
-            "            AND (((bankadjtype_iscredit=false) AND (bankadj_amount > 0)) OR (bankadjtype_iscredit=true AND (bankadj_amount < 0))) "
-            "            AND (bankadj_bankaccnt_id=:bankaccntid) ) ) AS data;");
-  q.bindValue(":bankaccntid", _bankaccnt->id());
-  q.bindValue(":bankrecid", _bankrecid);
-  q.exec();
-  if (q.first())
-    _clearedReceipts->setDouble(q.value("cleared_amount").toDouble());
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-
   // fill checks list
   currid = _checks->id();
   _checks->clear();
-  q.prepare("SELECT gltrans_id AS id, 1 AS altid,"
-            "       COALESCE(bankrecitem_cleared, FALSE) AS cleared,"
-            "       gltrans_date AS transdate,"
-            "       gltrans_docnumber AS docnumber,"
-            "       gltrans_notes AS notes,"
-            "       currToLocal(bankaccnt_curr_id, gltrans_amount, gltrans_date) AS amount,"
-            "       gltrans_date AS sortdate, "
-            "       'curr' AS amount_xtnumericrole "
-            "  FROM (bankaccnt CROSS JOIN gltrans) LEFT OUTER JOIN bankrecitem "
-            "    ON ((bankrecitem_source='GL') AND (bankrecitem_source_id=gltrans_id)"
-            "        AND (bankrecitem_bankrec_id=:bankrecid)) "
-            " WHERE ((gltrans_accnt_id=bankaccnt_accnt_id)"
-            "   AND (NOT gltrans_deleted)"
-            "   AND (NOT gltrans_rec)"
-            "   AND (gltrans_amount > 0)"
-            "   AND (bankaccnt_id=:bankaccntid) ) "
-            " UNION ALL "
-            "SELECT bankadj_id AS id, 2 AS altid,"
-            "       COALESCE(bankrecitem_cleared, FALSE) AS cleared,"
-            "       bankadj_date AS transdate,"
-            "       bankadj_docnumber AS docnumber,"
-            "       bankadjtype_name AS notes,"
-            "       CASE WHEN(bankadjtype_iscredit=false) THEN (bankadj_amount * -1) ELSE bankadj_amount END AS amount,"
-            "       bankadj_date AS sortdate, "
-            "       'curr' AS amount_xtnumericrole "
-            "  FROM (bankadjtype CROSS JOIN bankadj) "
-            "               LEFT OUTER JOIN bankrecitem ON ((bankrecitem_source='AD') "
-            "                 AND (bankrecitem_source_id=bankadj_id) "
-            "                 AND (bankrecitem_bankrec_id=:bankrecid)) "
-            " WHERE ( (((bankadjtype_iscredit=true) AND (bankadj_amount > 0)) OR ((bankadjtype_iscredit=false) AND (bankadj_amount < 0))) "
-            "   AND (bankadj_bankadjtype_id=bankadjtype_id) "
-            "   AND (NOT bankadj_posted) "
-            "   AND (bankadj_bankaccnt_id=:bankaccntid) ) "
-            "ORDER BY sortdate; ");
-  q.bindValue(":bankaccntid", _bankaccnt->id());
-  q.bindValue(":bankrecid", _bankrecid);
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
+  MetaSQLQuery mchk = mqlLoad("bankrec", "checks");
+  XSqlQuery chk = mchk.toQuery(params);
+  if (chk.lastError().type() != QSqlError::NoError)
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    systemError(this, chk.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
-  _checks->populate(q, TRUE);
+  _checks->populate(chk, TRUE);
+
+  disconnect(_checks, SIGNAL(itemChanged(XTreeWidgetItem*, int)), this, SLOT(sChecksItemChanged(XTreeWidgetItem*, int)));
+  connect(_checks, SIGNAL(itemChanged(XTreeWidgetItem*, int)), this, SLOT(sChecksItemChanged(XTreeWidgetItem*, int)));
 
   if(currid != -1)
     _checks->setCurrentItem(_checks->topLevelItem(currid));
   if(_checks->currentItem())
     _checks->scrollToItem(_checks->currentItem());
 
-  // fill checks cleared value
-  q.prepare("SELECT COALESCE(SUM(amount),0.0) AS cleared_amount"
-            "  FROM ( SELECT currToLocal(bankaccnt_curr_id, gltrans_amount, gltrans_date) AS amount"
-            "           FROM bankaccnt, gltrans, bankrecitem"
-            "          WHERE ((gltrans_accnt_id=bankaccnt_accnt_id)"
-            "            AND (bankrecitem_source='GL')"
-            "            AND (bankrecitem_source_id=gltrans_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (NOT gltrans_deleted)"
-            "            AND (NOT gltrans_rec)"
-            "            AND (gltrans_amount > 0)"
-            "            AND (bankaccnt_id=:bankaccntid) ) "
-            "          UNION ALL"
-            "         SELECT CASE WHEN(bankadjtype_iscredit=false) THEN (bankadj_amount * -1) ELSE bankadj_amount END AS amount"
-            "           FROM bankadj, bankadjtype, bankrecitem"
-            "          WHERE ( (bankrecitem_source='AD')"
-            "            AND (bankrecitem_source_id=bankadj_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (bankadj_bankadjtype_id=bankadjtype_id)"
-            "            AND (NOT bankadj_posted)"
-            "            AND (((bankadjtype_iscredit=true) AND (bankadj_amount > 0)) OR ((bankadjtype_iscredit=false) AND (bankadj_amount < 0)))"
-            "            AND (bankadj_bankaccnt_id=:bankaccntid) ) ) AS data;");
-  q.bindValue(":bankaccntid", _bankaccnt->id());
-  q.bindValue(":bankrecid", _bankrecid);
-  q.exec();
-  if (q.first())
-    _clearedChecks->setDouble(q.value("cleared_amount").toDouble());
-  else if (q.lastError().type() != QSqlError::NoError)
+  params.append("summary", true);
+
+  // fill receipts cleared value
+  rcp = mrcp.toQuery(params);
+  if (rcp.first())
+    _clearedReceipts->setDouble(rcp.value("cleared_amount").toDouble());
+  else if (rcp.lastError().type() != QSqlError::NoError)
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    systemError(this, rcp.lastError().databaseText(), __FILE__, __LINE__);
+    return;
+  }
+
+  // fill checks cleared value
+  chk = mchk.toQuery(params);
+  if (chk.first())
+    _clearedChecks->setDouble(chk.value("cleared_amount").toDouble());
+  else if (chk.lastError().type() != QSqlError::NoError)
+  {
+    systemError(this, chk.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
 
   // calculate cleared balance
-  q.prepare("SELECT (COALESCE(SUM(amount),0.0) + :begBal) AS cleared_amount,"
-            "       :endBal AS end_amount,"
-            "       (:endBal - (:begBal + (COALESCE(SUM(amount),0.0)))) AS diff_amount,"
-            "       round(:endBal - (:begBal + COALESCE(SUM(amount),0.0)), 2) AS diff_value"
-            "  FROM ( SELECT currToLocal(bankaccnt_curr_id, gltrans_amount * -1, gltrans_date) AS amount"
-            "           FROM bankaccnt, gltrans, bankrecitem"
-            "          WHERE ((gltrans_accnt_id=bankaccnt_accnt_id)"
-            "            AND (bankrecitem_source='GL')"
-            "            AND (bankrecitem_source_id=gltrans_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (NOT gltrans_rec)"
-            "            AND (bankaccnt_id=:bankaccntid) ) "
-            "          UNION ALL"
-            "         SELECT CASE WHEN(bankadjtype_iscredit=true) THEN (bankadj_amount * -1) ELSE bankadj_amount END AS amount"
-            "           FROM bankadj, bankadjtype, bankrecitem"
-            "          WHERE ( (bankrecitem_source='AD')"
-            "            AND (bankrecitem_source_id=bankadj_id)"
-            "            AND (bankrecitem_bankrec_id=:bankrecid)"
-            "            AND (bankrecitem_cleared)"
-            "            AND (bankadj_bankadjtype_id=bankadjtype_id)"
-            "            AND (NOT bankadj_posted)"
-            "            AND (bankadj_bankaccnt_id=:bankaccntid) ) ) AS data;");
-  q.bindValue(":bankaccntid", _bankaccnt->id());
-  q.bindValue(":bankrecid", _bankrecid);
-  q.bindValue(":endBal", endBal);
-  q.bindValue(":begBal", begBal);
-  q.bindValue(":curr_id",   _currency->id());
-  q.bindValue(":effective", _startDate->date());
-  q.bindValue(":expires",   _endDate->date());
-  q.exec();
+  MetaSQLQuery mbal = mqlLoad("bankrec", "clearedbalance");
+  params.append("endBal", endBal);
+  params.append("begBal", begBal);
+  params.append("curr_id",   _currency->id());
+  params.append("effective", _startDate->date());
+  params.append("expires",   _endDate->date());
+  XSqlQuery bal = mbal.toQuery(params);
   bool enableRec = FALSE;
-  if(q.first())
+  if(bal.first())
   {
-    _clearBal->setDouble(q.value("cleared_amount").toDouble());
-    _endBal2->setDouble(q.value("end_amount").toDouble());
-    _diffBal->setDouble(q.value("diff_amount").toDouble());
+    _clearBal->setDouble(bal.value("cleared_amount").toDouble());
+    _endBal2->setDouble(bal.value("end_amount").toDouble());
+    _diffBal->setDouble(bal.value("diff_amount").toDouble());
 
     QString stylesheet;
 
-    if(q.value("diff_value").toDouble() == 0.0)
+    if(bal.value("diff_value").toDouble() == 0.0)
     {
       if(_startDate->isValid() && _endDate->isValid())
         enableRec = TRUE;
@@ -595,9 +470,9 @@ void reconcileBankaccount::populate()
 
     _diffBal->setStyleSheet(stylesheet);
   }
-  else if (q.lastError().type() != QSqlError::NoError)
+  else if (bal.lastError().type() != QSqlError::NoError)
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    systemError(this, bal.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
   //_reconcile->setEnabled(enableRec);
@@ -627,7 +502,7 @@ void reconcileBankaccount::sReceiptsToggleCleared()
     return;
 
   _receipts->scrollToItem(item);
-  if(item->altId() == 3)
+  if(item->altId() == 9)
   {
     setto = item->text(0) == tr("No");
     for (int i = 0; i < item->childCount(); i++)
@@ -635,13 +510,16 @@ void reconcileBankaccount::sReceiptsToggleCleared()
       child = item->child(i);
       if(child->text(0) != (setto ? tr("Yes") : tr("No")))
       {
-        q.prepare("SELECT toggleBankrecCleared(:bankrecid, :source, :sourceid) AS cleared");
+        q.prepare("SELECT toggleBankrecCleared(:bankrecid, :source, :sourceid, :currrate) AS cleared");
         q.bindValue(":bankrecid", _bankrecid);
         q.bindValue(":sourceid", child->id());
         if(child->altId()==1)
           q.bindValue(":source", "GL");
         else if(child->altId()==2)
+          q.bindValue(":source", "SL");
+        else if(child->altId()==3)
           q.bindValue(":source", "AD");
+        q.bindValue(":currrate", child->text(6).toDouble());
         q.exec();
         if(q.first())
           child->setText(0, (q.value("cleared").toBool() ? tr("Yes") : tr("No") ));
@@ -656,20 +534,23 @@ void reconcileBankaccount::sReceiptsToggleCleared()
   }
   else
   {
-    q.prepare("SELECT toggleBankrecCleared(:bankrecid, :source, :sourceid) AS cleared");
+    q.prepare("SELECT toggleBankrecCleared(:bankrecid, :source, :sourceid, :currrate) AS cleared");
     q.bindValue(":bankrecid", _bankrecid);
     q.bindValue(":sourceid", item->id());
     if(item->altId()==1)
       q.bindValue(":source", "GL");
     else if(item->altId()==2)
+      q.bindValue(":source", "SL");
+    else if(item->altId()==3)
       q.bindValue(":source", "AD");
+    q.bindValue(":currrate", item->text(6).toDouble());
     q.exec();
     if(q.first())
     {
       item->setText(0, (q.value("cleared").toBool() ? tr("Yes") : tr("No") ));
 
       item = (XTreeWidgetItem*)item->QTreeWidgetItem::parent();
-      if(item != 0 && item->altId() == 3)
+      if(item != 0 && item->altId() == 9)
       {
         setto = true;
 	for (int i = 0; i < item->childCount(); i++)
@@ -700,13 +581,16 @@ void reconcileBankaccount::sChecksToggleCleared()
 
   _checks->scrollToItem(item);
 
-  q.prepare("SELECT toggleBankrecCleared(:bankrecid, :source, :sourceid) AS cleared");
+  q.prepare("SELECT toggleBankrecCleared(:bankrecid, :source, :sourceid, :currrate) AS cleared");
   q.bindValue(":bankrecid", _bankrecid);
   q.bindValue(":sourceid", item->id());
   if(item->altId()==1)
     q.bindValue(":source", "GL");
   else if(item->altId()==2)
+    q.bindValue(":source", "SL");
+  else if(item->altId()==3)
     q.bindValue(":source", "AD");
+  q.bindValue(":currrate", item->text(6).toDouble());
   q.exec();
   if(q.first())
     item->setText(0, (q.value("cleared").toBool() ? tr("Yes") : tr("No") ));
@@ -868,6 +752,58 @@ void reconcileBankaccount::sDateChanged()
   else
   {
 	_datesAreOK = true;
+  }
+}
+
+void reconcileBankaccount::sChecksOpenEdit(XTreeWidgetItem *item, const int col)
+{
+  if (col==6)
+  {
+    _checks->openPersistentEditor(item,col);
+    _checks->editItem(item,col);
+  }
+}
+
+void reconcileBankaccount::sChecksCloseEdit(XTreeWidgetItem * /*current*/, XTreeWidgetItem *previous)
+{
+  _checks->closePersistentEditor(previous,6);
+}
+
+void reconcileBankaccount::sChecksItemChanged(XTreeWidgetItem *item, const int col)
+{
+  // Only positive numbers allowed
+  if (col==6)
+  {
+    if (item->data(col,Qt::EditRole).toDouble() < 0)
+      item->setData(col,Qt::EditRole,0);
+    else
+      item->setData(col,Qt::EditRole,item->data(col,Qt::EditRole).toDouble());
+  }
+}
+
+void reconcileBankaccount::sReceiptsOpenEdit(XTreeWidgetItem *item, const int col)
+{
+  if (col==6)
+  {
+    _receipts->openPersistentEditor(item,col);
+    _receipts->editItem(item,col);
+  }
+}
+
+void reconcileBankaccount::sReceiptsCloseEdit(XTreeWidgetItem * /*current*/, XTreeWidgetItem *previous)
+{
+  _receipts->closePersistentEditor(previous,6);
+}
+
+void reconcileBankaccount::sReceiptsItemChanged(XTreeWidgetItem *item, const int col)
+{
+  // Only positive numbers allowed
+  if (col==6)
+  {
+    if (item->data(col,Qt::EditRole).toDouble() < 0)
+      item->setData(col,Qt::EditRole,0);
+    else
+      item->setData(col,Qt::EditRole,item->data(col,Qt::EditRole).toDouble());
   }
 }
 

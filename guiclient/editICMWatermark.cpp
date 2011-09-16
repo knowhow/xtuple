@@ -10,45 +10,29 @@
 
 #include "editICMWatermark.h"
 
-#include <qvariant.h>
+#include <QVariant>
 
-/*
- *  Constructs a editICMWatermark as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 editICMWatermark::editICMWatermark(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
-
-    // signals and slots connections
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(_save, SIGNAL(clicked()), this, SLOT(accept()));
+  // signals and slots connections
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_save, SIGNAL(clicked()), this, SLOT(accept()));
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 editICMWatermark::~editICMWatermark()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void editICMWatermark::languageChange()
 {
     retranslateUi(this);
 }
 
-
-enum SetResponse editICMWatermark::set(ParameterList &pParams)
+enum SetResponse editICMWatermark::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

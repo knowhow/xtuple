@@ -39,6 +39,11 @@ contacts::contacts(QWidget* parent, const char*, Qt::WFlags fl)
   _attachAct = 0;
   _detachAct = 0;
 
+  if (_privileges->check("MaintainAllContacts") || _privileges->check("ViewAllContacts"))
+  {
+    parameterWidget()->append(tr("Owner"), "owner_username", ParameterWidget::User);
+    parameterWidget()->append(tr("Owner Pattern"), "owner_usr_pattern", ParameterWidget::Text);
+  }
   parameterWidget()->append(tr("CRM Account"), "crmacct_id", ParameterWidget::Crmacct);
   parameterWidget()->append(tr("Name Pattern"), "cntct_name_pattern", ParameterWidget::Text);
   parameterWidget()->append(tr("Phone Pattern"), "cntct_phone_pattern", ParameterWidget::Text);
@@ -48,22 +53,24 @@ contacts::contacts(QWidget* parent, const char*, Qt::WFlags fl)
   parameterWidget()->append(tr("State Pattern"), "addr_state_pattern", ParameterWidget::Text);
   parameterWidget()->append(tr("Postal Code Pattern"), "addr_postalcode_pattern", ParameterWidget::Text);
   parameterWidget()->append(tr("Country Pattern"), "addr_country_pattern", ParameterWidget::Text);
+  parameterWidget()->applyDefaultFilterSet();
 
-  list()->addColumn(tr("First Name"), 80, Qt::AlignLeft, true, "cntct_first_name");
-  list()->addColumn(tr("Last Name"), 100, Qt::AlignLeft, true, "cntct_last_name");
-  list()->addColumn(tr("Account #"), 80, Qt::AlignLeft, true, "crmacct_number");
-  list()->addColumn(tr("Account Name"), -1, Qt::AlignLeft, true, "crmacct_name");
-  list()->addColumn(tr("Title"), -1, Qt::AlignLeft, true, "cntct_title");
-  list()->addColumn(tr("Phone"),	100, Qt::AlignLeft, true, "cntct_phone");
-  list()->addColumn(tr("Alternate"), 100, Qt::AlignLeft, true, "cntct_phone2");
-  list()->addColumn(tr("Fax"), 100, Qt::AlignLeft, false, "cntct_fax");
-  list()->addColumn(tr("E-Mail"), 100, Qt::AlignLeft, true, "cntct_email");
-  list()->addColumn(tr("Web Address"),  100, Qt::AlignLeft, false, "cntct_webaddr");
-  list()->addColumn(tr("Address"), -1, Qt::AlignLeft, false, "addr_line1");
-  list()->addColumn(tr("City"), 75, Qt::AlignLeft, false, "addr_city");
-  list()->addColumn(tr("State"), 50, Qt::AlignLeft, false, "addr_state");
-  list()->addColumn(tr("Country"), 100, Qt::AlignLeft, false, "addr_country");
-  list()->addColumn(tr("Postal Code"), 75, Qt::AlignLeft, false, "addr_postalcode");
+  list()->addColumn(tr("First Name"),          80, Qt::AlignLeft,  true, "cntct_first_name");
+  list()->addColumn(tr("Last Name"),          100, Qt::AlignLeft,  true, "cntct_last_name");
+  list()->addColumn(tr("Owner"),      _userColumn, Qt::AlignLeft, false, "cntct_owner_username");
+  list()->addColumn(tr("Account #"),           80, Qt::AlignLeft,  true, "crmacct_number");
+  list()->addColumn(tr("Account Name"),        -1, Qt::AlignLeft,  true, "crmacct_name");
+  list()->addColumn(tr("Title"),               -1, Qt::AlignLeft,  true, "cntct_title");
+  list()->addColumn(tr("Phone"),	      100, Qt::AlignLeft,  true, "cntct_phone");
+  list()->addColumn(tr("Alternate"),          100, Qt::AlignLeft,  true, "cntct_phone2");
+  list()->addColumn(tr("Fax"),                100, Qt::AlignLeft, false, "cntct_fax");
+  list()->addColumn(tr("E-Mail"),             100, Qt::AlignLeft,  true, "cntct_email");
+  list()->addColumn(tr("Web Address"),        100, Qt::AlignLeft, false, "cntct_webaddr");
+  list()->addColumn(tr("Address"),             -1, Qt::AlignLeft, false, "addr_line1");
+  list()->addColumn(tr("City"),                75, Qt::AlignLeft, false, "addr_city");
+  list()->addColumn(tr("State"),               50, Qt::AlignLeft, false, "addr_state");
+  list()->addColumn(tr("Country"),            100, Qt::AlignLeft, false, "addr_country");
+  list()->addColumn(tr("Postal Code"),         75, Qt::AlignLeft, false, "addr_postalcode");
 
   list()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
@@ -85,16 +92,16 @@ contacts::contacts(QWidget* parent, const char*, Qt::WFlags fl)
   connect(attachBtn, SIGNAL(clicked()),      this, SLOT(sAttach()));
   connect(detachBtn, SIGNAL(clicked()),      this, SLOT(sDetach()));
 
-  if (_privileges->check("MaintainContacts"))
+  connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sOpen()));
+
+  if (_privileges->check("MaintainAllContacts") || _privileges->check("MaintainPersonalContacts"))
   {
     _attachAct->setEnabled(true);
     connect(list(), SIGNAL(valid(bool)), _detachAct, SLOT(setEnabled(bool)));
-    connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sEdit()));
   }
   else
   {
     newAction()->setEnabled(false);
-    connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sView()));
   }
 }
 
@@ -125,10 +132,19 @@ void contacts::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *, int)
 {
   QAction *menuItem;
 
+  bool editPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("cntct_owner_username") && _privileges->check("MaintainPersonalContacts")) ||
+      (_privileges->check("MaintainAllContacts"));
+
+  bool viewPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("cntct_owner_username") && _privileges->check("ViewPersonalContacts")) ||
+      (_privileges->check("ViewAllContacts"));
+
   menuItem = pMenu->addAction(tr("Edit..."), this, SLOT(sEdit()));
-  menuItem->setEnabled(_privileges->check("MaintainContacts"));
+  menuItem->setEnabled(editPriv);
 
   menuItem = pMenu->addAction(tr("View..."), this, SLOT(sView()));
+  menuItem->setEnabled(viewPriv);
 
   XSqlQuery chk;
   chk.prepare("SELECT cntctused(:cntct_id) AS inUse");
@@ -140,7 +156,7 @@ void contacts::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *, int)
   }
   if (chk.first() && !chk.value("inUse").toBool()) {
     menuItem = pMenu->addAction(tr("Delete"), this, SLOT(sDelete()));
-    menuItem->setEnabled(_privileges->check("MaintainContacts"));
+    menuItem->setEnabled(editPriv);
   }
 }
 
@@ -339,4 +355,23 @@ bool contacts::setParams(ParameterList &params)
     params.append("activeOnly",true);
 
   return true;
+}
+
+void contacts::sOpen()
+{
+  bool editPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("cntct_owner_username") && _privileges->check("MaintainPersonalContacts")) ||
+      (_privileges->check("MaintainAllContacts"));
+
+  bool viewPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("cntct_owner_username") && _privileges->check("ViewPersonalContacts")) ||
+      (_privileges->check("ViewAllContacts"));
+
+  if (editPriv)
+    sEdit();
+  else if (viewPriv)
+    sView();
+  else
+    QMessageBox::information(this, tr("Restricted Access"), tr("You have not been granted privileges to open this Contact."));
+
 }

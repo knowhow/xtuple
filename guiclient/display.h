@@ -94,6 +94,8 @@ protected slots:
 
 signals:
     void fillList();
+    void fillListBefore();
+    void fillListAfter();
 
 private:
     displayPrivate * _data;

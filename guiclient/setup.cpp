@@ -63,7 +63,7 @@ setup::setup(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   insert(tr("Accounting"), "configureGL", Configure, Xt::AccountingModule, mode("ConfigureGL"), 0);
   insert(tr("Credit Card"), "configureCC", Configure, Xt::SystemModule, mode("ConfigureCC"), 0);
   insert(tr("CRM"), "configureCRM", Configure, Xt::CRMModule, mode("ConfigureCRM"), 0 );
-  insert(tr("Database"), "databaseInformation", Configure, Xt::SystemModule, mode("ConfigDatabaseInfo"), 0);
+  insert(tr("Database"), "AdatabaseInformation", Configure, Xt::SystemModule, mode("ConfigDatabaseInfo"), 0);
   insert(tr("Encryption"), "configureEncryption", Configure, Xt::SystemModule, mode("ConfigureEncryption"), 0);
   insert(tr("Inventory"), "configureIM", Configure, Xt::InventoryModule, mode("ConfigureIM"), 0 );
   insert(tr("Import/Export"), "configureIE", Configure, Xt::SystemModule, mode("ConfigureImportExport"), 0);

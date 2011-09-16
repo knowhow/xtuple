@@ -81,6 +81,6 @@ int XMessageBox::message( QWidget * parent, QMessageBox::Icon severity,
 
   delete mb;
 
-  return result - 1;
+  return result;
 }
 

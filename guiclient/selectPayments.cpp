@@ -23,7 +23,7 @@
 #include "selectPayment.h"
 #include "storedProcErrorLookup.h"
 
-selectPayments::selectPayments(QWidget* parent, const char* name, Qt::WFlags fl)
+selectPayments::selectPayments(QWidget* parent, const char* name, Qt::WFlags fl, bool pAutoFill)
     : XWidget(parent, name, fl)
 {
   setupUi(this);
@@ -76,7 +76,8 @@ selectPayments::selectPayments(QWidget* parent, const char* name, Qt::WFlags fl)
 
   _ignoreUpdates = false;
 
-  sFillList();
+  if(pAutoFill)
+    sFillList();
 }
 
 selectPayments::~selectPayments()

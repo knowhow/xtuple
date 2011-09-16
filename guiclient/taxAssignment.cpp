@@ -247,6 +247,7 @@ void taxAssignment::sAdd()
     _taxassId = q.value("_taxass_id").toInt();
   else if (q.lastError().type() != QSqlError::NoError)
   {
+    rollback.exec();
     systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }

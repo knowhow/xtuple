@@ -25,10 +25,8 @@ public:
     itemImages(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = Qt::Window);
     ~itemImages();
 
-    virtual void init();
-
 public slots:
-    virtual enum SetResponse set( ParameterList & pParams );
+    virtual enum SetResponse set(const ParameterList & pParams);
     virtual void sPrevious();
     virtual void sNext();
     virtual void sFillList();

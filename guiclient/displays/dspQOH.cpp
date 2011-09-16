@@ -50,6 +50,8 @@ dspQOH::dspQOH(QWidget* parent, const char*, Qt::WFlags fl)
   parameterWidget()->append(tr("Item Group Pattern"), "itemgrp_pattern", ParameterWidget::Text);
   if (_metrics->boolean("MultiWhs"))
     parameterWidget()->append(tr("Site"), "warehous_id", ParameterWidget::Site);
+  if (_metrics->boolean("EnableAsOfQOH"))
+    parameterWidget()->appendComboBox(tr("As Of"), "asOf", XComboBox::AccountingPeriods);
 
   connect(_showValue, SIGNAL(toggled(bool)), this, SLOT(sHandleValue(bool)));
 
@@ -278,7 +280,7 @@ bool dspQOH::setParams(ParameterList &params)
   }
 
   if (_showValue->isChecked())
-    params.append("showValue"); // report
+    params.append("showValue");
 
   return true;
 }

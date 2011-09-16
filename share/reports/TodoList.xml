@@ -420,7 +420,7 @@
   <name>detail</name>
   <group>
    <name>ByUser</name>
-   <column>usr</column>
+   <column>assigned</column>
   </group>
   <detail>
    <key>
@@ -429,9 +429,9 @@
    <height>31</height>
    <field>
     <rect>
-     <x>645</x>
+     <x>630</x>
      <y>0</y>
-     <width>100</width>
+     <width>115</width>
      <height>15</height>
     </rect>
     <font>
@@ -443,7 +443,7 @@
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>number</column>
+     <column>f_parent</column>
     </data>
    </field>
    <field>
@@ -462,7 +462,7 @@
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>usr</column>
+     <column>assigned</column>
     </data>
    </field>
    <text>
@@ -482,7 +482,7 @@
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>descrip</column>
+     <column>notes</column>
     </data>
    </text>
    <field>
@@ -501,7 +501,7 @@
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>status</column>
+     <column>stage</column>
     </data>
    </field>
    <field>
@@ -546,7 +546,7 @@
     <rect>
      <x>540</x>
      <y>0</y>
-     <width>100</width>
+     <width>75</width>
      <height>15</height>
     </rect>
     <font>

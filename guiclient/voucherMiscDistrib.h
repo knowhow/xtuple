@@ -28,7 +28,8 @@ public slots:
     virtual SetResponse set( const ParameterList & pParams );
     virtual void populate();
     virtual void sSave();
-	virtual void sCheck();
+    virtual void sCheck();
+    virtual void sPopulateVendorInfo(int);
 
 protected slots:
     virtual void languageChange();

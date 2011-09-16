@@ -1610,6 +1610,7 @@ int itemSite::createItemSite(QWidget* pparent, int pitemsiteid, int pwhsid, bool
 	      systemError(pparent, isq.lastError().databaseText(), __FILE__, __LINE__);
 	      return -100;
 	    }
+            return -1; // user cancelled
 	  }
 	}
 	return itemsiteid;

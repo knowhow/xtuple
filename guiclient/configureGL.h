@@ -29,6 +29,9 @@ public slots:
 protected slots:
     virtual void languageChange();
 
+private:
+    bool _cacheint2gl;
+
 signals:
     void saving();
 

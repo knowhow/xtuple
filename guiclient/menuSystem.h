@@ -80,6 +80,7 @@ class menuSystem : public QObject
 
     void sAbout();
     void sTOC();
+    void sDownload();
 
     void sCommunityHome();
     void sCommunityEditAccount();

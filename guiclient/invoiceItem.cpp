@@ -312,7 +312,7 @@ void invoiceItem::sSave()
 void invoiceItem::populate()
 {
   XSqlQuery invcitem;
-  invcitem.prepare( "SELECT invcitem.*,"
+  invcitem.prepare( "SELECT invcitem.*, invchead_invcnumber,"
                     "       CASE WHEN (item_id IS NULL) THEN :na"
                     "            ELSE item_listprice"
                     "       END AS f_listprice,"
@@ -330,6 +330,7 @@ void invoiceItem::populate()
   if (invcitem.first())
   {
     _invcheadid = invcitem.value("invcitem_invchead_id").toInt();
+    _invoiceNumber->setText(invcitem.value("invchead_invcnumber").toString());
     _lineNumber->setText(invcitem.value("invcitem_linenumber").toString());
     _isMisc = ((invcitem.value("invcitem_coitem_id").toInt() > 0) ? false : true);
 

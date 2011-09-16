@@ -51,6 +51,7 @@
     <file>images/dspRegister.png</file>
     <file>images/xchange.png</file>
     <file>images/community.png</file>
+    <file>images/icon128x32.png</file>
   </qresource>
 </RCC>
 

@@ -35,6 +35,12 @@ public slots:
     virtual void sReconcile();
     virtual bool sSave(bool = true);
     virtual void sDateChanged();
+    virtual void sChecksOpenEdit(XTreeWidgetItem *item, const int col);
+    virtual void sChecksCloseEdit(XTreeWidgetItem *current, XTreeWidgetItem *previous);
+    virtual void sChecksItemChanged(XTreeWidgetItem *item, const int col);
+    virtual void sReceiptsOpenEdit(XTreeWidgetItem *item, const int col);
+    virtual void sReceiptsCloseEdit(XTreeWidgetItem *current, XTreeWidgetItem *previous);
+    virtual void sReceiptsItemChanged(XTreeWidgetItem *item, const int col);
 
 protected slots:
     virtual void languageChange();

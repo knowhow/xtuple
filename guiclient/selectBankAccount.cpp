@@ -10,51 +10,31 @@
 
 #include "selectBankAccount.h"
 
-#include <qvariant.h>
+#include <QVariant>
 
-/*
- *  Constructs a selectBankAccount as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 selectBankAccount::selectBankAccount(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_close, SIGNAL(clicked()), this, SLOT(sClose()));
+  connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
 
-    // signals and slots connections
-    connect(_close, SIGNAL(clicked()), this, SLOT(sClose()));
-    connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-selectBankAccount::~selectBankAccount()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void selectBankAccount::languageChange()
-{
-    retranslateUi(this);
-}
-
-
-void selectBankAccount::init()
-{
   _bankaccnt->setAllowNull(TRUE);
 }
 
-enum SetResponse selectBankAccount::set(ParameterList &pParams)
+selectBankAccount::~selectBankAccount()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void selectBankAccount::languageChange()
+{
+  retranslateUi(this);
+}
+
+enum SetResponse selectBankAccount::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

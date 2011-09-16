@@ -227,7 +227,7 @@ bool ImportHelper::handleFilePostImport(const QString &pfilename, bool success, 
 
     QFile *errorfile = new QFile(errname);
     if (! errorfile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text) ||
-        ! errorfile->write(saveToErrorFile.toUtf8()) >= saveToErrorFile.length())
+        ! (errorfile->write(saveToErrorFile.toUtf8()) >= saveToErrorFile.length()))
     {
       // don't delete the original import file if we couldn't save the error file
       errmsg += (errmsg.isEmpty() ? "" : "\n") + 

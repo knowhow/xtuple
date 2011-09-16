@@ -26,7 +26,7 @@ class XTUPLEWIDGETS_EXPORT shipToList : public VirtualList
 
 public:
     shipToList(QWidget*, Qt::WindowFlags = 0);
-    void set( const ParameterList & pParams );
+    void set(const ParameterList & pParams);
 
 private:
     QLabel* _custNumber;
@@ -41,7 +41,7 @@ class XTUPLEWIDGETS_EXPORT shipToSearch : public VirtualSearch
 
 public:
     shipToSearch(QWidget*, Qt::WindowFlags = 0);
-    void set( ParameterList & pParams );
+    void set(const ParameterList & pParams);
 
 private:
     int _custid;
@@ -64,7 +64,7 @@ class XTUPLEWIDGETS_EXPORT ShiptoEdit : public VirtualClusterLineEdit
     void disableList(bool);
 
   public slots:
-    void setId(int);
+    void setId(const int);
     void setCustid(int);
     void sNew();
     void sList();

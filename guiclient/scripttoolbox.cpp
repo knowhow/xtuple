@@ -43,6 +43,7 @@
 #include "xdialog.h"
 #include "xmainwindow.h"
 #include "xtreewidget.h"
+#include "display.h"
 #include "xuiloader.h"
 #include "getscreen.h"
 
@@ -1363,6 +1364,16 @@ QWidget *ScriptToolbox::openWindow(QString pname, QWidget *parent, Qt::WindowMod
   }
 
   return returnVal;
+}
+
+QWidget *ScriptToolbox::newDisplay(QString pname, QWidget *parent, Qt::WindowModality modality, Qt::WindowFlags flags)
+{
+  display *window = new display(parent, pname.toAscii().data(), flags);
+  window->setWindowModality(modality);
+  omfgThis->handleNewWindow(window);
+  _lastWindow = window;
+
+  return window; 
 }
 
 /** \brief Add a column to an existing XTreeWidget

@@ -10,50 +10,20 @@
 
 #include "invoiceList.h"
 
-#include <qvariant.h>
+#include <QVariant>
 
-/*
- *  Constructs a invoiceList as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 invoiceList::invoiceList(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_close, SIGNAL(clicked()), this, SLOT(sClose()));
+  connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
+  connect(_invoice, SIGNAL(itemSelected(int)), this, SLOT(sSelect()));
+  connect(_cust, SIGNAL(newId(int)), this, SLOT(sFillList()));
+  connect(_dates, SIGNAL(updated()), this, SLOT(sFillList()));
 
-    // signals and slots connections
-    connect(_close, SIGNAL(clicked()), this, SLOT(sClose()));
-    connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
-    connect(_invoice, SIGNAL(itemSelected(int)), this, SLOT(sSelect()));
-    connect(_cust, SIGNAL(newId(int)), this, SLOT(sFillList()));
-    connect(_dates, SIGNAL(updated()), this, SLOT(sFillList()));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-invoiceList::~invoiceList()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void invoiceList::languageChange()
-{
-    retranslateUi(this);
-}
-
-
-void invoiceList::init()
-{
   QDate today(omfgThis->dbDate());
   _dates->setEndDate(today);
   _dates->setStartDate(today.addMonths(-1));
@@ -65,7 +35,17 @@ void invoiceList::init()
   _invoice->addColumn(tr("Cust. P/O #"),  -1,           Qt::AlignLeft, true, "invchead_ponumber"   );
 }
 
-enum SetResponse invoiceList::set(ParameterList &pParams)
+invoiceList::~invoiceList()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void invoiceList::languageChange()
+{
+  retranslateUi(this);
+}
+
+enum SetResponse invoiceList::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

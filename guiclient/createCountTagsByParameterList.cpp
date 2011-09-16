@@ -10,37 +10,26 @@
 
 #include "createCountTagsByParameterList.h"
 
-#include <QVariant>
 #include <QMessageBox>
 #include <QSqlError>
+#include <QVariant>
 
 #include <metasql.h>
 #include "mqlutil.h"
 
-/*
- *  Constructs a createCountTagsByParameterList as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 createCountTagsByParameterList::createCountTagsByParameterList(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
     : XDialog(parent, name, modal, fl)
 {
   setupUi(this);
 
-
-  // signals and slots connections
-  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(_create, SIGNAL(clicked()), this, SLOT(sCreate()));
-  connect(_warehouse, SIGNAL(newID(int)), this, SLOT(sPopulateLocations()));
+  connect(_create,     SIGNAL(clicked()),     this, SLOT(sCreate()));
+  connect(_warehouse,  SIGNAL(newID(int)),    this, SLOT(sPopulateLocations()));
   connect(_byLocation, SIGNAL(toggled(bool)), _location, SLOT(setEnabled(bool)));
 
   _parameter->setType(ParameterGroup::ClassCode);
 
   _freeze->setEnabled(_privileges->check("FreezeInventory"));
 
-  //If not multi-warehouse hide whs control
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
@@ -53,18 +42,11 @@ createCountTagsByParameterList::createCountTagsByParameterList(QWidget* parent, 
   sPopulateLocations();
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 createCountTagsByParameterList::~createCountTagsByParameterList()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void createCountTagsByParameterList::languageChange()
 {
   retranslateUi(this);
@@ -114,16 +96,27 @@ void createCountTagsByParameterList::sCreate()
   if(_ignoreZeroBalance->isChecked())
     params.append("ignoreZeroBalance");
 
+  XSqlQuery createq;
   MetaSQLQuery mql = mqlLoad("countTags", "create");
-  q = mql.toQuery(params);
-  if (q.lastError().type() != QSqlError::NoError)
+  createq = mql.toQuery(params);
+  int count = 0;
+  while (createq.next())
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    if (createq.value(0).toInt() > 0)
+      count++;
+  }
+  if (createq.lastError().type() != QSqlError::NoError)
+  {
+    systemError(this, createq.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
-  else if (!q.first())
+
+  if (count <= 0)
     QMessageBox::information( this, tr("No Count Tags Created"),
-      tr("No Item Sites matched the criteria you specified.") );
+                             tr("<p>No Count Tags were created. Either no "
+                                "Item Sites matched the criteria, the matching "
+                                "Item Sites all have Control Method: None, "
+                                "or the Items are not countable Items."));
 
   accept();
 }

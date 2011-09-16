@@ -31,7 +31,7 @@ public slots:
     virtual SetResponse set(const ParameterList & pParams );
     virtual void sSave();
     virtual void sCheck();
-    virtual void populate();
+    virtual bool sPopulate();
     virtual void sPrintAddresses();
     virtual void sNewAddress();
     virtual void sEditAddress();
@@ -44,7 +44,6 @@ public slots:
     virtual void sViewTaxreg();
     virtual void sDeleteTaxreg();
     virtual void sHandleButtons();
-    virtual void sLoadCrmAcct(int);
     virtual void sNumberEdited();
 
     virtual void sNext();
@@ -60,6 +59,7 @@ signals:
 protected slots:
     virtual void languageChange();
     virtual bool sCheckSave();
+    virtual void sCrmAccount();
 
 protected:
     virtual void closeEvent(QCloseEvent*);
@@ -74,6 +74,7 @@ private:
     QString _cachedNumber;
     bool _ignoreClose;
     bool _notice;
+    QString _crmowner;
 
 };
 

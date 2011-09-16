@@ -1107,7 +1107,7 @@ to be bound by its terms.</comment>
             </widget>
            </item>
            <item>
-            <widget class="QTextEdit" name="_manufItemDescrip">
+            <widget class="XTextEdit" name="_manufItemDescrip">
              <property name="tabChangesFocus">
               <bool>true</bool>
              </property>

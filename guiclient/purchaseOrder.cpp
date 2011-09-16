@@ -106,7 +106,7 @@ purchaseOrder::purchaseOrder(QWidget* parent, const char* name, Qt::WFlags fl)
 
   q.exec("SELECT usr_id "
          "FROM usr "
-         "WHERE (usr_username=CURRENT_USER);");
+         "WHERE (usr_username=getEffectiveXtUser());");
   if(q.first())
     _agent->setId(q.value("usr_id").toInt());
 
@@ -355,6 +355,7 @@ enum SetResponse purchaseOrder::set(const ParameterList &pParams)
           ParameterList newItemParams;
           newItemParams.append("mode", "new");
           newItemParams.append("pohead_id", _poheadid);
+          newItemParams.append("itemsite_id", itemsiteid);
           newItemParams.append("itemsrc_id", itemsrcid);
 
           if (qty > 0.0)
@@ -961,8 +962,8 @@ void purchaseOrder::sDelete()
   if (_deleteMode == cDelete)
   {
     if (QMessageBox::question(this, tr("Delete Purchase Order Item?"),
-                                              tr("<p>Are you sure you want to delete this "
-                                                     "Purchase Order Line Item?"),
+                                    tr("<p>Are you sure you want to delete this "
+                                       "Purchase Order Line Item?"),
            QMessageBox::Yes,
             QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
       return;
@@ -979,6 +980,13 @@ void purchaseOrder::sDelete()
   }
   else
   {
+    if (QMessageBox::question(this, tr("Close Purchase Order Item?"),
+                                    tr("<p>Are you sure you want to close this "
+                                       "Purchase Order Line Item?"),
+           QMessageBox::Yes,
+            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+      return;
+
     q.prepare( "UPDATE poitem SET poitem_status='C' "
                "WHERE (poitem_id=:poitem_id);" );
     q.bindValue(":poitem_id", _poitem->id());

@@ -335,6 +335,7 @@ void plannedOrder::sCreate()
     _dueDate->setNull();
     _leadTime->setValue(0);
     _startDate->setNull();
+    _notes->clear();
     _close->setText(tr("&Close"));
 
     _item->setFocus();

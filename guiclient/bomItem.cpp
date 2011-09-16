@@ -203,9 +203,10 @@ enum SetResponse bomItem::set(const ParameterList &pParams)
       _comments->setReadOnly(TRUE);
       _ecn->setEnabled(FALSE);
       _substituteGroup->setEnabled(FALSE);
-      _buttonBox->addButton(QDialogButtonBox::Close);
       _notes->setEnabled(FALSE);
       _ref->setEnabled(FALSE);
+      _buttonBox->setStandardButtons(QDialogButtonBox::Close);
+      _buttonBox->setFocus();
     }
   }
 

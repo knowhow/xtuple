@@ -19,6 +19,7 @@
 #include <QSslConfiguration>
 #include <QUrl>
 #include <QBuffer>
+#include <QDebug>
 
 #include <currcluster.h>
 #include <metasql.h>

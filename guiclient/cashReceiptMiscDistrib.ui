@@ -100,7 +100,7 @@ to be bound by its terms.</comment>
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="_notes"/>
+        <widget class="XTextEdit" name="_notes"/>
        </item>
       </layout>
      </item>
@@ -135,6 +135,11 @@ to be bound by its terms.</comment>
    <class>GLCluster</class>
    <extends>QWidget</extends>
    <header>glcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

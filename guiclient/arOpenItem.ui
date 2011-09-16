@@ -581,7 +581,7 @@ to be bound by its terms.</comment>
         </attribute>
         <layout class="QGridLayout">
          <item row="0" column="0">
-          <widget class="QTextEdit" name="_notes"/>
+          <widget class="XTextEdit" name="_notes"/>
          </item>
         </layout>
        </widget>
@@ -770,6 +770,11 @@ to be bound by its terms.</comment>
    <class>XURLLabel</class>
    <extends>QLabel</extends>
    <header>xurllabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1032,6 +1037,22 @@ to be bound by its terms.</comment>
     <hint type="destinationlabel">
      <x>109</x>
      <y>592</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_useAltPrepaid</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_altSalescatid</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>486</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>78</x>
+     <y>513</y>
     </hint>
    </hints>
   </connection>

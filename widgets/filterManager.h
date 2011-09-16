@@ -21,7 +21,7 @@ class filterManager : public QDialog, public Ui::filterManager
 
 public:
     filterManager(QWidget* parent = 0, const char* name = 0);
-    void set( ParameterList & pParams );
+    void set(const ParameterList & pParams);
     void populate();
 	
 public slots:

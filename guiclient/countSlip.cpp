@@ -277,6 +277,46 @@ void countSlip::sSave()
       }
     }
 
+    // Check for duplicate Serial #
+    q.prepare( "SELECT cntslip_id "
+               "FROM invcnt JOIN itemsite ON (itemsite_id=invcnt_itemsite_id)"
+               "            JOIN cntslip ON (cntslip_cnttag_id=invcnt_id)"
+               "WHERE ( (invcnt_id=:cnttag_id)"
+               "  AND   (itemsite_controlmethod='S')"
+               "  AND   (cntslip_lotserial=:cntslip_lotserial) );" );
+    q.bindValue(":cnttag_id", _cnttagid);
+    q.bindValue(":cntslip_lotserial", _lotSerial->text());
+    q.exec();
+    if (q.first())
+    {
+      QMessageBox::critical( this, tr("Cannot Duplicate Serial #"),
+                             tr( "A Count Slip has already been entered with this Serial #.\n"
+                                 "Please verify the Serial # of the Count Slip you are entering." ) );
+      return;
+    }
+
+    // Check for duplicate Serial # in different Location from Location being counted
+    q.prepare( "SELECT itemloc_id "
+               "FROM invcnt JOIN itemsite ON (itemsite_id=invcnt_itemsite_id)"
+               "            JOIN itemloc ON (itemloc_itemsite_id=itemsite_id)"
+               "            JOIN ls ON (ls_id=itemloc_ls_id)"
+               "WHERE ( (invcnt_id=:cnttag_id)"
+               "  AND   (invcnt_location_id IS NOT NULL)"
+               "  AND   (itemsite_controlmethod='S')"
+               "  AND   (itemloc_location_id <> :cntslip_location_id)"
+               "  AND   (ls_number=:cntslip_lotserial) );" );
+    q.bindValue(":cnttag_id", _cnttagid);
+    q.bindValue(":cntslip_location_id", _location->id());
+    q.bindValue(":cntslip_lotserial", _lotSerial->text());
+    q.exec();
+    if (q.first())
+    {
+      QMessageBox::critical( this, tr("Cannot Duplicate Serial #"),
+                             tr( "This Serial # exists in a different Location.\n"
+                                 "Please verify the Serial # of the Count Slip you are entering." ) );
+      return;
+    }
+
     q.exec("SELECT NEXTVAL('cntslip_cntslip_id_seq') AS cntslip_id");
     if (q.first())
       _cntslipid = q.value("cntslip_id").toInt();
@@ -291,7 +331,7 @@ void countSlip::sSave()
                "  cntslip_lotserial_warrpurc,"
                "  cntslip_comments ) "
                "SELECT :cntslip_id, :cnttag_id,"
-               "       CURRENT_USER, CURRENT_TIMESTAMP, FALSE,"
+               "       getEffectiveXtUser(), CURRENT_TIMESTAMP, FALSE,"
                "       :cntslip_number, :cntslip_qty,"
                "       :cntslip_location_id, :cntslip_lotserial,"
                "       :cntslip_lotserial_expiration,"
@@ -300,7 +340,7 @@ void countSlip::sSave()
   }
   else if (_mode == cEdit)
     q.prepare( "UPDATE cntslip "
-               "SET cntslip_username=CURRENT_USER, cntslip_qty=:cntslip_qty, cntslip_comments=:cntslip_comments,"
+               "SET cntslip_username=getEffectiveXtUser(), cntslip_qty=:cntslip_qty, cntslip_comments=:cntslip_comments,"
                "    cntslip_entered=CURRENT_TIMESTAMP,"
                "    cntslip_location_id=:cntslip_location_id, cntslip_lotserial=:cntslip_lotserial,"
                "    cntslip_lotserial_expiration=:cntslip_lotserial_expiration, "

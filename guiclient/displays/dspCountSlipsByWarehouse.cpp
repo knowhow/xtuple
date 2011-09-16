@@ -41,6 +41,7 @@ dspCountSlipsByWarehouse::dspCountSlipsByWarehouse(QWidget* parent, const char* 
   list()->addColumn(tr("By"),         _userColumn, Qt::AlignCenter,true, "user");
   list()->addColumn(tr("Qty. Counted"),_qtyColumn, Qt::AlignRight, true, "cntslip_qty");
   list()->addColumn(tr("Posted"),     _dateColumn, Qt::AlignCenter,true, "cntslip_posted");
+  list()->setPopulateLinear();
 
   sFillList();
 }

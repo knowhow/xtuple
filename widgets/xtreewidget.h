@@ -240,6 +240,7 @@ class XTUPLEWIDGETS_EXPORT XTreeWidget : public QTreeWidget
     Q_INVOKABLE inline void               setHeaderLabels(const QStringList &labels)                        {        QTreeWidget::setHeaderLabels(labels); }
     Q_INVOKABLE inline void               setItemWidget(XTreeWidgetItem *item, int column, QWidget *widget) {        QTreeWidget::setItemWidget(item, column, widget); }
     Q_INVOKABLE inline int                sortColumn() const { return QTreeWidget::sortColumn(); }
+    Q_INVOKABLE inline Qt::SortOrder      sortOrder()  const { return header()->sortIndicatorOrder(); } // temporary(?) until we expose all of qt
     Q_INVOKABLE inline QTreeWidgetItem    *takeTopLevelItem(int index)                                      { return QTreeWidget::takeTopLevelItem(index); }
     Q_INVOKABLE inline int                topLevelItemCount() const { return QTreeWidget::topLevelItemCount(); }
     Q_INVOKABLE inline QRect              visualItemRect(const XTreeWidgetItem *item) const                 { return QTreeWidget::visualItemRect(item); }

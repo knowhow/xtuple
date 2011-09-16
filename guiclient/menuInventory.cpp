@@ -23,6 +23,7 @@
 #include "itemSites.h"
 
 #include "adjustmentTrans.h"
+#include "adjustInvValue.h"
 #include "transferTrans.h"
 #include "transferOrders.h"
 #include "transferOrder.h"
@@ -369,6 +370,7 @@ menuInventory::menuInventory(GUIClient *Pparent) :
     // Inventory | Utilities
     { "menu",                                     tr("&Utilities"),                       (char*)utilitiesMenu,                     mainMenu,       "true",                    NULL, NULL, true, NULL },
     { "im.dspUnbalancedQOHByClassCode",           tr("U&nbalanced QOH..."),               SLOT(sDspUnbalancedQOHByClassCode()),     utilitiesMenu,  "ViewItemSites",           NULL, NULL, true, NULL },
+    { "im.adjustInvValue",                        tr("Adjust Avg. Cost Value..."),        SLOT(sAdjustInvValue()),                  utilitiesMenu,  "CreateAdjustmentTrans ViewCosts", NULL, NULL, _metrics->boolean("AllowAvgCostMethod"), NULL },
     { "separator",                                NULL,                                   NULL,                                     utilitiesMenu,  "true",                    NULL, NULL, true, NULL },
 
     // Inventory | Utilities | Update Item Controls
@@ -495,6 +497,16 @@ void menuInventory::sAdjustmentTrans()
   params.append("mode", "new");
 
   adjustmentTrans *newdlg = new adjustmentTrans();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sAdjustInvValue()
+{
+  ParameterList params;
+  params.append("mode", "new");
+
+  adjustInvValue *newdlg = new adjustInvValue();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }

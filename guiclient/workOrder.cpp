@@ -490,6 +490,12 @@ void workOrder::sCreate()
       q.bindValue(":ordid", -1);
     }
     q.exec();
+    if (q.lastError().type() != QSqlError::NoError)
+    {
+        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+      return;
+    }
+
     if (!q.first())
     {
       systemError(this, tr("A System Error occurred at %1::%2.")
@@ -785,6 +791,7 @@ void workOrder::sClose()
       q.prepare("SELECT deleteWo(:wo_id,true);");
       q.bindValue(":wo_id", _woid);
       q.exec();
+      omfgThis->sWorkOrdersUpdated(_woid, TRUE);
     }
   }
   if (_wonumber > 0)
@@ -798,7 +805,6 @@ void workOrder::sClose()
     }
   }
 
-  omfgThis->sWorkOrdersUpdated(_woid, TRUE);
   close();
 }
 
@@ -925,7 +931,6 @@ void workOrder::sReleaseWO()
   q.bindValue(":wo_id", _woIndentedList->id());
   q.exec();
 
-  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   int currentId = _woIndentedList->id();
   int currentAltId = _woIndentedList->altId();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
@@ -939,7 +944,6 @@ void workOrder::sRecallWO()
   q.bindValue(":wo_id", _woIndentedList->id());
   q.exec();
 
-  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   int currentId = _woIndentedList->id();
   int currentAltId = _woIndentedList->altId();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
@@ -1023,18 +1027,17 @@ void workOrder::sDeleteWO()
 	systemError(this, storedProcErrorLookup("deleteWo", result));
 	return;
       }
+      omfgThis->sWorkOrdersUpdated(-1, TRUE);
     }
     else if (q.lastError().type() != QSqlError::NoError)
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
 
-    omfgThis->sWorkOrdersUpdated(-1, TRUE);
   }
   else if (q.lastError().type() != QSqlError::NoError)
   {
     systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
-  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   populate();
 }
 
@@ -1116,7 +1119,7 @@ void workOrder::sRescheduleParent()
   if(_startDate->date() != _oldStartDate || _dueDate->date() != _oldDueDate)
   {
     if ( QMessageBox::warning( this, tr("Change Date"),
-                               tr( "Changing the start or end date will update all work order requirements.  "
+                               tr( "Changing the start or due date will update all work order requirements.  "
                                    "Are you sure you want to reschedule all dates?" ),
                                tr("&Yes"), tr("&No"), QString::null, 0, 1 ) == 1 )
     {
@@ -1144,6 +1147,9 @@ void workOrder::sRescheduleParent()
   }
   populate();
   omfgThis->sWorkOrdersUpdated(_woid, TRUE);
+  QMessageBox::warning( this, tr("Change Date"),
+                        tr( "Changing the due date may change the Bill of Material components that are effective.\n"
+                            "You may want to consider imploding and exploding the Work Order.\n" ) );
 }
 
 void workOrder::sChangeParentQty()
@@ -1206,9 +1212,9 @@ void workOrder::sChangeParentQty()
       else
         _oldQty=_qty->text().toDouble();
     }
-  }  
-  populate();
-  omfgThis->sWorkOrdersUpdated(_woid, TRUE);
+    populate();
+    omfgThis->sWorkOrdersUpdated(_woid, TRUE);
+  }
 }
 
 void workOrder::sReprioritizeWo()
@@ -1231,7 +1237,6 @@ void workOrder::sRescheduleWO()
   rescheduleWo newdlg(this, "", TRUE);
   newdlg.set(params);
   newdlg.exec();
-  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   populate();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
 }
@@ -1244,7 +1249,6 @@ void workOrder::sChangeWOQty()
   changeWoQty newdlg(this, "", TRUE);
   newdlg.set(params);
   newdlg.exec();
-  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   populate();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
 }
@@ -1305,6 +1309,7 @@ void workOrder::sReturnMatlBatch()
                              .arg(__LINE__)
                              .arg(_woIndentedList->id())
                              .arg(q.value("result").toInt()) );
+          return;
         }
         else if (distributeInventory::SeriesAdjust(q.value("result").toInt(), this) == XDialog::Rejected)
         {
@@ -1314,6 +1319,7 @@ void workOrder::sReturnMatlBatch()
         }
 
         q.exec("COMMIT;");
+        omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
       }
       else
       {
@@ -1324,7 +1330,6 @@ void workOrder::sReturnMatlBatch()
         return;
       }
     }
-    omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   }
   populate();
 }
@@ -1371,7 +1376,6 @@ void workOrder::sIssueMatlBatch()
   issue.prepare("SELECT issueWoMaterialBatch(:wo_id) AS result;");
   issue.bindValue(":wo_id", _woIndentedList->id());
   issue.exec();
-  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
 
   if (issue.first())
   {
@@ -1394,6 +1398,7 @@ void workOrder::sIssueMatlBatch()
       }
 
       issue.exec("COMMIT;");
+      omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
     }
   }
   else

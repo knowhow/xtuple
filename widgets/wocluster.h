@@ -44,7 +44,7 @@ public:
     woList(QWidget*, Qt::WindowFlags = 0);
 
 public slots:
-    virtual void set( const ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
     virtual void sFillList();
 
 private:
@@ -62,7 +62,7 @@ public:
     woSearch(QWidget*, Qt::WindowFlags = 0);
 
 public slots:
-    void set( ParameterList & pParams );
+    void set(const ParameterList & pParams);
     void sFillList();
 
 private:

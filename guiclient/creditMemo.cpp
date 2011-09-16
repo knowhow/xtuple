@@ -52,7 +52,7 @@ creditMemo::creditMemo(QWidget* parent, const char* name, Qt::WFlags fl)
 
   _custtaxzoneid	= -1;
   _freightCache         = 0;
-  _taxzoneidCache       = 0;
+  _taxzoneidCache       = -1;
 
   _memoNumber->setValidator(omfgThis->orderVal());
   _commission->setValidator(omfgThis->scrapVal());
@@ -444,6 +444,7 @@ void creditMemo::sInvoiceList()
       _salesRep->setId(sohead.value("invchead_salesrep_id").toInt());
       _commission->setDouble(sohead.value("invchead_commission").toDouble() * 100);
 
+      _taxzoneidCache = sohead.value("invchead_taxzone_id").toInt();
       _taxzone->setId(sohead.value("invchead_taxzone_id").toInt());
       _customerPO->setText(sohead.value("invchead_ponumber"));
       _project->setId(sohead.value("invchead_prj_id").toInt());
@@ -476,6 +477,7 @@ void creditMemo::populateShipto(int pShiptoid)
 
       _ignoreShiptoSignals = false;
 
+      _taxzoneidCache = query.value("shipto_taxzone_id").toInt();
       _taxzone->setId(query.value("shipto_taxzone_id").toInt());
       _salesRep->setId(query.value("shipto_salesrep_id").toInt());
       _commission->setDouble(query.value("shipto_commission").toDouble() * 100);
@@ -523,6 +525,7 @@ void creditMemo::sPopulateCustomerInfo()
         _salesRep->setId(query.value("cust_salesrep_id").toInt());
         _commission->setDouble(query.value("cust_commprcnt").toDouble() * 100);
 
+        _taxzoneidCache = query.value("cust_taxzone_id").toInt();
         _custtaxzoneid = query.value("cust_taxzone_id").toInt();
         _taxzone->setId(query.value("cust_taxzone_id").toInt());
         _currency->setId(query.value("cust_curr_id").toInt());
@@ -551,8 +554,9 @@ void creditMemo::sPopulateCustomerInfo()
     else
     {
       _salesRep->setCurrentIndex(-1);
-      _taxzone->setId(-1);
+      _taxzoneidCache = -1;
       _custtaxzoneid	= -1;
+      _taxzone->setId(-1);
 
       _shipToName->setEnabled(_ffShipto);
       _shipToAddr->setEnabled(_ffShipto);
@@ -650,6 +654,7 @@ void creditMemo::sCopyToShipto()
     _shipToAddr->setCountry(_billToAddr->country());
   }
 
+  _taxzoneidCache = _custtaxzoneid;
   _taxzone->setId(_custtaxzoneid);
 }
 
@@ -822,6 +827,9 @@ void creditMemo::populate()
     else
       _status->setText(tr("Unposted"));
 
+    _cust->setId(cmhead.value("cmhead_cust_id").toInt());
+    _shipTo->setId(cmhead.value("cmhead_shipto_id").toInt());
+
     _salesRep->setId(cmhead.value("cmhead_salesrep_id").toInt());
     _commission->setDouble(cmhead.value("cmhead_commission").toDouble() * 100);
     // do taxauth first so we can overwrite the result of the signal cascade
@@ -830,7 +838,6 @@ void creditMemo::populate()
       _taxzone->setId(cmhead.value("cmhead_taxzone_id").toInt());
 
     _memoNumber->setText(cmhead.value("cmhead_number"));
-    _cust->setId(cmhead.value("cmhead_cust_id").toInt());
     _memoDate->setDate(cmhead.value("cmhead_docdate").toDate(), true);
     _customerPO->setText(cmhead.value("cmhead_custponumber"));
     _hold->setChecked(cmhead.value("cmhead_hold").toBool());
@@ -862,7 +869,6 @@ void creditMemo::populate()
     _shipToName->setEnabled(_ffShipto);
 	_shipToAddr->setEnabled(_ffShipto);
 
-    _shipTo->setId(cmhead.value("cmhead_shipto_id").toInt());
     _shipToName->setText(cmhead.value("cmhead_shipto_name"));
     _shipToAddr->setLine1(cmhead.value("cmhead_shipto_address1").toString());
     _shipToAddr->setLine2(cmhead.value("cmhead_shipto_address2").toString());

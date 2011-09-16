@@ -10,11 +10,11 @@
 
 #include "users.h"
 
-#include <QVariant>
-#include <QMessageBox>
-//#include <QStatusBar>
-#include <parameter.h>
+#include <metasql.h>
 #include <openreports.h>
+#include <parameter.h>
+
+#include "errorReporter.h"
 #include "user.h"
 
 users::users(QWidget* parent, const char* name, Qt::WFlags fl)
@@ -22,20 +22,20 @@ users::users(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   setupUi(this);
 
-  // signals and slots connections
-  connect(_print, SIGNAL(clicked()), this, SLOT(sPrint()));
-  connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
-  connect(_edit, SIGNAL(clicked()), this, SLOT(sEdit()));
-  connect(_usr, SIGNAL(itemSelected(int)), _edit, SLOT(animateClick()));
-  connect(_usr, SIGNAL(valid(bool)), _edit, SLOT(setEnabled(bool)));
-  connect(_close, SIGNAL(clicked()), this, SLOT(close()));
-  connect(_showInactive, SIGNAL(toggled(bool)), this, SLOT(sFillList()));
+  connect(_close,             SIGNAL(clicked()), this,  SLOT(close()));
+  connect(_edit,              SIGNAL(clicked()), this,  SLOT(sEdit()));
+  connect(_new,               SIGNAL(clicked()), this,  SLOT(sNew()));
+  connect(_print,             SIGNAL(clicked()), this,  SLOT(sPrint()));
+  connect(_showInactive,  SIGNAL(toggled(bool)), this,  SLOT(sFillList()));
+  connect(_usr,       SIGNAL(itemSelected(int)), _edit, SLOT(animateClick()));
+  connect(_usr,             SIGNAL(valid(bool)), _edit, SLOT(setEnabled(bool)));
+  connect(omfgThis,SIGNAL(userUpdated(QString)), this,  SLOT(sFillList()));
 
-  _usr->addColumn(tr("Username"),    80, Qt::AlignLeft,   true,  "usr_username"   );
-  _usr->addColumn(tr("Proper Name"), -1, Qt::AlignLeft,   true,  "usr_propername"   );
-  _usr->addColumn(tr("Status"),      50, Qt::AlignCenter, true,  "status" );
+  _usr->addColumn(tr("Username"),    80, Qt::AlignLeft,   true, "usr_username");
+  _usr->addColumn(tr("Proper Name"), -1, Qt::AlignLeft,   true, "usr_propername");
+  _usr->addColumn(tr("Status"),      50, Qt::AlignCenter, true, "status");
 
-  q.exec("SELECT userCanCreateUsers(CURRENT_USER) AS cancreate;");
+  q.exec("SELECT userCanCreateUsers(getEffectiveXtUser()) AS cancreate;");
   if (q.first())
     _new->setEnabled(q.value("cancreate").toBool());
   else
@@ -58,22 +58,26 @@ void users::languageChange()
 
 void users::sFillList()
 {
-  QString sql( "SELECT usr_id, usr_username, usr_propername,"
-               "       CASE WHEN (usr_active) THEN :active"
-               "            ELSE :inactive"
-               "       END AS status "
-               "FROM usr ");
-
+  MetaSQLQuery mql("SELECT usr_id, usr_username, usr_propername,"
+                   "       CASE WHEN (usr_active) THEN <? value('active') ?>"
+                   "            ELSE <? value('inactive') ?>"
+                   "       END AS status"
+                   "  FROM usr"
+                   "<? if exists('activeOnly') ?>"
+                   " WHERE usr_active"
+                   "<? endif ?>"
+                   " ORDER BY usr_username;");
+  ParameterList params;
+  params.append("active",   tr("Active"));
+  params.append("inactive", tr("Inactive"));
   if (!_showInactive->isChecked())
-    sql += "WHERE (usr_active) ";
+    params.append("activeOnly");
 
-  sql += "ORDER BY usr_username;";
-
-  q.prepare(sql);
-  q.bindValue(":active", tr("Active"));
-  q.bindValue(":inactive", tr("Inactive"));
-  q.exec();
-  _usr->populate(q);
+  XSqlQuery getq = mql.toQuery(params);
+  _usr->populate(getq);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error getting Users"),
+                           getq, __FILE__, __LINE__))
+    return;
 }
 
 void users::sNew()

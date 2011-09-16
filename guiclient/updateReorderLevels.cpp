@@ -200,6 +200,8 @@ void updateReorderLevels::sPost()
 
   for (int i = 0; i < selected.size(); i++)
   {
+    // Make sure editor is closed
+    sCloseEdit(selected[i], selected[i]);
     params.clear();
     params.append("itemsite_id",           selected[i]->id());
     params.append("itemsite_reorderlevel", selected[i]->data(7,Qt::EditRole).toDouble());

@@ -152,32 +152,32 @@ void dspCountTagEditList::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pSelected
 
   if (((XTreeWidgetItem *)pSelected)->altId() == -1)
   {
-    menuItem = pMenu->addAction("Enter Count Slip...", this, SLOT(sEnterCountSlip()));
+    menuItem = pMenu->addAction(tr("Enter Count Slip..."), this, SLOT(sEnterCountSlip()));
     if (!_privileges->check("EnterCountSlips"))
       menuItem->setEnabled(false);
 
-    menuItem = pMenu->addAction("Count Slip Edit List...", this, SLOT(sCountSlipEditList()));
+    menuItem = pMenu->addAction(tr("Count Slip Edit List..."), this, SLOT(sCountSlipEditList()));
 
     pMenu->addSeparator();
 
-    menuItem = pMenu->addAction("View Pending Inventory History...", this, SLOT(sViewInventoryHistory()));
+    menuItem = pMenu->addAction(tr("View Pending Inventory History..."), this, SLOT(sViewInventoryHistory()));
     if (!_privileges->check("ViewInventoryHistory"))
       menuItem->setEnabled(false);
 
     pMenu->addSeparator();
 
-    menuItem = pMenu->addAction("Edit Count Tag...", this, SLOT(sEdit()));
+    menuItem = pMenu->addAction(tr("Edit Count Tag..."), this, SLOT(sEdit()));
     if (!_privileges->check("EnterCountTags"))
       menuItem->setEnabled(false);
 
     if (pSelected->text(5) != "")
     {
-      menuItem = pMenu->addAction("Post Count Tag...", this, SLOT(sPost()));
+      menuItem = pMenu->addAction(tr("Post Count Tag..."), this, SLOT(sPost()));
       if (!_privileges->check("PostCountTags"))
         menuItem->setEnabled(false);
     }
 
-    menuItem = pMenu->addAction("Delete Count Tag", this, SLOT(sDelete()));
+    menuItem = pMenu->addAction(tr("Delete Count Tag"), this, SLOT(sDelete()));
     if (!_privileges->check("DeleteCountTags"))
       menuItem->setEnabled(false);
   }
@@ -185,7 +185,7 @@ void dspCountTagEditList::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pSelected
   {
     if (pSelected->text(3) == tr("Unposted"))
     {
-      menuItem = pMenu->addAction("Edit Count Slip...", this, SLOT(sEdit()));
+      menuItem = pMenu->addAction(tr("Edit Count Slip..."), this, SLOT(sEdit()));
       if (!_privileges->check("EnterCountSlips"))
         menuItem->setEnabled(false);
     }

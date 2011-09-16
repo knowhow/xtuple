@@ -17,20 +17,12 @@
 #include "distributeInventory.h"
 #include <openreports.h>
 
-#include "submitAction.h"
-
 postInvoices::postInvoices(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
     : XDialog(parent, name, modal, fl)
 {
   setupUi(this);
 
   connect(_post, SIGNAL(clicked()), this, SLOT(sPost()));
-// Disable and hide Submit button due to inventory distributions
-//  connect(_submit, SIGNAL(clicked()), this, SLOT(sSubmit()));
-  _submit->hide();
-
-  if (!_metrics->boolean("EnableBatchManager"))
-    _submit->hide();
 
   if (_preferences->boolean("XCheckBox/forgetful"))
     _printJournal->setChecked(true);
@@ -114,13 +106,25 @@ void postInvoices::sPost()
     return;
   }
 
+  q.exec("SELECT fetchJournalNumber('AR-IN') AS journal;");
+  if (!q.first())
+  {
+    systemError( this, tr("A System Error occurred at %1::%2, Error #%3.")
+                       .arg(__FILE__)
+                       .arg(__LINE__)
+                       .arg(q.value("journal").toInt()) );
+    return;
+  }
+  int journalNumber = q.value("journal").toInt();
+
   XSqlQuery rollback;
   rollback.prepare("ROLLBACK;");
 
   q.exec("BEGIN;");	// because of possible lot, serial, or location distribution cancelations
-  q.prepare("SELECT postInvoices(:postUnprinted, :inclZero) AS result;");
+  q.prepare("SELECT postInvoices(:postUnprinted, :inclZero, :journalNumber) AS result;");
   q.bindValue(":postUnprinted", QVariant(_postUnprinted->isChecked()));
   q.bindValue(":inclZero",      inclZero);
+  q.bindValue(":journalNumber", journalNumber);
   q.exec();
   if (q.first())
   {
@@ -154,14 +158,10 @@ void postInvoices::sPost()
 
     q.exec("COMMIT;");
 
-
-    omfgThis->sInvoicesUpdated(-1, TRUE);
-    omfgThis->sSalesOrdersUpdated(-1);
-
     if (_printJournal->isChecked())
     {
       ParameterList params;
-      params.append("journalNumber", result);
+      params.append("journalNumber", journalNumber);
 
       orReport report("SalesJournal", params);
       if (report.isValid())
@@ -169,27 +169,17 @@ void postInvoices::sPost()
       else
         report.reportError(this);
     }
+
+    omfgThis->sInvoicesUpdated(-1, TRUE);
+    omfgThis->sSalesOrdersUpdated(-1);
+
   }
   else if (q.lastError().type() != QSqlError::NoError)
   {
+    rollback.exec();
     systemError( this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
 
   accept();
 }
-
-void postInvoices::sSubmit()
-{
-  ParameterList params;
-  params.append("action_name", "PostInvoices");
-  params.append("postUnprinted",     _postUnprinted->isChecked());
-  params.append("printSalesJournal", _printJournal->isChecked());
-
-  submitAction newdlg(this, "", TRUE);
-  newdlg.set(params);
-
-  if (newdlg.exec() == XDialog::Accepted)
-    accept();
-}
-

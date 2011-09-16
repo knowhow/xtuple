@@ -55,7 +55,7 @@ CLineEdit::CLineEdit(QWidget *pParent, const char *pName) :
            "    LEFT OUTER JOIN cntct  ON (cust_cntct_id=cntct_id) "
            "    LEFT OUTER JOIN addr   ON (cntct_addr_id=addr_id) "
            "    LEFT OUTER JOIN crmacct ON (crmacct_cust_id=cust_id) "
-           "  UNION "
+           "  UNION ALL "
            "  SELECT prospect_id AS id, "
            "         prospect_number AS number,"
            "         prospect_name AS name,"

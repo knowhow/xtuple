@@ -98,6 +98,16 @@ to be bound by its terms.</comment>
        </item>
       </layout>
      </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="_search">
+       <property name="text">
+        <string>Include in searches</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="0" column="1">
@@ -387,7 +397,7 @@ to be bound by its terms.</comment>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
-        <widget class="QTextEdit" name="_description"/>
+        <widget class="XTextEdit" name="_description"/>
        </item>
       </layout>
      </widget>
@@ -408,6 +418,11 @@ to be bound by its terms.</comment>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

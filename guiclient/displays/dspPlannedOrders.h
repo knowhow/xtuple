@@ -21,6 +21,7 @@ public:
     dspPlannedOrders(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = Qt::Window);
 
 public slots:
+    virtual SetResponse set( const ParameterList & pParams );
     virtual void sDeleteOrder();
     virtual void sDspRunningAvailability();
     virtual void sDspUsageStatistics();

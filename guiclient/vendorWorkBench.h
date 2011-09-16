@@ -59,6 +59,7 @@ class vendorWorkBench : public XWidget, public Ui::vendorWorkBench
 
   private:
     int _crmacctId;
+    QString _crmowner;
 
 };
 

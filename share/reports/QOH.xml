@@ -1,6 +1,6 @@
 <!DOCTYPE openRPTDef>
 <report>
- <title>Quantities on Hand by Parameter List</title>
+ <title>Quantities on Hand</title>
  <name>QOH</name>
  <description></description>
  <grid>
@@ -50,75 +50,29 @@
        AS showvalues;
 </sql>
  </querysource>
- <querysource>
+ <querysource loadFromDb="true">
   <name>detail</name>
-  <sql>SELECT itemsite_id,
-       detail,
-       item_number,
-       item_descrip1,
-       item_descrip2,
-       uom_name,
-       warehous_code,
-       formatQty(reorderlevel) AS f_reorderlevel,
-       formatQty(qoh) AS f_qoh,
-       CASE WHEN (NOT useDefaultLocation(itemsite_id)) THEN 'None'
-                 ELSE defaultLocationName(itemsite_id)
-       END AS defaultlocation,
-       formatQty(nonnetable) AS f_nonnetable,
+  <mqlgroup>qoh</mqlgroup>
+  <mqlname>detail</mqlname>
+ </querysource>
+ <querysource>
+  <name>total</name>
+  <sql>SELECT SUM(qoh) AS f_qoh,
+       SUM(nonnetable) AS f_nonnetable,
        &lt;? if exists("showValue") ?>
-         formatCost(standardcost)
+         FormatExtPrice(SUM(standardcost * qoh))
        &lt;? else ?>
-         text('')
-       &lt;? endif ?>
-       AS f_unitcost,
-       &lt;? if exists("showValue") ?>
-         formatExtPrice((standardcost * qoh))
-       &lt;? else ?>
-         text('')
+         ''
        &lt;? endif ?>
        AS f_value,
        &lt;? if exists("showValue") ?>
-         CASE WHEN (itemsite_loccntrl) THEN formatExtPrice((standardcost * nonnetable))
-              ELSE 'N/A'
-         END
+         FormatExtPrice(SUM(CASE WHEN (itemsite_loccntrl) THEN (standardcost * nonnetable)
+                                 ELSE 0
+                            END))
        &lt;? else ?>
-         text('')
+         ''
        &lt;? endif ?>
-       AS f_nonnetvalue,
-       standardcost,
-       qoh,
-       nonnetable,
-       qoh AS r_qoh,
-       nonnetable AS r_nonnetable,
-       &lt;? if exists("showValue") ?>
-         (standardcost * qoh)
-       &lt;? else ?>
-         0
-       &lt;? endif ?>
-       AS r_value,
-       &lt;? if exists("showValue") ?>
-         CASE WHEN (itemsite_loccntrl) THEN (standardcost * nonnetable)
-              ELSE 0
-         END
-       &lt;? else ?>
-         0
-       &lt;? endif ?>
-       AS r_nonnetvalue,
-       &lt;? if exists("showValue") ?>
-         &lt;? if exists("usePostedCosts") ?>
-           CASE WHEN(itemsite_costmethod='A') THEN text('Average')
-                WHEN(itemsite_costmethod='S') THEN text('Standard')
-                WHEN(itemsite_costmethod='J') THEN text('Job')
-                WHEN(itemsite_costmethod='N') THEN text('None')
-                ELSE text('UNKNOWN')
-           END
-         &lt;? else ?>
-           text('')
-         &lt;? endif ?>
-       &lt;? else ?>
-         text('')
-       &lt;? endif ?>
-       AS f_costmethod
+       AS f_nonnetvalue
 FROM ( SELECT itemsite_id, itemsite_costmethod,
               item_number,
               item_descrip1, item_descrip2, itemsite_loccntrl,
@@ -144,6 +98,9 @@ FROM ( SELECT itemsite_id, itemsite_costmethod,
           AND (itemsite_warehous_id=warehous_id)
           AND (itemsite_costcat_id=costcat_id)
           AND (itemsite_active)
+&lt;? if exists("item_id") ?>
+          AND (item_id=&lt;? value("item_id") ?>)
+&lt;? endif ?>
 &lt;? if exists("classcode_id") ?>
           AND (item_classcode_id=&lt;? value("classcode_id") ?>)
 &lt;? endif ?>
@@ -178,7 +135,7 @@ FROM ( SELECT itemsite_id, itemsite_costmethod,
           AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
 &lt;? endif ?>
 ) ) AS data
-ORDER BY warehous_code, item_number;
+;
 </sql>
  </querysource>
  <rpthead>
@@ -730,7 +687,7 @@ ORDER BY warehous_code, item_number;
     <rect>
      <x>5</x>
      <y>0</y>
-     <width>35</width>
+     <width>95</width>
      <height>15</height>
     </rect>
     <font>
@@ -738,10 +695,10 @@ ORDER BY warehous_code, item_number;
      <size>8</size>
      <weight>bold</weight>
     </font>
-    <hcenter/>
+    <left/>
     <vcenter/>
     <data>
-     <query>detail</query>
+     <query>total</query>
      <column>warehous_code</column>
     </data>
    </field>
@@ -837,14 +794,14 @@ ORDER BY warehous_code, item_number;
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_nonnetvalue</column>
+     <column>f_nnvalue</column>
     </data>
    </field>
    <field>
     <rect>
-     <x>670</x>
+     <x>580</x>
      <y>15</y>
-     <width>80</width>
+     <width>170</width>
      <height>15</height>
     </rect>
     <font>
@@ -875,7 +832,7 @@ ORDER BY warehous_code, item_number;
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_unitcost</column>
+     <column>f_cost</column>
     </data>
    </field>
    <field>
@@ -894,7 +851,7 @@ ORDER BY warehous_code, item_number;
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_nonnetable</column>
+     <column>f_nnqoh</column>
     </data>
    </field>
   </detail>
@@ -990,9 +947,9 @@ ORDER BY warehous_code, item_number;
    <vcenter/>
    <data>
     <query>detail</query>
-    <column>r_nonnetable</column>
+    <column>nnqoh</column>
    </data>
-   <format>%.02f</format>
+   <format builtin="true">qty</format>
    <tracktotal/>
   </field>
   <field>
@@ -1011,9 +968,9 @@ ORDER BY warehous_code, item_number;
    <vcenter/>
    <data>
     <query>detail</query>
-    <column>r_value</column>
+    <column>value</column>
    </data>
-   <format>%.02f</format>
+   <format builtin="true">money</format>
    <tracktotal/>
   </field>
   <field>
@@ -1032,9 +989,9 @@ ORDER BY warehous_code, item_number;
    <vcenter/>
    <data>
     <query>detail</query>
-    <column>r_nonnetvalue</column>
+    <column>nnvalue</column>
    </data>
-   <format>%.02f</format>
+   <format builtin="true">money</format>
    <tracktotal/>
   </field>
   <field>
@@ -1053,9 +1010,9 @@ ORDER BY warehous_code, item_number;
    <vcenter/>
    <data>
     <query>detail</query>
-    <column>r_qoh</column>
+    <column>qoh</column>
    </data>
-   <format>%.02f</format>
+   <format builtin="true">qty</format>
    <tracktotal/>
   </field>
   <label>

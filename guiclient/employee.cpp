@@ -8,6 +8,8 @@
  * to be bound by its terms.
  */
 
+#include "employee.h"
+
 #include <QMessageBox>
 #include <QSqlError>
 #include <QVariant>
@@ -15,13 +17,12 @@
 #include <parameter.h>
 
 #include "characteristicAssignment.h"
-#include "employee.h"
+#include "crmaccount.h"
 #include "empGroup.h"
 #include "empgroupcluster.h"
-#include "salesRep.h"
-#include "vendor.h"
+#include "errorReporter.h"
+#include "guiErrorCheck.h"
 #include "storedProcErrorLookup.h"
-#include "user.h"
 
 #define DEBUG   false
 
@@ -61,9 +62,9 @@ void employee::setVisible(bool visible)
 
   else if (! userHasPriv(_mode))
   {
-    systemError(this,
-		tr("You do not have sufficient privilege to view this window"),
-		__FILE__, __LINE__);
+    ErrorReporter::error(QtCriticalMsg, this, tr("No Privileges"),
+                          tr("You do not have sufficient privilege to view "
+                             "this window"));
     reject();
   }
   else
@@ -76,29 +77,27 @@ employee::employee(QWidget* parent, const char * name, Qt::WindowFlags fl)
   setupUi(this);
 
   connect(_attachGroup,   SIGNAL(clicked()), this, SLOT(sAttachGroup()));
-  connect(_code,		  SIGNAL(editingFinished()), this, SLOT(sHandleButtons()));
+  connect(_code,  SIGNAL(editingFinished()), this, SLOT(sHandleButtons()));
+  connect(_crmacct,       SIGNAL(clicked()), this, SLOT(sCrmAccount()));
   connect(_deleteCharass, SIGNAL(clicked()), this, SLOT(sDeleteCharass()));
   connect(_detachGroup,   SIGNAL(clicked()), this, SLOT(sDetachGroup()));
   connect(_editCharass,   SIGNAL(clicked()), this, SLOT(sEditCharass()));
   connect(_editGroup,     SIGNAL(clicked()), this, SLOT(sEditGroup()));
   connect(_newCharass,    SIGNAL(clicked()), this, SLOT(sNewCharass()));
-  connect(_salesrepButton,SIGNAL(clicked()), this, SLOT(sSalesrep()));
-  connect(_vendorButton,  SIGNAL(clicked()), this, SLOT(sVendor()));
   connect(_save,          SIGNAL(clicked()), this, SLOT(sSave()));
-  connect(_userButton,    SIGNAL(clicked()), this, SLOT(sUser()));
   connect(_viewGroup,     SIGNAL(clicked()), this, SLOT(sViewGroup()));
 
-  XSqlQuery xtmfg;                                                                        
-  xtmfg.exec("SELECT pkghead_name FROM pkghead WHERE pkghead_name='xtmfg'");              
-  if (xtmfg.first())                                                                      
-  {                                                                                       
-    _shift->setEnabled(true);                                                             
-    _shift->setVisible(true);                                                             
-    shiftLit->setVisible(true);                                                           
-  } else {                                                                                
-    _shift->setEnabled(false);                                                            
-    _shift->setVisible(false);                                                            
-    shiftLit->setVisible(false);                                                          
+  XSqlQuery xtmfg;
+  xtmfg.exec("SELECT pkghead_name FROM pkghead WHERE pkghead_name='xtmfg'");
+  if (xtmfg.first())
+  {
+    _shift->setEnabled(true);
+    _shift->setVisible(true);
+    shiftLit->setVisible(true);
+  } else {
+    _shift->setEnabled(false);
+    _shift->setVisible(false);
+    shiftLit->setVisible(false);
   }
 
   _charass->addColumn(tr("Characteristic"), _itemColumn, Qt::AlignLeft, true, "char_name");
@@ -107,51 +106,33 @@ employee::employee(QWidget* parent, const char * name, Qt::WindowFlags fl)
   _groups->addColumn(tr("Name"), _itemColumn, Qt::AlignLeft, true, "empgrp_name");
   _groups->addColumn(tr("Description"),   -1, Qt::AlignLeft, true, "empgrp_descrip");
 
-  q.prepare("SELECT curr_abbr FROM curr_symbol WHERE (curr_id=baseCurrId());");
-  q.exec();
-  if (q.first())
-    _currabbr = q.value("curr_abbr").toString();
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-
-  _createUsers = false;
-  q.exec("SELECT userCanCreateUsers(CURRENT_USER) AS enabled;");
-  if (q.first())
-    _createUsers = q.value("enabled").toBool();
-  else if (q.lastError().type() != QSqlError::NoError)
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-
-  if (_privileges->check("MaintainSalesReps") ||
-      _privileges->check("ViewSalesReps"))
-    connect(_salesrep, SIGNAL(toggled(bool)), _salesrepButton, SLOT(setEnabled(bool)));
-  if (_privileges->check("MaintainVendors") ||
-      _privileges->check("ViewVendors"))
-    connect(_vendor, SIGNAL(toggled(bool)), _vendorButton, SLOT(setEnabled(bool)));
-  if (_privileges->check("MaintainUsers"))
-    connect(_user, SIGNAL(toggled(bool)), _userButton, SLOT(setEnabled(bool)));
+  _wagetype->setAllowNull(false);
+  _wagetype->append(0, tr("Hourly"),      "H");
+  _wagetype->append(1, tr("Salaried"),    "S");
 
   _per->setAllowNull(false);
-  _per->append(0, tr("Hour"),      "Hour");
-  _per->append(1, tr("Day"),       "Day");
-  _per->append(2, tr("Week"),      "Week");
-  _per->append(3, tr("Bi-Weekly"), "Biweek");
-  _per->append(4, tr("Year"),      "Year");
+  _per->append(0, tr("Hour"),      "H");
+  _per->append(1, tr("Day"),       "D");
+  _per->append(2, tr("Week"),      "W");
+  _per->append(3, tr("Bi-Weekly"), "BW");
+  _per->append(4, tr("Month"),     "M");
+  _per->append(5, tr("Year"),      "Y");
 
   _per->setAllowNull(false);
-  _perExt->append(0, tr("Hour"),      "Hour");
-  _perExt->append(1, tr("Day"),       "Day");
-  _perExt->append(2, tr("Week"),      "Week");
-  _perExt->append(3, tr("Bi-Weekly"), "Biweek");
-  _perExt->append(4, tr("Year"),      "Year");
+  _perExt->append(0, tr("Hour"),      "H");
+  _perExt->append(1, tr("Day"),       "D");
+  _perExt->append(2, tr("Week"),      "W");
+  _perExt->append(3, tr("Bi-Weekly"), "BW");
+  _perExt->append(4, tr("Month"),     "M");
+  _perExt->append(4, tr("Year"),      "Y");
 
   _comments->setId(-1);
   _comments->setReadOnly(true);
 
-  _empid = -1;
-  _mode = cView;
+  _crmacctid  = -1;
+  _empid      = -1;
+  _NumberGen  = -1;
+  _mode     = cView;
   _origmode = cView;
 }
 
@@ -171,26 +152,17 @@ enum SetResponse employee::set(const ParameterList &pParams)
   QVariant param;
   bool     valid;
 
+  param = pParams.value("crmacct_id", &valid);
+  if (valid)
+    _crmacctid = param.toInt();
+
   param = pParams.value("emp_id", &valid);
   if (valid)
-  {
-    q.prepare("SELECT emp_code FROM emp WHERE (emp_id=:empid);");
-    q.bindValue(":empid", param.toInt());
-    q.exec();
-    if (q.first())
-    {
-      _empid   = param.toInt();
-      _empcode = q.value("emp_code").toString();
-      _comments->setId(_empid);
-      _comments->setReadOnly(_empid==-1);
-    }
-    else if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    _empid   = param.toInt();
+
+  if (_empid > 0 || _crmacctid > 0)
+    if (! sPopulate())
       return UndefinedError;
-    }
-    sPopulate();
-  }
 
   param = pParams.value("mode", &valid);
   if (valid)
@@ -198,10 +170,21 @@ enum SetResponse employee::set(const ParameterList &pParams)
     if (param.toString() == "new")
     {
       _mode = cNew;
-      _user->setEnabled(_createUsers);
-      _salesrep->setEnabled(_privileges->check("MaintainSalesReps"));
-	  _vendor->setEnabled(_privileges->check("MaintainVendors"));
-      _code->setFocus();
+
+      if(((_metrics->value("CRMAccountNumberGeneration") == "A") ||
+          (_metrics->value("CRMAccountNumberGeneration") == "O"))
+       && _code->text().isEmpty() )
+      {
+        XSqlQuery numq;
+        numq.exec("SELECT fetchCRMAccountNumber() AS number;");
+        if (numq.first())
+        {
+          _code->setText(numq.value("number"));
+          _NumberGen = numq.value("number").toInt();
+        }
+      }
+      else
+        _code->setFocus();
     }
     else if (param.toString() == "edit")
     {
@@ -211,6 +194,7 @@ enum SetResponse employee::set(const ParameterList &pParams)
     else if (param.toString() == "view")
     {
       _mode = cView;
+      _save->hide();
       _close->setText(tr("&Close"));
       _close->setFocus();
     }
@@ -234,6 +218,8 @@ enum SetResponse employee::set(const ParameterList &pParams)
 
   _code->setEnabled(editing);
   _number->setEnabled(editing);
+  _name->setEnabled(editing);
+  _startDate->setEnabled(editing);
   _active->setEnabled(editing);
   _contact->setEnabled(editing);
   _site->setEnabled(editing);
@@ -261,334 +247,152 @@ enum SetResponse employee::set(const ParameterList &pParams)
 
 bool employee::sSave(const bool pClose)
 {
-  if (_code->text().length() == 0)
-  {
-      QMessageBox::warning( this, tr("Cannot Save Employee"),
-                            tr("You must enter a valid Employee Code.") );
-      _code->setFocus();
-      return false;
-  }
-  
-  if (_code->text() == _mgr->number())
-  {
-      QMessageBox::warning( this, tr("Cannot Save Employee"),
-                            tr("An Employee cannot be his or her own Manager.") );
-      _code->setFocus();
-      return false;
-  }
-  
-  if (_mode == cNew)
-  {
-    q.prepare("SELECT emp_id"
-              "  FROM emp"
-              " WHERE(emp_code=:code)");
-    q.bindValue(":code", _code->text());
-    q.exec();
-    if(q.first())
-    {
-      QMessageBox::critical(this, tr("Duplicate Employee"),
-        tr("An Employee already exists for the Code specified.") );
-      _code->setFocus();
-      return false;
-    }
-    q.prepare("SELECT emp_id"
-              "  FROM emp"
-              " WHERE(emp_number=:number)");
-    q.bindValue(":number", _number->text());
-    q.exec();
-    if(q.first())
-    {
-      QMessageBox::critical(this, tr("Duplicate Employee"),
-        tr("An Employee already exists for the Number specified.") );
-      _number->setFocus();
-      return false;
-    }
-  }
+  bool dupCode   = false;
+  bool dupNumber = false;
 
-  if (_user->isChecked() && pClose)
-  {
-    q.prepare("SELECT usr_id FROM usr WHERE usr_username=:username;");
-    q.bindValue(":username", _code->text().toLower());
-    q.exec();
-    if (q.first())
-    {
-      // OK
-    }
-    else if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return false;
-    }
-    else if (_createUsers) // not found
-    {
-      if (QMessageBox::question(this, tr("No Corresponding User"),
-                            tr("There is no User named %1. Would you like to "
-                               "create one now?<p>If you answer 'No' then you "
-                               "should either Cancel creating this Employee, "
-                               "uncheck the User check box, or use a different "
-                               "Employee Code.")
-                            .arg(_code->text()),
-                            QMessageBox::Yes | QMessageBox::Default,
-                            QMessageBox::No) == QMessageBox::Yes)
-      {
-        // don't use sUser() because it asks too many questions
-		ParameterList params;
-        params.append("mode",     "new");
-        params.append("username", _code->text().toLower());
-        user newdlg(this);
-        newdlg.set(params);
-        newdlg.exec();
-        _user->setChecked(true);
-      }
-      return false;
-    }
-    else // not found
-    {
-      systemError(this, tr("There is no User named %1. Either Cancel creating "
-                           "this Employee or use a different Employee Code.")
-                         .arg(_code->text()));
-      return false;
-    }
-  }
-  
-  if (_salesrep->isChecked() && pClose)
-  {
-    q.prepare("SELECT salesrep_id FROM salesrep WHERE salesrep_number=:username;");
-    q.bindValue(":username", _code->text());
-    q.exec();
-    if (q.first())
-    {
-      // OK
-    }
-    else if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return false;
-    }
-    else if (_privileges->check("MaintainSalesReps")) // not found
-    {
-      if (QMessageBox::question(this, tr("No Corresponding SalesRep"),
-                            tr("There is no Sales Rep. named %1. Would you "
-                               "like to create one now?<p>If you answer 'No' "
-                               "then you should either Cancel creating this "
-                               "Employee, uncheck the Sales Rep check box, or "
-                               "use a different Employee Code.")
-                            .arg(_code->text()),
-                            QMessageBox::Yes | QMessageBox::Default,
-                            QMessageBox::No) == QMessageBox::Yes)
-      {
-        // don't use sSalesrep() because it asks too many questions
-        ParameterList params;
-        params.append("mode",     "new");
-        params.append("emp_id",   _empid);
-        salesRep newdlg(this, "", TRUE);
-        newdlg.set(params);
-        newdlg.exec();
-      }
-      return false;
-    }
-    else // not found
-    {
-      systemError(this, tr("There is no User named %1. Either Cancel creating "
-                           "this Employee or use a different Employee Code.")
-                         .arg(_code->text()));
-      return false;
-    }
-  }
+  XSqlQuery dupq;
+  dupq.prepare("SELECT emp_id"
+               "  FROM emp"
+               " WHERE(emp_code=:code) AND (emp_id != :id);");
+  dupq.bindValue(":code", _code->text());
+  dupq.bindValue(":id",   _empid);
+  dupq.exec();
+  if(dupq.first())
+    dupCode = true;
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Database Error"),
+                                dupq, __FILE__, __LINE__))
+    return false;
 
-  if (_vendor->isChecked() && pClose)
-  {
-	q.prepare("SELECT vend_id FROM vendinfo WHERE upper(vend_number)=upper(:number);");
-    q.bindValue(":number", _number->text());
-    q.exec();
-    if (q.first())
-    {
-      // OK
-    }
-    else if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return false;
-    }
-    else if (_privileges->check("MaintainVendors")) // not found
-    {
-      if (QMessageBox::question(this, tr("No Corresponding Vendor"),
-                            tr("There is no Vendor named %1. Would you "
-                               "like to create one now?<p>If you answer 'No' "
-                               "then you should either Cancel creating this "
-                               "Employee, uncheck the Vendor check box, or "
-                               "use a different Employee Code.")
-                            .arg(_code->text()),
-                            QMessageBox::Yes | QMessageBox::Default,
-                            QMessageBox::No) == QMessageBox::Yes)
-      {
-		ParameterList params;
-		params.append("crmacct_number", _number->text());
-		params.append("crmacct_name", _code->text().toLower());
-		params.append("mode", "new");
-		vendor *newdlg = new vendor(this);
-		newdlg->set(params);
-		omfgThis->handleNewWindow(newdlg);
-      }
-      return false;
-    }
-    else // not found
-    {
-      systemError(this, tr("There is no User named %1. Either Cancel creating "
-                           "this Employee or use a different Employee Code.")
-                         .arg(_code->text()));
-      return false;
-    }
-  }
+  dupq.prepare("SELECT emp_id"
+               "  FROM emp"
+               " WHERE(emp_number=:number) AND (emp_id != :id);");
+  dupq.bindValue(":number", _number->text());
+  dupq.bindValue(":id",     _empid);
+  dupq.exec();
+  if(dupq.first())
+    dupNumber = true;
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Database Error"),
+                                dupq, __FILE__, __LINE__))
+    return false;
 
+  QList<GuiErrorCheck> errors;
+  errors << GuiErrorCheck(_code->text().isEmpty(), _code,
+                          tr("You must enter a valid Employee Code."))
+         << GuiErrorCheck(_number->text().isEmpty(), _number,
+                          tr("You must enter an Employee Number."))
+         << GuiErrorCheck(dupCode, _code,
+                          tr("An Employee already exists for the Code specified."))
+         << GuiErrorCheck(_code->text() == _mgr->number(), _number,
+                          tr("An Employee already exists for the Number specified."))
+         << GuiErrorCheck(_code->text() == _mgr->number(), _mgr,
+                          tr("An Employee cannot be his or her own Manager."))
+    ;
+  if (GuiErrorCheck::reportErrors(this, tr("Cannot Save Employee"), errors))
+    return false;
 
   _contact->check();
 
-  if (_mode == cNew)
-    q.prepare("INSERT INTO api.employee ("
-              " code, number, active, start_date,"
-              " contact_number, honorific, first, middle, last, job_title,"
-              " voice, alternate, fax, email,"
-              " web, contact_change,"
-              " address_number, address1, address2, address3,"
-              " city, state, postalcode,"
-              " country, address_change,"
-              " site, manager_code,"
-              " wage_type, wage, wage_currency, wage_period,"
-              " department, shift, is_user, is_salesrep, is_vendor, notes, image, "
-              " rate, billing_currency, billing_period"
-              ") VALUES ("
-              " :code, :number, :active, :start_date,"
-              " :cntctnumber, :hnfc, :first, :middle, :last, :jobtitle,"
-              " :voice, :alt, :fax, :email,"
-              " :web, :cntctmode,"
-              " :addrnumber, :addr1, :addr2, :addr3,"
-              " :city, :state, :zip,"
-              " :country, :addrmode,"
-              " :site, :mgrcode,"
-              " :wagetype, :wage, :wagecurr, :wageper,"
-			  " :dept, :shift, :isusr, :isrep, :isvendor, :notes, :image, :rate, :billing_currency, :billing_period);");
+  XSqlQuery rollback;
+  rollback.prepare("ROLLBACK;");
 
-  else if (_mode == cEdit)
-    q.prepare("UPDATE api.employee SET"
-              " code=:code,"
-              " number=:number,"
-              " active=:active,"
-			  " start_date=:start_date,"
-              " contact_number=:cntctnumber,"
-              " honorific=:hnfc,"
-              " first=:first,"
-              " middle=:middle,"
-              " last=:last,"
-              " job_title=:jobtitle,"
-              " voice=:voice,"
-              " alternate=:alt,"
-              " fax=:fax,"
-              " email=:email,"
-              " web=:web,"
-              " contact_change=:cntctmode,"
-              " address_number=:addrnumber,"
-              " address1=:addr1,"
-              " address2=:addr2,"
-              " address3=:addr3,"
-              " city=:city,"
-              " state=:state,"
-              " postalcode=:zip,"
-              " country=:country,"
-              " address_change=:addrmode,"
-              " site=:site,"
-              " manager_code=:mgrcode,"
-              " wage_type=:wagetype,"
-              " wage=:wage,"
-              " wage_currency=:wagecurr,"
-              " wage_period=:wageper,"
-              " department=:dept,"
-              " shift=:shift,"
-              " is_user=:isusr,"
-              " is_salesrep=:isrep,"
-			  " is_vendor=:isvendor,"
-              " notes=:notes,"
-              " image=:image,"
-			  " rate=:rate,"
-			  " billing_currency=:billing_currency,"
-			  " billing_period=:billing_period"
-              " WHERE (code=:origcode);" );
-
-  q.bindValue(":code",        _code->text());
-  q.bindValue(":number",      _number->text());
-  q.bindValue(":active",      _active->isChecked());
-  q.bindValue(":start_date",   _startDate->date());
-  q.bindValue(":cntctnumber", _contact->number());
-  q.bindValue(":hnfc",        _contact->honorific());
-  q.bindValue(":first",       _contact->first());
-  q.bindValue(":middle",      _contact->middle());
-  q.bindValue(":last",        _contact->last());
-  q.bindValue(":jobtitle",    _contact->title());
-  q.bindValue(":voice",       _contact->phone());
-  q.bindValue(":alt",         _contact->phone2());
-  q.bindValue(":fax",         _contact->fax());
-  q.bindValue(":email",       _contact->emailAddress());
-  q.bindValue(":web",         _contact->webAddress());
-  q.bindValue(":cntctmode",   _contact->change());
-  q.bindValue(":addrnumber",  _contact->addressWidget()->number());
-  q.bindValue(":addr1",       _contact->addressWidget()->line1());
-  q.bindValue(":addr2",       _contact->addressWidget()->line2());
-  q.bindValue(":addr3",       _contact->addressWidget()->line3());
-  q.bindValue(":city",        _contact->addressWidget()->city());
-  q.bindValue(":state",       _contact->addressWidget()->state());
-  q.bindValue(":zip",         _contact->addressWidget()->postalCode());
-  q.bindValue(":country",     _contact->addressWidget()->country());
-  q.bindValue(":addrmode",    _contact->addressWidget()->addrChange());
-  q.bindValue(":site",        _site->code());
-  q.bindValue(":mgrcode",     _mgr->number());
-  q.bindValue(":wagetype",    _wagetype->code());
-  q.bindValue(":wage",        _rate->localValue());
-  q.bindValue(":wagecurr",    _currabbr);
-  q.bindValue(":wageper",     _per->code());
-  q.bindValue(":dept",        _dept->number());
-  q.bindValue(":shift",       _shift->number());
-  q.bindValue(":isusr",       _user->isChecked());
-  q.bindValue(":isrep",       _salesrep->isChecked());
-  q.bindValue(":isvendor",    _vendor->isChecked());
-  q.bindValue(":notes",       _notes->toPlainText());
-  q.bindValue(":origcode",    _empcode);
-  q.bindValue(":image",       _image->number());
-  q.bindValue(":rate",		  _externalRate->localValue());
-  q.bindValue(":billing_currency",	_currabbr);
-  q.bindValue(":billing_period",	_perExt->code());
-
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
+  XSqlQuery begin("BEGIN;");
+  int cntctResult = _contact->save();
+  if (cntctResult < 0)
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    rollback.exec();
+    ErrorReporter::error(QtCriticalMsg, this, tr("Error Saving Contact"),
+                         storedProcErrorLookup("saveContact", cntctResult));
     return false;
   }
-  emit saved();
 
+  XSqlQuery upsq;
   if (_mode == cNew)
+    upsq.prepare("INSERT INTO emp ("
+                 " emp_code,        emp_number,   emp_active,       emp_cntct_id,"
+                 " emp_warehous_id, emp_mgr_emp_id,"
+                 " emp_wage_type,   emp_wage,     emp_wage_curr_id, emp_wage_period,"
+                 " emp_dept_id,     emp_shift_id, emp_notes,        emp_image_id,"
+                 " emp_extrate,     emp_extrate_period, emp_startdate, emp_name"
+                 ") VALUES ("
+                 " :code,        :number,   :active,       :cntct_id,"
+                 " :warehous_id, :mgr_emp_id,"
+                 " :wage_type,   :wage,     :wage_curr_id, :wage_period,"
+                 " :dept_id,     :shift_id, :notes,        :image_id,"
+                 " :extrate,     :extrate_period, :startdate, :name"
+                 ") RETURNING emp_id;");
+
+  else if (_mode == cEdit)
   {
-    q.prepare("SELECT emp_id"
-              "  FROM emp"
-              " WHERE(emp_code=:code)");
-    q.bindValue(":code", _code->text());
-    q.exec();
-    if (q.first())
-    {
-      _empid = q.value("emp_id").toInt();
-      _empcode = _code->text();
-      _mode  = cEdit;
-      _comments->setId(_empid);
-      _comments->setReadOnly(_empid==-1);
-    }
-    else if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return false;
-    }
+    upsq.prepare("UPDATE emp SET"
+                 " emp_code=:code,"
+                 " emp_number=:number,"
+                 " emp_active=:active,"
+                 " emp_cntct_id=:cntct_id,"
+                 " emp_warehous_id=:warehous_id,"
+                 " emp_mgr_emp_id=:mgr_emp_id,"
+                 " emp_wage_type=:wage_type,"
+                 " emp_wage=:wage,"
+                 " emp_wage_curr_id=:wage_curr_id,"
+                 " emp_wage_period=:wage_period,"
+                 " emp_dept_id=:dept_id,"
+                 " emp_shift_id=:shift_id,"
+                 " emp_notes=:notes,"
+                 " emp_image_id=:image_id,"
+                 " emp_extrate=:extrate,"
+                 " emp_extrate_period=:extrate_period,"
+                 " emp_startdate=:startdate,"
+                 " emp_name=:name"
+              " WHERE (emp_id=:emp_id)"
+              " RETURNING emp_id;" );
+    upsq.bindValue(":emp_id", _empid);
   }
+
+  upsq.bindValue(":code",           _code->text());
+  upsq.bindValue(":number",         _number->text());
+  upsq.bindValue(":active",         _active->isChecked());
+  if (_contact->isValid())
+    upsq.bindValue(":cntct_id",     _contact->id());
+  if (_site->isValid())
+    upsq.bindValue(":warehous_id",  _site->id());
+  if (_mgr->isValid())
+    upsq.bindValue(":mgr_emp_id",   _mgr->id());
+  upsq.bindValue(":wage_type",      _wagetype->code());
+  upsq.bindValue(":wage",           _rate->localValue());
+  if (_rate->id() > 0)
+    upsq.bindValue(":wage_curr_id", _rate->id());
+  upsq.bindValue(":wage_period",    _per->code());
+  if (_dept->isValid())
+    upsq.bindValue(":dept_id",      _dept->id());
+  if (_shift->isValid())
+    upsq.bindValue(":shift_id",     _shift->id());
+  upsq.bindValue(":notes",          _notes->toPlainText());
+  if (_image->isValid())
+    upsq.bindValue(":image_id",     _image->id());
+  upsq.bindValue(":extrate",        _externalRate->localValue());
+  upsq.bindValue(":extrate_period", _perExt->code());
+  upsq.bindValue(":startdate",      _startDate->date());
+  upsq.bindValue(":name",           _name->text());
+
+  upsq.exec();
+  if (upsq.first())
+    _empid = upsq.value("emp_id").toInt();
+  else if (upsq.lastError().type() != QSqlError::NoError)
+  {
+    rollback.exec();
+    ErrorReporter::error(QtCriticalMsg, this, tr("Error saving Employee"),
+                         upsq, __FILE__, __LINE__);
+    return false;
+  }
+
+  XSqlQuery commit("COMMIT;");
+
+  emit saved();
+  omfgThis->sEmployeeUpdated(_empid);
 
   if (pClose)
     done(_empid);
+  else
+    sPopulate();
 
   return true;
 }
@@ -600,95 +404,78 @@ void employee::reject()
            _mode, _origmode);
   if (_origmode == cNew)
   {
-    q.prepare("SELECT deleteEmp(:empid) AS result;");
-    q.bindValue(":empid", _empid);
-    q.exec();
-    if (q.first())
-    {
-      int result = q.value("result").toInt();
-      if (result < 0)
-        systemError(this, storedProcErrorLookup("deleteEmp", result),
-                    __FILE__, __LINE__);
-    }
-    else if (q.lastError().type() != QSqlError::NoError)
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    XSqlQuery delq;
+    delq.prepare("DELETE FROM emp WHERE (emp_id=:empid);");
+    delq.bindValue(":empid", _empid);
+    delq.exec();
+    ErrorReporter::error(QtCriticalMsg, this, tr("Error deleting Employee"),
+                         delq, __FILE__, __LINE__);
   }
 
   XDialog::reject();
 }
 
-void employee::sPopulate()
+bool employee::sPopulate()
 {
-  q.prepare("SELECT *, curr_id, curr_abbr "
-            "FROM api.employee LEFT OUTER JOIN"
-            "     curr_symbol ON (wage_currency = curr_abbr) "
-            "WHERE (code=:code);");
-  q.bindValue(":code", _empcode);
-  q.exec();
-  if (q.first())
+  XSqlQuery getq;
+  if (_empid > 0)
   {
-    _code->setText(q.value("code").toString());
-    _number->setText(q.value("number").toString());
-    _active->setChecked(q.value("active").toBool());
-	_startDate->setDate(q.value("start_date").toDate());
-    _contact->setNumber(q.value("contact_number").toString());
-    _contact->setHonorific(q.value("honorific").toString());
-    _contact->setFirst(q.value("first").toString());
-    _contact->setLast(q.value("last").toString());
-    _contact->setTitle(q.value("job_title").toString());
-    _contact->setPhone(q.value("voice").toString());
-    _contact->setPhone2(q.value("alternate").toString());
-    _contact->setFax(q.value("fax").toString());
-    _contact->setEmailAddress(q.value("email").toString());
-    _contact->setWebAddress(q.value("web").toString());
-    _contact->addressWidget()->setLine1(q.value("address1").toString());
-    _contact->addressWidget()->setLine2(q.value("address2").toString());
-    _contact->addressWidget()->setLine3(q.value("address3").toString());
-    _contact->addressWidget()->setCity(q.value("city").toString());
-    _contact->addressWidget()->setState(q.value("state").toString());
-    _contact->addressWidget()->setPostalCode(q.value("postalcode").toString());
-    _contact->addressWidget()->setCountry(q.value("country").toString());
-    _site->setCode(q.value("site").toString());
-    _mgr->setNumber(q.value("manager_code").toString());
-    _wagetype->setCode(q.value("wage_type").toString());
-    _rate->set(q.value("wage").toDouble(),
-               q.value("curr_id").toInt(),
+    getq.prepare("SELECT emp.*, crmacct_id, crmacct_owner_username,"
+                 "       crmacct_salesrep_id, crmacct_usr_username, crmacct_vend_id"
+                 "  FROM emp JOIN crmacct ON (emp_id=crmacct_emp_id)"
+                 " WHERE (emp_id=:id);");
+    getq.bindValue(":id", _empid);
+  }
+  else if (_crmacctid > 0)
+  {
+    getq.prepare("SELECT crmacct_number     AS emp_code, NULL AS emp_number,"
+                 "       crmacct_name       AS emp_name,"
+                 "       crmacct_active     AS emp_active,"
+                 "       crmacct_cntct_id_1 AS emp_cntct_id,"
+                 "       NULL AS emp_startdate,      NULL AS emp_mgr_emp_id,"
+                 "       NULL AS emp_warehous_id,    NULL AS emp_wage_type,"
+                 "       NULL AS emp_wage,           NULL AS emp_wage_curr_id,"
+                 "       NULL AS emp_extrate,        NULL AS emp_wage_period,"
+                 "       NULL AS emp_extrate_period, NULL AS emp_dept_id,"
+                 "       NULL AS emp_shift_id,       NULL AS emp_notes,"
+                 "       NULL AS emp_image_id,"
+                 "crmacct_id, crmacct_owner_username"
+                 "  FROM crmacct"
+                 " WHERE (crmacct_id=:id);");
+    getq.bindValue(":id", _crmacctid);
+  }
+
+  getq.exec();
+  if (getq.first())
+  {
+    _code->setText(getq.value("emp_code").toString());
+    _name->setText(getq.value("emp_name").toString());
+    _number->setText(getq.value("emp_number").toString());
+    _active->setChecked(getq.value("emp_active").toBool());
+    _startDate->setDate(getq.value("emp_startdate").toDate());
+    _contact->setId(getq.value("emp_cntct_id").toInt());
+    _site->setId(getq.value("emp_warehous_id").toInt());
+    _mgr->setId(getq.value("emp_mgr_emp_id").toInt());
+    _wagetype->setCode(getq.value("emp_wage_type").toString());
+    _rate->set(getq.value("emp_wage").toDouble(),
+               getq.value("emp_wage_curr_id").toInt(),
                QDate::currentDate());
-    _externalRate->set(q.value("rate").toDouble(),
-               q.value("curr_id").toInt(),
-               QDate::currentDate());
-	_currabbr = q.value("curr_abbr").toString();
-    _per->setCode(q.value("wage_period").toString());
-    _perExt->setCode(q.value("billing_period").toString());
-	_dept->setNumber(q.value("department").toString());
-    _shift->setNumber(q.value("shift").toString());
+    _externalRate->set(getq.value("emp_extrate").toDouble(),
+                       getq.value("emp_wage_curr_id").toInt(),
+                       QDate::currentDate());
+    _per->setCode(getq.value("emp_wage_period").toString());
+    _perExt->setCode(getq.value("emp_extrate_period").toString());
+    _dept->setId(getq.value("emp_dept_id").toInt());
+    _shift->setId(getq.value("emp_shift_id").toInt());
+    _notes->setText(getq.value("emp_notes").toString());
+    _image->setId(getq.value("emp_image_id").toInt());
 
-    _user->setChecked(q.value("is_user").toBool());
-    _salesrep->setChecked(q.value("is_salesrep").toBool());
-    _vendor->setChecked(q.value("is_vendor").toBool());
-	_notes->setText(q.value("notes").toString());
-    _image->setNumber(q.value("image").toString());
-
-    _user->setEnabled(_createUsers && ! _user->isChecked());
-    _userButton->setEnabled(_privileges->check("MaintainUsers") &&
-                            _user->isChecked());
-
-    _salesrep->setEnabled(_privileges->check("MaintainSalesReps") &&
-                          ! _salesrep->isChecked());
-    _salesrepButton->setEnabled((_privileges->check("MaintainSalesReps") ||
-                                 _privileges->check("ViewSalesReps")) &&
-                                _salesrep->isChecked());
-
-	_vendor->setEnabled(_privileges->check("MaintainVendors") &&
-                          ! _vendor->isChecked());
-    _vendorButton->setEnabled((_privileges->check("MaintainVendors") ||
-                                 _privileges->check("ViewVendors")) &&
-                                _vendor->isChecked());
-
+    _crmacctid  = getq.value("crmacct_id").toInt();
+    _crmowner   = getq.value("crmacct_owner_username").toString();
 
     if (DEBUG)
       qDebug("image %s and %s",
-             qPrintable(q.value("image").toString()),
+             qPrintable(getq.value("image").toString()),
              qPrintable(_image->number()));
 
     sFillCharassList();
@@ -697,24 +484,25 @@ void employee::sPopulate()
     _comments->setReadOnly(_empid==-1);
     emit populated();
   }
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
+  else if (ErrorReporter::error(QtCriticalMsg, this,
+                                tr("Error getting Employee"),
+                                getq, __FILE__, __LINE__))
+    return false;
+
+  sHandleButtons();
+  return true;
 }
 
 void employee::sDeleteCharass()
 {
-  q.prepare( "DELETE FROM charass "
-             "WHERE (charass_id=:charass_id);" );
-  q.bindValue(":charass_id", _charass->id());
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  XSqlQuery delq;
+  delq.prepare("DELETE FROM charass WHERE (charass_id=:charass_id);");
+  delq.bindValue(":charass_id", _charass->id());
+  delq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this,
+                           tr("Error deleting Characteristic Assignment"),
+                           delq, __FILE__, __LINE__))
     return;
-  }
 
   sFillCharassList();
 }
@@ -752,7 +540,8 @@ void employee::sNewCharass()
 
 void employee::sFillCharassList()
 {
-  q.prepare( "SELECT charass_id, char_name, "
+  XSqlQuery getq;
+  getq.prepare( "SELECT charass_id, char_name, "
              " CASE WHEN char_type < 2 THEN "
              "   charass_value "
              " ELSE "
@@ -763,230 +552,30 @@ void employee::sFillCharassList()
              " AND   (charass_char_id=char_id)"
              " AND   (charass_target_id=:emp_id) ) "
              "ORDER BY char_order, char_name;" );
-  q.bindValue(":emp_id", _empid);
-  q.exec();
-  _charass->populate(q);
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  getq.bindValue(":emp_id", _empid);
+  getq.exec();
+  _charass->populate(getq);
+  if (ErrorReporter::error(QtCriticalMsg, this,
+                           tr("Error getting Characteristic Assignments"),
+                           getq, __FILE__, __LINE__))
     return;
-  }
 }
 
 void employee::sFillGroupsList()
 {
-  q.prepare( "SELECT empgrp.* "
+  XSqlQuery getq;
+  getq.prepare( "SELECT empgrp.* "
              "FROM empgrp, empgrpitem "
              "WHERE ((empgrp_id=empgrpitem_empgrp_id)"
              "  AND  (empgrpitem_emp_id=:emp_id) ) "
              "ORDER BY empgrp_name;" );
-  q.bindValue(":emp_id", _empid);
-  q.exec();
-  _groups->populate(q);
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  getq.bindValue(":emp_id", _empid);
+  getq.exec();
+  _groups->populate(getq);
+  if (ErrorReporter::error(QtCriticalMsg, this,
+                           tr("Error getting Employee Groups"),
+                           getq, __FILE__, __LINE__))
     return;
-  }
-}
-
-void employee::sSalesrep()
-{
-  XSqlQuery srq;
-  if (_empid < 0 && _code->text().isEmpty())
-  {
-    QMessageBox::warning(this, tr("Specify an Employee Code"),
-                         tr("<p>You must either be editing an existing "
-                            "Employee or have at least given an Employee Code "
-                            "before trying to associate this Employee with a "
-                            "Sales Rep."));
-    return;
-  }
-  else if (_empid >= 0)
-  {
-    srq.prepare("SELECT salesrep_id "
-                "FROM salesrep "
-                "WHERE (salesrep_emp_id=:id);");
-    srq.bindValue(":id", _empid);
-  }
-  else
-  {
-    srq.prepare("SELECT salesrep_id "
-                "FROM salesrep "
-                "WHERE (salesrep_number=:number);");
-    srq.bindValue(":number", _number->text());
-  }
-
-  srq.exec();
-  if (srq.first() &&
-      (_privileges->check("MaintainSalesReps") ||
-       _privileges->check("ViewSalesReps"))
-      )
-  {
-    if (!sSave(false))
-      return;
-    ParameterList params;
-    if (_mode == cView || ! _privileges->check("MaintainSalesReps"))
-      params.append("mode", "view");
-    else
-      params.append("mode", "edit");
-    params.append("salesrep_id", srq.value("salesrep_id"));
-    params.append("emp_id",      _empid);
-    salesRep newdlg(this, "", TRUE);
-    newdlg.set(params);
-    _salesrep->setEnabled(newdlg.exec() == QDialog::Rejected);
-  }
-  else if (srq.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, srq.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-  else if (_privileges->check("MaintainSalesReps") &&
-           (_mode == cEdit || _mode == cNew))
-  {
-    if (QMessageBox::question(this, tr("Create Sales Rep?"),
-                              tr("<p>There does not appear to be a Sales "
-                                 "Rep associated with this Employee. "
-                                 "Would you like to create a new Sales "
-                                 "Rep?"),
-				  QMessageBox::Yes | QMessageBox::Default,
-				  QMessageBox::No) == QMessageBox::Yes)
-    {
-      if (!sSave(false))
-        return;
-      ParameterList params;
-      params.append("mode",     "new");
-      params.append("emp_id",   _empid);
-      salesRep newdlg(this, "", TRUE);
-      newdlg.set(params);
-      _salesrep->setEnabled(newdlg.exec() == QDialog::Rejected);
-    }
-  }
-}
-
-
-void employee::sVendor()
-{
-  XSqlQuery srq;
-  if (_empid < 0 && _code->text().isEmpty())
-  {
-    QMessageBox::warning(this, tr("Specify an Employee Code"),
-                         tr("<p>You must either be editing an existing "
-                            "Employee or have at least given an Employee Code "
-                            "before trying to associate this Employee with a "
-                            "Vendor."));
-    return;
-  }
-  else
-  {
-    srq.prepare("SELECT vend_id "
-                "FROM vendinfo "
-                "WHERE (upper(vend_number)=upper(:number));");
-    srq.bindValue(":number", _number->text());
-  }
-
-  srq.exec();
-  if (srq.first() &&
-      (_privileges->check("MaintainVendors") ||
-       _privileges->check("ViewVendors"))
-      )
-  {
-    _vendor->setEnabled(true);
-    if (!sSave(false))
-      return;
-    ParameterList params;
-    if (_mode == cView || ! _privileges->check("MaintainVendors"))
-      params.append("mode", "view");
-    else
-	params.append("vend_id", srq.value("vend_id"));
-    params.append("crmacct_number", _number->text());
-    params.append("crmacct_name", _code->text().toLower());
-    params.append("mode", "edit");
-    vendor *newdlg = new vendor(this);
-    newdlg->set(params);
-    omfgThis->handleNewWindow(newdlg);
-  }
-  else if (srq.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, srq.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-  else if (_privileges->check("MaintainVendors") &&
-           (_mode == cEdit || _mode == cNew))
-  {
-    if (QMessageBox::question(this, tr("Create Vendor?"),
-                              tr("<p>There does not appear to be a Vendor "
-                                 "associated with this Employee. "
-								 "Would you like to create a new Vendor?"),
-				  QMessageBox::Yes | QMessageBox::Default,
-				  QMessageBox::No) == QMessageBox::Yes)
-    {
-      if (!sSave(false))
-        return;
-      ParameterList params;
-      params.append("crmacct_number", _number->text());
-      params.append("crmacct_name", _code->text().toLower());
-	  params.append("mode",     "new");
-      vendor *newdlg = new vendor(this);
-      newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg);
-    }
-  }
-}
-
-
-
-void employee::sUser()
-{
-  XSqlQuery usrq;
-  usrq.prepare("SELECT usr_username "
-               "FROM usr "
-               "WHERE (usr_username=:empcode);");
-  usrq.bindValue(":empcode", _code->text().toLower());
-  usrq.exec();
-  if (usrq.first() && _privileges->check("MaintainUsers"))
-  {
-    ParameterList params;
-    params.append("mode",     (_mode == cView) ? "view" : "edit");
-    params.append("username", _code->text().toLower());
-    user newdlg(this);
-    newdlg.set(params);
-    newdlg.exec();
-	_user->setChecked(true);
-  }
-  else if (usrq.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, usrq.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-  else if (_createUsers && (_mode == cEdit || _mode == cNew))
-  {
-    if (QMessageBox::question(this, tr("Create User?"),
-                              tr("<p>There does not appear to be a User "
-                                 "associated with this Employee. "
-                                 "Would you like to create a new User?"),
-				  QMessageBox::Yes | QMessageBox::Default,
-				  QMessageBox::No) == QMessageBox::Yes)
-    {
-      if (!sSave(false))
-        return;
-      ParameterList params;
-      params.append("mode",     "new");
-      params.append("username", _code->text().toLower());
-      user newdlg(this);
-      newdlg.set(params);
-      newdlg.exec();
-	  _user->setChecked(true);
-    }
-  }
-  else
-  {
-    QMessageBox::warning(this, tr("Cannot Create User"),
-                         tr("<p>There does not appear to be a User associated "
-                            "with this Employee and you do not have permission "
-                            "to create a User."));
-    return;
-  }
 }
 
 void employee::sAttachGroup()
@@ -997,46 +586,78 @@ void employee::sAttachGroup()
   int empgrpid = EmpGroupClusterLineEdit::idFromList(this);
   if (empgrpid != XDialog::Rejected && empgrpid != -1)
   {
-    q.prepare("SELECT * FROM empgrpitem"
+    XSqlQuery grpq;
+    grpq.prepare("SELECT * FROM empgrpitem"
               " WHERE((empgrpitem_empgrp_id=:empgrpid)"
               "   AND (empgrpitem_emp_id=:empid));");
-    q.bindValue(":empgrpid", empgrpid);
-    q.bindValue(":empid",    _empid);
-    q.exec();
-    if(q.first())
+    grpq.bindValue(":empgrpid", empgrpid);
+    grpq.bindValue(":empid",    _empid);
+    grpq.exec();
+    if(grpq.first())
     {
       QMessageBox::information(this, tr("Employee in Group"),
         tr("The employee is already in the selected group.") );
       return;
     }
-    q.prepare("INSERT INTO empgrpitem (empgrpitem_empgrp_id, empgrpitem_emp_id)"
+    grpq.prepare("INSERT INTO empgrpitem (empgrpitem_empgrp_id, empgrpitem_emp_id)"
               " VALUES "
               "(:empgrpid, :empid);");
-    q.bindValue(":empgrpid", empgrpid);
-    q.bindValue(":empid",    _empid);
-    q.exec();
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    grpq.bindValue(":empgrpid", empgrpid);
+    grpq.bindValue(":empid",    _empid);
+    grpq.exec();
+    if (ErrorReporter::error(QtCriticalMsg, this,
+                             tr("Error attaching to Employee Group"),
+                             grpq, __FILE__, __LINE__))
       return;
-    }
     sFillGroupsList();
   }
 }
 
-void employee::sDetachGroup()
+void employee::sCrmAccount()
 {
-  q.prepare("DELETE FROM empgrpitem "
-            "WHERE ((empgrpitem_empgrp_id=:grpid)"
-            "  AND  (empgrpitem_emp_id=:empid));");
-  q.bindValue(":grpid", _groups->id());
-  q.bindValue(":empid", _empid);
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
+  ParameterList params;
+  params.append("crmacct_id", _crmacctid);
+  if ((cView == _mode && _privileges->check("ViewAllCRMAccounts")) ||
+      (cView == _mode && _privileges->check("ViewPersonalCRMAccounts")
+                      && omfgThis->username() == _crmowner) ||
+      (cEdit == _mode && _privileges->check("ViewAllCRMAccounts")
+                      && ! _privileges->check("MaintainAllCRMAccounts")) ||
+      (cEdit == _mode && _privileges->check("ViewPersonalCRMAccounts")
+                      && ! _privileges->check("MaintainPersonalCRMAccounts")
+                      && omfgThis->username() == _crmowner))
+    params.append("mode", "view");
+  else if ((cEdit == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
+           (cEdit == _mode && _privileges->check("MaintainPersonalCRMAccounts")
+                           && omfgThis->username() == _crmowner))
+    params.append("mode", "edit");
+  else if ((cNew == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
+           (cNew == _mode && _privileges->check("MaintainPersonalCRMAccounts")
+                          && omfgThis->username() == _crmowner))
+    params.append("mode", "edit");
+  else
   {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    qWarning("tried to open CRM Account window without privilege");
     return;
   }
+
+  crmaccount *newdlg = new crmaccount();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg, Qt::WindowModal);
+}
+
+void employee::sDetachGroup()
+{
+  XSqlQuery detq;
+  detq.prepare("DELETE FROM empgrpitem "
+            "WHERE ((empgrpitem_empgrp_id=:grpid)"
+            "  AND  (empgrpitem_emp_id=:empid));");
+  detq.bindValue(":grpid", _groups->id());
+  detq.bindValue(":empid", _empid);
+  detq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this,
+                           tr("Error detaching from Employee Group"),
+                           detq, __FILE__, __LINE__))
+    return;
   sFillGroupsList();
 }
 
@@ -1065,36 +686,9 @@ void employee::sViewGroup()
 
 void employee::sHandleButtons()
 {
-//  if (!sSave(false))
-//    return;
-  XSqlQuery usrq;
-  usrq.prepare("SELECT usr_id FROM usr WHERE usr_username=:username;");
-  usrq.bindValue(":username", _code->text().toLower());
-  usrq.exec();
-  if (usrq.first())
-  {
-    _user->setChecked(true);
-    _userButton->setEnabled(_privileges->check("MaintainUsers"));
-  }
-  else if (usrq.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, usrq.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-
-  XSqlQuery vendq;
-  vendq.prepare("SELECT vend_id FROM vendinfo WHERE upper(vend_number)=upper(:number);");
-  vendq.bindValue(":number", _number->text());
-  vendq.exec();
-  if (vendq.first())
-  {
-	_vendor->setChecked(true);
-    _vendorButton->setEnabled(_privileges->check("MaintainVendors"));
-  }
-  else if (vendq.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, vendq.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-
+  _crmacct->setEnabled(_crmacctid > 0 &&
+                       (_privileges->check("MaintainAllCRMAccounts") ||
+                        _privileges->check("ViewAllCRMAccounts") ||
+                        (omfgThis->username() == _crmowner && _privileges->check("MaintainPersonalCRMAccounts")) ||
+                        (omfgThis->username() == _crmowner && _privileges->check("ViewPersonalCRMAccounts"))));
 }

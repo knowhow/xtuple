@@ -30,7 +30,7 @@ bool package::userHasPriv(const int pMode)
   if (pMode == cNew || pMode == cEdit)
   {
     XSqlQuery su;
-    su.exec("SELECT rolsuper FROM pg_roles WHERE (rolname=CURRENT_USER);");
+    su.exec("SELECT rolsuper FROM pg_roles WHERE (rolname=getEffectiveXtUser());");
     if (su.first())
       canmaintain = su.value("rolsuper").toBool();
     else if (su.lastError().type() != QSqlError::NoError)

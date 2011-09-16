@@ -73,7 +73,7 @@ void dspUndefinedManufacturedItems::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem*
 void dspUndefinedManufacturedItems::sCreateBOM()
 {
   ParameterList params;
-  params.append("mode", "new");
+  params.append("mode", "edit");
   params.append("item_id", list()->id());
 
   BOM *newdlg = new BOM();
@@ -88,6 +88,12 @@ void dspUndefinedManufacturedItems::sEditItem()
 
 bool dspUndefinedManufacturedItems::setParams(ParameterList &params)
 {
+  if (!_bom->isChecked())
+  {
+    list()->clear();
+    return false;
+  }
+
   params.append("noBom", tr("No BOM"));
   if (!_showInactive->isChecked())
     params.append("notshowInactive");

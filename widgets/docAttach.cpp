@@ -347,6 +347,26 @@ void docAttach::sSave()
 
   if (_targettype == "IMG")
   {
+    // First determine if the id is in the image table, and not one of it's inherited versions
+    // if it is not then we will create a copy in the image table to keep the FK's working
+    XSqlQuery qq;
+    qq.prepare("SELECT image_id FROM ONLY image WHERE image_id=:image_id");
+    qq.bindValue(":image_id", _targetid);
+    if(qq.exec() && !qq.first())
+    {
+      qq.exec("SELECT nextval(('\"image_image_id_seq\"'::text)::regclass) AS newid;");
+      if(qq.first())
+      {
+        int newid = qq.value("newid").toInt();
+        qq.prepare("INSERT INTO image (image_id, image_name, image_descrip, image_data) "
+                   "SELECT :newid, image_name, image_descrip, image_data"
+                   "  FROM image WHERE image_id=:image_id;");
+        qq.bindValue(":newid", newid);
+        qq.bindValue(":image_id", _targetid);
+        if(qq.exec())
+          _targetid = newid;
+      }
+    }
      // For now images are handled differently because of legacy structures...
     newDocass.prepare( "INSERT INTO imageass "
                        "( imageass_source, imageass_source_id, imageass_image_id, imageass_purpose ) "

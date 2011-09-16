@@ -162,13 +162,13 @@ Privileges::Privileges()
   _readSql = "SELECT priv_name AS key, TEXT('t') AS value "
              "  FROM usrpriv, priv "
              " WHERE((usrpriv_priv_id=priv_id)"
-             "   AND (usrpriv_username=CURRENT_USER)) "
+             "   AND (usrpriv_username=getEffectiveXtUser())) "
              " UNION "
              "SELECT priv_name AS key, TEXT('t') AS value "
              "  FROM priv, grppriv, usrgrp"
              " WHERE((usrgrp_grp_id=grppriv_grp_id)"
              "   AND (grppriv_priv_id=priv_id)"
-             "   AND (usrgrp_username=CURRENT_USER));";
+             "   AND (usrgrp_username=getEffectiveXtUser()));";
 
   load();
 }

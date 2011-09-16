@@ -185,7 +185,8 @@ bool dspDetailedInventoryHistoryByLotSerial::setParams(ParameterList &params)
   else
     trace="N";
 
-  _dates->appendValue(params);
+  if (_dateGroup->isChecked())
+    _dates->appendValue(params);
   if (_item->isValid())
     params.append("itemid", _item->id());
   if (_warehouse->isSelected())

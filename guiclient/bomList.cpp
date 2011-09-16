@@ -161,7 +161,7 @@ void bomList::sSearch( const QString &pTarget )
   int i;
   for (i = 0; i < _bom->topLevelItemCount(); i++)
   {
-   if (_bom->topLevelItem(i)->text(0).contains(pTarget, Qt::CaseInsensitive))
+   if (_bom->topLevelItem(i)->text(0).startsWith(pTarget, Qt::CaseInsensitive))
     break;
   }
     

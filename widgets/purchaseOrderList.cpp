@@ -93,7 +93,7 @@ purchaseOrderList::purchaseOrderList(QWidget* parent, const char* name, bool mod
   _pohead->setFocus();
 }
 
-void purchaseOrderList::set(ParameterList &pParams)
+void purchaseOrderList::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

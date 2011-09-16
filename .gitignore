@@ -10,3 +10,4 @@ tmp/*
 */moc/*
 */ui/ui_*.h
 lib/
+widgets/Makefile.dll

@@ -440,7 +440,7 @@ to be bound by its terms.</comment>
           <number>2</number>
          </property>
          <item>
-          <widget class="QTextEdit" name="_comments"/>
+          <widget class="XTextEdit" name="_comments"/>
          </item>
         </layout>
        </widget>
@@ -456,7 +456,7 @@ to be bound by its terms.</comment>
           <number>2</number>
          </property>
          <item>
-          <widget class="QTextEdit" name="_shippingComments"/>
+          <widget class="XTextEdit" name="_shippingComments"/>
          </item>
         </layout>
        </widget>
@@ -489,6 +489,11 @@ to be bound by its terms.</comment>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

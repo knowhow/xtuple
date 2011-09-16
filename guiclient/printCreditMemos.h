@@ -11,7 +11,7 @@
 #ifndef PRINTCREDITMEMOS_H
 #define PRINTCREDITMEMOS_H
 
-#include <qgroupbox.h>
+#include <QGroupBox>
 #include "xdialog.h"
 #include "ui_printCreditMemos.h"
 

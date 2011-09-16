@@ -437,8 +437,9 @@ void maintainBudget::populate()
     _descrip->setText(q.value("budghead_descrip").toString());
 
     q.prepare("SELECT DISTINCT budgitem_accnt_id, formatGLAccountLong(budgitem_accnt_id) AS result"
-              "  FROM budgitem"
-              " WHERE(budgitem_budghead_id=:budghead_id);");
+              "  FROM budgitem JOIN accnt ON (accnt_id=budgitem_accnt_id)"
+              " WHERE(budgitem_budghead_id=:budghead_id)"
+              " ORDER BY result;");
     q.bindValue(":budghead_id", _budgheadid);
     q.exec();
     while(q.next())
@@ -449,7 +450,8 @@ void maintainBudget::populate()
 
     q.prepare("SELECT DISTINCT budgitem_period_id"
               "  FROM budgitem"
-              " WHERE(budgitem_budghead_id=:budghead_id);");
+              " WHERE(budgitem_budghead_id=:budghead_id)"
+              " ORDER BY budgitem_period_id;");
     q.bindValue(":budghead_id", _budgheadid);
     q.exec();
     while(q.next())

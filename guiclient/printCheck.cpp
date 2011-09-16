@@ -80,6 +80,30 @@ enum SetResponse printCheck::set(const ParameterList &pParams)
 
 void printCheck::sPrint()
 {
+  if(_setCheckNumber != -1 && _setCheckNumber != _nextCheckNum->text().toInt())
+  {
+    q.prepare("SELECT checkhead_id "
+              "FROM checkhead "
+              "WHERE ( (checkhead_bankaccnt_id=:bankaccnt_id) "
+              "  AND   (checkhead_id <> :checkhead_id) "
+              "  AND   (checkhead_number=:nextCheckNumber));");
+    q.bindValue(":bankaccnt_id", _bankaccnt->id());
+    q.bindValue(":checkhead_id", _check->id());
+    q.bindValue(":nextCheckNumber", _nextCheckNum->text().toInt());
+    q.exec();
+    if (q.first())
+    {
+      QMessageBox::information( this, tr("Check Number Already Used"),
+                    tr("<p>The selected Check Number has already been used.") );
+      return;
+    }
+    else if (q.lastError().type() != QSqlError::NoError)
+    {
+      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+      return;
+    }
+  }
+
   if (_createEFT->isEnabled() &&
       QMessageBox::question(this, tr("Print Anyway?"),
                             tr("<p>The recipient of this check has been "

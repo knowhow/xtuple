@@ -3,6 +3,12 @@
  <title>Statement</title>
  <name>Statement</name>
  <description>"As of" date included</description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>100</topmargin>
@@ -12,14 +18,14 @@
  <querysource>
   <name>detail</name>
   <sql>SELECT CASE WHEN (araging_doctype = 'I') THEN &lt;? value("invoice") ?>
-            WHEN (araging_doctype = 'D') THEN &lt;? value("debit") ?>
-            WHEN (araging_doctype = 'C') THEN &lt;? value("credit") ?>
+            WHEN (araging_doctype = 'D') THEN &lt;? value("debitMemo") ?>
+            WHEN (araging_doctype = 'C') THEN &lt;? value("creditMemo") ?>
             WHEN (araging_doctype = 'R') THEN &lt;? value("deposit") ?>
             ELSE 'Misc.'
        END AS doctype,
        araging_docnumber AS f_docnumber,
        formatDate(CAST(araging_docdate AS DATE)) AS f_docdate,
-       CASE WHEN (araging_doctype IN ('I','D')) THEN formatDate(araging_duedate)
+       CASE WHEN (araging_doctype IN ('I','C','D')) THEN formatDate(araging_duedate)
             ELSE ''
        END AS f_duedate,
        formatMoney(araging_aropen_amount) AS f_amount,

@@ -37,7 +37,7 @@ class XTUPLEWIDGETS_EXPORT itemAliasList : public QDialog
     QPushButton* _select;
     XTreeWidget* _item;
 
-    virtual void set( ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
 
   protected slots:
     virtual void sSelect();

@@ -50,7 +50,7 @@ void copySalesOrder::languageChange()
   retranslateUi(this);
 }
 
-enum SetResponse copySalesOrder::set(ParameterList &pParams)
+enum SetResponse copySalesOrder::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

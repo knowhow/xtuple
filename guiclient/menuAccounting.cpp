@@ -442,7 +442,7 @@ menuAccounting::menuAccounting(GUIClient *Pparent) :
     { "separator",		  NULL,					NULL,					utilitiesMenu,		"true",					       NULL, NULL, true, NULL },
     { "so.purgeInvoices", tr("Purge &Invoices..."), SLOT(sPurgeInvoices()), utilitiesMenu, "PurgeInvoices", NULL, NULL, true , NULL },
     { "ar.updateLateCustCreditStatus", tr("&Update Late Customer Credit Status..."), SLOT(sUpdateLateCustCreditStatus()), utilitiesMenu, "UpdateCustomerCreditStatus", NULL, NULL, _metrics->boolean("AutoCreditWarnLateCustomers"), NULL },
-    { "ar.createRecurringInvoices", tr("&Create Recurring Invoices..."), SLOT(sCreateRecurringInvoices()), utilitiesMenu, "MaintainMiscInvoices", NULL, NULL, true, NULL },
+//    { "ar.createRecurringInvoices", tr("&Create Recurring Invoices..."), SLOT(sCreateRecurringInvoices()), utilitiesMenu, "MaintainMiscInvoices", NULL, NULL, true, NULL },
     { "separator",		  NULL,					NULL,					utilitiesMenu,		"true",					       NULL, NULL, _metrics->boolean("MultiCompanyFinancialConsolidation"), NULL },
     { "gl.syncCompanies",           tr("&Synchronize Companies"),        SLOT(sSyncCompanies()),           utilitiesMenu, "SynchronizeCompanies", NULL, NULL, _metrics->boolean("MultiCompanyFinancialConsolidation"), NULL },
 

@@ -36,10 +36,34 @@ items::items(QWidget* parent, const char*, Qt::WFlags fl)
 
   QString qryType = QString( "SELECT  1, '%1' UNION "
                              "SELECT  2, '%2' UNION "
-                             "SELECT  3, '%3'")
+                             "SELECT  3, '%3' UNION "
+                             "SELECT  4, '%4' UNION "
+                             "SELECT  5, '%5' UNION "
+                             "SELECT  6, '%6' UNION "
+                             "SELECT  7, '%7' UNION "
+                             "SELECT  8, '%8' UNION "
+                             "SELECT  9, '%9' UNION "
+                             "SELECT  10, '%10' UNION "
+                             "SELECT  11, '%11' UNION "
+                             "SELECT  12, '%12' UNION "
+                             "SELECT  13, '%13' UNION "
+                             "SELECT  14, '%14' UNION "
+                             "SELECT  15, '%15'")
       .arg(tr("Buy Items"))
       .arg(tr("Make Items"))
-      .arg(tr("Sold Items"));
+      .arg(tr("Sold Items"))
+      .arg(tr("Purchased"))
+      .arg(tr("Manufactured"))
+      .arg(tr("Phantom"))
+      .arg(tr("Reference"))
+      .arg(tr("Costing"))
+      .arg(tr("Tooling"))
+      .arg(tr("Outside Process"))
+      .arg(tr("Planning"))
+      .arg(tr("Kit"))
+      .arg(tr("Breeder"))
+      .arg(tr("Co-Product"))
+      .arg(tr("By-Product"));
 
   parameterWidget()->appendComboBox(tr("Class Code"), "classcode_id", XComboBox::ClassCodes);
   parameterWidget()->append(tr("Class Code Pattern"), "classcode_pattern", ParameterWidget::Text);
@@ -157,6 +181,30 @@ bool items::setParams(ParameterList &params)
       params.append("showManufactured");
     else if (types == 3)
       params.append("showSold");
+    else if (types == 4)
+      params.append("item_type", "P");
+    else if (types == 5)
+      params.append("item_type", "M");
+    else if (types == 6)
+      params.append("item_type", "F");
+    else if (types == 7)
+      params.append("item_type", "R");
+    else if (types == 8)
+      params.append("item_type", "S");
+    else if (types == 9)
+      params.append("item_type", "T");
+    else if (types == 10)
+      params.append("item_type", "O");
+    else if (types == 11)
+      params.append("item_type", "L");
+    else if (types == 12)
+      params.append("item_type", "K");
+    else if (types == 13)
+      params.append("item_type", "B");
+    else if (types == 14)
+      params.append("item_type", "C");
+    else if (types == 15)
+      params.append("item_type", "Y");
   }
 
   if (_preferences->boolean("ListNumericItemNumbersFirst"))

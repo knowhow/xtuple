@@ -13,11 +13,14 @@
 #include <QAction>
 #include <QMenu>
 #include <QMessageBox>
+#include <QSqlError>
 
 #include <openreports.h>
-#include "vendor.h"
-#include "storedProcErrorLookup.h"
+
+#include "errorReporter.h"
 #include "parameterwidget.h"
+#include "storedProcErrorLookup.h"
+#include "vendor.h"
 
 vendors::vendors(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "vendors", fl)
@@ -103,28 +106,22 @@ void vendors::sView()
 
 void vendors::sDelete()
 {
-  QString question = tr("Are you sure that you want to delete this vendor?");
   if (QMessageBox::question(this, tr("Delete Vendor?"),
-                              question,
-                              QMessageBox::Yes,
-                              QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+                            tr("Are you sure that you want to delete this vendor?"),
+                            QMessageBox::Yes,
+                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
     return;
 
-  q.prepare("SELECT deleteVendor(:vend_id) AS result;");
-  q.bindValue(":vend_id", list()->id());
-  q.exec();
-  if (q.first())
-  {
-    int result = q.value("result").toInt();
-    if (result < 0)
-    {
-      QMessageBox::critical( this, tr("Cannot Delete Vendor"),
-			     storedProcErrorLookup("deleteVendor", result));
-      return;
-    }
-    omfgThis->sVendorsUpdated();
-    sFillList();
-  }
+  XSqlQuery delq;
+  delq.prepare("DELETE FROM vendinfo WHERE (vend_id=:vend_id);");
+  delq.bindValue(":vend_id", list()->id());
+  delq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error Deleting"),
+                           delq, __FILE__, __LINE__))
+    return;
+
+  omfgThis->sVendorsUpdated();
+  sFillList();
 }
 
 void vendors::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)

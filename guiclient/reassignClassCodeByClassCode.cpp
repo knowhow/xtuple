@@ -11,51 +11,30 @@
 #include "reassignClassCodeByClassCode.h"
 
 #include <QMessageBox>
-#include <qvariant.h>
 
-/*
- *  Constructs a reassignClassCodeByClassCode as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 reassignClassCodeByClassCode::reassignClassCodeByClassCode(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_classCodePattern, SIGNAL(toggled(bool)), _classCode, SLOT(setEnabled(bool)));
+  connect(_selectedClassCode, SIGNAL(toggled(bool)), _classCodes, SLOT(setEnabled(bool)));
+  connect(_reassign, SIGNAL(clicked()), this, SLOT(sReassign()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
 
-    // signals and slots connections
-    connect(_classCodePattern, SIGNAL(toggled(bool)), _classCode, SLOT(setEnabled(bool)));
-    connect(_selectedClassCode, SIGNAL(toggled(bool)), _classCodes, SLOT(setEnabled(bool)));
-    connect(_reassign, SIGNAL(clicked()), this, SLOT(sReassign()));
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-reassignClassCodeByClassCode::~reassignClassCodeByClassCode()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void reassignClassCodeByClassCode::languageChange()
-{
-    retranslateUi(this);
-}
-
-
-void reassignClassCodeByClassCode::init()
-{
   _classCodes->setType(XComboBox::ClassCodes);
   _newClassCode->setType(XComboBox::ClassCodes);
+}
+
+reassignClassCodeByClassCode::~reassignClassCodeByClassCode()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void reassignClassCodeByClassCode::languageChange()
+{
+  retranslateUi(this);
 }
 
 void reassignClassCodeByClassCode::sReassign()

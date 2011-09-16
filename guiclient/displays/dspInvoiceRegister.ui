@@ -13,7 +13,7 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>561</width>
+    <width>590</width>
     <height>84</height>
    </rect>
   </property>
@@ -24,9 +24,6 @@ to be bound by its terms.</comment>
    <item>
     <layout class="QVBoxLayout">
      <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="margin">
       <number>0</number>
      </property>
      <item>
@@ -56,9 +53,6 @@ to be bound by its terms.</comment>
           <property name="spacing">
            <number>5</number>
           </property>
-          <property name="margin">
-           <number>0</number>
-          </property>
           <item>
            <widget class="QRadioButton" name="_selectedAccount">
             <property name="text">
@@ -69,7 +63,7 @@ to be bound by its terms.</comment>
           <item>
            <widget class="GLCluster" name="_account">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -99,9 +93,6 @@ to be bound by its terms.</comment>
    <item>
     <layout class="QVBoxLayout">
      <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="margin">
       <number>0</number>
      </property>
      <item>

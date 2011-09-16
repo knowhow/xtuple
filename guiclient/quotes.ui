@@ -39,7 +39,7 @@ to be bound by its terms.</comment>
      <item>
       <widget class="XCheckBox" name="_convertedtoSo">
        <property name="text">
-        <string>Show Converted to Sales Order</string>
+        <string>Show Converted</string>
        </property>
        <property name="forgetful">
         <bool>true</bool>

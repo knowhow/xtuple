@@ -113,6 +113,11 @@ void purgeInvoices::sPurge()
     }
     _progress.setValue(_invoices);
     
+    // Purge T/O shipments that aren't invoiced
+    q.prepare("SELECT purgeShipments(:cutOffDate) AS result;");
+    q.bindValue(":cutOffDate", _cutOffDate->date());
+    q.exec();
+
     accept();
   }
 }

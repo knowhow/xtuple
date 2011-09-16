@@ -120,11 +120,11 @@ void recallOrders::sFillList()
                 "SELECT DISTINCT shiphead_id, -1 AS invchead_id, shiphead_shipdate, "
                 "       tohead_number AS number, shiphead_number, '' AS cohead_billtoname, "
                 "       false AS shipitem_invoiced "
-                "FROM shiphead, tohead, toitem "
-                "WHERE ((toitem_tohead_id=tohead_id)"
-                "  AND  (shiphead_order_id=tohead_id)"
-                "  AND  (shiphead_shipped)"
-                "  AND  (shiphead_order_type='TO')) "
+                "FROM shiphead JOIN tohead ON (tohead_id=shiphead_order_id)"
+                "              JOIN toitem ON (toitem_tohead_id=tohead_id) "
+                "WHERE ((shiphead_shipped)"
+                "  AND  (shiphead_order_type='TO')"
+                "  AND  (tohead_status <> 'C')) "
                 "<? endif ?>"
                 "ORDER BY shiphead_shipdate DESC, number;" ;
   MetaSQLQuery mql(sql);

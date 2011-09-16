@@ -16,7 +16,6 @@
 
 #include "contacts.h"
 #include "todoList.h"
-#include "opportunityList.h"
 #include "quotes.h"
 #include "openSalesOrders.h"
 #include "returnAuthorizationWorkbench.h"
@@ -76,7 +75,6 @@ public slots:
     virtual void sViewCreditCard();
     virtual void sViewShipto();
     virtual void sViewTaxreg();
-    virtual void sLoadProspect(int);
     virtual void sLoadCrmAcct(int);
     virtual void sHandleButtons();
     virtual void sClear();
@@ -85,6 +83,7 @@ public slots:
 
 protected slots:
     virtual void languageChange();
+    virtual void sCrmAccount();
     virtual void sNumberEdited();
 
 signals:
@@ -98,7 +97,6 @@ protected:
     virtual void setValid(bool valid);
     todoList *_todoList;
     contacts *_contacts;
-    opportunityList *_oplist;
     quotes *_quotes;
     openSalesOrders *_orders;
     returnAuthorizationWorkbench *_returns;
@@ -110,6 +108,7 @@ private:
     int _mode;
     int _custid;
     int	_crmacctid;
+    QString _crmowner;
     int _NumberGen;
     QString _cachedNumber;
     QString key;

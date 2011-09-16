@@ -27,15 +27,22 @@ public:
 public slots:
     virtual enum SetResponse set(const ParameterList & pParams );
     virtual void sCheck();
+    virtual bool sPopulate();
     virtual void sSave();
-    virtual void populate();
 
 protected slots:
     virtual void languageChange();
 
+    virtual bool save();
+    virtual void sCrmaccount();
+
 private:
+    int _crmacctid;
+    int _empid;
     int _mode;
+    int _NumberGen;
     int _salesrepid;
+    QString _crmowner;
 
 };
 

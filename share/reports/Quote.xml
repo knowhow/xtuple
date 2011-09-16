@@ -266,7 +266,7 @@ WHERE ( (cust_id = quhead_cust_id)
   <label>
    <rect>
     <x>360</x>
-    <y>175</y>
+    <y>160</y>
     <width>103</width>
     <height>21</height>
    </rect>
@@ -751,22 +751,6 @@ WHERE ( (cust_id = quhead_cust_id)
    <vcenter/>
    <string>Sales Rep.:</string>
   </label>
-  <label>
-   <rect>
-    <x>360</x>
-    <y>160</y>
-    <width>103</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>normal</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Commission:</string>
-  </label>
   <field>
    <rect>
     <x>505</x>
@@ -805,25 +789,6 @@ WHERE ( (cust_id = quhead_cust_id)
     <column>quhead_fob</column>
    </data>
   </field>
-  <field>
-   <rect>
-    <x>440</x>
-    <y>160</y>
-    <width>103</width>
-    <height>21</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <data>
-    <query>head</query>
-    <column>f_commission</column>
-   </data>
-  </field>
   <label>
    <rect>
     <x>30</x>
@@ -843,7 +808,7 @@ WHERE ( (cust_id = quhead_cust_id)
   <field>
    <rect>
     <x>440</x>
-    <y>175</y>
+    <y>160</y>
     <width>262</width>
     <height>21</height>
    </rect>

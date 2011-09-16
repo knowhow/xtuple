@@ -119,7 +119,7 @@ itemAliasList::itemAliasList(QWidget* parent, const char* name, bool modal, Qt::
   _item->addColumn(tr("Description"),  -1, Qt::AlignLeft, true, "item_descrip");
 }
 
-void itemAliasList::set(ParameterList &pParams)
+void itemAliasList::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

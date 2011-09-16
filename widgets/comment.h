@@ -44,7 +44,7 @@ class XTUPLEWIDGETS_EXPORT comment : public QDialog
     QCheckBox* _public;
 
   public slots:
-    virtual void set( ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
     virtual void sSave();
     virtual void populate();
     virtual void sNextComment();

@@ -103,7 +103,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
    AND  (flrpt_type_id=flgrp_id)
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=CURRENT_USER)
+   AND  (flrpt_username=getEffectiveXtUser())
    AND  (flrpt_interval=&lt;? value("interval") ?>)
    AND  (period_id IN (
 &lt;? foreach("period_id_list") ?>
@@ -139,7 +139,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
    AND  (flrpt_type_id=flitem_id)
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=CURRENT_USER)
+   AND  (flrpt_username=getEffectiveXtUser())
    AND  (flrpt_interval=&lt;? value("interval") ?>)
 &lt;? if not exists("showzeros") ?>
    AND ((flrpt_beginning &lt;> 0) 
@@ -180,7 +180,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
    AND  (flrpt_type_id=flspec_id)
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=CURRENT_USER)
+   AND  (flrpt_username=getEffectiveXtUser())
    AND  (flrpt_interval=&lt;? value("interval") ?>)
    AND  (period_id IN (
 &lt;? foreach("period_id_list") ?>
@@ -216,7 +216,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
  WHERE ((NOT (flrpt_type IN ('G','I','S')))
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=CURRENT_USER)
+   AND  (flrpt_username=getEffectiveXtUser())
    AND  (flrpt_interval=&lt;? value("interval") ?>)
    AND  (period_id IN (
 &lt;? foreach("period_id_list") ?>

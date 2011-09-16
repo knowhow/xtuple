@@ -59,6 +59,7 @@ private:
     double _minimumOrder;
     double _orderMultiple;
     double _orderQtyCache;
+    double _maxCost;
     bool _overriddenUnitPrice;
     QString	_poStatus;
     QStandardItemModel * _itemchar;

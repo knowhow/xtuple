@@ -261,7 +261,7 @@ shipToSearch::shipToSearch(QWidget* pParent, Qt::WindowFlags pFlags)
   _listTab->addColumn(tr("City, State, Zip"),      100, Qt::AlignLeft,  true, "csv");
 }
 
-void shipToSearch::set(ParameterList &pParams)
+void shipToSearch::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

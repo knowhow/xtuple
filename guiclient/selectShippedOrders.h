@@ -22,8 +22,6 @@ public:
     selectShippedOrders(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
     ~selectShippedOrders();
 
-    virtual void init();
-
 public slots:
     virtual void sSelect();
 

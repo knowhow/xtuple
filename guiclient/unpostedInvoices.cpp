@@ -248,8 +248,9 @@ void unpostedInvoices::sPost()
     {
       int id = ((XTreeWidgetItem*)(selected[i]))->id();
 
-      if (changeDate)
-      {
+      // always change gldistdate.  if using invoice date then will set to null
+      //if (changeDate)
+      //{
         setDate.bindValue(":distdate",    newDate);
         setDate.bindValue(":invchead_id", id);
         setDate.exec();
@@ -257,7 +258,7 @@ void unpostedInvoices::sPost()
         {
 	      systemError(this, setDate.lastError().databaseText(), __FILE__, __LINE__);
         }
-      }
+      //}
     }
   }
 
@@ -331,6 +332,7 @@ void unpostedInvoices::sPost()
         // contains() string is hard-coded in stored procedure
         else if (post.lastError().databaseText().contains("post to closed period"))
         {
+          rollback.exec();
             if (changeDate)
               triedToClosed = selected;
             else

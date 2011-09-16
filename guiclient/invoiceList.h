@@ -25,10 +25,8 @@ public:
     invoiceList(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
     ~invoiceList();
 
-    virtual void init();
-
 public slots:
-    virtual SetResponse set( ParameterList & pParams );
+    virtual SetResponse set(const ParameterList & pParams);
     virtual void sClose();
     virtual void sSelect();
     virtual void sFillList();

@@ -162,79 +162,82 @@ void costCategory::sCheck()
 
 void costCategory::sSave()
 {
-  struct {
-    bool	condition;
-    QString	msg;
-    QWidget*	widget;
-  } error[] = {
-    { _category->text().trimmed().length() == 0,
-      tr("<p>You must enter a name for this Cost Category before saving it."),
-      _category
-    },
-    { _asset->id() < 0,
-      tr("<p>You must select an Inventory Asset Account before saving."),
-      _asset
-    },
-    { _expense->id() < 0,
-      tr("<p>You must select an Expense Asset Account before saving."),
-      _asset
-    },
-    { _wip->id() < 0,
-      tr("<p>You must select a WIP Asset Account before saving."),
-      _wip
-    },
-    { _inventoryCost->id() < 0,
-      tr("<p>You must select an Inventory Cost Variance Account before saving."),
-      _inventoryCost
-    },
-    { _metrics->boolean("MultiWhs") && _metrics->boolean("Transforms") && _transformClearing->id() < 0,
-      tr("<p>You must select a Transform Clearing Account before saving."),
-      _transformClearing
-    },
-    { _purchasePrice->id() < 0,
-      tr("<p>You must select a Purchase Price Variance Account before saving."),
-      _purchasePrice
-    },
-    { _adjustment->id() < 0,
-      tr("<p>You must select an Inventory Adjustment Account before saving."),
-      _adjustment
-    },
-    { _invScrap->id() < 0,
-      tr("<p>You must select an Inventory Scrap Account before saving."),
-      _invScrap
-    },
-    { _mfgScrap->id() < 0,
-      tr("<p>You must select a Manufacturing Scrap Account before saving."),
-      _mfgScrap
-    },
-    { _liability->id() < 0,
-      tr("<p>You must select a P/O Liability Clearing Account before saving."),
-      _liability
-    },
-    { _shippingAsset->id() < 0,
-      tr("<p>You must select a Shipping Asset Account before saving."),
-      _shippingAsset
-    },
-    { _freight->id() < 0,
-      tr("<p>You must select a Line Item Freight Expense Account before saving."),
-      _freight
-    },
-    { _metrics->boolean("MultiWhs") && _toLiabilityClearing->id() < 0,
-      tr("<p>You must select a Transfer Order Liability Clearing Account before saving."),
-      _toLiabilityClearing
-    },
-    { true, "", NULL }
-  }; // error[]
-
-  int errIndex;
-  for (errIndex = 0; ! error[errIndex].condition; errIndex++)
-    ;
-  if (! error[errIndex].msg.isEmpty())
+  if (_metrics->boolean("InterfaceToGL"))
   {
-    QMessageBox::critical(this, tr("Cannot Save Cost Category"),
-			  error[errIndex].msg);
-    error[errIndex].widget->setFocus();
-    return;
+    struct {
+      bool	condition;
+      QString	msg;
+      QWidget*	widget;
+    } error[] = {
+      { _category->text().trimmed().length() == 0,
+        tr("<p>You must enter a name for this Cost Category before saving it."),
+        _category
+      },
+      { _asset->id() < 0,
+        tr("<p>You must select an Inventory Asset Account before saving."),
+        _asset
+      },
+      { _expense->id() < 0,
+        tr("<p>You must select an Expense Asset Account before saving."),
+        _asset
+      },
+      { _wip->id() < 0,
+        tr("<p>You must select a WIP Asset Account before saving."),
+        _wip
+      },
+      { _inventoryCost->id() < 0,
+        tr("<p>You must select an Inventory Cost Variance Account before saving."),
+        _inventoryCost
+      },
+      { _metrics->boolean("MultiWhs") && _metrics->boolean("Transforms") && _transformClearing->id() < 0,
+        tr("<p>You must select a Transform Clearing Account before saving."),
+        _transformClearing
+      },
+      { _purchasePrice->id() < 0,
+        tr("<p>You must select a Purchase Price Variance Account before saving."),
+        _purchasePrice
+      },
+      { _adjustment->id() < 0,
+        tr("<p>You must select an Inventory Adjustment Account before saving."),
+        _adjustment
+      },
+      { _invScrap->id() < 0,
+        tr("<p>You must select an Inventory Scrap Account before saving."),
+        _invScrap
+      },
+      { _mfgScrap->id() < 0,
+        tr("<p>You must select a Manufacturing Scrap Account before saving."),
+        _mfgScrap
+      },
+      { _liability->id() < 0,
+        tr("<p>You must select a P/O Liability Clearing Account before saving."),
+        _liability
+      },
+      { _shippingAsset->id() < 0,
+        tr("<p>You must select a Shipping Asset Account before saving."),
+        _shippingAsset
+      },
+      { _freight->id() < 0,
+        tr("<p>You must select a Line Item Freight Expense Account before saving."),
+        _freight
+      },
+      { _metrics->boolean("MultiWhs") && _toLiabilityClearing->id() < 0,
+        tr("<p>You must select a Transfer Order Liability Clearing Account before saving."),
+        _toLiabilityClearing
+      },
+      { true, "", NULL }
+    }; // error[]
+
+    int errIndex;
+    for (errIndex = 0; ! error[errIndex].condition; errIndex++)
+      ;
+    if (! error[errIndex].msg.isEmpty())
+    {
+      QMessageBox::critical(this, tr("Cannot Save Cost Category"),
+	  		  error[errIndex].msg);
+      error[errIndex].widget->setFocus();
+      return;
+    }
   }
 
   q.prepare( "SELECT costcat_id"

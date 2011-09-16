@@ -25,7 +25,7 @@ incidentWorkbench::incidentWorkbench(QWidget* parent, const char*, Qt::WFlags fl
   setReportName("IncidentWorkbenchList");
   setMetaSQLOptions("incidents", "detail");
   setParameterWidgetVisible(true);
-  setNewVisible(true);
+  setNewVisible(_privileges->check("MaintainAllIncidents") || _privileges->check("MaintainPersonalIncidents"));
   setSearchVisible(true);
   setQueryOnStartEnabled(true);
   setAutoUpdateEnabled(true);
@@ -62,18 +62,21 @@ incidentWorkbench::incidentWorkbench(QWidget* parent, const char*, Qt::WFlags fl
                            ParameterWidget::Multiselect, QVariant(), false,
                            qryStatus);
   parameterWidget()->appendComboBox(tr("Severity"), "severity_id", XComboBox::IncidentSeverity);
-  parameterWidget()->append(tr("Assigned User"), "assigned_username", ParameterWidget::User, omfgThis->username());
-  parameterWidget()->append(tr("Assigned Pattern"), "assigned_usr_pattern", ParameterWidget::Text);
+  parameterWidget()->append(tr("User"), "username", ParameterWidget::User, omfgThis->username());
   parameterWidget()->append(tr("Owner"), "owner_username", ParameterWidget::User);
-  parameterWidget()->append(tr("Owner Pattern"), "owner_usr_pattern", ParameterWidget::Text);
+  parameterWidget()->append(tr("Assigned To"), "assigned_username", ParameterWidget::User);
   parameterWidget()->append(tr("Start Date"), "startDate", ParameterWidget::Date);
   parameterWidget()->append(tr("End Date"), "endDate", ParameterWidget::Date);
   parameterWidget()->append(tr("Priority"), "incdtpriority_id_list", ParameterWidget::Multiselect, QVariant(), false, qryPriority);
   parameterWidget()->append(tr("Project"), "prj_id", ParameterWidget::Project);
   if(_metrics->boolean("IncidentsPublicPrivate"))
     parameterWidget()->append(tr("Public"), "public", ParameterWidget::CheckBox);
+  parameterWidget()->applyDefaultFilterSet();
 
-  connect(list(),       SIGNAL(itemSelected(int)), this, SLOT(sEdit()));
+  connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sOpen()));
+
+  if (!_privileges->check("MaintainAllIncidents") && !_privileges->check("MaintainPersonalIncidents"))
+    newAction()->setEnabled(FALSE);
 
   list()->addColumn(tr("Number"),      _orderColumn,Qt::AlignLeft, true, "incdt_number" );
   list()->addColumn(tr("Created"),     _dateColumn, Qt::AlignLeft, true, "incdt_timestamp" );
@@ -163,8 +166,40 @@ bool incidentWorkbench::setParams(ParameterList & params)
 
 void incidentWorkbench::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *, int)
 {
-  pMenu->addAction(tr("Edit..."), this, SLOT(sEdit()));
-  pMenu->addAction(tr("View..."), this, SLOT(sView()));
+  QAction *menuItem;
+
+  bool editPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_owner_username") && _privileges->check("MaintainPersonalIncidents")) ||
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_assigned_username") && _privileges->check("MaintainPersonalIncidents")) ||
+      (_privileges->check("MaintainAllIncidents"));
+
+  bool viewPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_owner_username") && _privileges->check("ViewPersonalIncidents")) ||
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_username") && _privileges->check("ViewPersonalIncidents")) ||
+      (_privileges->check("ViewAllIncidents"));
+
+  menuItem = pMenu->addAction(tr("Edit..."), this, SLOT(sEdit()));
+  menuItem->setEnabled(editPriv);
+  menuItem = pMenu->addAction(tr("View..."), this, SLOT(sView()));
+  menuItem->setEnabled(viewPriv);
+}
+
+void incidentWorkbench::sOpen()
+{
+  bool editPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_owner_username") && _privileges->check("MaintainPersonalIncidents")) ||
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_assigned_username") && _privileges->check("MaintainPersonalIncidents")) ||
+      (_privileges->check("MaintainAllIncidents"));
+
+  bool viewPriv =
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_owner_username") && _privileges->check("ViewPersonalIncidents")) ||
+      (omfgThis->username() == list()->currentItem()->rawValue("incdt_username") && _privileges->check("ViewPersonalIncidents")) ||
+      (_privileges->check("ViewAllIncidents"));
+
+  if (editPriv)
+    sEdit();
+  else if (viewPriv)
+    sView();
 }
 
 

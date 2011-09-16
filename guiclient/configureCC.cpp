@@ -20,6 +20,8 @@
 #include "configureEncryption.h"
 #include "creditcardprocessor.h"
 
+bool shownEncryptedMsg = false;
+
 /** \ingroup creditcards
     \class   configureCC
     \brief   This is the master setup window for configuring the credit card
@@ -178,9 +180,12 @@ configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::
       encbutton->hide();
     encryption->show();
   }
-  else if (_metricsenc == 0)
+  else if (_metricsenc == 0 && !shownEncryptedMsg)
+  {
     QMessageBox::critical( this, tr("Cannot Read Configuration"),
 		    tr("<p>Cannot read encrypted information from database."));
+    shownEncryptedMsg = true;
+  }
 }
 
 configureCC::~configureCC()

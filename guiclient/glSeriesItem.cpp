@@ -102,7 +102,7 @@ void glSeriesItem::sSave()
 	return;
   }
 
-  if (!_metrics->boolean("IgnoreCompany"))
+  if (!_metrics->boolean("IgnoreCompany") && _metrics->value("GLCompanySize").toInt())
   {
     XSqlQuery co;
     co.prepare("SELECT company_id "

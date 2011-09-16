@@ -54,7 +54,7 @@ void sysLocale::languageChange()
   retranslateUi(this);
 }
 
-enum SetResponse sysLocale::set(ParameterList &pParams)
+enum SetResponse sysLocale::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

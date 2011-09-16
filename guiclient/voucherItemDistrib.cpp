@@ -10,48 +10,18 @@
 
 #include "voucherItemDistrib.h"
 
-#include <qvariant.h>
-#include <qvalidator.h>
-/*
- *  Constructs a voucherItemDistrib as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
+#include <QVariant>
+
 voucherItemDistrib::voucherItemDistrib(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_costelem, SIGNAL(newID(int)), this, SLOT(sCheck()));
+  connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
 
-    // signals and slots connections
-    connect(_costelem, SIGNAL(newID(int)), this, SLOT(sCheck()));
-    connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-voucherItemDistrib::~voucherItemDistrib()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void voucherItemDistrib::languageChange()
-{
-    retranslateUi(this);
-}
-
-
-void voucherItemDistrib::init()
-{
   _costelem->populate( QString( "SELECT costelem_id, costelem_type, 1 AS orderby "
                                 "FROM costelem "
                                 "WHERE (costelem_type='Material') "
@@ -67,7 +37,17 @@ void voucherItemDistrib::init()
                        .arg(tr("None")) );
 }
 
-enum SetResponse voucherItemDistrib::set(ParameterList &pParams)
+voucherItemDistrib::~voucherItemDistrib()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void voucherItemDistrib::languageChange()
+{
+  retranslateUi(this);
+}
+
+enum SetResponse voucherItemDistrib::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

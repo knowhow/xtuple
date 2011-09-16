@@ -44,24 +44,26 @@ ProjectLineEdit::ProjectType ProjectCluster::type()
 }
 
 ProjectLineEdit::ProjectLineEdit(QWidget* pParent, const char* pName) :
-    VirtualClusterLineEdit(pParent, "prj", "prj_id", "prj_number", "prj_name", 0, 0, pName)
+    CrmClusterLineEdit(pParent, "prj()", "prj_id", "prj_number", "prj_name", 0, "prj_owner_username", "prj_username", 0, pName)
 {
   setTitles(tr("Project"), tr("Projects"));
   setUiName("project");
-  setEditPriv("MaintainProjects");
-  setNewPriv("MaintainProjects");
-  setViewPriv("ViewProjects");
+  setEditPriv("MaintainAllProjects");
+  setNewPriv("MaintainAllProjects");
+  setViewPriv("ViewAllProjects");
+  setEditOwnPriv("MaintainPersonalProjects");
+  setViewOwnPriv("ViewPersonalProjects");
 
   _type = Undefined;
 }
 
 ProjectLineEdit::ProjectLineEdit(enum ProjectType pPrjType, QWidget *pParent, const char *pName) :
-    VirtualClusterLineEdit(pParent, "prj", "prj_id", "prj_number", "prj_name", 0, 0, pName)
+    CrmClusterLineEdit(pParent, "prj()", "prj_id", "prj_number", "prj_name", 0, 0, pName)
 {
   setTitles(tr("Project"), tr("Projects"));
   setUiName("project");
-  setEditPriv("MaintainProjects");
-  setViewPriv("ViewProjects");
+  setEditPriv("MaintainAllProjects");
+  setViewPriv("ViewAllProjects");
 
   _type = pPrjType;
   _allowedStatuses = 0x00;

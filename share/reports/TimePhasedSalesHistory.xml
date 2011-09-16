@@ -139,6 +139,9 @@ WHERE ((cohist_invcdate BETWEEN
   &lt;? endif ?>
 &lt;? endforeach ?>
 )
+&lt;? if exists("item_id") ?> 
+    AND (item_id=&lt;? value("item_id") ?>)
+&lt;? endif ?>
 &lt;? if exists("cust_id") ?> 
     AND (cust_id=&lt;? value("cust_id") ?>)
 &lt;? endif ?>
@@ -219,6 +222,9 @@ FROM cohist JOIN itemsite ON (itemsite_id=cohist_itemsite_id)
  JOIN custgrp ON (custgrpitem_custgrp_id=custgrp_id)
 &lt;? endif ?>
   WHERE ((cohist_invcdate BETWEEN findPeriodStart(&lt;? value("period_id_list") ?>) AND findPeriodEnd(&lt;? value("period_id_list") ?>))
+&lt;? if exists("item_id") ?> 
+    AND (item_id=&lt;? value("item_id") ?>)
+&lt;? endif ?>
 &lt;? if exists("cust_id") ?> 
     AND (cust_id=&lt;? value("cust_id") ?>)
 &lt;? endif ?>

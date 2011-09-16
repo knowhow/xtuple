@@ -32,7 +32,7 @@ to be bound by its terms.</comment>
         <item row="0" column="0">
          <widget class="QRadioButton" name="_allShipvia">
           <property name="text">
-           <string>All Shipvias</string>
+           <string>All Ship Vias</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -42,7 +42,7 @@ to be bound by its terms.</comment>
         <item row="1" column="0">
          <widget class="QRadioButton" name="_selectedShipvia">
           <property name="text">
-           <string>Selected Shipvia</string>
+           <string>Selected Ship Via</string>
           </property>
          </widget>
         </item>

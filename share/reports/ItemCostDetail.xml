@@ -3,6 +3,12 @@
  <title>Item Costs Detail</title>
  <name>ItemCostDetail</name>
  <description></description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -40,10 +46,12 @@
                 item_number, item_descrip1, item_descrip2, uom_name,
 &lt;? if exists("standardCost") ?>
                 itemcost_stdcost AS cost,
-                (itemuomtouom(bomitem_item_id, bomitem_uom_id, NULL, bomitem_qtyper * (1 + bomitem_scrap)) * itemcost_stdcost) AS extendedcost
+                (itemuomtouom(bomitem_item_id, bomitem_uom_id, NULL, bomitem_qtyper * (1 + bomitem_scrap)) *
+                 itemcost_stdcost) AS extendedcost
 &lt;? else ?>
-                itemcost_actcost AS cost,
-                (itemuomtouom(bomitem_item_id, bomitem_uom_id, NULL, bomitem_qtyper * (1 + bomitem_scrap)) * itemcost_actcost) AS extendedcost
+                currToBase(itemcost_curr_id, itemcost_actcost, NULL) AS cost,
+                (itemuomtouom(bomitem_item_id, bomitem_uom_id, NULL, bomitem_qtyper * (1 + bomitem_scrap)) *
+                 currToBase(itemcost_curr_id, itemcost_actcost, NULL)) AS extendedcost
 &lt;? endif ?>
            FROM bomitem, item, itemcost, costelem, uom
           WHERE((bomitem_item_id=item_id)
@@ -70,8 +78,8 @@ SELECT seqnumber, item_number,
                 itemcost_stdcost AS cost,
                 (itemcost_stdcost / bbomitem_qtyper * bbomitem_costabsorb) AS extendedcost
 &lt;? else ?>
-                itemcost_actcost AS cost,
-                (itemcost_actcost / bbomitem_qtyper * bbomitem_costabsorb) AS extendedcost
+                currToBase(itemcost_curr_id, itemcost_actcost, NULL) AS cost,
+                (currToBase(itemcost_curr_id, itemcost_actcost, NULL) / bbomitem_qtyper * bbomitem_costabsorb) AS extendedcost
 &lt;? endif ?>
            FROM bbomitem, item, itemcost, uom
           WHERE((bbomitem_parent_item_id=item_id)
@@ -91,8 +99,8 @@ SELECT seqnumber, item_number,
                 itemcost_stdcost AS cost,
                 (itemcost_stdcost * source.bbomitem_qtyper / target.bbomitem_qtyper * target.bbomitem_costabsorb) AS extendedcost
 &lt;? else ?>
-                itemcost_actcost AS cost,
-                (itemcost_actcost * source.bbomitem_qtyper / target.bbomitem_qtyper * target.bbomitem_costabsorb) AS extendedcost
+                currToBase(itemcost_curr_id, itemcost_actcost, NULL) AS cost,
+                (currToBase(itemcost_curr_id, itemcost_actcost, NULL) * source.bbomitem_qtyper / target.bbomitem_qtyper * target.bbomitem_costabsorb) AS extendedcost
 &lt;? endif ?>
            FROM item, itemcost, bbomitem AS target, bbomitem AS source, uom
           WHERE ( (source.bbomitem_parent_item_id=target.bbomitem_parent_item_id)
@@ -816,7 +824,8 @@ SELECT seqnumber, item_number,
     <query>detail</query>
     <column>extendedcost</column>
    </data>
-   <tracktotal builtin="true" >qty</tracktotal>
+   <format builtin="true">qty</format>
+   <tracktotal/>
   </field>
  </rptfoot>
 </report>

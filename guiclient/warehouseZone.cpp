@@ -33,7 +33,7 @@ void warehouseZone::languageChange()
   retranslateUi(this);
 }
 
-enum SetResponse warehouseZone::set(ParameterList &pParams)
+enum SetResponse warehouseZone::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

@@ -1041,7 +1041,7 @@ woSearch::woSearch(QWidget* pParent, Qt::WindowFlags pFlags)
   _searchName->hide();
 }
 
-void woSearch::set(ParameterList &pParams)
+void woSearch::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

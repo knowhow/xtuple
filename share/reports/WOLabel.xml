@@ -3,6 +3,12 @@
  <title>WO Order Label</title>
  <name>WOLabel</name>
  <description>Labels generated for use in labeling parts out of a work order</description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>
   <width>400</width>
   <height>333</height>
@@ -19,19 +25,13 @@
  formatDate(wo_duedate) AS due_date, 
  item_number,
  item_descrip1,
- prodcat_descrip 
- FROM 
- wo, 
- itemsite,
- item,
- prodcat,
- sequence
-WHERE ( (wo_itemsite_id = itemsite_id)
-AND (wo_id=&lt;? value(&quot;wo_id&quot;) ?>)
-AND (item_prodcat_id = prodcat_id)
-AND (itemsite_item_id = item_id)
-AND (sequence.sequence_value 
-BETWEEN 1 AND &lt;? value(&quot;labelTo&quot;) ?>));</sql>
+ COALESCE(prodcat_descrip, '') AS prodcat_descrip 
+ FROM wo JOIN itemsite ON (itemsite_id=wo_itemsite_id)
+         JOIN item ON (item_id=itemsite_item_id)
+         JOIN sequence ON (sequence.sequence_value BETWEEN 1 AND &lt;? value("labelTo") ?>)
+         LEFT OUTER JOIN prodcat ON (prodcat_id=item_prodcat_id)
+WHERE (wo_id=&lt;? value("wo_id") ?>);
+</sql>
  </querysource>
  <section>
   <name>detail</name>
@@ -88,6 +88,7 @@ BETWEEN 1 AND &lt;? value(&quot;labelTo&quot;) ?>));</sql>
     <format>3of9</format>
     <maxlength>5</maxlength>
     <left/>
+    <narrowBarWidth>0.01</narrowBarWidth>
     <data>
      <query>detail</query>
      <column>item_number</column>

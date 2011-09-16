@@ -10,52 +10,20 @@
 
 #include "itemImages.h"
 
-#include <qvariant.h>
+#include <QVariant>
+#include <QImage>
 #include <quuencode.h>
-//#include <qstatusbar.h>
-#include <qimage.h>
 
-/*
- *  Constructs a itemImages as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- */
 itemImages::itemImages(QWidget* parent, const char* name, Qt::WFlags fl)
-    : XWidget(parent, name, fl)
+  : XWidget(parent, name, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
-//    (void)statusBar();
-
-    // signals and slots connections
-    connect(_close, SIGNAL(clicked()), this, SLOT(close()));
-    connect(_prev, SIGNAL(clicked()), this, SLOT(sPrevious()));
-    connect(_next, SIGNAL(clicked()), this, SLOT(sNext()));
-    connect(_item, SIGNAL(newId(int)), this, SLOT(sFillList()));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-itemImages::~itemImages()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void itemImages::languageChange()
-{
-    retranslateUi(this);
-}
-
-
-void itemImages::init()
-{
-//  statusBar()->hide();
+  // signals and slots connections
+  connect(_close, SIGNAL(clicked()), this, SLOT(close()));
+  connect(_prev, SIGNAL(clicked()), this, SLOT(sPrevious()));
+  connect(_next, SIGNAL(clicked()), this, SLOT(sNext()));
+  connect(_item, SIGNAL(newId(int)), this, SLOT(sFillList()));
 
 #ifndef Q_WS_MAC
   _prev->setMaximumWidth(25);
@@ -63,7 +31,17 @@ void itemImages::init()
 #endif
 }
 
-enum SetResponse itemImages::set(ParameterList &pParams)
+itemImages::~itemImages()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void itemImages::languageChange()
+{
+  retranslateUi(this);
+}
+
+enum SetResponse itemImages::set(const ParameterList &pParams)
 {
   XWidget::set(pParams);
   QVariant param;

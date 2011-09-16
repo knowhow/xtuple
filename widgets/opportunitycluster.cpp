@@ -17,11 +17,13 @@ OpportunityCluster::OpportunityCluster(QWidget* pParent, const char* pName) :
 }
 
 OpportunityClusterLineEdit::OpportunityClusterLineEdit(QWidget* pParent, const char* pName) :
-    VirtualClusterLineEdit(pParent, "ophead", "ophead_id", "ophead_name", "ophead_owner_username", "ophead_notes", 0, pName)
+    CrmClusterLineEdit(pParent, "ophead()", "ophead_id", "ophead_name", 0, "ophead_notes", "ophead_owner_username", "ophead_username", 0, pName)
 {
     setTitles(tr("Opportunity"), tr("Opportunities"));
     setUiName("opportunity");
-    setEditPriv("MaintainOpportunities");
-    setNewPriv("MaintainOpportunities");
-    setViewPriv("ViewOpportunities");
+    setEditPriv("MaintainAllOpportunities");
+    setNewPriv("MaintainAllOpportunities");
+    setViewPriv("ViewAllOpportunities");
+    setEditOwnPriv("MaintainPersonalOpportunities");
+    setViewOwnPriv("ViewPersonalOpportunities");
 }

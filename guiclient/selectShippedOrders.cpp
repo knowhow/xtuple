@@ -10,49 +10,26 @@
 
 #include "selectShippedOrders.h"
 
-#include <qvariant.h>
-#include "guiclient.h"
-
-/*
- *  Constructs a selectShippedOrders as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 selectShippedOrders::selectShippedOrders(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
 
-    // signals and slots connections
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
-    init();
+  _customerType->setType(ParameterGroup::CustomerType);
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 selectShippedOrders::~selectShippedOrders()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void selectShippedOrders::languageChange()
 {
-    retranslateUi(this);
-}
-
-
-void selectShippedOrders::init()
-{
-  _customerType->setType(ParameterGroup::CustomerType);
+  retranslateUi(this);
 }
 
 void selectShippedOrders::sSelect()

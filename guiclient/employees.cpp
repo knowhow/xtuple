@@ -10,6 +10,7 @@
 
 #include "employees.h"
 
+#include <QMessageBox>
 #include <QSqlError>
 #include <QVariant>
 
@@ -18,6 +19,7 @@
 #include <metasql.h>
 
 #include "employee.h"
+#include "errorReporter.h"
 #include "guiclient.h"
 #include "storedProcErrorLookup.h"
 
@@ -67,24 +69,20 @@ void employees::languageChange()
 
 void employees::sDelete()
 {
-  q.prepare( "SELECT deleteEmp(:id) AS result;");
-  q.bindValue(":id", _emp->id());
-  q.exec();
-  if (q.first())
-  {
-    int result = q.value("result").toInt();
-    if (result < 0)
-    {
-      systemError(this, storedProcErrorLookup("deleteEmp", result),
-                  __FILE__, __LINE__);
-      return;
-    }
-  }
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  if (QMessageBox::question(this, tr("Delete?"),
+                            tr("<p>Are you sure you want to delete the "
+                               "selected employee?"),
+                            QMessageBox::Yes,
+                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
     return;
-  }
+
+  XSqlQuery delq;
+  delq.prepare("DELETE FROM emp WHERE (emp_id=:id);");
+  delq.bindValue(":id", _emp->id());
+  delq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error Deleting"),
+                           delq, __FILE__, __LINE__))
+    return;
   sFillList();
 }
 

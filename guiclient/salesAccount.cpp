@@ -123,7 +123,7 @@ void salesAccount::sSave()
 
   if (!_cos->isValid())
   {
-    QMessageBox::warning( this, tr("Select Cost of Sales Account"), 
+    QMessageBox::warning( this, tr("Select Cost of Sales Account"),
                           tr("You must select a Cost of Sales Account for this Assignment.") );
     _cos->setFocus();
     return;
@@ -134,24 +134,24 @@ void salesAccount::sSave()
 
     if (!_returns->isValid())
     {
-      QMessageBox::warning( this, tr("Select Returns Account"), 
-			    tr("You must select a Returns Account for this Assignment.") );
+      QMessageBox::warning( this, tr("Select Returns Account"),
+                            tr("You must select a Returns Account for this Assignment.") );
       _returns->setFocus();
       return;
     }
 
     if (!_cor->isValid())
     {
-      QMessageBox::warning( this, tr("Select Cost of Returns Account"), 
-			    tr("You must select a Cost of Returns Account for this Assignment.") );
+      QMessageBox::warning( this, tr("Select Cost of Returns Account"),
+                            tr("You must select a Cost of Returns Account for this Assignment.") );
       _cor->setFocus();
       return;
     }
 
     if (!_cow->isValid())
     {
-      QMessageBox::warning( this, tr("Select Cost of Warranty Account"), 
-			    tr("You must select a Cost of Warranty Account for this Assignment.") );
+      QMessageBox::warning( this, tr("Select Cost of Warranty Account"),
+                            tr("You must select a Cost of Warranty Account for this Assignment.") );
       _cow->setFocus();
       return;
     }

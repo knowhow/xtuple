@@ -12,23 +12,15 @@
 
 #include <QVariant>
 #include <QMessageBox>
-//#include <QStatusBar>
 #include <QSqlError>
 #include <parameter.h>
-#include <qworkspace.h>
+#include <QWorkspace>
 #include "taxRegistration.h"
 
-/*
- *  Constructs a taxRegistrations as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- */
 taxRegistrations::taxRegistrations(QWidget* parent, const char* name, Qt::WFlags fl)
-    : XWidget(parent, name, fl)
+  : XWidget(parent, name, fl)
 {
   setupUi(this);
-
-//  (void)statusBar();
 
   // signals and slots connections
   connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
@@ -36,8 +28,6 @@ taxRegistrations::taxRegistrations(QWidget* parent, const char* name, Qt::WFlags
   connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
   connect(_view, SIGNAL(clicked()), this, SLOT(sView()));
 
-//  statusBar()->hide();
-  
   if (_privileges->check("MaintainChartOfAccounts"))
   {
     connect(_taxreg, SIGNAL(valid(bool)), _edit, SLOT(setEnabled(bool)));
@@ -59,18 +49,11 @@ taxRegistrations::taxRegistrations(QWidget* parent, const char* name, Qt::WFlags
   sFillList();
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 taxRegistrations::~taxRegistrations()
 {
   // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void taxRegistrations::languageChange()
 {
   retranslateUi(this);

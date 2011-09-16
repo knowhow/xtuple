@@ -49,7 +49,7 @@ to be bound by its terms.</comment>
             <bool>false</bool>
            </property>
            <property name="canEdit">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -83,6 +83,16 @@ to be bound by its terms.</comment>
            </property>
            <property name="type">
             <enum>XComboBox::CustomerTypes</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_crmacct">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>CRM Account...</string>
            </property>
           </widget>
          </item>
@@ -1735,14 +1745,7 @@ to be bound by its terms.</comment>
          <item>
           <widget class="QRadioButton" name="_todoListButton">
            <property name="text">
-            <string>To-Do List</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="_opportunitiesButton">
-           <property name="text">
-            <string>Opportunities</string>
+            <string>Activities</string>
            </property>
           </widget>
          </item>
@@ -1774,9 +1777,6 @@ to be bound by its terms.</comment>
          </widget>
          <widget class="QWidget" name="_todoListPage">
           <layout class="QGridLayout" name="gridLayout_9"/>
-         </widget>
-         <widget class="QWidget" name="_opportunitiesPage">
-          <layout class="QGridLayout" name="gridLayout_11"/>
          </widget>
         </widget>
        </item>
@@ -2196,7 +2196,7 @@ to be bound by its terms.</comment>
          <widget class="QWidget" name="_notesPage">
           <layout class="QGridLayout" name="gridLayout_15">
            <item row="0" column="0">
-            <widget class="QTextEdit" name="_notes"/>
+            <widget class="XTextEdit" name="_notes"/>
            </item>
           </layout>
          </widget>
@@ -2288,6 +2288,11 @@ to be bound by its terms.</comment>
    <header>xtreewidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_number</tabstop>
@@ -2357,7 +2362,6 @@ to be bound by its terms.</comment>
   <tabstop>_commentsButton</tabstop>
   <tabstop>_contactsButton</tabstop>
   <tabstop>_todoListButton</tabstop>
-  <tabstop>_opportunitiesButton</tabstop>
   <tabstop>_summaryButton</tabstop>
   <tabstop>_quotesButton</tabstop>
   <tabstop>_ordersButton</tabstop>

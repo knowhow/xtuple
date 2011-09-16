@@ -38,6 +38,7 @@ dspInvoiceRegister::dspInvoiceRegister(QWidget* parent, const char*, Qt::WFlags 
   list()->addColumn(tr("Account"),  _itemColumn, Qt::AlignLeft,  true, "account");
   list()->addColumn(tr("Debit"),   _moneyColumn, Qt::AlignRight, true, "debit");
   list()->addColumn(tr("Credit"),  _moneyColumn, Qt::AlignRight, true, "credit");
+  list()->setPopulateLinear();
 }
 
 void dspInvoiceRegister::languageChange()

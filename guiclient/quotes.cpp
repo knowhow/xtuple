@@ -90,7 +90,10 @@ void quotes::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)
 
   pMenu->addSeparator();
 
-  menuItem = pMenu->addAction(tr("Convert..."), this, SLOT(sConvert()));
+  menuItem = pMenu->addAction(tr("Convert to S/O..."), this, SLOT(sConvertSalesOrder()));
+  menuItem->setEnabled(_privileges->check("ConvertQuotes"));
+
+  menuItem = pMenu->addAction(tr("Convert to Invoice..."), this, SLOT(sConvertInvoice()));
   menuItem->setEnabled(_privileges->check("ConvertQuotes"));
 
   pMenu->addSeparator();
@@ -166,16 +169,22 @@ void quotes::sPrint()
     emit finishedPrinting(printedQuotes.at(i));
 }
 
-void quotes::sConvert()
+void quotes::sConvert(int pType)
 {
+  QString docType = "Sales Order";
+  if (pType == 1)
+    docType = "Invoice";
+
   if (QMessageBox::question(this, tr("Convert Selected Quote(s)"),
 			    tr("<p>Are you sure that you want to convert "
-			       "the selected Quote(s) to Sales Order(s)?"),
+                               "the selected Quote(s) to %1(s)?").arg(docType),
 			    QMessageBox::Yes,
 			    QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
   {
     XSqlQuery convert;
     convert.prepare("SELECT convertQuote(:quhead_id) AS sohead_id;");
+    if (pType == 1)
+      convert.prepare("SELECT convertQuoteToInvoice(:quhead_id) AS sohead_id;");
 
     XSqlQuery prospectq;
     prospectq.prepare("SELECT convertProspectToCustomer(quhead_cust_id) AS result "
@@ -201,9 +210,9 @@ void quotes::sConvert()
           if (check.first())
           {
             QMessageBox::critical(this, tr("Can not Convert"),
-                                tr("<p>One or more of the Selected Quotes have already "
-                                   " been converted to Sales Order."
-                                   "You can not Convert a Sales Order back to Quote."));
+                                tr("<p>One or more of the selected Quotes have"
+                                   " been converted.  You cannot convert an already"
+                                   " converted Quote."));
             return;
           }
           else
@@ -296,9 +305,15 @@ void quotes::sConvert()
               continue;
             }
             converted << quheadid;
-            omfgThis->sSalesOrdersUpdated(soheadid);
 
-            salesOrder::editSalesOrder(soheadid, true);
+            if (pType == 0)
+            {
+              omfgThis->sSalesOrdersUpdated(soheadid);
+
+              salesOrder::editSalesOrder(soheadid, true);
+            }
+            else
+              omfgThis->sQuotesUpdated(soheadid);
           }
           else if (convert.lastError().type() != QSqlError::NoError)
           {
@@ -324,6 +339,16 @@ void quotes::sConvert()
       omfgThis->sQuotesUpdated(converted[i]);
     }
   } // if user wants to convert
+}
+
+void quotes::sConvertSalesOrder()
+{
+  sConvert(0);
+}
+
+void quotes::sConvertInvoice()
+{
+  sConvert(1);
 }
 
 void quotes::sCopy()
@@ -478,6 +503,10 @@ bool quotes::setParams(ParameterList &params)
     params.append("showExpired");
   if(_convertedtoSo->isChecked())
     params.append("showConverted");
+
+  params.append("open", tr("Open"));
+  params.append("converted", tr("Converted"));
+  params.append("undefined", tr("Undefined"));
 
   return true;
 }

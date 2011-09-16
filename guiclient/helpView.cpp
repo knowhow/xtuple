@@ -10,7 +10,12 @@
 
 #include <QGridLayout>
 #include <QHelpContentWidget>
+#include <QHelpSearchEngine>
+#include <QHelpSearchQueryWidget>
+#include <QHelpSearchResultWidget>
+#include <QHelpIndexWidget>
 #include <QPixmap>
+#include <QSplitter>
 #include <QToolBar>
 #include <QUrl>
 #include <QWidget>
@@ -47,6 +52,11 @@ helpView* helpView::getInstance(QWidget *parent)
   return helpViewSingleton;
 }
 
+void helpView::reset()
+{
+  helpViewSingleton = 0;
+}
+
 helpView::helpView(QWidget *parent)
   : QDockWidget(tr("xTuple Help Documentation"), parent)
 {
@@ -58,6 +68,10 @@ helpView::helpView(QWidget *parent)
   _helpBrowser = new helpViewBrowser(this);
   _help = xtHelp::getInstance(this);
   _helpBrowserToolbar = new QToolBar(this);
+  _searchSplitter = new QSplitter(this);
+  _mainSplitter = new QSplitter(this);
+  _searchEngine = new QHelpSearchEngine(_help, this);
+  _searchTabs = new QTabWidget(this);
 
   QAction *back = _helpBrowserToolbar->addAction(iconFromImageByName("ImgLeftArrow"), tr("Back"),    _helpBrowser, SLOT(backward()));
   QAction *fwd  = _helpBrowserToolbar->addAction(iconFromImageByName("ImgRightArrow"),tr("Forward"), _helpBrowser, SLOT(forward()));
@@ -66,26 +80,51 @@ helpView::helpView(QWidget *parent)
   connect(_helpBrowser, SIGNAL(forwardAvailable(bool)),  fwd,  SLOT(setEnabled(bool)));
   connect(_helpBrowser, SIGNAL(backwardAvailable(bool)), home, SLOT(setEnabled(bool)));
 
+  connect(_searchEngine->queryWidget(),SIGNAL(search()), this, SLOT(queriesToEngine()));
+
+  connect(_help->contentWidget(), SIGNAL(clicked(QModelIndex)), this, SLOT(showLink(QModelIndex)));
   connect(_help->contentWidget(),       SIGNAL(linkActivated(const QUrl&)),                     this,   SLOT(sIndexChanged(const QUrl&)));
+  connect(_searchEngine->resultWidget(), SIGNAL(requestShowLink(const QUrl&)), this, SLOT(sIndexChanged(const QUrl&)));
+  connect(_help->indexWidget(), SIGNAL(linkActivated(const QUrl&,QString)), this, SLOT(sIndexChanged(const QUrl&)));
   connect(this,                         SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),        this,   SLOT(sLocationChanged(Qt::DockWidgetArea)));
 
+  _searchSplitter->setOrientation(Qt::Vertical);
+  _searchSplitter->addWidget(_searchEngine->queryWidget());
+  _searchSplitter->addWidget(_searchEngine->resultWidget());
+
+  _searchTabs->addTab(_help->contentWidget(), "Contents");
+  _searchTabs->addTab(_searchSplitter, "Search");
+  _searchTabs->addTab(_help->indexWidget(), "Index");
+
+  _mainSplitter->addWidget(_searchTabs);
+  _mainSplitter->addWidget(_helpBrowser);
+
   _layout->addWidget(_helpBrowserToolbar,    0, 0, 1, -1);
-  _layout->addWidget(_help->contentWidget(), 1, 0);
+  _layout->addWidget(_mainSplitter, 1, 0);
+
   if(_help->isOnline())
   {
     _help->contentWidget()->hide();
     sIndexChanged(QUrl("index.html"));
   }
-  _layout->addWidget(_helpBrowser, 2, 0);
   _layoutContainer->setLayout(_layout);
 
   setWidget(_layoutContainer);
 
   omfgThis->addDockWidget(Qt::TopDockWidgetArea, this);
+
+  _searchEngine->reindexDocumentation();
+
 }
 
 helpView::~helpView()
 {
+}
+
+void helpView::queriesToEngine()
+{
+    _searchEngine->search(_searchEngine->queryWidget()->query());
+
 }
 
 void helpView::sIndexChanged(const QUrl& index)
@@ -103,7 +142,7 @@ void helpView::sLocationChanged(Qt::DockWidgetArea area)
     )
   {
     _layout->removeWidget(_helpBrowser);
-    _layout->addWidget(_helpBrowser,2,0);
+    _mainSplitter->addWidget(_helpBrowser);
     redraw = true;
   }
   else if(
@@ -112,11 +151,25 @@ void helpView::sLocationChanged(Qt::DockWidgetArea area)
     )
   {
     _layout->removeWidget(_helpBrowser);
-    _layout->addWidget(_helpBrowser,1,1);
+    _mainSplitter->addWidget(_helpBrowser);
     redraw = true;
   }
   if(redraw)
   {
     show();
   }
+}
+
+void helpView::showLink(const QModelIndex &index)
+{
+    QHelpContentModel *contentModel = _help->contentModel();
+    if (!contentModel)
+        return;
+
+    QHelpContentItem *item = contentModel->contentItemAt(index);
+    if (!item)
+        return;
+    QUrl url = item->url();
+    if (url.isValid())
+        sIndexChanged(url);
 }

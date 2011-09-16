@@ -34,7 +34,7 @@ apWorkBench::apWorkBench(QWidget* parent, const char* name, Qt::WFlags fl)
   _vouchers->show();
   _vendorgroup->synchronize((VendorGroup*)(_vouchers->findChild<QWidget*>("_vendorgroup")));
 
-  _payables = new selectPayments(this, "selectPayments", Qt::Widget);
+  _payables = new selectPayments(this, "selectPayments", Qt::Widget, false);
   _payablesTab->layout()->addWidget(_payables);
   hideme = _payables->findChild<QWidget*>("_close");
   if (hideme)

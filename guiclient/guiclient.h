@@ -267,21 +267,23 @@ class GUIClient : public QMainWindow
   public slots:
     void sReportError(const QString &);
     void sTick();
-    void sChecksUpdated(int, int, bool);
+
     void sAssortmentsUpdated(int, bool);
     void sBBOMsUpdated(int, bool);
     void sBOMsUpdated(int, bool);
     void sBOOsUpdated(int, bool);
-    void sBudgetsUpdated(int, bool);
     void sBankAccountsUpdated();
     void sBankAdjustmentsUpdated(int, bool);
     void sBillingSelectionUpdated(int, int);
+    void sBudgetsUpdated(int, bool);
     void sCashReceiptsUpdated(int, bool);
+    void sChecksUpdated(int, int, bool);
     void sConfigureGLUpdated();
     void sCreditMemosUpdated();
     void sCrmAccountsUpdated(int);
     void sCustomCommand();
     void sCustomersUpdated(int, bool);
+    void sEmployeeUpdated(int);
     void sGlSeriesUpdated();
     void sInvoicesUpdated(int, bool);
     void sItemGroupsUpdated(int, bool);
@@ -298,9 +300,11 @@ class GUIClient : public QMainWindow
     void sReportsChanged(int, bool);
     void sReturnAuthorizationsUpdated();
     void sSalesOrdersUpdated(int);
+    void sSalesRepUpdated(int);
     void sStandardPeriodsUpdated();
     void sTaxAuthsUpdated(int);
     void sTransferOrdersUpdated(int);
+    void sUserUpdated(QString);
     void sVendorsUpdated();
     void sVouchersUpdated();
     void sWarehousesUpdated();
@@ -320,7 +324,6 @@ class GUIClient : public QMainWindow
   signals:
     void tick();
 
-    void checksUpdated(int, int, bool);
     void assortmentsUpdated(int, bool);
     void bankAccountsUpdated();
     void bankAdjustmentsUpdated(int, bool);
@@ -330,10 +333,12 @@ class GUIClient : public QMainWindow
     void boosUpdated(int, bool);
     void budgetsUpdated(int, bool);
     void cashReceiptsUpdated(int, bool);
+    void checksUpdated(int, int, bool);
     void configureGLUpdated();
     void creditMemosUpdated();
     void crmAccountsUpdated(int);
     void customersUpdated(int, bool);
+    void employeeUpdated(int);
     void glSeriesUpdated();
     void invoicesUpdated(int, bool);
     void itemGroupsUpdated(int, bool);
@@ -350,9 +355,11 @@ class GUIClient : public QMainWindow
     void reportsChanged(int, bool);
     void returnAuthorizationsUpdated();
     void salesOrdersUpdated(int, bool);
+    void salesRepUpdated(int);
     void standardPeriodsUpdated();
     void taxAuthsUpdated(int);
     void transferOrdersUpdated(int);
+    void userUpdated(QString);
     void vendorsUpdated();
     void vouchersUpdated();
     void warehousesUpdated();

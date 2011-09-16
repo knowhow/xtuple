@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>451</width>
-    <height>334</height>
+    <width>502</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -308,7 +308,7 @@ to be bound by its terms.</comment>
           <bool>false</bool>
          </property>
          <property name="currencyVisible">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>

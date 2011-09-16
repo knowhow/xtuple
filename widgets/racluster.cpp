@@ -85,7 +85,7 @@ void RaLineEdit::setId(const int pId)
                 "  AND (itemsite_warehous_id NOT IN ("
                 "       SELECT usrsite_warehous_id "
                 "       FROM usrsite "
-                "       WHERE (usrsite_username=current_user)))) "
+                "       WHERE (usrsite_username=getEffectiveXtUser())))) "
                 "UNION "
                 "SELECT raitem_id "
                 "FROM raitem, itemsite "
@@ -94,7 +94,7 @@ void RaLineEdit::setId(const int pId)
                 "  AND (itemsite_warehous_id NOT IN ("
                 "       SELECT usrsite_warehous_id "
                 "       FROM usrsite "
-                "       WHERE (usrsite_username=current_user))));");
+                "       WHERE (usrsite_username=getEffectiveXtUser()))));");
       MetaSQLQuery mql(msql);
       ParameterList params;
       params.append("rahead_id", pId);

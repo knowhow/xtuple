@@ -53,7 +53,7 @@ enum SetResponse submitAction::set(const ParameterList &pParams)
   {
     q.prepare( "SELECT usr_email "
                "FROM report, usr "
-               "WHERE (usr_username=CURRENT_USER);" );
+               "WHERE (usr_username=getEffectiveXtUser());" );
     q.exec();
     if (q.first())
       _email->setText(q.value("usr_email").toString());

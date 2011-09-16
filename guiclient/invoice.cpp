@@ -21,6 +21,7 @@
 #include "invoiceItem.h"
 #include "storedProcErrorLookup.h"
 #include "taxBreakdown.h"
+#include "allocateARCreditMemo.h"
 
 #define cViewQuote (0x20 | cView)
 
@@ -57,6 +58,8 @@ invoice::invoice(QWidget* parent, const char* name, Qt::WFlags fl)
   connect(_allocatedCM, SIGNAL(idChanged(int)), this, SLOT(populateCMInfo()));
   connect(_outstandingCM, SIGNAL(idChanged(int)), this, SLOT(populateCMInfo()));
   connect(_authCC, SIGNAL(effectiveChanged(const QDate&)), this, SLOT(populateCCInfo()));
+  if (_privileges->check("ApplyARMemos"))
+    connect(_allocatedCMLit,    SIGNAL(leftClickedURL(const QString &)),        this,         SLOT(sCreditAllocate()));
   connect(_allocatedCM, SIGNAL(effectiveChanged(const QDate&)), this, SLOT(populateCMInfo()));
   connect(_outstandingCM, SIGNAL(effectiveChanged(const QDate&)), this, SLOT(populateCMInfo()));
   connect(_invcitem, SIGNAL(valid(bool)),       _edit, SLOT(setEnabled(bool)));
@@ -76,6 +79,8 @@ invoice::invoice(QWidget* parent, const char* name, Qt::WFlags fl)
   _loading = false;
   _freightCache = 0;
   _posted = false;
+
+  _cust->setType(CLineEdit::ActiveCustomers);
 
   _shipTo->setNameVisible(false);
   _shipTo->setDescriptionVisible(false);
@@ -328,9 +333,12 @@ void invoice::sPopulateCustomerInfo(int pCustid)
         _shipChrgs->setId(cust.value("cust_shipchrg_id").toInt());
 
 	bool ffBillTo = cust.value("cust_ffbillto").toBool();
-	_billToName->setEnabled(ffBillTo);
-	_billToAddr->setEnabled(ffBillTo);
-	_billToPhone->setEnabled(ffBillTo);
+        if (_mode != cView)
+        {
+          _billToName->setEnabled(ffBillTo);
+          _billToAddr->setEnabled(ffBillTo);
+          _billToPhone->setEnabled(ffBillTo);
+        }
 
 	setFreeFormShipto(cust.value("cust_ffshipto").toBool());
 	if (cust.value("shiptoid").toInt() != -1)
@@ -705,6 +713,7 @@ void invoice::populate()
     _custCurrency->setId(q.value("invchead_curr_id").toInt());
 
     _invoiceNumber->setText(q.value("invchead_invcnumber").toString());
+    _invoiceNumber->setEnabled(false);
     _orderNumber->setText(q.value("invchead_ordernumber").toString());
     if (! _orderNumber->text().isEmpty() && _orderNumber->text().toInt() != 0)
 	_custCurrency->setEnabled(FALSE);
@@ -733,9 +742,12 @@ void invoice::populate()
     _project->setId(q.value("invchead_prj_id").toInt());
 
     bool ffBillTo = q.value("cust_ffbillto").toBool();
-    _billToName->setEnabled(ffBillTo);
-    _billToAddr->setEnabled(ffBillTo);
-    _billToPhone->setEnabled(ffBillTo);
+    if (_mode != cView)
+    {
+      _billToName->setEnabled(ffBillTo);
+      _billToAddr->setEnabled(ffBillTo);
+      _billToPhone->setEnabled(ffBillTo);
+    }
 
     _billToName->setText(q.value("invchead_billto_name").toString());
     _billToAddr->setLine1(q.value("invchead_billto_address1").toString());
@@ -932,12 +944,13 @@ void invoice::setFreeFormShipto(bool pFreeForm)
 {
   _ffShipto = pFreeForm;
 
-  _shipToName->setEnabled(_ffShipto);
-  _shipToAddr->setEnabled(_ffShipto);
-  _shipToPhone->setEnabled(_ffShipto);
-
   if (_mode != cView)
+  {
     _copyToShipto->setEnabled(_ffShipto);
+    _shipToName->setEnabled(_ffShipto);
+    _shipToAddr->setEnabled(_ffShipto);
+    _shipToPhone->setEnabled(_ffShipto);
+  }
   else
     _copyToShipto->setEnabled(false);
 }
@@ -1059,32 +1072,42 @@ void invoice::viewInvoice( int pId, QWidget *parent  )
   omfgThis->handleNewWindow(newdlg);
 }
 
+void invoice::sCreditAllocate()
+{
+  ParameterList params;
+  params.append("doctype", "I");
+  params.append("invchead_id", _invcheadid);
+  params.append("cust_id", _cust->id());
+  params.append("total",  _total->localValue());
+  params.append("balance",  (_total->localValue() - _allocatedCM->localValue()));
+  params.append("curr_id",   _total->id());
+  params.append("effective", _total->effective());
+
+  allocateARCreditMemo newdlg(this, "", TRUE);
+  if (newdlg.set(params) == NoError && newdlg.exec() == XDialog::Accepted)
+  {
+    populateCMInfo();
+  }
+}
+
 void invoice::populateCMInfo()
 {
   XSqlQuery cm;
 
   // Allocated C/M's
-  if (_mode == cNew)
-  {
-    cm.prepare("SELECT COALESCE(SUM(currToCurr(aropen_curr_id, :curr_id,"
-	      "                               aropenco_amount, :effective)),0) AS amount"
-	      "  FROM aropenco, cohead, aropen"
-	      " WHERE ( (aropenco_cohead_id=cohead_id)"
-	      "   AND   (aropenco_aropen_id=aropen_id)"
-	      "   AND   (cohead_number=:cohead_number) );");
-    cm.bindValue(":cohead_number", _orderNumber->text());
-  }
-  else
-  {
-    cm.prepare("SELECT COALESCE(SUM(currToCurr(aropen_curr_id, :curr_id,"
-	      "                               aropenco_amount, :effective)),0) AS amount"
-	      "  FROM aropenco, cohead, invchead, aropen"
-	      " WHERE ( (aropenco_cohead_id=cohead_id)"
-	      "   AND   (aropenco_aropen_id=aropen_id)"
-	      "   AND   (invchead_ordernumber=cohead_number)"
-	      "   AND   (invchead_id=:invchead_id) ); ");
-    cm.bindValue(":invchead_id", _invcheadid);
-  }
+  cm.prepare("SELECT COALESCE(SUM(currToCurr(aropenalloc_curr_id, :curr_id,"
+            "                               aropenalloc_amount, :effective)),0) AS amount"
+            "  FROM ( "
+            "  SELECT aropenalloc_curr_id, aropenalloc_amount"
+            "    FROM cohead JOIN aropenalloc ON (aropenalloc_doctype='S' AND aropenalloc_doc_id=cohead_id)"
+            "   WHERE (cohead_number=:cohead_number) "
+            "  UNION ALL"
+            "  SELECT aropenalloc_curr_id, aropenalloc_amount"
+            "    FROM aropenalloc"
+            "   WHERE (aropenalloc_doctype='I' AND aropenalloc_doc_id=:invchead_id)"
+            "       ) AS data;");
+  cm.bindValue(":invchead_id", _invcheadid);
+  cm.bindValue(":cohead_number", _orderNumber->text());
   cm.bindValue(":curr_id",     _allocatedCM->id());
   cm.bindValue(":effective",   _allocatedCM->effective());
   cm.exec();
@@ -1102,9 +1125,9 @@ void invoice::populateCMInfo()
   cm.prepare("SELECT SUM(amount) AS amount"
             "  FROM ( SELECT aropen_id, "
 	    "                currToCurr(aropen_curr_id, :curr_id,"
-	    "                           noNeg(aropen_amount - aropen_paid - SUM(COALESCE(aropenco_amount,0))),"
+            "                           noNeg(aropen_amount - aropen_paid - SUM(COALESCE(aropenalloc_amount,0))),"
 	    "                           :effective) AS amount"
-            "           FROM aropen LEFT OUTER JOIN aropenco ON (aropenco_aropen_id=aropen_id)"
+            "           FROM aropen LEFT OUTER JOIN aropenalloc ON (aropenalloc_aropen_id=aropen_id)"
             "          WHERE ( (aropen_cust_id=:cust_id)"
             "            AND   (aropen_doctype IN ('C', 'R'))"
             "            AND   (aropen_open))"

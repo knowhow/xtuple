@@ -25,7 +25,7 @@ public:
     ~warehouseZone();
 
 public slots:
-    virtual SetResponse set( ParameterList & pParams );
+    virtual SetResponse set(const ParameterList & pParams);
     virtual void populate();
 
 protected slots:

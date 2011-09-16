@@ -337,6 +337,10 @@ const struct {
 				     "Transactions posted against it and, thus, "
 				     "cannot be deleted."), 0, "" },
 
+  { "deleteAccountingPeriod", -5, QT_TRANSLATE_NOOP("storedProcErrorLookup", "The selected Accounting Period is not "
+				     "the last accounting period and "
+				     "cannot be deleted."), 0, "" },
+
   { "deleteAccountingYearPeriod", -1, QT_TRANSLATE_NOOP("storedProcErrorLookup", "The selected Fiscal Year cannot be "
 					 "deleted because it is closed."),
 									0, "" },
@@ -453,6 +457,12 @@ const struct {
 								 0, "" },
   { "deleteCRMAccount",	-5, QT_TRANSLATE_NOOP("storedProcErrorLookup", "The selected CRM Account cannot be deleted as "
 			       "it is a Tax Authority."),	 0, "" },
+  { "deleteCRMAccount",	-6, QT_TRANSLATE_NOOP("storedProcErrorLookup", "The selected CRM Account cannot be deleted as "
+			       "it is a Sales Rep."),	        0, "" },
+  { "deleteCRMAccount",	-7, QT_TRANSLATE_NOOP("storedProcErrorLookup", "The selected CRM Account cannot be deleted as "
+			       "it is a Employee."),	        0, "" },
+  { "deleteCRMAccount",	-8, QT_TRANSLATE_NOOP("storedProcErrorLookup", "The selected CRM Account cannot be deleted as "
+			       "it is a User."),	        0, "" },
 
   { "deleteCustomer",	-1, QT_TRANSLATE_NOOP("storedProcErrorLookup", "The selected Customer cannot be deleted as there "
 			       "are still Ship-Tos assigned to it. You must "
@@ -1028,6 +1038,27 @@ const struct {
   { "postCheck",  -13, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Cannot post this Check because the G/L Account "
 			 "against which it is to be posted is not valid."),
 			 						0, "" },
+  { "postCountTag",  -1, QT_TRANSLATE_NOOP("storedProcErrorLookup",
+                           "Cannot post this Count Tag because The total Count "
+                           "Slip quantity is greater than the Count Tag "
+                           "quantity."),                                0, "" },
+  { "postCountTag",  -2, QT_TRANSLATE_NOOP("storedProcErrorLookup",
+                           "Cannot post this Count Tag because the total Count "
+                           "Slip quantity is less than the Count Tag quantity "
+                           "for a Lot/Serial-controlled Item Site."),   0, "" },
+  { "postCountTag",  -3, QT_TRANSLATE_NOOP("storedProcErrorLookup",
+                           "Cannot post this Count Tag because the total Count "
+                           "Slip quantity is less than the Count Tag quantity "
+                           "and there is no default location."),        0, "" },
+  { "postCountTag",  -4, QT_TRANSLATE_NOOP("storedProcErrorLookup",
+                           "Cannot post this Count Tag because the total Count "
+                           "Slip quantity is less than the Count Tag quantity "
+                           "and we don't post to default locations."),  0, "" },
+
+  { "postCountTagLocation", -1, "", -1, "postCountTag" },
+  { "postCountTagLocation", -2, "", -2, "postCountTag" },
+  { "postCountTagLocation", -3, "", -3, "postCountTag" },
+  { "postCountTagLocation", -4, "", -4, "postCountTag" },
 
   { "postCreditMemo",	-10, QT_TRANSLATE_NOOP("storedProcErrorLookup", "This Credit Memo cannot be posted because it "
 			       "has already been posted."),	 0, "" },
@@ -1379,6 +1410,26 @@ const struct {
 			"transmitted electronically. If this check has been "
 			"posted, try Void Posted Check with the Check Register "
 			"window."),					0, "" },
+
+  { "voidCreditMemo",  -1, "", -1, "insertIntoGLSeries" },
+  { "voidCreditMemo",  -4, "", -4, "insertIntoGLSeries" },
+  { "voidCreditMemo",  -5, "", -5, "postGLSeries" },
+  { "voidCreditMemo", -10, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Unable to void this Credit Memo because it has "
+                         "not been posted."),		 0, "" },
+  { "voidCreditMemo", -11, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Unable to void this Credit Memo because the Sales "
+                         "Account was not found."),		 0, "" },
+  { "voidCreditMemo", -20, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Unable to void this Credit Memo because there "
+                         "A/R Applications posted against this Credit Memo."), 0, "" },
+
+  { "voidInvoice",  -1, "", -1, "insertIntoGLSeries" },
+  { "voidInvoice",  -4, "", -4, "insertIntoGLSeries" },
+  { "voidInvoice",  -5, "", -5, "postGLSeries" },
+  { "voidInvoice", -10, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Unable to void this Invoice because it has "
+                         "not been posted."),		 0, "" },
+  { "voidInvoice", -11, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Unable to void this Invoice because the Sales "
+                         "Account was not found."),		 0, "" },
+  { "voidInvoice", -20, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Unable to void this Invoice because there "
+                         "A/R Applications posted against this Invoice."), 0, "" },
 
   { "voidPostedCheck", -10, QT_TRANSLATE_NOOP("storedProcErrorLookup", "Cannot void this check because it has already "
 			       "been voided."),				0, "" },

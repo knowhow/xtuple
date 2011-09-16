@@ -40,7 +40,7 @@ filterManager::filterManager(QWidget* parent, const char* name)
   shortcuts::setStandardKeys(this);
 }
 
-void filterManager::set(ParameterList &pParams)
+void filterManager::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -65,7 +65,7 @@ void filterManager::populate()
                   "  true "
                   " else false end as shared "
                   "from filter "
-                  "where COALESCE(filter_username,current_user)=current_user "
+                  "where COALESCE(filter_username,getEffectiveXtUser())=getEffectiveXtUser() "
                   " and filter_screen=:screen "
                   "order by filter_name;");
       qry.bindValue(":screen", parent()->parent()->objectName());
@@ -86,7 +86,7 @@ void filterManager::unshareFilter()
       return;
 	else
 	{
-		qry.prepare("UPDATE filter SET filter_username=current_user WHERE (filter_id=:filter_id);");
+		qry.prepare("UPDATE filter SET filter_username=getEffectiveXtUser() WHERE (filter_id=:filter_id);");
 		qry.bindValue(":filter_id", _filterSet->id());
 		qry.exec();
 	}

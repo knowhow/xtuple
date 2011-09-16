@@ -35,7 +35,7 @@ correctProductionPosting::correctProductionPosting(QWidget* parent, const char* 
   omfgThis->inputManager()->notify(cBCWorkOrder, this, _wo, SLOT(setId(int)));
 
   _wo->setType(cWoIssued);
-  _qty->setValidator(omfgThis->transQtyVal());
+  _qty->setValidator(omfgThis->qtyVal());
   _qtyOrdered->setPrecision(omfgThis->transQtyVal());
   _qtyReceived->setPrecision(omfgThis->transQtyVal());
   _qtyBalance->setPrecision(omfgThis->transQtyVal());

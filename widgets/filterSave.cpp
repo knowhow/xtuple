@@ -30,7 +30,7 @@ filterSave::filterSave(QWidget* parent, const char* name)
   shortcuts::setStandardKeys(this);
 }
 
-void filterSave::set(ParameterList &pParams)
+void filterSave::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -74,13 +74,13 @@ void filterSave::save()
   if (_shared->isChecked())
     user = "null";
   else
-    user = "current_user";
+    user = "getEffectiveXtUser()";
 
   //check to see if filter name exists for this screen
   QString filter_query = "select filter_id, filter_name, filter_username "
                          "from filter "
                          "where filter_name=:name "
-                         " and COALESCE(filter_username,current_user)=current_user "
+                         " and COALESCE(filter_username,getEffectiveXtUser())=getEffectiveXtUser() "
                          " and filter_screen=:screen";
   qry.prepare(filter_query);
   qry.bindValue(":name", _filterName->text());

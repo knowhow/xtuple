@@ -10,17 +10,11 @@
 
 #include "massExpireComponent.h"
 
-#include <qvariant.h>
 #include <QMessageBox>
 #include <QSqlQuery>
 
-/*
- *  Constructs a massExpireComponent as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- */
 massExpireComponent::massExpireComponent(QWidget* parent, const char* name, Qt::WFlags fl)
-    : XWidget(parent, name, fl)
+  : XWidget(parent, name, fl)
 {
   setupUi(this);
 
@@ -40,24 +34,17 @@ massExpireComponent::massExpireComponent(QWidget* parent, const char* name, Qt::
   connect(_close, SIGNAL(clicked()), this, SLOT(close()));
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 massExpireComponent::~massExpireComponent()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void massExpireComponent::languageChange()
 {
-    retranslateUi(this);
+  retranslateUi(this);
 }
 
-enum SetResponse massExpireComponent::set(ParameterList &pParams)
+enum SetResponse massExpireComponent::set(const ParameterList &pParams)
 {
   XWidget::set(pParams);
   _captive = TRUE;

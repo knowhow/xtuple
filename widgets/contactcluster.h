@@ -12,13 +12,13 @@
 
 #define _contactCluster_h
 
-#include "virtualCluster.h"
+#include "crmcluster.h"
 #include "addresscluster.h"
 #include "xurllabel.h"
 #include "contactwidget.h"
 
 
-class XTUPLEWIDGETS_EXPORT ContactClusterLineEdit : public VirtualClusterLineEdit
+class XTUPLEWIDGETS_EXPORT ContactClusterLineEdit : public CrmClusterLineEdit
 {
     Q_OBJECT
 
@@ -40,7 +40,6 @@ class XTUPLEWIDGETS_EXPORT ContactClusterLineEdit : public VirtualClusterLineEdi
     protected slots:
       ContactList* listFactory();
       ContactSearch* searchFactory();
-      void silentSetId(const int);
 
     private:
       QStringList _newAddr;

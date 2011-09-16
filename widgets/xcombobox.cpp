@@ -76,14 +76,14 @@ void XComboBox::init()
   insertEditor(AccountingPeriods,"accountingPeriods","MaintainAccountingPeriods");
   insertEditor(Agent,"users","MaintainUsers");
   insertEditor(AllCommentTypes,"commentTypes","MaintainCommentTypes");
-  insertEditor(AllProjects,"projects","MaintainProjects");
+  insertEditor(AllProjects,"projects","MaintainAllProjects");
   insertEditor(BBOMHeadCommentTypes,"commentTypes","MaintainCommentTypes");
   insertEditor(BBOMItemCommentTypes,"commentTypes","MaintainCommentTypes");
   insertEditor(BOMHeadCommentTypes,"commentTypes","MaintainCommentTypes");
   insertEditor(BOMItemCommentTypes,"commentTypes","MaintainCommentTypes");
   insertEditor(BOOHeadCommentTypes,"commentTypes","MaintainCommentTypes");
   insertEditor(BOOItemCommentTypes,"commentTypes","MaintainCommentTypes");
-  insertEditor(CRMAccounts,"crmaccounts","MaintainCRMAccounts");
+  insertEditor(CRMAccounts,"crmaccounts","MaintainAllCRMAccounts");
   insertEditor(CRMAccountCommentTypes,"commentTypes","MaintainCommentTypes");
   insertEditor(ClassCodes,"classCodes","MaintainClassCodes");
   insertEditor(Companies,"companies","MaintainChartOfAccounts");
@@ -120,7 +120,7 @@ void XComboBox::init()
   insertEditor(OpportunitySources,"opportunitySources","MaintainOpportunitySources");
   insertEditor(OpportunityTypes,"opportunityTypes","MaintainOpportunityTypes");
   insertEditor(PlannerCodes,"plannerCodes","MaintainPlannerCodes");
-  insertEditor(PoProjects,"projects","MaintainProjects");
+  insertEditor(PoProjects,"projects","MaintainAllProjects");
   insertEditor(ProductCategories,"productCategories","MaintainProductCategories");
   insertEditor(ProfitCenters,"profitCenters","MaintainChartOfAccounts");
   insertEditor(ProjectCommentTypes,"commentTypes","MaintainCommentTypes");
@@ -145,7 +145,7 @@ void XComboBox::init()
   insertEditor(ShippingForms,"shippingForms","MaintainShippingForms");
   insertEditor(ShippingZones,"shippingZones","MaintainShippingZones");
   insertEditor(SiteTypes,"siteTypes","MaintainSiteTypes");
-  insertEditor(SoProjects,"projects","MaintainProjects");
+  insertEditor(SoProjects,"projects","MaintainAllProjects");
   insertEditor(Subaccounts,"subaccounts","MaintainChartOfAccounts");
   insertEditor(TaxAuths,"taxAuthorities","MaintainTaxAuthorities");
   insertEditor(TaxClasses,"taxClasses","MaintainTaxClasses");
@@ -164,7 +164,7 @@ void XComboBox::init()
   // insertEditor(VendorGroups,"","");  Not implemented yet
   insertEditor(VendorTypes,"vendorTypes","MaintainVendorTypes");
   insertEditor(WarehouseCommentTypes,"commentTypes","MaintainCommentTypes");
-  insertEditor(WoProjects,"projects","MaintainProjects");
+  insertEditor(WoProjects,"projects","MaintainAllProjects");
   insertEditor(WorkCenters,"workCenters","MaintainWorkCenters");
   insertEditor(WorkOrderCommentTypes,"commentTypes","MaintainCommentTypes");
 }

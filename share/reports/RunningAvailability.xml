@@ -3,6 +3,12 @@
  <title>Running Availability</title>
  <name>RunningAvailability</name>
  <description>Updated in 2.3 to show order number and item code on higherlevel planned work orders.</description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -27,286 +33,10 @@
    AND (item_inv_uom_id=uom_id)
    AND (warehous_id=&lt;? value("warehous_id") ?>))</sql>
  </querysource>
- <querysource>
+ <querysource loadFromDb="true">
   <name>detail</name>
-  <sql>&lt;? if exists("MultiWhs") ?>
-SELECT tohead_id AS orderid, toitem_id AS altorderid, 'T/O' AS ordertype,
-       TEXT(tohead_number) AS ordernumber,
-       1 AS sequence,
-       tohead_srcname || '/' || tohead_destname AS item_number,
-       formatDate(toitem_duedate) AS duedate,
-       toitem_duedate AS r_duedate,
-       (toitem_duedate &lt; CURRENT_DATE) AS late,
-       formatQty(toitem_qty_ordered) AS f_qtyordered,
-       formatQty(toitem_qty_received) AS f_qtyreceived,
-       formatQty(noNeg(toitem_qty_ordered - toitem_qty_received)) AS f_balance,
-       noNeg(toitem_qty_ordered - toitem_qty_received) AS balance
-FROM tohead, toitem
-WHERE ((toitem_tohead_id=tohead_id)
-  AND  (toitem_status = 'O')
-  AND  (toitem_item_id=&lt;? value("item_id") ?>)
-  AND  (tohead_dest_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (toitem_qty_ordered > toitem_qty_received) )
-
-UNION
-SELECT tohead_id AS orderid, toitem_id AS altorderid, 'T/O' AS ordertype,
-       TEXT(tohead_number) AS ordernumber,
-       1 AS sequence,
-       tohead_srcname || '/' || tohead_destname AS item_number,
-       formatDate(toitem_duedate) AS duedate,
-       toitem_duedate AS r_duedate,
-       (toitem_duedate &lt; CURRENT_DATE) AS late,
-       formatQty(toitem_qty_ordered) AS f_qtyordered,
-       formatQty(toitem_qty_received) AS f_qtyreceived,
-       formatQty(-1 * noNeg(toitem_qty_ordered - toitem_qty_shipped - qtyAtShipping('TO', toitem_id))) AS f_balance,
-       -1 * noNeg(toitem_qty_ordered - toitem_qty_received) AS balance
-FROM tohead, toitem
-WHERE ((toitem_tohead_id=tohead_id)
-  AND  (toitem_status = 'O')
-  AND  (toitem_item_id=&lt;? value("item_id") ?>)
-  AND  (tohead_src_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (toitem_qty_ordered - toitem_qty_shipped - qtyAtShipping('TO', toitem_id)) > 0 )
-
-UNION
-&lt;? endif ?>
-SELECT wo_id AS orderid, -1 AS altorderid,
-       'W/O' AS ordertype,
-       formatWoNumber(wo_id) AS ordernumber,
-       1 AS sequence,
-       item_number,
-       formatDate(wo_duedate) AS duedate,
-       wo_duedate AS r_duedate,
-       (wo_duedate &lt; CURRENT_DATE) AS late,
-       formatQty(wo_qtyord) AS f_qtyordered,
-       formatQty(wo_qtyrcv) AS f_qtyreceived,
-       formatQty(noNeg(wo_qtyord - wo_qtyrcv)) AS f_balance,
-       noNeg(wo_qtyord - wo_qtyrcv) AS balance
-FROM wo, itemsite, item
-WHERE ((wo_status&lt;>'C')
-  AND  (wo_itemsite_id=itemsite_id)
-  AND  (itemsite_item_id=item_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=&lt;? value("item_id") ?>)
-  AND  (item_type NOT IN ('C', 'Y')))
-
-&lt;? if exists("Manufacturing") ?>
-UNION
-SELECT wo_id AS orderid, -1 AS altorderid,
-       'W/O' AS ordertype,
-       formatWoNumber(wo_id) AS ordernumber,
-       1 AS sequence,
-       item_number,
-       formatDate(wo_duedate) AS duedate,
-       wo_duedate AS r_duedate,
-       (wo_duedate &lt; CURRENT_DATE) AS late,
-       formatQty(wo_qtyord * brddist_stdqtyper) AS f_qtyordered,
-       formatQty(wo_qtyrcv * brddist_stdqtyper) AS f_qtyreceived,
-       formatQty(noNeg((wo_qtyord - wo_qtyrcv) * brddist_stdqtyper)) AS f_balance,
-       noNeg((wo_qtyord - wo_qtyrcv) * brddist_stdqtyper) AS balance
-FROM xtmfg.brddist, wo, itemsite, item
-WHERE ((wo_status&lt;>'C')
-  AND  (brddist_wo_id=wo_id)
-  AND  (wo_itemsite_id=itemsite_id)
-  AND  (itemsite_item_id=item_id)
-  AND  (brddist_itemsite_id=itemsite_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=&lt;? value("item_id") ?>)
-  AND  (item_type IN ('C', 'Y')) )
-&lt;? endif ?>
-
-UNION
-SELECT wo_id AS orderid, womatl_id AS altorderid,
-      'W/O' AS ordertype,
-      formatWoNumber(wo_id) AS ordernumber,
-      2 AS sequence,
-      item_number,
-      formatDate(womatl_duedate) AS duedate,
-      womatl_duedate AS r_duedate,
-      FALSE AS late,
-      formatQty(itemuomtouom(womatlis.itemsite_item_id, womatl_uom_id, NULL, womatl_qtyreq)) AS f_qtyordered,
-      formatQty(itemuomtouom(womatlis.itemsite_item_id, womatl_uom_id, NULL, womatl_qtyiss)) AS f_qtyreceived,
-      formatQty(itemuomtouom(womatlis.itemsite_item_id, womatl_uom_id, NULL, (noNeg(womatl_qtyreq - womatl_qtyiss) * -1))) AS f_balance,
-      itemuomtouom(womatlis.itemsite_item_id, womatl_uom_id, NULL, (noNeg(womatl_qtyreq - womatl_qtyiss) * -1)) AS balance
-FROM womatl, wo, itemsite AS wois, item, itemsite AS womatlis
-WHERE ((wo_status&lt;>'C')
-  AND  (wo_itemsite_id=wois.itemsite_id)
-  AND  (wois.itemsite_item_id=item_id)
-  AND  (womatl_wo_id=wo_id)
-  AND  (womatlis.itemsite_item_id=&lt;? value("item_id") ?>)
-  AND  (womatlis.itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (womatl_itemsite_id=womatlis.itemsite_id) )
-
-UNION
-SELECT pohead_id AS orderid, poitem_id AS altorderid,
-      'P/O' AS ordertype,
-      TEXT(pohead_number) AS ordernumber,
-      1 AS sequence,
-      '' AS item_number,
-      formatDate(poitem_duedate) AS duedate,
-      poitem_duedate AS r_duedate,
-      (poitem_duedate &lt; CURRENT_DATE) AS late,
-      formatQty(poitem_qty_ordered * poitem_invvenduomratio) AS f_qtyordered,
-      formatQty(poitem_qty_received * poitem_invvenduomratio) AS f_qtyreceived,
-      formatQty(noNeg(poitem_qty_ordered - poitem_qty_received) * poitem_invvenduomratio) AS f_balance,
-      (noNeg(poitem_qty_ordered - poitem_qty_received) * poitem_invvenduomratio) AS balance
-FROM pohead, poitem, itemsite, item
-WHERE ((poitem_pohead_id=pohead_id)
-  AND  (poitem_status &lt;> 'C')
-  AND  (poitem_itemsite_id=itemsite_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=item_id)
-  AND  (item_id=&lt;? value("item_id") ?>)
-  AND  (item_type IN ('P', 'M', 'C', 'O')) )
-
-UNION
-SELECT cohead_id AS orderid, coitem_id AS altorderid,
-       'S/O' AS ordertype,
-       TEXT(cohead_number) AS ordernumber,
-       2 AS sequence,
-       cust_name AS item_number,
-       formatDate(coitem_scheddate) AS duedate,
-       coitem_scheddate AS r_duedate,
-       (coitem_scheddate &lt; CURRENT_DATE) AS late,
-       formatQty(coitem_qty_invuomratio * coitem_qtyord) AS f_qtyordered,
-       formatQty(coitem_qty_invuomratio * (coitem_qtyshipped - coitem_qtyreturned + qtyAtShipping(coitem_id))) AS f_qtyreceived,
-       formatQty(coitem_qty_invuomratio * noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping(coitem_id)) * -1) AS f_balance,
-       (coitem_qty_invuomratio * noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned - qtyAtShipping(coitem_id)) * -1) AS balance
-FROM coitem, cohead, cust, itemsite, item
-WHERE ((coitem_status='O')
-  AND  (cohead_cust_id=cust_id)
-  AND  (coitem_cohead_id=cohead_id)
-  AND  (coitem_itemsite_id=itemsite_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=item_id)
-  AND  (item_id=&lt;? value("item_id") ?>)
-  AND  item_sold )
-
-&lt;? if exists("showPlanned") ?>
-&lt;? if exists("showMRPplan") ?>
-UNION
-SELECT planord_id AS orderid, -1 AS altorderid,
-       'Planned P/O' AS ordertype,
---       CASE WHEN (planord_firm) THEN &lt;? value("firmPo") ?>
--- 	   ELSE &lt;? value("plannedPo") ?>
---       END AS ordernumber,
---2.3 replaced case above with actual order number for higher level demand
-       CAST(planord_number AS text) AS ordernumber,
-       1 AS sequence,
-       '' AS item_number,
-       formatDate(planord_duedate) AS duedate,
-       planord_duedate AS r_duedate,
-       FALSE AS late,
-       formatQty(planord_qty) AS f_qtyordered,
-       '' AS f_qtyreceived,
-       formatQty(planord_qty) AS f_balance,
-       planord_qty AS balance
-FROM planord, itemsite
-WHERE ((planord_type='P')
-  AND  (planord_itemsite_id=itemsite_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=&lt;? value("item_id") ?>) )
-
-UNION
-SELECT planord_id AS orderid, -1 AS altorderid,
-       'Planned W/O' AS ordertype,
---       CASE WHEN (planord_firm) THEN &lt;? value("firmWo") ?>
---	    ELSE &lt;? value("plannedWo") ?>
---       END AS ordernumber,
---2.3 replaced case above with actual order number
-       CAST(planord_number AS text) AS ordernumber,
-       1 AS sequence,
-       '' AS item_number,
-       formatDate(planord_duedate) AS duedate,
-       planord_duedate AS r_duedate,
-       FALSE AS late,
-       formatQty(planord_qty) AS f_qtyordered,
-       '' AS f_qtyreceived,
-       formatQty(planord_qty) AS f_balance,
-       planord_qty AS balance
-FROM planord, itemsite
-WHERE ((planord_type='W')
-  AND  (planord_itemsite_id=itemsite_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=&lt;? value("item_id") ?>) )
-
-UNION
-SELECT planreq_id AS orderid, -1 AS altorderid,
-       'Planned W/O' AS ordertype,
---       CASE WHEN (planord_firm) THEN &lt;? value("firmWoReq") ?>
---	    ELSE &lt;? value("plannedWoReq") ?>
---       END AS ordernumber,
---2.3 replaced case above with actual order number for higher level demand
-       CAST(planord_number AS text) AS ordernumber,
-       1 AS sequence,
---2.3 Start
---Starting here a sub-select gets the planned order number for the higher level demand
-             (SELECT item_number
-                FROM item, itemsite
-               WHERE((itemsite_item_id=item_id)
-                 AND (itemsite_id=planord_itemsite_id))
-             ) AS item_number,
---End of subselect to get higher level item number
---2.3 Start
-       formatDate(planord_startdate) AS duedate,
-       planord_startdate AS r_duedate,
-       FALSE AS late,
-       formatQty(planreq_qty) AS f_qtyordered,
-       '' AS f_qtyreceived,
-       formatQty(planreq_qty * -1) AS f_balance,
-       (planreq_qty * -1) AS balance
-FROM planreq, planord, itemsite, item
-WHERE ((planreq_source='P')
-  AND  (planreq_source_id=planord_id)
-  AND  (planreq_itemsite_id=itemsite_id)
-  AND  (itemsite_item_id=item_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=&lt;? value("item_id") ?>) )
-&lt;? endif ?>
-
-UNION
-SELECT pr_id AS orderid, -1 AS altorderid,
-       'P/R' AS ordertype,
---       &lt;? value("pr") ?> AS ordernumber,
---2.3 replaced above with actual order number
-       CAST(pr_number AS text) AS ordernumber,       
-       1 AS sequence,
-       '' AS item_number,
-       formatDate(pr_duedate) AS duedate,
-       pr_duedate AS r_duedate,
-       FALSE AS late,
-       formatQty(pr_qtyreq) AS f_qtyordered,
-       '' AS f_qtyreceived,
-       formatQty(pr_qtyreq) AS f_balance,
-       pr_qtyreq AS balance
-FROM pr, itemsite, item
-WHERE ((pr_itemsite_id=itemsite_id)
-  AND  (itemsite_item_id=item_id)
-  AND  (pr_itemsite_id=itemsite_id)
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
-  AND  (itemsite_item_id=&lt;? value("item_id") ?>) )
-&lt;? endif ?>
-
-UNION 
-
-SELECT -1 AS orderid, -1 AS altorderid,
-             '' AS ordertype,
-             '' AS ordernumber,
-             -1 AS sequence,
-             'Initial QOH' AS item_number,
-             '' AS duedate,
-             date('1/1/1978') AS r_duedate,
-             FALSE AS late,
-             '' AS f_qtyordered,
-             '' AS f_qtyreceived,
-             '' AS f_balance,
-             itemsite_qtyonhand AS balance
-        FROM itemsite
-       WHERE ((itemsite_item_id=&lt;? value("item_id") ?>)
-         AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>))
-
-ORDER BY r_duedate, sequence;
-
-</sql>
+  <mqlgroup>runningAvailability</mqlgroup>
+  <mqlname>detail</mqlname>
  </querysource>
  <querysource>
   <name>info</name>
@@ -943,7 +673,7 @@ WHERE ((itemsite_item_id=&lt;? value("item_id") ?>)
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>duedate</column>
+     <column>f_duedate</column>
     </data>
    </field>
    <field>
@@ -1021,7 +751,8 @@ WHERE ((itemsite_item_id=&lt;? value("item_id") ?>)
      <query>detail</query>
      <column>balance</column>
     </data>
-    <tracktotal builtin="true" >qty</tracktotal>
+    <format builtin="true">qty</format>
+    <tracktotal/>
    </field>
    <field>
     <rect>

@@ -229,6 +229,7 @@ void transferTrans::sPost()
     }
     else if (q.lastError().type() != QSqlError::NoError)
     {
+      rollback.exec();
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
       return;
     }

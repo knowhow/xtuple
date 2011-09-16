@@ -80,7 +80,7 @@ void applyDiscount::populate()
             "       apopen_docnumber,"
             "       apopen_docdate, "
             "       (terms_code|| '-' || terms_descrip) AS f_terms,"
-            "       (apopen_docdate + terms_discdays) AS discdate,"
+            "       determineDiscountDate(apopen_terms_id, apopen_docdate) AS discdate,"
             "       terms_discprcnt,"
             "       apopen_amount, apopen_discountable_amount, apopen_curr_id, applied, "
             "       noNeg(apopen_discountable_amount *"

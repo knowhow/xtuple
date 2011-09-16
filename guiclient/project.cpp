@@ -109,8 +109,8 @@ enum SetResponse project::set(const ParameterList &pParams)
       _documents->setId(_prjid);
       _recurring->setParent(_prjid, "J");
 
-      _assignedTo->setEnabled(_privileges->check("MaintainOtherTodoLists") ||
-			      _privileges->check("ReassignTodoListItem"));
+      _assignedTo->setEnabled(_privileges->check("MaintainAllToDoItems") ||
+                              _privileges->check("ReassignToDoItems"));
     }
     else if (param.toString() == "edit")
     {
@@ -122,8 +122,8 @@ enum SetResponse project::set(const ParameterList &pParams)
       connect(_prjtask, SIGNAL(valid(bool)), _deleteTask, SLOT(setEnabled(bool)));
       connect(_prjtask, SIGNAL(itemSelected(int)), _editTask, SLOT(animateClick()));
 
-      _assignedTo->setEnabled(_privileges->check("MaintainOtherTodoLists") ||
-	                      _privileges->check("ReassignTodoListItem"));
+      _assignedTo->setEnabled(_privileges->check("MaintainAllToDoItems") ||
+                              _privileges->check("ReassignToDoItems"));
     }
     else if (param.toString() == "view")
     {
@@ -147,6 +147,9 @@ enum SetResponse project::set(const ParameterList &pParams)
       _due->setEnabled(FALSE);
       _completed->setEnabled(FALSE);
       _recurring->setEnabled(FALSE);
+      _buttonBox->removeButton(_buttonBox->button(QDialogButtonBox::Save));
+      _buttonBox->removeButton(_buttonBox->button(QDialogButtonBox::Cancel));
+      _buttonBox->addButton(QDialogButtonBox::Close);
     }
   }
     

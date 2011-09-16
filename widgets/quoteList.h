@@ -12,7 +12,7 @@
 #ifndef quotelist_h
 #define quotelist_h
 
-#include <qdialog.h>
+#include <QDialog>
 
 #include "widgets.h"
 
@@ -34,7 +34,7 @@ public:
     XTreeWidget      *_qu;
 
 public slots:
-    virtual void set( ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
     virtual void sSelect();
     virtual void sFillList();
 
@@ -43,6 +43,7 @@ private:
     int _quheadid;
     int _type;
     int _custid;
+    bool _openOnly;
 };
 
 #endif

@@ -104,7 +104,7 @@ salesOrderList::salesOrderList( QWidget* parent, const char* name, bool modal, Q
   _warehouse->setFocus();
 }
 
-void salesOrderList::set(ParameterList &pParams)
+void salesOrderList::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

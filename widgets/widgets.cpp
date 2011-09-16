@@ -182,11 +182,13 @@ Preferences *_x_preferences = 0;
 Metrics     *_x_metrics = 0;
 QWorkspace  *_x_workspace = 0;
 Privileges  *_x_privileges = 0;
+QString     _x_username;
 
-void initializePlugin(Preferences *pPreferences, Metrics *pMetrics, Privileges *pPrivileges, QWorkspace *pWorkspace)
+void initializePlugin(Preferences *pPreferences, Metrics *pMetrics, Privileges *pPrivileges, QString pUsername, QWorkspace *pWorkspace)
 {
   _x_preferences = pPreferences;
   _x_metrics = pMetrics;
   _x_workspace = pWorkspace;
   _x_privileges = pPrivileges;
+  _x_username = pUsername;
 }

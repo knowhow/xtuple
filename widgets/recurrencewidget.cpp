@@ -668,26 +668,27 @@ bool RecurrenceWidget::save(bool externaltxn, RecurrenceChangePolicy cp, QString
       }
     }
 
-    // error handling for either 1 or 2 queries so no elseif
-    if (procresult < 0)
-    {
-      *message = storedProcErrorLookup(procname, procresult);
-      if (! externaltxn)
-      {
-        rollbackq.exec();
-        QMessageBox::critical(this, tr("Processing Error"), *message);
-      }
-      else
-        qWarning("%s", qPrintable(*message));
-      return false;
-    }
-    else if (cfq.lastError().type() != QSqlError::NoError)
+    // error handling for either 1 or 2 queries so not elseif
+    // check cfq.lastError() first to avoid misreporting db errs as -1
+    if (cfq.lastError().type() != QSqlError::NoError)
     {
       *message = cfq.lastError().text();
       if (! externaltxn)
       {
         rollbackq.exec();
         QMessageBox::critical(this, tr("Database Error"), *message);
+      }
+      else
+        qWarning("%s", qPrintable(*message));
+      return false;
+    }
+    else if (procresult < 0)
+    {
+      *message = storedProcErrorLookup(procname, procresult);
+      if (! externaltxn)
+      {
+        rollbackq.exec();
+        QMessageBox::critical(this, tr("Processing Error"), *message);
       }
       else
         qWarning("%s", qPrintable(*message));

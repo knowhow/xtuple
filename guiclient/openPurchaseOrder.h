@@ -15,6 +15,7 @@
 #include "xdialog.h"
 #include <parameter.h>
 #include "ui_openPurchaseOrder.h"
+
 class openPurchaseOrder : public XDialog, public Ui::openPurchaseOrder
 {
     Q_OBJECT
@@ -22,14 +23,13 @@ class openPurchaseOrder : public XDialog, public Ui::openPurchaseOrder
 public:
     openPurchaseOrder(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
     ~openPurchaseOrder();
-    //virtual bool setParams(ParameterList &);
     int vendor_id;
 
 public slots:
 
     virtual void sFillList();
     virtual void sSelect();
-    virtual enum SetResponse set( ParameterList & pParams );
+    virtual enum SetResponse set(const ParameterList & pParams);
 protected slots:
     virtual void languageChange();
 

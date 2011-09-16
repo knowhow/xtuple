@@ -42,7 +42,7 @@ class XTUPLEWIDGETS_EXPORT ContactList : public VirtualList
 
 public:
   ContactList(QWidget*, const char* = 0, bool = false, Qt::WFlags = 0);
-  virtual void set( ParameterList & pParams );
+  virtual void set(const ParameterList & pParams);
 
 public slots:
   virtual void sFillList(const bool searchAcct);
@@ -66,7 +66,7 @@ class XTUPLEWIDGETS_EXPORT ContactSearch : public VirtualSearch
 
 public:
   ContactSearch(QWidget*, Qt::WindowFlags = 0);
-  virtual void set( ParameterList & pParams );
+  virtual void set(const ParameterList & pParams);
 
 public slots:
   virtual void sFillList();

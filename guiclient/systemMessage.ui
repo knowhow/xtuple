@@ -337,7 +337,7 @@ to be bound by its terms.</comment>
       </widget>
      </item>
      <item>
-      <widget class="QTextEdit" name="_message" />
+      <widget class="XTextEdit" name="_message" />
      </item>
     </layout>
    </item>
@@ -352,6 +352,11 @@ to be bound by its terms.</comment>
    <header>datecluster.h</header>
    <container>0</container>
    <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

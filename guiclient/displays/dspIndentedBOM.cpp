@@ -30,6 +30,7 @@ dspIndentedBOM::dspIndentedBOM(QWidget* parent, const char*, Qt::WFlags fl)
   list()->addColumn(tr("Notes"),        _itemColumn,  Qt::AlignCenter,false, "bomdata_notes");
   list()->addColumn(tr("Reference"),    _itemColumn,  Qt::AlignCenter,false, "bomdata_ref");
   list()->setIndentation(10);
+  list()->setPopulateLinear();
 }
 
 bool dspIndentedBOM::setParams(ParameterList &params)

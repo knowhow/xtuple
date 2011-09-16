@@ -47,6 +47,7 @@ public slots:
     virtual void closeEvent( QCloseEvent * pEvent );
     virtual void setFreeFormShipto( bool pFreeForm );
     virtual void sShipToModified();
+    virtual void sCreditAllocate();
     virtual void populateCMInfo();
     virtual void populateCCInfo();
     virtual bool sCheckInvoiceNumber();

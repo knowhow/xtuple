@@ -174,4 +174,9 @@ ParameterList XWidget::get() const
   return _lastSetParams;
 }
 
+QScriptEngine *XWidget::engine()
+{
+  _private->loadScriptEngine();
+  return _private->_engine;
+}
 

@@ -13,7 +13,7 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>583</width>
+    <width>593</width>
     <height>521</height>
    </rect>
   </property>
@@ -37,7 +37,7 @@ to be bound by its terms.</comment>
    <item row="0" column="1">
     <widget class="XLineEdit" name="_description"/>
    </item>
-   <item row="0" column="2" rowspan="7">
+   <item row="0" column="2" rowspan="8">
     <layout class="QVBoxLayout">
      <property name="spacing">
       <number>0</number>
@@ -228,7 +228,7 @@ to be bound by its terms.</comment>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="_accessLit">
      <property name="text">
       <string>Access Mode:</string>
@@ -241,7 +241,7 @@ to be bound by its terms.</comment>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QComboBox" name="_access">
@@ -277,7 +277,7 @@ to be bound by its terms.</comment>
      </item>
     </layout>
    </item>
-   <item row="7" column="0" colspan="3">
+   <item row="8" column="0" colspan="3">
     <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
@@ -309,12 +309,12 @@ to be bound by its terms.</comment>
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="_comments"/>
+       <widget class="XTextEdit" name="_comments"/>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="8" column="0" colspan="3">
+   <item row="9" column="0" colspan="3">
     <layout class="QHBoxLayout">
      <property name="spacing">
       <number>0</number>
@@ -480,6 +480,13 @@ to be bound by its terms.</comment>
      </property>
     </widget>
    </item>
+   <item row="5" column="1">
+    <widget class="QCheckBox" name="_forceLicense">
+     <property name="text">
+      <string>Do not allow user logins that exceed licensed user count.</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -491,11 +498,18 @@ to be bound by its terms.</comment>
    <header>xlineedit.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_description</tabstop>
-  <tabstop>_disallowMismatchClient</tabstop>
   <tabstop>_interval</tabstop>
+  <tabstop>_disallowMismatchClient</tabstop>
+  <tabstop>_disableAutoComplete</tabstop>
+  <tabstop>_forceLicense</tabstop>
   <tabstop>_access</tabstop>
   <tabstop>_comments</tabstop>
  </tabstops>

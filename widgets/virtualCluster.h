@@ -228,6 +228,8 @@ class XTUPLEWIDGETS_EXPORT VirtualClusterLineEdit : public XLineEdit
         void setStrict(bool);
         bool isStrict() const { return _strict; }
 
+        virtual void completerActivated(const QModelIndex &);
+
     signals:
         void newId(int);
         void parsed();
@@ -267,15 +269,16 @@ class XTUPLEWIDGETS_EXPORT VirtualClusterLineEdit : public XLineEdit
         bool _hasActive;
         bool _strict;
         bool _showInactive;
+        bool _useCompleterId;
 
         virtual void silentSetId(const int);
+
+        QSqlQueryModel* _model;
 
     private:
         void positionMenuLabel();
 
         QString _cText;
-
-        QSqlQueryModel* _model;
 };
 
 /*

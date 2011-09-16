@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1013</width>
+    <height>739</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -241,7 +241,7 @@ to be bound by its terms.</comment>
             <bool>true</bool>
            </property>
            <property name="type">
-            <enum>XComboBox::SalesRepsActive</enum>
+            <enum>XComboBox::SalesReps</enum>
            </property>
           </widget>
          </item>
@@ -1190,16 +1190,6 @@ to be bound by its terms.</comment>
          <item row="3" column="1" colspan="2">
           <widget class="GLCluster" name="_miscChargeAccount"/>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="_allocatedCMLit">
-           <property name="text">
-            <string>Allocated Credit:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </item>
          <item row="4" column="1">
           <widget class="CurrDisplay" name="_allocatedCM">
            <property name="sizePolicy">
@@ -1474,6 +1464,16 @@ to be bound by its terms.</comment>
            </property>
           </widget>
          </item>
+         <item row="4" column="0">
+          <widget class="XURLLabel" name="_allocatedCMLit">
+           <property name="text">
+            <string>Allocated Credit:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -1615,7 +1615,7 @@ to be bound by its terms.</comment>
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="QTextEdit" name="_orderComments">
+        <widget class="XTextEdit" name="_orderComments">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
          </property>
@@ -1643,7 +1643,7 @@ to be bound by its terms.</comment>
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="QTextEdit" name="_shippingComments">
+        <widget class="XTextEdit" name="_shippingComments">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
          </property>
@@ -1960,6 +1960,11 @@ to be bound by its terms.</comment>
    <class>XURLLabel</class>
    <extends>QLabel</extends>
    <header>xurllabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

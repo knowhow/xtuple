@@ -39,7 +39,7 @@ void countTagList::languageChange()
   retranslateUi(this);
 }
 
-enum SetResponse countTagList::set(ParameterList &pParams)
+enum SetResponse countTagList::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

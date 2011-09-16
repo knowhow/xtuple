@@ -38,6 +38,9 @@ public slots:
 	virtual void sCalculateTax();
 	virtual void sTaxDetail();
     
+protected:
+    virtual void closeEvent(QCloseEvent * event);
+
 protected slots:
     virtual void languageChange();
 

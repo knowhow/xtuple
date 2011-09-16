@@ -1,14 +1,20 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <QHelpCollectionProject version="1.0">
-  <docFiles>
-    <generate>
-      <file>
-        <input>XTupleGUIClient.qhp</input>
-        <output>XTupleGUIClient.qch</output>
-      </file>
-    </generate>
-    <register>
-      <file>XTupleGUIClient.qch</file>
-    </register>
-  </docFiles>
+    <assistant>
+        <title>xTuple Documentation</title>
+        <startPage>qthelp://xtuple.org/postbooks/index.html</startPage>
+        <cacheDirectory>.xTupleDocs</cacheDirectory>
+    </assistant>
+    <docFiles>
+        <generate>
+            <file>
+                <input>XTupleGUIClient.qhp</input>
+                <output>XTupleGUIClient.qch</output>
+            </file>
+        </generate>
+        <register>
+            <file>XTupleGUIClient.qch</file>
+        </register>
+    </docFiles>
 </QHelpCollectionProject>
+

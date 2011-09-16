@@ -25,7 +25,7 @@ public:
     virtual XTreeWidget* xtreewidget();
 
 public slots:
-    virtual void set( const ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
     virtual void sFillList();
 
 private:
@@ -43,7 +43,7 @@ public:
     accountSearch(QWidget*, Qt::WindowFlags = 0);
 
 public slots:
-    void set( ParameterList & pParams );
+    void set(const ParameterList & pParams);
     void sFillList();
 
 protected:

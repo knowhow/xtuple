@@ -124,7 +124,7 @@ void XDialog::showEvent(QShowEvent *event)
     if(!pos.isNull() && availableGeometry.contains(r) && xtsettingsValue(objName + "/geometry/rememberPos", true).toBool())
       move(pos);
 
-    _private->_rememberPos = new QAction(tr("Remember Posisition"), this);
+    _private->_rememberPos = new QAction(tr("Remember Position"), this);
     _private->_rememberPos->setCheckable(true);
     _private->_rememberPos->setChecked(xtsettingsValue(objectName() + "/geometry/rememberPos", true).toBool());
     connect(_private->_rememberPos, SIGNAL(triggered(bool)), this, SLOT(setRememberPos(bool)));

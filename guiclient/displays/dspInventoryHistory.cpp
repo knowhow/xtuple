@@ -183,13 +183,13 @@ enum SetResponse dspInventoryHistory::set(const ParameterList &pParams)
     else if (transtype == "I")
       parameterWidget()->setDefault(tr("Transaction Type"), 2);
     else if (transtype == "S")
-      parameterWidget()->setDefault(tr("Transaction Type"), 3);
-    else if (transtype == "A")
       parameterWidget()->setDefault(tr("Transaction Type"), 4);
+    else if (transtype == "A")
+      parameterWidget()->setDefault(tr("Transaction Type"), 8);
     else if (transtype == "T")
-      parameterWidget()->setDefault(tr("Transaction Type"), 5);
+      parameterWidget()->setDefault(tr("Transaction Type"), 16);
     else if (transtype == "SC")
-      parameterWidget()->setDefault(tr("Transaction Type"), 6);
+      parameterWidget()->setDefault(tr("Transaction Type"), 32);
   }
 
   parameterWidget()->applyDefaultFilterSet();

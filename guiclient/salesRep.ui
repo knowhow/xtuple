@@ -13,123 +13,15 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>477</width>
-    <height>162</height>
+    <width>439</width>
+    <height>143</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Sales Representative</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="_numberLit">
-         <property name="text">
-          <string>&amp;Number:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>_number</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="XLineEdit" name="_number"/>
-       </item>
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="_active">
-         <property name="text">
-          <string>&amp;Active</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="_nameLit">
-         <property name="text">
-          <string>N&amp;ame:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>_name</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="XLineEdit" name="_name"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="_commPrcntLit">
-         <property name="text">
-          <string>Comm. &amp;Prcnt.:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>_commPrcnt</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="XLineEdit" name="_commPrcnt">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="_employeeLit">
-         <property name="text">
-          <string>Employee:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>_employee</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1" colspan="2">
-        <widget class="EmpCluster" name="_employee"/>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>10</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="1">
+   <item row="0" column="4" rowspan="4">
     <widget class="QDialogButtonBox" name="_buttonBox">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -139,28 +31,109 @@ to be bound by its terms.</comment>
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="_numberLit">
+     <property name="text">
+      <string>&amp;Number:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>_number</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="_nameLit">
+     <property name="text">
+      <string>N&amp;ame:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>_name</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="_commPrcntLit">
+     <property name="text">
+      <string>Comm. &amp;Prcnt.:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="buddy">
+      <cstring>_commPrcnt</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1">
+    <widget class="XLineEdit" name="_number"/>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="XLineEdit" name="_name"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="XLineEdit" name="_commPrcnt">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" colspan="2">
+    <widget class="QPushButton" name="_crmaccountButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="text">
+      <string>CRM Account...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QCheckBox" name="_active">
+     <property name="text">
+      <string>&amp;Active</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>EmpCluster</class>
-   <extends>QWidget</extends>
-   <header>empcluster.h</header>
-  </customwidget>
-  <customwidget>
    <class>XLineEdit</class>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>_number</tabstop>
-  <tabstop>_active</tabstop>
-  <tabstop>_name</tabstop>
-  <tabstop>_commPrcnt</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -170,8 +143,8 @@ to be bound by its terms.</comment>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>430</x>
-     <y>82</y>
+     <x>420</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>238</x>

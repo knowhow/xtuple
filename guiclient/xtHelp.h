@@ -29,6 +29,8 @@ class xtHelp : public QHelpEngine
     Q_INVOKABLE QUrl           homePage() const;
     Q_INVOKABLE bool           isOnline() const;
 
+    Q_INVOKABLE static void reload();
+
   public slots:
     void                        sError(QNetworkReply *);
 

@@ -48,6 +48,7 @@ win32 {
 
 unix {
   OBJECTS_DIR = unx_obj
+  LIBS += -lz
 }
 
 macx {
@@ -55,6 +56,7 @@ macx {
   #PRECOMPILED_HEADER = stable.h
   OBJECTS_DIR = osx_obj
   QMAKE_INFO_PLIST = Info.plist
+  LIBS += -lz
 }
 
 DESTDIR     = ../bin
@@ -72,6 +74,8 @@ FORMS =   absoluteCalendarItem.ui               \
           address.ui                            \
           addresses.ui                          \
           adjustmentTrans.ui                    \
+          adjustInvValue.ui                     \
+          allocateARCreditMemo.ui               \
           allocateReservations.ui               \
           apAccountAssignment.ui                \
           apAccountAssignments.ui               \
@@ -175,6 +179,12 @@ FORMS =   absoluteCalendarItem.ui               \
           creditMemoEditList.ui                 \
           creditMemoItem.ui                     \
           crmaccount.ui                         \
+          crmaccountMerge.ui                    \
+          crmaccountMergePickAccountsPage.ui    \
+          crmaccountMergePickDataPage.ui        \
+          crmaccountMergePickTaskPage.ui        \
+          crmaccountMergePurgePage.ui           \
+          crmaccountMergeResultPage.ui          \
           currencies.ui                         \
           currency.ui                           \
           currencyConversion.ui                 \
@@ -196,6 +206,7 @@ FORMS =   absoluteCalendarItem.ui               \
           deletePlannedOrdersByPlannerCode.ui   \
           department.ui                         \
           departments.ui                        \
+          dictionaries.ui                       \
           display.ui                            \
           displayTimePhased.ui                  \
           distributeInventory.ui                \
@@ -260,6 +271,7 @@ FORMS =   absoluteCalendarItem.ui               \
           glTransactionDetail.ui        \
           group.ui                      \
           groups.ui                     \
+          helpDownload.ui               \
           honorific.ui                  \
           honorifics.ui                 \
           hotkey.ui                     \
@@ -536,6 +548,7 @@ FORMS =   absoluteCalendarItem.ui               \
           transferOrders.ui                     \
           transferTrans.ui                      \
           transformTrans.ui                     \
+          translations.ui                       \
           uiform.ui                             \
           uiforms.ui                            \
           unappliedAPCreditMemos.ui             \
@@ -606,6 +619,8 @@ HEADERS = ../common/format.h                    \
           address.h                             \
           addresses.h                           \
           adjustmentTrans.h                     \
+          adjustInvValue.h                      \
+          allocateARCreditMemo.h                \
           allocateReservations.h                \
           apAccountAssignment.h                 \
           apAccountAssignments.h                \
@@ -712,6 +727,12 @@ HEADERS = ../common/format.h                    \
           creditMemoItem.h                      \
           creditcardprocessor.h                 \
           crmaccount.h                          \
+          crmaccountMerge.h                     \
+          crmaccountMergePickAccountsPage.h     \
+          crmaccountMergePickDataPage.h         \
+          crmaccountMergePickTaskPage.h         \
+          crmaccountMergePurgePage.h            \
+          crmaccountMergeResultPage.h           \
           crmaccounts.h                         \
           currencies.h                          \
           currency.h                            \
@@ -737,6 +758,7 @@ HEADERS = ../common/format.h                    \
           deletePlannedOrdersByPlannerCode.h    \
           department.h                          \
           departments.h                         \
+          dictionaries.h                        \
           display.h                             \
           displayTimePhased.h                   \
           distributeInventory.h                 \
@@ -805,7 +827,9 @@ HEADERS = ../common/format.h                    \
           glTransactionDetail.h         \
           group.h                       \
           groups.h                      \
+          guiErrorCheck.h               \
           guiclient.h                   \
+          helpDownload.h                \
           helpView.h                    \
           helpViewBrowser.h             \
           honorific.h                   \
@@ -1109,6 +1133,7 @@ HEADERS = ../common/format.h                    \
           transferOrders.h              \
           transferTrans.h               \
           transformTrans.h              \
+          translations.h                \
           uiform.h                      \
           uiforms.h                     \
           unappliedAPCreditMemos.h      \
@@ -1192,6 +1217,8 @@ SOURCES = absoluteCalendarItem.cpp              \
           address.cpp                           \
           addresses.cpp                         \
           adjustmentTrans.cpp                   \
+          adjustInvValue.cpp                    \
+          allocateARCreditMemo.cpp              \
           allocateReservations.cpp              \
           apAccountAssignment.cpp               \
           apAccountAssignments.cpp              \
@@ -1299,6 +1326,12 @@ SOURCES = absoluteCalendarItem.cpp              \
           creditMemoItem.cpp                    \
           creditcardprocessor.cpp               \
           crmaccount.cpp                        \
+          crmaccountMerge.cpp                   \
+          crmaccountMergePickAccountsPage.cpp   \
+          crmaccountMergePickDataPage.cpp       \
+          crmaccountMergePickTaskPage.cpp       \
+          crmaccountMergePurgePage.cpp          \
+          crmaccountMergeResultPage.cpp         \
           crmaccounts.cpp                       \
           currencies.cpp                        \
           currency.cpp                          \
@@ -1324,6 +1357,7 @@ SOURCES = absoluteCalendarItem.cpp              \
           deletePlannedOrdersByPlannerCode.cpp  \
           department.cpp                        \
           departments.cpp                       \
+          dictionaries.cpp                      \
           display.cpp                           \
           displayTimePhased.cpp                 \
           distributeInventory.cpp               \
@@ -1390,7 +1424,9 @@ SOURCES = absoluteCalendarItem.cpp              \
           glTransactionDetail.cpp       \
           group.cpp                     \
           groups.cpp                    \
+          guiErrorCheck.cpp             \
           guiclient.cpp                 \
+          helpDownload.cpp              \
           helpView.cpp                  \
           helpViewBrowser.cpp           \
           honorific.cpp                 \
@@ -1695,6 +1731,7 @@ SOURCES = absoluteCalendarItem.cpp              \
           transferOrders.cpp                    \
           transferTrans.cpp                     \
           transformTrans.cpp                    \
+          translations.cpp                      \
           uiform.cpp                            \
           uiforms.cpp                           \
           unappliedAPCreditMemos.cpp            \

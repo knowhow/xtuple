@@ -30,7 +30,7 @@ public:
     Q_INVOKABLE virtual void setSetup(bool);
 
 public slots:
-    virtual enum SetResponse set( ParameterList & pParams );
+    virtual enum SetResponse set(const ParameterList & pParams);
     virtual void sPrint();
     virtual void sHandleCopies( int pValue );
     virtual void sEditWatermark();

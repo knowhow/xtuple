@@ -28,7 +28,7 @@ submitReport::submitReport(QWidget* parent, const char* name, bool modal, Qt::WF
 
   q.exec( "SELECT usr_email "
           "FROM usr "
-          "WHERE (usr_username=CURRENT_USER);" );
+          "WHERE (usr_username=getEffectiveXtUser());" );
   if (q.first())
     _fromEmail->setText(q.value("usr_email"));
 }
@@ -92,7 +92,7 @@ enum SetResponse submitReport::set(const ParameterList &pParams)
   {
     q.prepare( "SELECT usr_email "
                "FROM report, usr "
-               "WHERE (usr_username=CURRENT_USER);" );
+               "WHERE (usr_username=getEffectiveXtUser());" );
     q.exec();
     if (q.first())
       _email->setText(q.value("usr_email").toString());

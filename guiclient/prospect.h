@@ -39,7 +39,7 @@ public slots:
     virtual void	sViewQuote();
     virtual void	sFillQuotesList();
     virtual void	sPopulateQuotesMenu(QMenu * menuThis);
-    virtual void	populate();
+    virtual bool	sPopulate();
 
 signals:
             void newId(int);
@@ -48,15 +48,18 @@ signals:
 
 protected slots:
     virtual void languageChange();
+    virtual void sCrmAccount();
 
 protected:
     virtual void closeEvent(QCloseEvent*);
 
 private:
+    int _crmacctid;
     int _mode;
     int _prospectid;
     int _NumberGen;
     QString _cachedNumber;
+    QString _crmowner;
 };
 
 #endif // PROSPECT_H

@@ -11,50 +11,20 @@
 #include "itemSourceList.h"
 
 #include <metasql.h>
-#include <qvariant.h>
+#include <QVariant>
 #include "mqlutil.h"
 
-/*
- *  Constructs a itemSourceList as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  true to construct a modal dialog.
- */
 itemSourceList::itemSourceList(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-    : XDialog(parent, name, modal, fl)
+  : XDialog(parent, name, modal, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
+  // signals and slots connections
+  connect(_itemsrc, SIGNAL(valid(bool)), _select, SLOT(setEnabled(bool)));
+  connect(_itemsrc, SIGNAL(itemSelected(int)), _select, SLOT(animateClick()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
 
-    // signals and slots connections
-    connect(_itemsrc, SIGNAL(valid(bool)), _select, SLOT(setEnabled(bool)));
-    connect(_itemsrc, SIGNAL(itemSelected(int)), _select, SLOT(animateClick()));
-    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-    connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-itemSourceList::~itemSourceList()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void itemSourceList::languageChange()
-{
-    retranslateUi(this);
-}
-
-
-void itemSourceList::init()
-{
   _itemsrc->addColumn(tr("Ranking"),      _orderColumn, Qt::AlignRight,  true, "itemsrc_ranking" );
   _itemsrc->addColumn(tr("Vendor"),       -1,           Qt::AlignLeft,   true, "vend_name");
   _itemsrc->addColumn(tr("Vend Item#"),   _itemColumn,  Qt::AlignRight,  true, "itemsrc_vend_item_number" );
@@ -63,7 +33,17 @@ void itemSourceList::init()
   _itemsrc->addColumn(tr("Default"),      _itemColumn,  Qt::AlignLeft,   true, "itemsrc_default" );
 }
 
-enum SetResponse itemSourceList::set(ParameterList &pParams)
+itemSourceList::~itemSourceList()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void itemSourceList::languageChange()
+{
+  retranslateUi(this);
+}
+
+enum SetResponse itemSourceList::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

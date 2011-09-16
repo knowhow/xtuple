@@ -12,60 +12,27 @@
 
 #include <QVariant>
 #include <QMessageBox>
-//#include <QStatusBar>
+#include <QMenu>
 #include <parameter.h>
 #include <openreports.h>
 #include "shippingZone.h"
 #include "guiclient.h"
 
-/*
- *  Constructs a shippingZones as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- */
 shippingZones::shippingZones(QWidget* parent, const char* name, Qt::WFlags fl)
-    : XWidget(parent, name, fl)
+  : XWidget(parent, name, fl)
 {
-    setupUi(this);
+  setupUi(this);
 
-//    (void)statusBar();
+  // signals and slots connections
+  connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
+  connect(_edit, SIGNAL(clicked()), this, SLOT(sEdit()));
+  connect(_view, SIGNAL(clicked()), this, SLOT(sView()));
+  connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
+  connect(_print, SIGNAL(clicked()), this, SLOT(sPrint()));
+  connect(_shipzone, SIGNAL(populateMenu(QMenu *, QTreeWidgetItem *, int)), this, SLOT(sPopulateMenu(QMenu*)));
+  connect(_close, SIGNAL(clicked()), this, SLOT(close()));
+  connect(_shipzone, SIGNAL(valid(bool)), _view, SLOT(setEnabled(bool)));
 
-    // signals and slots connections
-    connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
-    connect(_edit, SIGNAL(clicked()), this, SLOT(sEdit()));
-    connect(_view, SIGNAL(clicked()), this, SLOT(sView()));
-    connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
-    connect(_print, SIGNAL(clicked()), this, SLOT(sPrint()));
-    connect(_shipzone, SIGNAL(populateMenu(QMenu *, QTreeWidgetItem *, int)), this, SLOT(sPopulateMenu(QMenu*)));
-    connect(_close, SIGNAL(clicked()), this, SLOT(close()));
-    connect(_shipzone, SIGNAL(valid(bool)), _view, SLOT(setEnabled(bool)));
-    init();
-}
-
-/*
- *  Destroys the object and frees any allocated resources
- */
-shippingZones::~shippingZones()
-{
-    // no need to delete child widgets, Qt does it all for us
-}
-
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
-void shippingZones::languageChange()
-{
-    retranslateUi(this);
-}
-
-//Added by qt3to4:
-#include <QMenu>
-
-void shippingZones::init()
-{
-//  statusBar()->hide();
-  
   _shipzone->addColumn(tr("Name"),        70, Qt::AlignLeft,   true,  "shipzone_name" );
   _shipzone->addColumn(tr("Description"), -1, Qt::AlignLeft,   true,  "shipzone_descrip" );
 
@@ -82,6 +49,16 @@ void shippingZones::init()
   }
 
   sFillList();
+}
+
+shippingZones::~shippingZones()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+void shippingZones::languageChange()
+{
+  retranslateUi(this);
 }
 
 void shippingZones::sDelete()

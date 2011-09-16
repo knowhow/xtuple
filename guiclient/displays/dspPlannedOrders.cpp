@@ -67,6 +67,41 @@ dspPlannedOrders::dspPlannedOrders(QWidget* parent, const char* name, Qt::WFlags
   list()->addColumn(tr("Firm"),        _ynColumn,    Qt::AlignCenter,true, "planord_firm");
 }
 
+enum SetResponse dspPlannedOrders::set(const ParameterList &pParams)
+{
+  XWidget::set(pParams);
+  QVariant param;
+  bool     valid;
+
+  parameterWidget()->setSavedFilters();
+
+  param = pParams.value("plancode_id", &valid);
+  if (valid)
+    parameterWidget()->setDefault(tr("Planner Code"), param);
+
+  param = pParams.value("warehous_id", &valid);
+  if (valid)
+    parameterWidget()->setDefault(tr("Site"), param);
+
+  param = pParams.value("type", &valid);
+  if (valid)
+  {
+    QVariantList list;
+    list.append(param.toString());
+    parameterWidget()->setDefault(tr("Order Types"), list);
+  }
+
+  parameterWidget()->applyDefaultFilterSet();
+
+  if (pParams.inList("run"))
+  {
+    sFillList();
+    return NoError_Run;
+  }
+
+  return NoError;
+}
+
 void dspPlannedOrders::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pSelected, int)
 {
   QAction *menuItem;

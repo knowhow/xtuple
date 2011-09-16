@@ -17,6 +17,7 @@
 #include "characteristic.h"
 #include "customer.h"
 #include "customerTypeList.h"
+#include "errorReporter.h"
 #include "storedProcErrorLookup.h"
 #include "parameterwidget.h"
 
@@ -130,12 +131,17 @@ void customers::sReassignCustomerType()
   int custtypeid = newdlg->exec();
   if ( (custtypeid != -1) && (custtypeid != XDialog::Rejected) )
   {
-    q.prepare( "UPDATE custinfo "
+    XSqlQuery infoq;
+    infoq.prepare( "UPDATE custinfo "
                "SET cust_custtype_id=:custtype_id "
                "WHERE (cust_id=:cust_id);" );
-    q.bindValue(":cust_id", list()->id());
-    q.bindValue(":custtype_id", custtypeid);
-    q.exec();
+    infoq.bindValue(":cust_id", list()->id());
+    infoq.bindValue(":custtype_id", custtypeid);
+    infoq.exec();
+    if (ErrorReporter::error(QtCriticalMsg, this, tr("Setting Customer Type"),
+                            infoq, __FILE__, __LINE__))
+      return;
+
     omfgThis->sCustomersUpdated(list()->id(), TRUE);
     sFillList();
   }
@@ -143,33 +149,22 @@ void customers::sReassignCustomerType()
 
 void customers::sDelete()
 {
-  if ( QMessageBox::warning(this, tr("Delete Customer?"),
-                            tr("<p>Are you sure that you want to completely "
-			       "delete the selected Customer?"),
-			    QMessageBox::Yes,
-			    QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
-  {
-    q.prepare("SELECT deleteCustomer(:cust_id) AS result;");
-    q.bindValue(":cust_id", list()->id());
-    q.exec();
-    if (q.first())
-    {
-      int returnVal = q.value("result").toInt();
-      if (returnVal < 0)
-      {
-        QMessageBox::critical(this, tr("Cannot Delete Customer"),
-                              storedProcErrorLookup("deleteCustomer", returnVal));
-        return;
-      }
-      omfgThis->sCustomersUpdated(-1, TRUE);
-      sFillList();
-    }
-    else if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return;
-    }
-  }
+  if (QMessageBox::question(this, tr("Delete Customer?"),
+                           tr("<p>Are you sure that you want to completely "
+			      "delete the selected Customer?"),
+			   QMessageBox::Yes,
+			   QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+    return;
+
+  XSqlQuery delq;
+  delq.prepare("DELETE FROM custinfo WHERE (cust_id=:cust_id);");
+  delq.bindValue(":cust_id", list()->id());
+  delq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error Deleting"),
+                           delq, __FILE__, __LINE__))
+    return;
+
+  omfgThis->sCustomersUpdated(list()->id(), TRUE); // TODO: TRUE or FALSE????
 }
 
 void customers::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)

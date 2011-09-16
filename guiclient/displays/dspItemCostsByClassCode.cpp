@@ -81,7 +81,7 @@ bool dspItemCostsByClassCode::setParams(ParameterList &params)
   XSqlQuery qq;
   qq.exec("SELECT locale_cost_scale "
          "FROM locale, usr "
-         "WHERE ((usr_locale_id=locale_id) AND (usr_username=CURRENT_USER));");
+         "WHERE ((usr_locale_id=locale_id) AND (usr_username=getEffectiveXtUser()));");
   if (qq.first())
     params.append("costscale", qq.value("locale_cost_scale").toInt());
   else

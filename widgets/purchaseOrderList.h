@@ -33,7 +33,7 @@ public:
     QPushButton* _select;
 
 public slots:
-    virtual void set( ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
     virtual void sFillList();
     virtual void sSelect();
     virtual void sClose();

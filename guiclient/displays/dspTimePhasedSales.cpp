@@ -66,6 +66,8 @@ void dspTimePhasedSales::languageChange()
 void dspTimePhasedSales::sViewHistory()
 {
   ParameterList params;
+  parameterWidget()->appendValue(params);
+  params.append("filter", parameterWidget()->filter());
   if (_groupBy->id() == 1)
     params.append("prodcat_id", list()->id());
   else if (_groupBy->id() == 2)

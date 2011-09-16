@@ -12,6 +12,8 @@
 
 #include <QMessageBox>
 
+extern bool shownEncryptedMsg;
+
 configureEncryption::configureEncryption(QWidget* parent, const char* name, bool /*modal*/, Qt::WFlags fl)
     : XAbstractConfigure(parent, fl)
 {
@@ -20,10 +22,11 @@ configureEncryption::configureEncryption(QWidget* parent, const char* name, bool
   if (name)
     setObjectName(name);
 
-  if (_metricsenc == 0)
+  if (_metricsenc == 0 && !shownEncryptedMsg)
   {
     QMessageBox::critical( this, tr("Cannot Read Configuration"),
 		    tr("<p>Cannot read encrypted information from database."));
+    shownEncryptedMsg = true;
   }
 
   _ccEncKeyName->setText(_metrics->value("CCEncKeyName"));

@@ -908,7 +908,7 @@ itemList::itemList(QWidget* pParent, Qt::WindowFlags pFlags ) :
   _listTab->addColumn(tr("Bar Code"),    100, Qt::AlignLeft, true);
 }
 
-void itemList::set(ParameterList &pParams)
+void itemList::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -1069,7 +1069,7 @@ itemSearch::itemSearch(QWidget* pParent, Qt::WindowFlags pFlags)
   _listTab->addColumn(tr("Bar Code"),    100,  Qt::AlignLeft, true );
 }
 
-void itemSearch::set(ParameterList &pParams)
+void itemSearch::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

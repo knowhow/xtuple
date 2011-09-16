@@ -177,6 +177,8 @@ configureIM::configureIM(QWidget* parent, const char* name, bool /*modal*/, Qt::
 
   if(!_costAvg->isChecked() && !_costStd->isChecked())
     _costStd->isChecked();
+
+  _asOfQOH->setChecked(_metrics->boolean("EnableAsOfQOH"));
   
   // Jobs at this time should always be checked and disabled
   // when this is changed in the future this should be replaced with
@@ -310,6 +312,23 @@ bool configureIM::sSave()
     _nextShipmentNum->setFocus();
     return false;
   }
+
+
+  if(_asOfQOH->isChecked() && !_metrics->boolean("EnableAsOfQOH"))
+  {
+    if(QMessageBox::question(this, tr("Enable As-Of QOH Reporting"),
+                          tr("<p>Enabling As-Of QOH reporting requires some processing to occur "
+                             "for it to work correctly. This may take some time. Would you like to continue?"),
+                          QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    {
+      XSqlQuery qq;
+      qq.exec("SELECT buildInvbal(itemsite_id)"
+              "  FROM itemsite;");
+    }
+    else
+      return false;
+  }
+  _metrics->set("EnableAsOfQOH", _asOfQOH->isChecked());
 
   return true;
 }

@@ -201,7 +201,8 @@ bool dspAPApplications::setParams(ParameterList & params)
 
   if ( !_showChecks->isChecked() && !_showCreditMemos->isChecked())
   {
-    if (windowFlags() & (Qt::Window | Qt::Dialog))
+    //TODO ??
+    //if (windowFlags() & (Qt::Window | Qt::Dialog))
       QMessageBox::critical( this, tr("Select Document Type"),
                              tr("You must indicate which Document Type(s) you wish to view.") );
     _showChecks->setFocus();

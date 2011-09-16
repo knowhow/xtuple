@@ -31,6 +31,7 @@ creditMemoItem::creditMemoItem(QWidget* parent, const char* name, bool modal, Qt
   connect(_discountFromSale, SIGNAL(lostFocus()), this, SLOT(sCalculateFromDiscount()));
   connect(_extendedPrice, SIGNAL(valueChanged()), this, SLOT(sCalculateTax()));
   connect(_item,	  SIGNAL(newId(int)),     this, SLOT(sPopulateItemInfo()));
+  connect(_warehouse,	  SIGNAL(newID(int)),     this, SLOT(sPopulateItemsiteInfo()));
   connect(_listPrices,	  SIGNAL(clicked()),      this, SLOT(sListPrices()));
   connect(_netUnitPrice,  SIGNAL(valueChanged()), this, SLOT(sCalculateDiscountPrcnt()));
   connect(_netUnitPrice,  SIGNAL(valueChanged()), this, SLOT(sCalculateExtendedPrice()));
@@ -403,6 +404,40 @@ void creditMemoItem::sPopulateItemInfo()
       _salePrice->clear();
       return;
     }
+  }
+}
+
+void creditMemoItem::sPopulateItemsiteInfo()
+{
+  XSqlQuery itemsite;
+  itemsite.prepare( "SELECT itemsite_controlmethod"
+                "  FROM itemsite"
+                " WHERE ( (itemsite_item_id=:item_id)"
+                "   AND   (itemsite_warehous_id=:warehous_id) );" );
+  itemsite.bindValue(":item_id", _item->id());
+  itemsite.bindValue(":warehous_id", _warehouse->id());
+  itemsite.exec();
+  if (itemsite.first())
+  {
+    if (itemsite.value("itemsite_controlmethod").toString() == "N")
+    {
+      _qtyReturned->setDouble(0.0);
+      _qtyReturned->setEnabled(false);
+      _updateInv->setChecked(false);
+      _updateInv->setEnabled(false);
+    }
+    else
+    {
+      _qtyReturned->clear();
+      _qtyReturned->setEnabled(true);
+      _updateInv->setChecked(true);
+      _updateInv->setEnabled(true);
+    }
+  }
+  else if (itemsite.lastError().type() != QSqlError::NoError)
+  {
+    systemError(this, itemsite.lastError().databaseText(), __FILE__, __LINE__);
+    return;
   }
 }
 

@@ -27,6 +27,7 @@ class salesOrderItem : public XDialog, public Ui::salesOrderItem
     virtual void  prepare();
     virtual void  clear();
     virtual void  setItemExtraClause();
+    Q_INVOKABLE virtual int id() { return _soitemid; }
 
   public slots:
     virtual SetResponse set( const ParameterList &pParams );
@@ -92,6 +93,10 @@ class salesOrderItem : public XDialog, public Ui::salesOrderItem
     double  _availabilityQtyOrdered;
     bool    _invIsFractional;
     bool    _updateItemsite;
+    bool    _updatePrice;
+    bool    _createPO;
+    bool    _createPR;
+    int     _priceUOMCache;
     double  _orderQtyCache;
     double  _cachedPct;
     double  _cachedRate;

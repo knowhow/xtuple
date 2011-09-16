@@ -124,6 +124,7 @@ SOURCES += widgets.cpp \
     contactemail.cpp \
     contactWidget.cpp \
     crmacctCluster.cpp \
+    crmCluster.cpp \
     currCluster.cpp \
     custCluster.cpp \
     customerselector.cpp \
@@ -210,6 +211,7 @@ HEADERS += widgets.h \
     contactemail.h \
     contactwidget.h \
     crmacctcluster.h \
+    crmcluster.h \
     currcluster.h \
     custcluster.h \
     customerselector.h \

@@ -41,6 +41,7 @@ public slots:
     virtual void sDeleteSale();
     virtual void sEditSale();
     virtual void sFillSalesList();
+    virtual void sHandleAssigned();
     virtual void sHandleSalesPrivs();
     virtual void sPopulateSalesMenu(QMenu*);
     virtual void sPrintSale();

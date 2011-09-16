@@ -31,20 +31,24 @@ class todoList : public display, public Ui::todoList
     virtual void sEditTask();
     virtual void sEditProject();
     virtual void sEditCustomer();
+    virtual void sEditOpportunity();
     virtual void sNew();
     virtual void sNewIncdt();
+    virtual void sNewProject();
+    virtual void sNewOpportunity();
     virtual void sPopulateMenu(QMenu *, QTreeWidgetItem *, int);
     virtual void sView();
     virtual void sViewCustomer();
     virtual void sViewIncident();
     virtual void sViewTask();
     virtual void sViewProject();
+    virtual void sViewOpportunity();
+    virtual void sOpen();
     virtual bool setParams(ParameterList &);
 
   private:
     int		    _mode;
-    int		    getIncidentId();
-    int		    getProjectId();
+    int		    getId(int pType);
 };
 
 #endif // TODOLIST_H

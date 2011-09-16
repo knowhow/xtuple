@@ -437,6 +437,9 @@ void accountList::sFillList()
     where << "(NOT COALESCE(company_external, false)) ";
 
   where << "accnt_active ";
+  where << "(company_yearend_accnt_id <> -1)";
+  where << "(company_gainloss_accnt_id <> -1)";
+  where << "(company_dscrp_accnt_id <> -1)";
 
   if (!where.isEmpty())
     sql += " WHERE " + where.join(" AND ");
@@ -518,7 +521,7 @@ void accountSearch::showEvent(QShowEvent* e)
   VirtualSearch::showEvent(e);
 }
 
-void accountSearch::set(ParameterList &pParams)
+void accountSearch::set(const ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

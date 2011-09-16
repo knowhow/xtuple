@@ -79,7 +79,7 @@ void printInvoice::languageChange()
   retranslateUi(this);
 }
 
-enum SetResponse printInvoice::set(ParameterList &pParams)
+enum SetResponse printInvoice::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   _captive = TRUE;

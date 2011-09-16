@@ -23,6 +23,8 @@ public:
     postCountTags(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WFlags fl = 0);
     ~postCountTags();
 
+    Q_INVOKABLE virtual bool setParams(ParameterList &params);
+
 public slots:
     virtual void sPost();
     virtual void sParameterTypeChanged();

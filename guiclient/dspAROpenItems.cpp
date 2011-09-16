@@ -204,7 +204,7 @@ void dspAROpenItems::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pItem, int)
   // Incident
   {
     menuItem = pMenu->addAction(tr("Edit Incident..."), this, SLOT(sEdit()));
-    menuItem->setEnabled(_privileges->check("MaintainIncidents"));
+    menuItem->setEnabled(_privileges->check("MaintainAllIncidents"));
   }
 
   if (((XTreeWidgetItem *)pItem)->id() > 0)
@@ -219,6 +219,9 @@ void dspAROpenItems::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pItem, int)
   {
     if(((XTreeWidgetItem *)pItem)->rawValue("posted") != 0)
     {
+      menuItem = pMenu->addAction(tr("Void Posted Invoice..."), this, SLOT(sVoidInvoiceDetails()));
+      menuItem->setEnabled(_privileges->check("MaintainMiscInvoices"));
+
       menuItem = pMenu->addAction(tr("Edit Posted Invoice..."), this, SLOT(sEditInvoiceDetails()));
       menuItem->setEnabled(_privileges->check("MaintainMiscInvoices"));
     }
@@ -233,6 +236,12 @@ void dspAROpenItems::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pItem, int)
            ((XTreeWidgetItem *)pItem)->id("docnumber") > -1)
   // Credit Memo
   {
+    if(((XTreeWidgetItem *)pItem)->rawValue("posted") != 0)
+    {
+      menuItem = pMenu->addAction(tr("Void Posted Credit Memo..."), this, SLOT(sVoidCreditMemo()));
+      menuItem->setEnabled(_privileges->check("MaintainCreditMemos"));
+    }
+
     menuItem = pMenu->addAction(tr("View Credit Memo..."), this, SLOT(sViewCreditMemo()));
     menuItem->setEnabled(_privileges->check("MaintainCreditMemos") || _privileges->check("ViewCreditMemos"));
   }
@@ -240,7 +249,7 @@ void dspAROpenItems::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pItem, int)
   // Incident
   {
     menuItem = pMenu->addAction(tr("View Incident..."), this, SLOT(sViewIncident()));
-    menuItem->setEnabled(_privileges->check("ViewIncidents") || _privileges->check("MaintainIncidents"));
+    menuItem->setEnabled(_privileges->check("ViewAllIncidents") || _privileges->check("MaintainAllIncidents"));
   }
   
   if (((XTreeWidgetItem *)pItem)->altId() < 2 &&
@@ -311,7 +320,7 @@ void dspAROpenItems::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pItem, int)
   {
     pMenu->addSeparator();
     menuItem = pMenu->addAction(tr("New Incident..."), this, SLOT(sIncident()));
-    if (!_privileges->check("AddIncidents"))
+    if (!_privileges->check("MaintainAllIncidents"))
       menuItem->setEnabled(false);
   }
 
@@ -571,6 +580,57 @@ void dspAROpenItems::sViewCreditMemo()
   omfgThis->handleNewWindow(newdlg);
 }
 
+void dspAROpenItems::sVoidCreditMemo()
+{
+  XTreeWidgetItem *pItem = list()->currentItem();
+  if(pItem->rawValue("posted") != 0 &&
+      QMessageBox::question(this, tr("Void Posted Credit Memo?"),
+                            tr("<p>This Credit Memo has already been posted. "
+                               "Are you sure you want to void it?"),
+                            QMessageBox::Yes,
+                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+  {
+    return;
+  }
+
+  XSqlQuery rollback;
+  rollback.prepare("ROLLBACK;");
+
+  XSqlQuery post;
+  post.prepare("SELECT voidCreditMemo(:cmhead_id) AS result;");
+
+  q.exec("BEGIN;");	// because of possible lot, serial, or location distribution cancelations
+  post.bindValue(":cmhead_id", list()->currentItem()->id("docnumber"));
+  post.exec();
+  if (post.first())
+  {
+    int result = post.value("result").toInt();
+    if (result < 0)
+    {
+      rollback.exec();
+      systemError(this, storedProcErrorLookup("voidCreditMemo", result),
+                      __FILE__, __LINE__);
+      return;
+    }
+    else if (distributeInventory::SeriesAdjust(result, this) == XDialog::Rejected)
+    {
+      rollback.exec();
+      QMessageBox::information( this, tr("Void Credit Memo"), tr("Transaction Canceled") );
+      return;
+    }
+
+    q.exec("COMMIT;");
+    sFillList();
+  }
+  else if (post.lastError().type() != QSqlError::NoError)
+  {
+    rollback.exec();
+    systemError(this, tr("A System Error occurred voiding Credit Memo.\n%1")
+                .arg(post.lastError().databaseText()),
+                __FILE__, __LINE__);
+  }
+}
+
 void dspAROpenItems::sEnterMiscArCreditMemo()
 {
   ParameterList params;
@@ -670,6 +730,57 @@ void dspAROpenItems::sEditInvoiceDetails()
   invoice* newdlg = new invoice(this);
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
+}
+
+void dspAROpenItems::sVoidInvoiceDetails()
+{
+  XTreeWidgetItem *pItem = list()->currentItem();
+  if(pItem->rawValue("posted") != 0 &&
+      QMessageBox::question(this, tr("Void Posted Invoice?"),
+                            tr("<p>This Invoice has already been posted. "
+                               "Are you sure you want to void it?"),
+                            QMessageBox::Yes,
+                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+  {
+    return;
+  }
+
+  XSqlQuery rollback;
+  rollback.prepare("ROLLBACK;");
+
+  XSqlQuery post;
+  post.prepare("SELECT voidInvoice(:invchead_id) AS result;");
+
+  q.exec("BEGIN;");	// because of possible lot, serial, or location distribution cancelations
+  post.bindValue(":invchead_id", list()->currentItem()->id("docnumber"));
+  post.exec();
+  if (post.first())
+  {
+    int result = post.value("result").toInt();
+    if (result < 0)
+    {
+      rollback.exec();
+      systemError(this, storedProcErrorLookup("voidInvoice", result),
+                      __FILE__, __LINE__);
+      return;
+    }
+    else if (distributeInventory::SeriesAdjust(result, this) == XDialog::Rejected)
+    {
+      rollback.exec();
+      QMessageBox::information( this, tr("Void Invoice"), tr("Transaction Canceled") );
+      return;
+    }
+
+    q.exec("COMMIT;");
+    sFillList();
+  }
+  else if (post.lastError().type() != QSqlError::NoError)
+  {
+    rollback.exec();
+    systemError(this, tr("A System Error occurred voiding Invoice.\n%1")
+                .arg(post.lastError().databaseText()),
+                __FILE__, __LINE__);
+  }
 }
 
 void dspAROpenItems::sViewInvoiceDetails()

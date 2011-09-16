@@ -12,9 +12,9 @@
 
 #define _incidentCluster_h
 
-#include "virtualCluster.h"
+#include "crmcluster.h"
 
-class XTUPLEWIDGETS_EXPORT IncidentClusterLineEdit : public VirtualClusterLineEdit
+class XTUPLEWIDGETS_EXPORT IncidentClusterLineEdit : public CrmClusterLineEdit
 {
     Q_OBJECT
 

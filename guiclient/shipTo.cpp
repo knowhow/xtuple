@@ -76,7 +76,7 @@ enum SetResponse shipTo::set(const ParameterList &pParams)
 
       XSqlQuery cust;
       cust.prepare( "SELECT cust_number, cust_name, cust_taxzone_id, "
-                 "       cust_salesrep_id, cust_shipform_id, cust_shipvia, "
+                 "       cust_salesrep_id, cust_shipform_id, cust_shipvia, cust_shipchrg_id "
                  "       crmacct_id "
                  "FROM custinfo "
                  "  JOIN crmacct ON (cust_id=crmacct_cust_id) "
@@ -92,6 +92,7 @@ enum SetResponse shipTo::set(const ParameterList &pParams)
         _taxzone->setId(cust.value("cust_taxzone_id").toInt());
         _contact->setSearchAcct(cust.value("crmacct_id").toInt());
         _address->setSearchAcct(cust.value("crmacct_id").toInt());
+        _shipchrg->setId(cust.value("cust_shipchrg_id").toInt());
 
 	//  Handle the free-form Ship Via
         _shipVia->setId(-1);

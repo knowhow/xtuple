@@ -17,6 +17,8 @@
 #include <metasql.h>
 #include <openreports.h>
 
+#include "mqlutil.h"
+
 #define DEBUG false
 
 printStatementsByCustomerType::printStatementsByCustomerType(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
@@ -61,33 +63,7 @@ enum SetResponse printStatementsByCustomerType::set(const ParameterList &pParams
 
 void printStatementsByCustomerType::sPrint()
 {
-  MetaSQLQuery custm("SELECT cust_id, (cust_number || '-' || cust_name) AS customer,"
-                     "       findCustomerForm(cust_id, 'S') AS reportname "
-                     "FROM "
-					 "<? if exists(\"asofDate\") ?>"
-                     "(SELECT araging_cust_id FROM araging(<? value (\"asofDate\") ?>, true))AS data, "
-                     "<? endif ?> "
-					 "custinfo, custtype, aropen "
-                     "WHERE ( (cust_custtype_id=custtype_id)"
-                     " AND (aropen_cust_id=cust_id)"
-                     " AND (aropen_open)"
-                     "<? if exists(\"graceDays\") ?>"
-                     " AND (aropen_duedate < (CURRENT_DATE - <? value (\"graceDays\") ?>))"
-                     "<? endif ?>"
-                     "<? if exists(\"custtype_id\") ?>"
-                     " AND (custtype_id=<? value (\"custtype_id\") ?>)"
-                     "<? elseif exists(\"custtype_pattern\") ?>"
-                     " AND (custtype_code ~ <? value (\"custtype_pattern\") ?>)"
-                     "<? endif ?>"
-                     "<? if exists(\"asofDate\") ?>"
-                     " AND (cust_id = araging_cust_id)"
-                     "<? endif ?>"
-                     ") "
-                     "GROUP BY cust_id, cust_number, cust_name "
-                     "HAVING (SUM((aropen_amount - aropen_paid) *"
-                     "             CASE WHEN (aropen_doctype IN ('C', 'R')) THEN -1"
-                     "                  ELSE 1 END) > 0) "
-                     "ORDER BY cust_number;" );
+  MetaSQLQuery custm = mqlLoad("customers", "statement");
 
   ParameterList custp;
   _customerTypes->appendValue(custp);

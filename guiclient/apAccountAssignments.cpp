@@ -120,9 +120,12 @@ void apAccountAssignments::sFillList()
              "            WHEN (apaccnt_vendtype<> '') THEN apaccnt_vendtype"
              "            ELSE (SELECT vendtype_code FROM vendtype WHERE (vendtype_id=apaccnt_vendtype_id))"
              "       END AS vendtypecode,"
-             "       formatGLAccount(apaccnt_ap_accnt_id) AS apaccnt,"
-             "       formatGLAccount(apaccnt_prepaid_accnt_id) AS prepaidaccnt,"
-             "       formatGLAccount(apaccnt_discount_accnt_id) AS discountaccnt "
+             "       CASE WHEN (apaccnt_ap_accnt_id = -1) THEN 'N/A' "
+             "            ELSE formatGLAccount(apaccnt_ap_accnt_id) END AS apaccnt,"
+             "       CASE WHEN (apaccnt_prepaid_accnt_id = -1) THEN 'N/A' "
+             "            ELSE formatGLAccount(apaccnt_prepaid_accnt_id) END AS prepaidaccnt,"
+             "       CASE WHEN (apaccnt_discount_accnt_id = -1) THEN 'N/A' "
+             "            ELSE formatGLAccount(apaccnt_discount_accnt_id) END AS discountaccnt "
              "FROM apaccnt "
              "ORDER BY vendtypecode;" );
   q.bindValue(":all", tr("All"));

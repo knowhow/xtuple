@@ -12,7 +12,7 @@
 #ifndef salesorderlist_h
 #define salesorderlist_h
 
-#include <qdialog.h>
+#include <QDialog>
 
 #include "widgets.h"
 
@@ -42,7 +42,7 @@ public:
     XTreeWidget      *_so;
 
 public slots:
-    virtual void set( ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
     virtual void sSelect();
     virtual void sFillList();
 

@@ -1,4 +1,5 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
 Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
@@ -7,8 +8,8 @@ version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
  <class>releaseTransferOrdersByAgent</class>
- <widget class="QDialog" name="releaseTransferOrdersByAgent" >
-  <property name="geometry" >
+ <widget class="QDialog" name="releaseTransferOrdersByAgent">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -16,54 +17,54 @@ to be bound by its terms.</comment>
     <height>100</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Release Transfer Orders by Agent</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" >
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string/>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" colspan="2" >
-       <widget class="QRadioButton" name="_allAgents" >
-        <property name="text" >
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QRadioButton" name="_allAgents">
+        <property name="text">
          <string>All Agents</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
-       <widget class="QRadioButton" name="_selectedAgent" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QRadioButton" name="_selectedAgent">
+        <property name="text">
          <string>Agent:</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <layout class="QHBoxLayout" name="horizontalLayout" >
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="XComboBox" name="_agent" >
-          <property name="sizePolicy" >
-           <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <widget class="XComboBox" name="_agent">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="type" >
+          <property name="type">
            <enum>XComboBox::Agent</enum>
           </property>
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer" >
-          <property name="orientation" >
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <property name="sizeHint" stdset="0" >
+          <property name="sizeHint" stdset="0">
            <size>
             <width>40</width>
             <height>20</height>
@@ -76,38 +77,38 @@ to be bound by its terms.</comment>
      </layout>
     </widget>
    </item>
-   <item row="0" column="1" >
-    <layout class="QVBoxLayout" >
-     <property name="spacing" >
+   <item row="0" column="1">
+    <layout class="QVBoxLayout">
+     <property name="spacing">
       <number>0</number>
      </property>
-     <property name="margin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <layout class="QVBoxLayout" name="_2" >
-       <property name="spacing" >
+      <layout class="QVBoxLayout" name="_2">
+       <property name="spacing">
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="_close" >
-         <property name="text" >
+        <widget class="QPushButton" name="_close">
+         <property name="text">
           <string>&amp;Cancel</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="_release" >
-         <property name="enabled" >
+        <widget class="QPushButton" name="_release">
+         <property name="enabled">
           <bool>true</bool>
          </property>
-         <property name="text" >
+         <property name="text">
           <string>&amp;Release</string>
          </property>
-         <property name="autoDefault" >
+         <property name="autoDefault">
           <bool>true</bool>
          </property>
-         <property name="default" >
+         <property name="default">
           <bool>true</bool>
          </property>
         </widget>
@@ -116,13 +117,13 @@ to be bound by its terms.</comment>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Vertical</enum>
        </property>
-       <property name="sizeType" >
+       <property name="sizeType">
         <enum>QSizePolicy::Expanding</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
          <height>0</height>
@@ -134,7 +135,7 @@ to be bound by its terms.</comment>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
@@ -158,13 +159,29 @@ to be bound by its terms.</comment>
    <receiver>releaseTransferOrdersByAgent</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
+     <x>334</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
-     <x>20</x>
-     <y>20</y>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_selectedAgent</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_agent</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>68</x>
+     <y>66</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>108</x>
+     <y>68</y>
     </hint>
    </hints>
   </connection>

@@ -348,7 +348,7 @@ to be bound by its terms.</comment>
     </widget>
    </item>
    <item row="8" column="0" colspan="3">
-    <widget class="QTextEdit" name="_comments"/>
+    <widget class="XTextEdit" name="_comments"/>
    </item>
    <item row="6" column="0" colspan="2">
     <widget class="QCheckBox" name="_active">
@@ -375,6 +375,11 @@ to be bound by its terms.</comment>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

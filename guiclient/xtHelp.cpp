@@ -15,21 +15,17 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-
+#include <QDesktopServices>
 #include <QDebug>
 
 #include "guiclient.h"
 #include "xtHelp.h"
+#include "helpView.h"
 
-#ifdef Q_OS_MAC
-#define QHC_PATH "../Resources/XTupleGUIClient.qhc"
-#else
-#define QHC_PATH "XTupleGUIClient.qhc"
-#endif
+static QString QHC_PATH;
 
-// TODO: make this auto-configuring for version number
-#define WEBHOMEPAGE "http://www.xtuple.org/sites/default/files/refguide/RefGuide-3.6/index.html"
-#define QHCHOMEPAGE "qthelp://xtuple.org/postbooks/index.html"
+static const QString WEBHOMEPAGE = "http://www.xtuple.org/sites/default/files/refguide/RefGuide-%1/index.html";
+static const QString QHCHOMEPAGE = "qthelp://xtuple.org/postbooks/index.html";
 
 #define DEBUG false
 
@@ -37,14 +33,33 @@ static xtHelp *xtHelpSingleton = 0;
 
 xtHelp* xtHelp::getInstance(QWidget *parent)
 {
+  if(QHC_PATH.isEmpty())
+  {
+    QFile hf(QDesktopServices::storageLocation(QDesktopServices::DataLocation)+"/XTupleGUIClient.qhc");
+    if(hf.exists())
+      QHC_PATH = hf.fileName();
+    else
+      QHC_PATH = QCoreApplication::instance()->applicationDirPath() +
+                    QDir::separator() +
+#ifdef Q_OS_MAC
+                    "../Resources/" +
+#endif
+                    "XTupleGUIClient.qhc";
+  }
   if(!xtHelpSingleton)
     xtHelpSingleton = new xtHelp(parent);
   return xtHelpSingleton;
 }
 
+void xtHelp::reload()
+{
+  helpView::reset();
+  QHC_PATH = "";
+  xtHelpSingleton = 0;
+}
+
 xtHelp::xtHelp(QWidget *parent)
-  : QHelpEngine(QCoreApplication::instance()->applicationDirPath() +
-                QDir::separator() + QString(QHC_PATH), parent),
+  : QHelpEngine(QHC_PATH, parent),
   _nam(new QNetworkAccessManager),
   _online(false)
 {
@@ -73,7 +88,7 @@ xtHelp::~xtHelp()
 QUrl xtHelp::homePage() const
 {
   if (_online)
-    return QUrl(WEBHOMEPAGE);
+    return QUrl(WEBHOMEPAGE.arg(qApp->applicationVersion().left(3)));
   else
     return QUrl(QHCHOMEPAGE);
 }
@@ -111,7 +126,9 @@ void xtHelp::sError(QNetworkReply *rep)
   if (DEBUG) qDebug() << "xtHelp: http request url [" << url.toString() << "]";
   if (DEBUG) qDebug() << "xtHelp: status code received [" << statCode.toString() << "]";
   if(rep->error() == QNetworkReply::NoError)
+  {
     if (DEBUG) qDebug() << "xtHelp: no error";
+  }
   else
   {
     if (DEBUG) qDebug() << "xtHelp: error received";

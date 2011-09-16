@@ -25,6 +25,7 @@ public:
 
 public slots:
     virtual void sCreate();
+    virtual void sSubmit();
     virtual void sHandleButtons();
 
 protected slots:

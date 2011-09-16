@@ -200,7 +200,7 @@ void AddressCluster::populateStateComboBox()
 
     _state->setEditable(_state->count() <= 1 ||
                         (! tmpstate.isEmpty() &&
-                         ! _state->findText(tmpstate, Qt::MatchExactly) >= 0));
+                         ! (_state->findText(tmpstate, Qt::MatchExactly) >= 0)));
     if (_state->count() <= 1)
     {
       if (DEBUG)

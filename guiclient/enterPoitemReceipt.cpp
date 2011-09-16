@@ -297,7 +297,7 @@ void enterPoitemReceipt::sReceive()
     if(XMessageBox::message( (isVisible() ? this : parentWidget()) , QMessageBox::Question, tr("Receipt Qty. Differs"),
         tr("<p>The Qty entered does not match the receivable Qty for this order. "
 		   "Do you wish to continue anyway?"),
-        tr("Yes"), tr("No"), _snooze, 0, 1) == 0)
+        tr("Yes"), tr("No"), _snooze, 0, 1) == 1)
       return;
   }
 

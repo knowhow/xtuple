@@ -36,6 +36,7 @@ class todoListCalendar : public XWidget, public Ui::todoListCalendar
     void sNew();
     void sEdit();
     void sView();
+    void sOpen();
     void sDelete();
     void sEditCustomer();
     void sViewCustomer();
@@ -49,7 +50,6 @@ class todoListCalendar : public XWidget, public Ui::todoListCalendar
     CalendarGraphicsItem * calendar;
 
   protected slots:
-    void handlePrivs();
     void sPopulateMenu(QMenu*);
 };
 

@@ -47,7 +47,7 @@ void openPurchaseOrder::sSelect()
   done(_po->id());
 }
 
-enum SetResponse openPurchaseOrder::set(ParameterList &pParams)
+enum SetResponse openPurchaseOrder::set(const ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

@@ -12,8 +12,12 @@
 #define __HELPVIEW_H__
 
 #include <QDockWidget>
+#include <QModelIndex>
 
 class QGridLayout;
+class QHelpSearchEngine;
+class QTabWidget;
+class QSplitter;
 class QToolBar;
 class QUrl;
 class QWidget;
@@ -28,15 +32,24 @@ class helpView : public QDockWidget
     static helpView     *getInstance(QWidget *parent = 0);
     ~helpView();
     
+    static void reset();
+
   public slots:
+    void queriesToEngine();
     void sIndexChanged(const QUrl&);
     void sLocationChanged(Qt::DockWidgetArea);
+    void showLink(const QModelIndex &index);
 
   protected:
     xtHelp              *_help;
     helpViewBrowser     *_helpBrowser;
+    QTabWidget          *_searchTabs;
     QToolBar            *_helpBrowserToolbar;
-    
+    QSplitter           *_searchSplitter;
+    QSplitter           *_mainSplitter;
+    QHelpSearchEngine   *_searchEngine;
+
+
     QString             _loc;
 
   private:

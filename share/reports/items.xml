@@ -75,6 +75,7 @@ FROM item
     AND  (charass_alias&lt;? literal("char_id_list_list") ?>.charass_char_id=&lt;? value("char_id_list_list") ?>))
   LEFT OUTER JOIN char char_alias&lt;? literal("char_id_list_list") ?> 
     ON (charass_alias&lt;? literal("char_id_list_list") ?>.charass_char_id=char_alias&lt;? literal("char_id_list_list") ?>.char_id)
+&lt;? endforeach ?>
 &lt;? foreach("char_id_date_list") ?>
   LEFT OUTER JOIN charass charass_alias&lt;? literal("char_id_date_list") ?> 
     ON ((charass_alias&lt;? literal("char_id_date_list") ?>.charass_target_type='I') 

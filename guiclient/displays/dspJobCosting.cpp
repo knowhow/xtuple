@@ -69,6 +69,9 @@ bool dspJobCosting::setParams(ParameterList &params)
   }
 
   params.append("wo_id", _wo->id());
+  params.append("showsu", true);
+  params.append("showrt", true);
+  params.append("showmatl", true);
   params.append("setup", tr("Setup"));
   params.append("runtime", tr("Run Time"));
   params.append("material", tr("Material"));

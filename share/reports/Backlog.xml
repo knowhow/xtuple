@@ -80,7 +80,7 @@ round((noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned) * coitem_qt
     AND  (coitem_scheddate >= &lt;? value("startDateSched") ?>)
   &lt;? endif ?>
   &lt;? if exists("endDateSched") ?>
-    AND  (coitem_scheddate >= &lt;? value("endDateSched") ?>)
+    AND  (coitem_scheddate &lt;= &lt;? value("endDateSched") ?>)
   &lt;? endif ?>
   &lt;? if exists("salesrep_id") ?>
     AND  (cohead_salesrep_id=&lt;? value("salesrep_id") ?>)

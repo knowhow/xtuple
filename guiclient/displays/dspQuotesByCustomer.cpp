@@ -138,7 +138,7 @@ void dspQuotesByCustomer::sConvert()
                                  tr("&Yes"), tr("&No"), QString::null, 0, 1 ) == 0)
   {
     XSqlQuery check;
-    check.prepare( "SELECT quhead_number, cust_creditstatus "
+    check.prepare( "SELECT quhead_number, quhead_status, cust_creditstatus "
                    "FROM quhead, cust "
                    "WHERE ( (quhead_cust_id=cust_id)"
                    " AND (quhead_id=:quhead_id) );" );
@@ -159,25 +159,33 @@ void dspQuotesByCustomer::sConvert()
         check.exec();
         if (check.first())
         {
-	      if ( (check.value("cust_creditstatus").toString() == "H") && (!_privileges->check("CreateSOForHoldCustomer")) )
-	      {
-	        QMessageBox::warning( this, tr("Cannot Convert Quote"),
+          if (check.value("quhead_status").toString() == "C")
+          {
+            QMessageBox::warning( this, tr("Cannot Convert Quote"),
+                                    tr( "Quote #%1 has already been converted to a Sales Order." )
+                            .arg(check.value("quhead_number").toString()) );
+            return;
+          }
+
+          if ( (check.value("cust_creditstatus").toString() == "H") && (!_privileges->check("CreateSOForHoldCustomer")) )
+          {
+            QMessageBox::warning( this, tr("Cannot Convert Quote"),
 					tr( "Quote #%1 is for a Customer that has been placed on a Credit Hold and you do not have\n"
 				    "privilege to create Sales Orders for Customers on Credit Hold.  The selected\n"
 				    "Customer must be taken off of Credit Hold before you may create convert this Quote." )
-				.arg(check.value("quhead_number").toString()) );
-	        return;
-	      }	
+                                .arg(check.value("quhead_number").toString()) );
+            return;
+          }
 
-	      if ( (check.value("cust_creditstatus").toString() == "W") && (!_privileges->check("CreateSOForWarnCustomer")) )
-	      {
-	        QMessageBox::warning( this, tr("Cannot Convert Quote"),
+          if ( (check.value("cust_creditstatus").toString() == "W") && (!_privileges->check("CreateSOForWarnCustomer")) )
+          {
+            QMessageBox::warning( this, tr("Cannot Convert Quote"),
 			    	tr( "Quote #%1 is for a Customer that has been placed on a Credit Warning and you do not have\n"
 				    "privilege to create Sales Orders for Customers on Credit Warning.  The selected\n"
 				    "Customer must be taken off of Credit Warning before you may create convert this Quote." )
-				.arg(check.value("quhead_number").toString()) );
-	        return;
-	      }	
+                                .arg(check.value("quhead_number").toString()) );
+            return;
+          }
         }
         else
         {

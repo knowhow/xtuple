@@ -17,21 +17,23 @@
 #include "contactwidget.h"
 
 ContactClusterLineEdit::ContactClusterLineEdit(QWidget* pParent, const char* pName) :
-    VirtualClusterLineEdit(pParent, "cntct", "cntct_id", "cntct_name", 0, "cntct_title", 0, pName, "cntct_active")
+    CrmClusterLineEdit(pParent, "cntct()", "cntct_id", "cntct_name", 0, "cntct_title", "cntct_owner_username", 0, 0, pName, "cntct_active")
 {
     _searchAcctId = -1;
 
     setTitles(tr("Contact"), tr("Contacts"));
     setUiName("contact");
-    setEditPriv("MaintainContacts");
-    setNewPriv("MaintainContacts");
-    setViewPriv("ViewContacts");
+    setEditPriv("MaintainAllContacts");
+    setNewPriv("MaintainAllContacts");
+    setViewPriv("ViewAllContacts");
+    setEditOwnPriv("MaintainPersonalContacts");
+    setViewOwnPriv("ViewPersonalContacts");
 
     _query = "SELECT cntct_id AS id, cntct_name AS number, cntct_title AS description, "
              " cntct_active AS active, "
              " cntct_first_name, cntct_last_name, crmacct_name, cntct_title, cntct_phone, "
              " cntct_phone2,cntct_fax, cntct_email, cntct_webaddr "
-             "FROM cntct LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) "
+             "FROM cntct() LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) "
              "WHERE (true) ";
 }
 
@@ -131,15 +133,6 @@ ContactList* ContactClusterLineEdit::listFactory()
 ContactSearch* ContactClusterLineEdit::searchFactory()
 {
   return new ContactSearch(this);
-}
-
-void ContactClusterLineEdit::silentSetId(const int pId)
-{
-  //Allow any contact to be set from here
-  bool strict = _strict;
-  setStrict(false);
-  VirtualClusterLineEdit::silentSetId(pId);
-  setStrict(strict);
 }
 
 ContactCluster::ContactCluster(QWidget* pParent, const char* pName) :
@@ -351,7 +344,10 @@ void ContactCluster::populate()
       _email->setText(dataQ.value("cntct_email").toString());
       _webaddr->setText(dataQ.value("cntct_webaddr").toString());
       _email->setURL("mailto:" + dataQ.value("cntct_email").toString());
-      _webaddr->setURL("http://" + dataQ.value("cntct_webaddr").toString());
+      QUrl url(dataQ.value("cntct_webaddr").toString());
+      if(url.scheme().isEmpty())
+        url.setScheme("http");
+      _webaddr->setURL(url.toString());
       _addr->setText(dataQ.value("address").toString());
       _crmAcctId=-1;
     }

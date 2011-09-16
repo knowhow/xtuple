@@ -314,6 +314,17 @@ void uiform::sImport()
 
 void uiform::sEdit()
 {
+#ifdef Q_WS_MAC
+  if (_preferences->value("InterfaceWindowOption") == "Workspace")
+  {
+    QMessageBox::critical( this, tr("Interface Option is Invalid"),
+                          tr("<p>The embedded Qt Designer utility "
+                             "is only available when user preferences "
+                             "are set to show windows as free-floating.") );
+    return;
+  }
+#endif
+
   static bool xdinit = false;
   QWidget *ui;
   QSize size;

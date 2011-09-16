@@ -873,7 +873,7 @@ to be bound by its terms.</comment>
              <widget class="QWidget" name="_extDescripPage">
               <layout class="QGridLayout">
                <item row="0" column="0">
-                <widget class="QTextEdit" name="_extDescription">
+                <widget class="XTextEdit" name="_extDescription">
                  <property name="focusPolicy">
                   <enum>Qt::ClickFocus</enum>
                  </property>

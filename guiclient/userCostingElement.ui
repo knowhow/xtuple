@@ -7,93 +7,81 @@ It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
-  <class>userCostingElement</class>
+ <class>userCostingElement</class>
  <widget class="QDialog" name="userCostingElement">
   <property name="geometry">
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>454</width>
-        <height>181</height>
-      </rect>
-    </property>
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>466</width>
+    <height>255</height>
+   </rect>
+  </property>
   <property name="windowTitle">
-      <string>User Costing Element</string>
-    </property>
+   <string>User Costing Element</string>
+  </property>
   <layout class="QHBoxLayout">
    <property name="spacing">
     <number>7</number>
    </property>
    <property name="margin">
-        <number>5</number>
-      </property>
-      <item>
+    <number>5</number>
+   </property>
+   <item>
     <layout class="QVBoxLayout">
-     <property name="margin">
-            <number>0</number>
-          </property>
-          <item>
+     <item>
       <layout class="QHBoxLayout">
        <property name="spacing">
         <number>5</number>
        </property>
-       <property name="margin">
-                <number>0</number>
-              </property>
-              <item>
+       <item>
         <widget class="QLabel" name="_nameLit">
          <property name="text">
-                    <string>Element &amp;Name:</string>
-                  </property>
+          <string>Element &amp;Name:</string>
+         </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
+         </property>
          <property name="buddy">
-                    <cstring>_name</cstring>
-                  </property>
-                </widget>
-              </item>
-              <item>
+          <cstring>_name</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout">
          <property name="spacing">
           <number>5</number>
          </property>
-         <property name="margin">
-                    <number>0</number>
-                  </property>
-                  <item>
+         <item>
           <widget class="XLineEdit" name="_name"/>
-                  </item>
-                  <item>
+         </item>
+         <item>
           <widget class="QCheckBox" name="_active">
            <property name="text">
-                        <string>&amp;Active</string>
-                      </property>
+            <string>&amp;Active</string>
+           </property>
            <property name="checked">
-                        <bool>true</bool>
-                      </property>
-                    </widget>
-                  </item>
-                </layout>
-              </item>
-            </layout>
-          </item>
-          <item>
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
       <layout class="QHBoxLayout">
        <property name="spacing">
-                <number>0</number>
-              </property>
-       <property name="margin">
-                <number>0</number>
-              </property>
-              <item>
+        <number>0</number>
+       </property>
+       <item>
         <widget class="QCheckBox" name="_acceptPO">
          <property name="text">
-                    <string>Accept P/&amp;O Distributions</string>
-                  </property>
-                </widget>
-              </item>
-              <item>
+          <string>Accept P/&amp;O Distributions</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="Spacer147">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -102,38 +90,38 @@ to be bound by its terms.</comment>
           <enum>QSizePolicy::Expanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
-                    <size>
-                      <width>20</width>
-                      <height>20</height>
-                    </size>
-                  </property>
-                </spacer>
-              </item>
-            </layout>
-          </item>
-          <item>
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
       <widget class="QGroupBox" name="_useCostItem">
        <property name="title">
-                <string>Use Costing Item for Cost Source</string>
-              </property>
+        <string>Use Costing Item for Cost Source</string>
+       </property>
        <property name="checkable">
-                <bool>true</bool>
-              </property>
+        <bool>true</bool>
+       </property>
        <property name="checked">
-                <bool>false</bool>
-              </property>
+        <bool>false</bool>
+       </property>
        <layout class="QVBoxLayout">
-                <item>
-         <widget class="ItemCluster" name="_item" native="true">
+        <item>
+         <widget class="ItemCluster" name="_item">
           <property name="enabled">
-                      <bool>true</bool>
-                    </property>
-                  </widget>
-                </item>
-              </layout>
-            </widget>
-          </item>
-          <item>
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QLabel" name="label">
@@ -148,9 +136,9 @@ to be bound by its terms.</comment>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="GLCluster" name="_expense" native="true">
+          <widget class="GLCluster" name="_expense">
            <property name="focusPolicy">
-            <enum>Qt::TabFocus</enum>
+            <enum>Qt::StrongFocus</enum>
            </property>
           </widget>
          </item>
@@ -167,54 +155,48 @@ to be bound by its terms.</comment>
         <enum>QSizePolicy::Preferred</enum>
        </property>
        <property name="sizeHint" stdset="0">
-                <size>
-                  <width>20</width>
-                  <height>16</height>
-                </size>
-              </property>
-            </spacer>
-          </item>
-        </layout>
-      </item>
-      <item>
+        <size>
+         <width>20</width>
+         <height>16</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QVBoxLayout">
      <property name="spacing">
-            <number>0</number>
-          </property>
-     <property name="margin">
-            <number>0</number>
-          </property>
-          <item>
+      <number>0</number>
+     </property>
+     <item>
       <layout class="QVBoxLayout">
        <property name="spacing">
         <number>5</number>
        </property>
-       <property name="margin">
-                <number>0</number>
-              </property>
-              <item>
+       <item>
         <widget class="QPushButton" name="_close">
          <property name="text">
-                    <string>&amp;Cancel</string>
-                  </property>
-                </widget>
-              </item>
-              <item>
+          <string>&amp;Cancel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="_save">
          <property name="text">
-                    <string>&amp;Save</string>
-                  </property>
+          <string>&amp;Save</string>
+         </property>
          <property name="autoDefault">
-                    <bool>false</bool>
-                  </property>
+          <bool>false</bool>
+         </property>
          <property name="default">
-                    <bool>true</bool>
-                  </property>
-                </widget>
-              </item>
-            </layout>
-          </item>
-          <item>
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <spacer name="Spacer44">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -223,20 +205,25 @@ to be bound by its terms.</comment>
         <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
-                <size>
-                  <width>20</width>
-                  <height>20</height>
-                </size>
-              </property>
-            </spacer>
-          </item>
-        </layout>
-      </item>
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
     </layout>
-  </widget>
+   </item>
+  </layout>
+ </widget>
  <layoutdefault spacing="6" margin="11"/>
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
+  <customwidget>
+   <class>GLCluster</class>
+   <extends>QWidget</extends>
+   <header>glcluster.h</header>
+  </customwidget>
   <customwidget>
    <class>ItemCluster</class>
    <extends>QWidget</extends>
@@ -249,31 +236,26 @@ to be bound by its terms.</comment>
    <header>xlineedit.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>GLCluster</class>
-   <extends>QWidget</extends>
-   <header>glcluster.h</header>
-  </customwidget>
  </customwidgets>
-  <tabstops>
-    <tabstop>_name</tabstop>
+ <tabstops>
+  <tabstop>_name</tabstop>
   <tabstop>_acceptPO</tabstop>
   <tabstop>_useCostItem</tabstop>
   <tabstop>_expense</tabstop>
-    <tabstop>_active</tabstop>
-    <tabstop>_save</tabstop>
-    <tabstop>_close</tabstop>
-  </tabstops>
-  <includes>
+  <tabstop>_active</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_close</tabstop>
+ </tabstops>
+ <includes>
   <include location="global">parameter.h</include>
-  </includes>
+ </includes>
  <resources/>
-  <connections>
-    <connection>
-      <sender>_close</sender>
-      <signal>clicked()</signal>
-      <receiver>userCostingElement</receiver>
-      <slot>reject()</slot>
+ <connections>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>userCostingElement</receiver>
+   <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
@@ -284,12 +266,12 @@ to be bound by its terms.</comment>
      <y>20</y>
     </hint>
    </hints>
-    </connection>
-    <connection>
-      <sender>_acceptPO</sender>
-      <signal>toggled(bool)</signal>
-      <receiver>_useCostItem</receiver>
-      <slot>setDisabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>_acceptPO</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>_useCostItem</receiver>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
@@ -300,6 +282,6 @@ to be bound by its terms.</comment>
      <y>20</y>
     </hint>
    </hints>
-    </connection>
-  </connections>
+  </connection>
+ </connections>
 </ui>

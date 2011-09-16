@@ -24,6 +24,8 @@
 #include "hotkey.h"
 #include "imageList.h"
 #include "timeoutHandler.h"
+#include "translations.h"
+#include "dictionaries.h"
 
 extern QString __password;
 
@@ -61,6 +63,8 @@ userPreferences::userPreferences(QWidget* parent, const char* name, bool modal, 
   connect(_warehouses, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(sWarehouseToggled(QTreeWidgetItem*)));
   connect(_event, SIGNAL(itemSelected(int)), this, SLOT(sAllWarehousesToggled(int)));
   connect(_event, SIGNAL(itemSelectionChanged()), this, SLOT(sFillWarehouseList()));
+  connect(_translations, SIGNAL(clicked()), this, SLOT(sTranslations()));
+  connect(_dictionaries, SIGNAL(clicked()), this, SLOT(sDictionaries()));
 
   _event->addColumn(tr("Module"),      50,   Qt::AlignCenter, true,  "evnttype_module" );
   _event->addColumn(tr("Name"),        150,  Qt::AlignLeft,   true,  "evnttype_name"   );
@@ -92,6 +96,8 @@ userPreferences::userPreferences(QWidget* parent, const char* name, bool modal, 
     _alarmEmail->setVisible(false);
     _emailEvents->setVisible(false);
   }
+  _translations->setEnabled(_privileges->check("MaintainTranslations"));
+  _dictionaries->setEnabled(_privileges->check("MaintainDictionaries"));
 
   sPopulate();
   adjustSize();
@@ -270,6 +276,14 @@ void userPreferences::sSave(bool close)
       QString fullPathWithoutExt = appPath + "/" + langName;
       QFile affFile(fullPathWithoutExt + ".aff");
       QFile dicFile(fullPathWithoutExt + ".dic");
+      // If we don't have files for the first name lets try a more common naming convention
+      if(!(affFile.exists() && dicFile.exists()))
+      {
+        langName = QLocale().name().toLower(); // retruns lang_cntry format en_us for example
+        fullPathWithoutExt = appPath + "/" + langName;
+        affFile.setFileName(fullPathWithoutExt + tr(".aff"));
+        dicFile.setFileName(fullPathWithoutExt + tr(".dic"));
+      }
       if(!affFile.exists() || !dicFile.exists())
       {
         QMessageBox::warning( this, tr("Spell Dictionary Missing"),
@@ -554,7 +568,7 @@ void userPreferences::sDelete()
 
 void userPreferences::sAllWarehousesToggled(int pEvnttypeid)
 {
-  if(!_warehouses->topLevelItemCount() > 0)
+  if(!(_warehouses->topLevelItemCount() > 0))
     return;
 
   if (_warehouses->topLevelItem(0)->text(0) == tr("Yes"))
@@ -644,3 +658,14 @@ void userPreferences::sFillWarehouseList()
     }
   }
 }
+
+void userPreferences::sTranslations()
+{
+  omfgThis->handleNewWindow(new translations(this));
+}
+
+void userPreferences::sDictionaries()
+{
+  omfgThis->handleNewWindow(new dictionaries(this));
+}
+

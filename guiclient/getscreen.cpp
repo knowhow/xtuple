@@ -28,6 +28,11 @@ QWidget * xtGetScreen(const QString & classname, QWidget * parent, Qt::WindowFla
 
 STARTCLASSLIST
 #include "getscreen_classlist.h"
+/* Added in as an aliased name */
+  if(classname == "AdatabaseInformation") {
+    w = new databaseInformation(parent, "databaseInformation", wflags);
+    w->setObjectName("databaseInformation");
+  }
 ENDCLASSLIST
 
   if(w)

@@ -306,7 +306,7 @@ to be bound by its terms.</comment>
             </widget>
           </item>
           <item>
-            <widget class="QTextEdit" name="_comments" />
+            <widget class="XTextEdit" name="_comments" />
           </item>
         </layout>
       </item>
@@ -329,6 +329,11 @@ to be bound by its terms.</comment>
       <container>0</container>
       <pixmap></pixmap>
     </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
+  </customwidget>
   </customwidgets>
   <tabstops>
     <tabstop>_item</tabstop>

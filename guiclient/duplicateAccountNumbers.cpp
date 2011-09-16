@@ -12,6 +12,7 @@
 
 #include <QVariant>
 #include <QMessageBox>
+#include <QSqlError>
 //#include <QStatusBar>
 #include <parameter.h>
 #include <openreports.h>
@@ -87,6 +88,7 @@ void duplicateAccountNumbers::sDuplicate()
   sql +=       "  FROM accnt"
                " WHERE (accnt_id=:accnt_id);";
 
+  q.exec("BEGIN;");
   q.prepare(sql);
 
   QList<XTreeWidgetItem*> selected = _account->selectedItems();
@@ -98,8 +100,18 @@ void duplicateAccountNumbers::sDuplicate()
     q.bindValue(":accnt_id",	((XTreeWidgetItem*)selected[i])->id());
     q.bindValue(":descrip",	_descrip->text());
     q.exec();
+    if (q.lastError().type() != QSqlError::NoError)
+    {
+      systemError(this, tr("A System Error occurred at %1::%2\n\n%3")
+                          .arg(__FILE__)
+                          .arg(__LINE__)
+                          .arg(q.lastError().databaseText()));
+      q.exec("ROLLBACK;");
+      return;
+    }
   }
 
+  q.exec("COMMIT;");
   close();
 }
 

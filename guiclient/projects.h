@@ -26,6 +26,7 @@ public slots:
     virtual void sEdit();
     virtual void sView();
     virtual void sDelete();
+    virtual void sOpen();
     virtual void sPopulateMenu(QMenu *, QTreeWidgetItem *, int);
     virtual bool setParams(ParameterList &);
 };

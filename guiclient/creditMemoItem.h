@@ -28,6 +28,7 @@ public:
 public slots:
     virtual SetResponse set(const ParameterList & pParams );
     virtual void sPopulateItemInfo();
+    virtual void sPopulateItemsiteInfo();
     virtual void populate();
     virtual void sCalculateDiscountPrcnt();
     virtual void sCalculateFromDiscount();

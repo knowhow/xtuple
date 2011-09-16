@@ -262,7 +262,7 @@ void arOpenItem::sSave()
                  "                          :aropen_salescat_id, :aropen_accnt_id, :aropen_duedate,"
                  "                          :aropen_terms_id, :aropen_salesrep_id, :aropen_commission_due, "
                  "                          :curr_id ) AS result;" );
-      storedProc = "createARCreditMemo";
+      storedProc = "createARDebitMemo";
     }
 
     q.bindValue(":cust_id", _cust->id());
@@ -295,7 +295,10 @@ void arOpenItem::sSave()
   q.bindValue(":aropen_docnumber", _docNumber->text());
   q.bindValue(":aropen_ordernumber", _orderNumber->text());
   q.bindValue(":aropen_terms_id", _terms->id());
-  q.bindValue(":aropen_salesrep_id", _salesrep->id());
+
+  if (_salesrep->isValid())
+    q.bindValue(":aropen_salesrep_id", _salesrep->id());
+
   q.bindValue(":aropen_amount", _amount->localValue());
   q.bindValue(":aropen_commission_due", _commissionDue->baseValue());
   q.bindValue(":aropen_notes",          _notes->toPlainText());
@@ -353,7 +356,7 @@ void arOpenItem::sSave()
 	return;
       }
       if(_printOnPost->isChecked())
-        sPrintOnPost(_aropenid); 
+        sPrintOnPost(_last);
       reset();
     }
   }

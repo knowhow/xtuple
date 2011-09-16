@@ -697,6 +697,16 @@ void voucherItem::reject()
   XDialog::reject();
 }
 
+void voucherItem::closeEvent(QCloseEvent * event)
+{
+  if(_inTransaction)
+  {
+    q.exec("ROLLBACK;");
+    _inTransaction = false;
+  }
+  XDialog::closeEvent(event);
+}
+
 void voucherItem::sCalculateTax()
 {
   _saved = FALSE;

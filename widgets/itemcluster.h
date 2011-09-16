@@ -43,7 +43,7 @@ public:
     QCheckBox* _showBuy;
 
 public slots:
-    virtual void set( ParameterList & pParams );
+    virtual void set(const ParameterList & pParams);
     virtual void reject();
     virtual void sSearch( const QString & pTarget );
     virtual void sFillList();
@@ -68,7 +68,7 @@ public:
     XCheckBox* _showInactive;
 
 public slots:
-    void set( ParameterList & pParams );
+    void set(const ParameterList & pParams);
     void sFillList();
 
 private:

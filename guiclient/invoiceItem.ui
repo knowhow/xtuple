@@ -366,7 +366,7 @@ to be bound by its terms.</comment>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QTextEdit" name="_itemDescrip">
+            <widget class="XTextEdit" name="_itemDescrip">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -550,7 +550,7 @@ to be bound by its terms.</comment>
         <item row="0" column="1">
          <widget class="CurrCluster" name="_price">
           <property name="format">
-           <enum>CurrDisplay::Cost</enum>
+           <enum>CurrDisplay::SalesPrice</enum>
           </property>
           <property name="currencyEditable" stdset="0">
            <bool>false</bool>
@@ -685,7 +685,7 @@ to be bound by its terms.</comment>
                 <item row="1" column="1">
                  <widget class="CurrDisplay" name="_listPrice">
                   <property name="format">
-                   <enum>CurrDisplay::Cost</enum>
+                   <enum>CurrDisplay::SalesPrice</enum>
                   </property>
                   <property name="localControl">
                    <bool>false</bool>
@@ -695,7 +695,7 @@ to be bound by its terms.</comment>
                 <item row="2" column="1">
                  <widget class="CurrDisplay" name="_custPrice">
                   <property name="format">
-                   <enum>CurrDisplay::Cost</enum>
+                   <enum>CurrDisplay::SalesPrice</enum>
                   </property>
                   <property name="localControl">
                    <bool>false</bool>
@@ -863,7 +863,7 @@ to be bound by its terms.</comment>
              <number>0</number>
             </property>
             <item>
-             <widget class="QTextEdit" name="_notes"/>
+             <widget class="XTextEdit" name="_notes"/>
             </item>
            </layout>
           </widget>
@@ -928,6 +928,11 @@ to be bound by its terms.</comment>
    <class>XURLLabel</class>
    <extends>QLabel</extends>
    <header>xurllabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

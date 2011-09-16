@@ -39,6 +39,7 @@ public slots:
     virtual void sDelete();
     virtual void sAttach();
     virtual void sDetach();
+    virtual void sOpen();
     virtual bool setParams(ParameterList &);
    
 signals:

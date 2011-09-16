@@ -101,9 +101,9 @@ enum SetResponse relocateInventory::set(const ParameterList &pParams)
   if (valid)
   {
     locid = param.toInt();
-    for (int i = 0; i < _source->topLevelItemCount(); i++)
+    for (int i = 0; i < _target->topLevelItemCount(); i++)
     {
-      XTreeWidgetItem* cursor = (XTreeWidgetItem*)(_source->topLevelItem(i));
+      XTreeWidgetItem* cursor = (XTreeWidgetItem*)(_target->topLevelItem(i));
       if (cursor->id() == locid)
       {
         _target->setCurrentItem(cursor);

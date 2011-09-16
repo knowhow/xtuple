@@ -122,9 +122,13 @@ void accountNumber::sSave()
 {
   if (_mode == cEdit && _wasActive && !_active->isChecked())
   {
-    QString glsum("SELECT SUM(gltrans_amount) AS bal"
-                  "  FROM gltrans"
-                  " WHERE gltrans_accnt_id=<? value(\"accnt_id\") ?>;");
+    QString glsum("SELECT trialbal_ending AS bal"
+                  "  FROM trialbal, period"
+                  " WHERE((period_id=trialbal_period_id)"
+                  "   AND (NOT period_closed)"
+                  "   AND (trialbal_accnt_id=<? value(\"accnt_id\") ?>))"
+                  " ORDER BY period_start DESC"
+                  " LIMIT 1;");
     ParameterList pl;
     pl.append("accnt_id", _accntid);
     MetaSQLQuery mm(glsum);

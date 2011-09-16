@@ -154,7 +154,7 @@ to be bound by its terms.</comment>
     </layout>
    </item>
    <item row="2" column="1">
-    <widget class="QTextEdit" name="_descrip">
+    <widget class="XTextEdit" name="_descrip">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -572,6 +572,11 @@ to be bound by its terms.</comment>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XTextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

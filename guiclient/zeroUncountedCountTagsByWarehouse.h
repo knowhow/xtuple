@@ -25,7 +25,6 @@ public:
 protected slots:
     virtual void languageChange();
 
-    virtual void init();
     virtual void sZero();
 
 

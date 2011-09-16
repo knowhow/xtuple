@@ -160,7 +160,8 @@ void itemCost::sSave()
   {
       q.prepare( "UPDATE itemcost SET"
 		 " itemcost_actcost=:itemcost_actcost,"
-		 " itemcost_curr_id=:itemcost_curr_id "
+                 " itemcost_curr_id=:itemcost_curr_id, "
+                 " itemcost_updated=CURRENT_DATE "
 		 "WHERE (itemcost_id=:itemcost_id);");
   }
   q.bindValue(":itemcost_id", _itemcostid);
