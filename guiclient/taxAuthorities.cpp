@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -11,14 +11,16 @@
 #include "taxAuthorities.h"
 
 #include <QMessageBox>
-#include <QSqlError>
-
 #include <parameter.h>
 
-#include "errorReporter.h"
-#include "parameterwidget.h"
 #include "taxAuthority.h"
+#include "parameterwidget.h"
 
+/*
+ *  Constructs a taxAuthorities as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ */
 taxAuthorities::taxAuthorities(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "taxAuthorities", fl)
 {
@@ -38,7 +40,7 @@ taxAuthorities::taxAuthorities(QWidget* parent, const char*, Qt::WFlags fl)
   parameterWidget()->append(tr("Postal Code Pattern"), "addr_postalcode_pattern", ParameterWidget::Text);
   parameterWidget()->append(tr("Country Pattern"), "addr_country_pattern", ParameterWidget::Text);
 
-  connect(omfgThis, SIGNAL(taxAuthsUpdated(int)), this, SLOT(sFillList()));
+  connect(omfgThis, SIGNAL(taxAuthsUpdated(int)), this, SLOT(sFillList(int)));
 
   list()->addColumn(tr("Code"), 70, Qt::AlignLeft,   true,  "taxauth_code" );
   list()->addColumn(tr("Name"), -1, Qt::AlignLeft,   true,  "taxauth_name" );
@@ -59,21 +61,26 @@ taxAuthorities::taxAuthorities(QWidget* parent, const char*, Qt::WFlags fl)
 
 void taxAuthorities::sDelete()
 {
-  if (QMessageBox::question(this, tr("Delete Tax Authority?"),
-                            tr("<p>Are you sure you want to delete the "
-                               "selected Tax Authority?"),
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
-    return;
+  q.prepare("SELECT deleteTaxAuthority(:taxauth_id) AS result;");
+  q.bindValue(":taxauth_id", list()->id());
+  q.exec();
+  if (q.first())
+  {
+    if(q.value("result").toInt() < 0)
+    {
+      QMessageBox::warning( this, tr("Cannot Delete Tax Authority"),
+                            tr( "You cannot delete the selected Tax Authority because there are currently items assigned to it.\n"
+                                "You must first re-assign these items before deleting the selected Tax Authority." ) );
+      return;
+    }
 
-  XSqlQuery delq;
-  delq.prepare("DELETE FROM taxauth WHERE (taxauth_id=:taxauth_id);");
-  delq.bindValue(":taxauth_id", list()->id());
-  delq.exec();
-  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error Deleting"),
-                           delq, __FILE__, __LINE__))
-    return;
-  sFillList();
+    omfgThis->sTaxAuthsUpdated(list()->id());
+    sFillList();
+  }
+  else
+    systemError(this, tr("A System Error occurred at %1::%2.")
+                      .arg(__FILE__)
+                      .arg(__LINE__) );
 }
 
 void taxAuthorities::sNew()

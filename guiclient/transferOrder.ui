@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -883,7 +883,7 @@ to be bound by its terms.</comment>
         <number>5</number>
        </property>
        <item>
-        <widget class="XTextEdit" name="_orderComments"/>
+        <widget class="QTextEdit" name="_orderComments"/>
        </item>
       </layout>
      </widget>
@@ -919,7 +919,7 @@ to be bound by its terms.</comment>
         <number>5</number>
        </property>
        <item>
-        <widget class="XTextEdit" name="_shippingComments"/>
+        <widget class="QTextEdit" name="_shippingComments"/>
        </item>
       </layout>
      </widget>
@@ -1088,11 +1088,6 @@ to be bound by its terms.</comment>
    <class>ToitemTableView</class>
    <extends>QTableView</extends>
    <header>toitemTableView.h</header>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

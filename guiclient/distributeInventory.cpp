@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -144,7 +144,7 @@ int distributeInventory::SeriesAdjust(int pItemlocSeries, QWidget *pParent, cons
             if(itemloc.value("itemsite_perishable").toBool())
               query.bindValue(":expiration", pPresetLotexp);
             else
-              query.bindValue(":expiration", omfgThis->endOfTime());
+              query.bindValue(":expiration", omfgThis->startOfTime());
             if(itemloc.value("itemsite_warrpurc").toBool())
               query.bindValue(":warranty", pPresetLotwarr);
             query.exec();

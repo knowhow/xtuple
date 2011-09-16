@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -21,9 +21,9 @@
 
 #include "changeWoQty.h"
 #include "createCountTagsByItem.h"
-#include "dspInventoryAvailability.h"
+#include "dspInventoryAvailabilityByItem.h"
 #include "dspInventoryAvailabilityByWorkOrder.h"
-#include "dspInventoryHistory.h"
+#include "dspInventoryHistoryByItem.h"
 #include "mqlutil.h"
 #include "printPackingList.h"
 #include "printWoTraveler.h"
@@ -286,7 +286,7 @@ void eventManager::sViewInventoryHistory()
   ParameterList params;
   params.append("itemsite_id", _event->currentItem()->rawValue("evntlog_ord_id").toInt());
   
-  dspInventoryHistory *newdlg = new dspInventoryHistory();
+  dspInventoryHistoryByItem *newdlg = new dspInventoryHistoryByItem();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }
@@ -295,9 +295,8 @@ void eventManager::sViewInventoryAvailability()
 {
   ParameterList params;
   params.append("itemsite_id", _event->currentItem()->rawValue("evntlog_ord_id").toInt());
-  params.append("run");
   
-  dspInventoryAvailability *newdlg = new dspInventoryAvailability();
+  dspInventoryAvailabilityByItem *newdlg = new dspInventoryAvailabilityByItem();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }

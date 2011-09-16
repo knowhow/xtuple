@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -21,8 +21,7 @@ changePoitemQty::changePoitemQty(QWidget* parent, const char* name, bool modal, 
 {
   setupUi(this);
 
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sChangeQty()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_change, SIGNAL(clicked()), this, SLOT(sChangeQty()));
   connect(_newQty, SIGNAL(lostFocus()), this, SLOT(sQtyChanged()));
   connect(_po, SIGNAL(newId(int, QString)), this, SLOT(sPopulatePoitem(int)));
   connect(_poitem, SIGNAL(newID(int)), this, SLOT(sPopulate(int)));
@@ -40,7 +39,6 @@ changePoitemQty::changePoitemQty(QWidget* parent, const char* name, bool modal, 
   _newQtyBalance->setPrecision(omfgThis->qtyVal());
 
   _cmnttype->setType(XComboBox::AllCommentTypes);
-  adjustSize();
 }
 
 changePoitemQty::~changePoitemQty()

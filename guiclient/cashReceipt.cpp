@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -71,11 +71,7 @@ cashReceipt::cashReceipt(QWidget* parent, const char* name, Qt::WFlags fl)
   connect(_distDate, SIGNAL(newDate(QDate)), this, SLOT(sDateChanged()));
   connect(_applDate, SIGNAL(newDate(QDate)), this, SLOT(sDateChanged()));
   connect(_credits, SIGNAL(toggled(bool)), this, SLOT(sFillApplyList()));
-  if (!_metrics->boolean("CCAccept") || !_privileges->check("ProcessCreditCards"))
-  {
-    _tab->removeTab(_tab->indexOf(_creditCardTab));
-  }
-  else
+  if (_metrics->boolean("CCAccept"))
   {
     connect(_newCC, SIGNAL(clicked()), this, SLOT(sNewCreditCard()));
     connect(_editCC, SIGNAL(clicked()), this, SLOT(sEditCreditCard()));
@@ -94,7 +90,7 @@ cashReceipt::cashReceipt(QWidget* parent, const char* name, Qt::WFlags fl)
   _CCCVV->setValidator(new QIntValidator(100, 9999, this));
 
   _bankaccnt->setType(XComboBox::ARBankAccounts);
-  _salescat->setType(XComboBox::SalesCategoriesActive);
+  _salescat->setType(XComboBox::SalesCategories);
 
   _aropen->addColumn(tr("Doc. Type"), -1,              Qt::AlignCenter, true, "doctype");
   _aropen->addColumn(tr("Doc. #"),    _orderColumn,    Qt::AlignCenter, true, "aropen_docnumber");
@@ -206,7 +202,7 @@ enum SetResponse cashReceipt::set(const ParameterList &pParams)
     {
       _mode = cEdit;
 	  _transType = cEdit;
-      //_tab->removeTab(_tab->indexOf(_creditCardTab));
+      _tab->removeTab(_tab->indexOf(_creditCardTab));
 
       _cust->setReadOnly(TRUE);
 

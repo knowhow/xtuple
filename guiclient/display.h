@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -72,16 +72,13 @@ public:
 
     Q_INVOKABLE QString   searchText();
 
-    Q_INVOKABLE void      setupCharacteristics(unsigned int uses);
-
 public slots:
     virtual void sNew();
     virtual void sPrint();
-    virtual void sPrint(ParameterList, bool = false);
+    virtual void sPrint(ParameterList);
     virtual void sPreview();
-    virtual void sPreview(ParameterList, bool = false);
+    virtual void sPreview(ParameterList);
     virtual void sFillList();
-    virtual void sFillList(ParameterList, bool = false);
     virtual void sPopulateMenu(QMenu *, QTreeWidgetItem *, int);
 
 protected:
@@ -91,11 +88,6 @@ protected:
 protected slots:
     virtual void languageChange();
     virtual void sAutoUpdateToggled();
-
-signals:
-    void fillList();
-    void fillListBefore();
-    void fillListAfter();
 
 private:
     displayPrivate * _data;

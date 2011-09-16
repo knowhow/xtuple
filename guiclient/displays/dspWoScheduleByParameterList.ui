@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>dspWoScheduleByParameterList</class>
+ <widget class="QWidget" name="dspWoScheduleByParameterList">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>646</width>
+    <height>244</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Work Order Schedule</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="ParameterGroup" name="_parameter">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <property name="fixedSize">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="WarehouseGroup" name="_warehouse">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <property name="fixedSize">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="_dateGroup">
+     <property name="title">
+      <string>Work Order Start Date</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="DateCluster" name="_dates">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="_statusGroup">
+     <property name="title">
+      <string>Include Status</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <property name="horizontalSpacing">
+       <number>12</number>
+      </property>
+      <item row="1" column="0">
+       <widget class="XCheckBox" name="_open">
+        <property name="text">
+         <string>Open</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="XCheckBox" name="_released">
+        <property name="text">
+         <string>&amp;Released</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="XCheckBox" name="_exploded">
+        <property name="text">
+         <string>Exploded</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="XCheckBox" name="_inprocess">
+        <property name="text">
+         <string>In-Process</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QGroupBox" name="_showGroup">
+     <property name="title">
+      <string>Show Only</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="XCheckBox" name="_showOnlyTopLevel">
+        <property name="text">
+         <string>Top Level</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="5" margin="5"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>DateCluster</class>
+   <extends>QWidget</extends>
+   <header>datecluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ParameterGroup</class>
+   <extends>QGroupBox</extends>
+   <header>parametergroup.h</header>
+  </customwidget>
+  <customwidget>
+   <class>WarehouseGroup</class>
+   <extends>QGroupBox</extends>
+   <header>warehousegroup.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_parameter</tabstop>
+  <tabstop>_warehouse</tabstop>
+  <tabstop>_dates</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

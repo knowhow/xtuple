@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -42,7 +42,7 @@ printCreditMemo::printCreditMemo(QWidget* parent, const char* name, bool modal, 
     _watermarks->addColumn( tr("Watermark"),   -1,          Qt::AlignLeft   );
     _watermarks->addColumn( tr("Show Prices"), _dateColumn, Qt::AlignCenter );
 
-    _numberOfCopies->setValue(_metrics->value("CreditMemoCopies").toInt() + 1);
+    _numberOfCopies->setValue(_metrics->value("CreditMemoCopies").toInt());
     if (_numberOfCopies->value())
     {
       for (int i = 0; i < _watermarks->topLevelItemCount(); i++)
@@ -167,59 +167,59 @@ void printCreditMemo::sPrint()
 	    orReport::endMultiPrint(&_printer);
           return;
         }
-      }
-    }
 
-    q.prepare( "UPDATE cmhead "
-               "SET cmhead_printed=TRUE "
-               "WHERE (cmhead_id=:cmhead_id);" );
-    q.bindValue(":cmhead_id", _cmheadid);
-    q.exec();
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return;
-    }
+        q.prepare( "UPDATE cmhead "
+                   "SET cmhead_printed=TRUE "
+                   "WHERE (cmhead_id=:cmhead_id);" );
+        q.bindValue(":cmhead_id", _cmheadid);
+        q.exec();
+	if (q.lastError().type() != QSqlError::NoError)
+	{
+	  systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+	  return;
+	}
 
-    if (_alert)
-      omfgThis->sCreditMemosUpdated();
-
-    if (_post->isChecked())
-    {
-      q.exec("BEGIN;");
-      //TO DO:  Replace this method with commit that doesn't require transaction
-      //block that can lead to locking issues
-      XSqlQuery rollback;
-      rollback.prepare("ROLLBACK;");
-
-      q.prepare("SELECT postCreditMemo(:cmhead_id, 0) AS result;");
-      q.bindValue(":cmhead_id", _cmheadid);
-      q.exec();
-      q.first();
-      int result = q.value("result").toInt();
-      if (result < 0)
-      {
-        rollback.exec();
-        systemError( this, storedProcErrorLookup("postCreditMemo", result),
-              __FILE__, __LINE__);
-        return;
-      }
-      else if (q.lastError().type() != QSqlError::NoError)
-      {
-        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-        rollback.exec();
-        return;
-      }
-      else
-      {
-        if (distributeInventory::SeriesAdjust(result, this) == XDialog::Rejected)
+        if (_alert)
+          omfgThis->sCreditMemosUpdated();
+        
+        if (_post->isChecked())
         {
-          rollback.exec();
-          QMessageBox::information( this, tr("Post Credit Memo"), tr("Transaction Canceled") );
-          return;
-        }
+          q.exec("BEGIN;");
+          //TO DO:  Replace this method with commit that doesn't require transaction
+          //block that can lead to locking issues
+          XSqlQuery rollback;
+          rollback.prepare("ROLLBACK;");
+          
+          q.prepare("SELECT postCreditMemo(:cmhead_id, 0) AS result;");
+          q.bindValue(":cmhead_id", _cmheadid);
+          q.exec();
+          q.first();
+          int result = q.value("result").toInt();
+          if (result < 0)
+          {
+            rollback.exec();
+            systemError( this, storedProcErrorLookup("postCreditMemo", result),
+                  __FILE__, __LINE__);
+            return;
+          }
+          else if (q.lastError().type() != QSqlError::NoError)
+	  {
+	    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+            rollback.exec();
+	    return;
+	  }
+          else
+          {
+            if (distributeInventory::SeriesAdjust(result, this) == XDialog::Rejected)
+            {
+              rollback.exec();
+              QMessageBox::information( this, tr("Post Credit Memo"), tr("Transaction Canceled") );
+              return;
+            }
 
-        q.exec("COMMIT;");
+            q.exec("COMMIT;");
+          }         
+        }
       }
     }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -42,11 +42,9 @@ dspVendorAPHistory::dspVendorAPHistory(QWidget* parent, const char*, Qt::WFlags 
   list()->addColumn(tr("Due Date"),     _dateColumn,     Qt::AlignCenter, true,  "duedate" );
   list()->addColumn(tr("Amount"),       _moneyColumn,    Qt::AlignRight,  true,  "amount"  );
   list()->addColumn(tr("Amount (%1)").arg(CurrDisplay::baseCurrAbbr()), _bigMoneyColumn, Qt::AlignRight, false, "base_amount"  );
-  list()->addColumn(tr("Applied (%1)").arg(CurrDisplay::baseCurrAbbr()), _bigMoneyColumn, Qt::AlignRight, false, "base_applied"  );
   list()->addColumn(tr("Balance"),      _moneyColumn,    Qt::AlignRight,  true,  "balance"  );
   list()->addColumn(tr("Currency"),     _currencyColumn, Qt::AlignCenter, true,  "currAbbr" );
   list()->addColumn(tr("Base Balance"), _bigMoneyColumn, Qt::AlignRight,  true,  "base_balance"  );
-  list()->setPopulateLinear();
 
   _vend->setFocus();
 }
@@ -175,11 +173,11 @@ bool dspVendorAPHistory::setParams(ParameterList &params)
     }
   }
 
-  params.append("creditMemo", tr("Credit Memo"));
-  params.append("debitMemo", tr("Debit Memo"));
-  params.append("check", tr("Check"));
-  params.append("voucher", tr("Voucher"));
-  params.append("other", tr("Other"));
+  params.append("creditMemo", "Credit Memo");
+  params.append("debitMemo", "Debit Memo");
+  params.append("check", "Check");
+  params.append("voucher", "Voucher");
+  params.append("other", "Other");
   params.append("vend_id", _vend->id());
   _dates->appendValue(params);
 

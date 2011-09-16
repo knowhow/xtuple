@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -731,7 +731,7 @@ void issueToShipping::sFillList()
                 "<? elseif exists(\"tohead_id\") ?>"
                 "SELECT toitem_id AS lineitem_id, "
                 "       0 AS lsJob, "
-                "       MIN(s1.shiphead_number) AS shiphead_number, "
+                "       s2.shiphead_number, "
                 "       toitem_linenumber AS linenumber, item_number,"
                 "       (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,"
                 "       tohead_srcname AS warehous_code,"
@@ -749,10 +749,9 @@ void issueToShipping::sFillList()
                 "         AND (s1.shiphead_order_type='TO') "
                 "         AND (NOT s1.shiphead_shipped) )"
                 "      ) ON  (shipitem_orderitem_id=toitem_id) "
-// TODO - need a facility to select which shipment you are working on
-//                "     LEFT OUTER JOIN shiphead s2 ON ((s2.shiphead_order_id=toitem_tohead_id) "
-//                "                                 AND (s2.shiphead_order_type='TO') "
-//                "                                 AND (NOT s2.shiphead_shipped )) "
+                "     LEFT OUTER JOIN shiphead s2 ON ((s2.shiphead_order_id=toitem_tohead_id) "
+                "                                 AND (s2.shiphead_order_type='TO') "
+                "                                 AND (NOT s2.shiphead_shipped )) "
                 "WHERE ( (toitem_item_id=item_id)"
                 " AND (toitem_status NOT IN ('C','X'))"
                 " AND (toitem_tohead_id=tohead_id)"
@@ -762,8 +761,8 @@ void issueToShipping::sFillList()
                 "GROUP BY toitem_id, toitem_linenumber, item_number,"
                 "         item_descrip1, item_descrip2, tohead_srcname,"
                 "         toitem_schedshipdate, uom_name,"
-                "         toitem_qty_ordered, toitem_qty_shipped "
-//                "         s2.shiphead_number "
+                "         toitem_qty_ordered, toitem_qty_shipped, "
+                "         s2.shiphead_number "
                 "<? endif ?>"
                 ") AS sub "
                 "ORDER BY scheddate, seq1, seq2;"

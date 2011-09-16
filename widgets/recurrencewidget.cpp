@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -668,27 +668,26 @@ bool RecurrenceWidget::save(bool externaltxn, RecurrenceChangePolicy cp, QString
       }
     }
 
-    // error handling for either 1 or 2 queries so not elseif
-    // check cfq.lastError() first to avoid misreporting db errs as -1
-    if (cfq.lastError().type() != QSqlError::NoError)
-    {
-      *message = cfq.lastError().text();
-      if (! externaltxn)
-      {
-        rollbackq.exec();
-        QMessageBox::critical(this, tr("Database Error"), *message);
-      }
-      else
-        qWarning("%s", qPrintable(*message));
-      return false;
-    }
-    else if (procresult < 0)
+    // error handling for either 1 or 2 queries so no elseif
+    if (procresult < 0)
     {
       *message = storedProcErrorLookup(procname, procresult);
       if (! externaltxn)
       {
         rollbackq.exec();
         QMessageBox::critical(this, tr("Processing Error"), *message);
+      }
+      else
+        qWarning("%s", qPrintable(*message));
+      return false;
+    }
+    else if (cfq.lastError().type() != QSqlError::NoError)
+    {
+      *message = cfq.lastError().text();
+      if (! externaltxn)
+      {
+        rollbackq.exec();
+        QMessageBox::critical(this, tr("Database Error"), *message);
       }
       else
         qWarning("%s", qPrintable(*message));

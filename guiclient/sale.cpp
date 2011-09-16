@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -71,7 +71,8 @@ enum SetResponse sale::set(const ParameterList &pParams)
 
       _name->setEnabled(FALSE);
       _description->setEnabled(FALSE);
-      _dates->setEnabled(FALSE);
+      _startDate->setEnabled(FALSE);
+      _endDate->setEnabled(FALSE);
       _ipshead->setEnabled(FALSE);
       _close->setText(tr("&Close"));
       _save->hide();
@@ -110,27 +111,19 @@ void sale::sSave()
     return;
   }
 
-  if (!_dates->startDate().isValid())
+  if (!_startDate->isValid())
   {
     QMessageBox::critical( this, tr("Enter Start Date"),
-                           tr("You must enter a start date for this Sale.") );
-    _dates->setFocus();
+                           tr("You must enter a start date for this Sale before saving it.") );
+    _startDate->setFocus();
     return;
   }
 
-  if (!_dates->endDate().isValid())
+  if (!_endDate->isValid())
   {
     QMessageBox::critical( this, tr("Enter End Date"),
-                           tr("You must enter an end date for this Sale.") );
-    _dates->setFocus();
-    return;
-  }
-
-  if (_dates->endDate() < _dates->startDate())
-  {
-    QMessageBox::critical( this, tr("Invalid End Date"),
-                           tr("The start date cannot be earlier than the end date.") );
-    _dates->setFocus();
+                           tr("You must enter a end date for this Sale before saving it.") );
+    _endDate->setFocus();
     return;
   }
 
@@ -165,8 +158,8 @@ void sale::sSave()
   q.bindValue(":sale_name", _name->text());
   q.bindValue(":sale_descrip", _description->text());
   q.bindValue(":sale_ipshead_id", _ipshead->id());
-  q.bindValue(":sale_startdate", _dates->startDate());
-  q.bindValue(":sale_enddate", _dates->endDate());
+  q.bindValue(":sale_startdate", _startDate->date());
+  q.bindValue(":sale_enddate", _endDate->date());
   q.exec();
 
   done(_saleid);
@@ -184,8 +177,8 @@ void sale::populate()
   {
     _name->setText(q.value("sale_name").toString());
     _description->setText(q.value("sale_descrip").toString());
-    _dates->setStartDate(q.value("sale_startdate").toDate());
-    _dates->setEndDate(q.value("sale_enddate").toDate());
+    _startDate->setDate(q.value("sale_startdate").toDate());
+    _endDate->setDate(q.value("sale_enddate").toDate());
     _ipshead->setId(q.value("sale_ipshead_id").toInt());
   }
 }

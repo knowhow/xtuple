@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -21,21 +21,21 @@
 
 #include "addresses.h"
 #include "address.h"
-#include "characteristic.h"
+
 #include "storedProcErrorLookup.h"
-#include "parameterwidget.h"
 
 addresses::addresses(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "addresses", fl)
 {
+  setupUi(optionsWidget());
   setReportName("AddressesMasterList");
   setWindowTitle(tr("Addresses"));
   setMetaSQLOptions("addresses", "detail");
   setNewVisible(true);
-  setQueryOnStartEnabled(true);
-  setParameterWidgetVisible(true);
+  queryAction()->setVisible(false);
+  queryAction()->setEnabled(false);
 
-  parameterWidget()->append(tr("Show Inactive"), "showInactive", ParameterWidget::Exists);
+  _activeOnly->setChecked(true);
 
   list()->addColumn(tr("Line 1"),	 -1, Qt::AlignLeft, true, "addr_line1");
   list()->addColumn(tr("Line 2"),	 75, Qt::AlignLeft, true, "addr_line2");
@@ -45,8 +45,7 @@ addresses::addresses(QWidget* parent, const char*, Qt::WFlags fl)
   list()->addColumn(tr("Country"),	 50, Qt::AlignLeft, true, "addr_country");
   list()->addColumn(tr("Postal Code"),50,Qt::AlignLeft, true, "addr_postalcode");
 
-  setupCharacteristics(characteristic::Addresses);
-  parameterWidget()->applyDefaultFilterSet();
+  connect(_activeOnly,	SIGNAL(toggled(bool)),	this, SLOT(sFillList()));
 
   if (_privileges->check("MaintainAddresses"))
     connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sEdit()));
@@ -56,6 +55,7 @@ addresses::addresses(QWidget* parent, const char*, Qt::WFlags fl)
     connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sView()));
   }
 
+  sFillList();
 }
 
 void addresses::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem*, int)
@@ -130,4 +130,12 @@ void addresses::sDelete()
     systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
+}
+
+bool addresses::setParams(ParameterList &params)
+{
+  if (_activeOnly->isChecked())
+    params.append("activeOnly");
+
+  return true;
 }

@@ -3,12 +3,6 @@
  <title>Item Costs Summary</title>
  <name>ItemCostSummary</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -21,7 +15,7 @@
        item_descrip1,
        item_descrip2
   FROM item
- WHERE (item_id=&lt;? value("item_id") ?>);
+ WHERE (item_id=&lt;? value(&quot;item_id&quot;) ?>);
 </sql>
  </querysource>
  <querysource>
@@ -34,12 +28,12 @@
        formatBoolYN(itemcost_lowlevel) as f_lower,
        formatCost(itemcost_stdcost) as f_stdcost,
        formatDate(itemcost_posted, 'Never') as f_posted,
-       formatcost(currToBase(itemcost_curr_id, itemcost_actcost, NULL)) as f_actcost,
+       formatcost(itemcost_actcost) as f_actcost,
        formatDate(itemcost_updated, 'Never') as f_updated,
-       itemcost_stdcost AS stdcost, currToBase(itemcost_curr_id, itemcost_actcost, NULL) AS actcost
+       itemcost_stdcost AS stdcost, itemcost_actcost AS actcost
   FROM itemcost, costelem
  WHERE ((itemcost_costelem_id=costelem_id)
-   AND (itemcost_item_id=&lt;? value("item_id") ?>)
+   AND (itemcost_item_id=&lt;? value(&quot;item_id&quot;) ?>)
 )
 ORDER BY itemcost_lowlevel, costelem_type;</sql>
  </querysource>
@@ -564,8 +558,7 @@ ORDER BY itemcost_lowlevel, costelem_type;</sql>
     <query>detail</query>
     <column>actcost</column>
    </data>
-   <format builtin="true">price</format>
-   <tracktotal/>
+   <tracktotal builtin="true" >price</tracktotal>
   </field>
   <label>
    <rect>
@@ -601,8 +594,7 @@ ORDER BY itemcost_lowlevel, costelem_type;</sql>
     <query>detail</query>
     <column>stdcost</column>
    </data>
-   <format builtin="true">price</format>
-   <tracktotal/>
+   <tracktotal builtin="true" >price</tracktotal>
   </field>
  </rptfoot>
 </report>

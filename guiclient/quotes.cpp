@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -90,16 +90,8 @@ void quotes::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)
 
   pMenu->addSeparator();
 
-  menuItem = pMenu->addAction(tr("Convert to S/O..."), this, SLOT(sConvertSalesOrder()));
+  menuItem = pMenu->addAction(tr("Convert..."), this, SLOT(sConvert()));
   menuItem->setEnabled(_privileges->check("ConvertQuotes"));
-
-  menuItem = pMenu->addAction(tr("Convert to Invoice..."), this, SLOT(sConvertInvoice()));
-  menuItem->setEnabled(_privileges->check("ConvertQuotes"));
-
-  pMenu->addSeparator();
-
-  menuItem = pMenu->addAction(tr("Copy"), this, SLOT(sCopy()));
-  menuItem->setEnabled(_privileges->check("MaintainQuotes"));
 
   pMenu->addSeparator();
 
@@ -169,22 +161,16 @@ void quotes::sPrint()
     emit finishedPrinting(printedQuotes.at(i));
 }
 
-void quotes::sConvert(int pType)
+void quotes::sConvert()
 {
-  QString docType = "Sales Order";
-  if (pType == 1)
-    docType = "Invoice";
-
   if (QMessageBox::question(this, tr("Convert Selected Quote(s)"),
 			    tr("<p>Are you sure that you want to convert "
-                               "the selected Quote(s) to %1(s)?").arg(docType),
+			       "the selected Quote(s) to Sales Order(s)?"),
 			    QMessageBox::Yes,
 			    QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
   {
     XSqlQuery convert;
     convert.prepare("SELECT convertQuote(:quhead_id) AS sohead_id;");
-    if (pType == 1)
-      convert.prepare("SELECT convertQuoteToInvoice(:quhead_id) AS sohead_id;");
 
     XSqlQuery prospectq;
     prospectq.prepare("SELECT convertProspectToCustomer(quhead_cust_id) AS result "
@@ -210,9 +196,9 @@ void quotes::sConvert(int pType)
           if (check.first())
           {
             QMessageBox::critical(this, tr("Can not Convert"),
-                                tr("<p>One or more of the selected Quotes have"
-                                   " been converted.  You cannot convert an already"
-                                   " converted Quote."));
+                                tr("<p>One or more of the Selected Quotes have already "
+                                   " been converted to Sales Order."
+                                   "You can not Convert a Sales Order back to Quote."));
             return;
           }
           else
@@ -305,15 +291,9 @@ void quotes::sConvert(int pType)
               continue;
             }
             converted << quheadid;
+            omfgThis->sSalesOrdersUpdated(soheadid);
 
-            if (pType == 0)
-            {
-              omfgThis->sSalesOrdersUpdated(soheadid);
-
-              salesOrder::editSalesOrder(soheadid, true);
-            }
-            else
-              omfgThis->sQuotesUpdated(soheadid);
+            salesOrder::editSalesOrder(soheadid, true);
           }
           else if (convert.lastError().type() != QSqlError::NoError)
           {
@@ -339,43 +319,6 @@ void quotes::sConvert(int pType)
       omfgThis->sQuotesUpdated(converted[i]);
     }
   } // if user wants to convert
-}
-
-void quotes::sConvertSalesOrder()
-{
-  sConvert(0);
-}
-
-void quotes::sConvertInvoice()
-{
-  sConvert(1);
-}
-
-void quotes::sCopy()
-{
-  QList<XTreeWidgetItem*> selected = list()->selectedItems();
-  int lastid = -1;
-  for (int i = 0; i < selected.size(); i++)
-  {
-    if (checkSitePrivs(((XTreeWidgetItem*)(selected[i]))->id()))
-    {
-      int qid = ((XTreeWidgetItem*)(selected[i]))->id();
-      XSqlQuery qq;
-      qq.prepare("SELECT copyQuote(:qid, null) AS result;");
-      qq.bindValue(":qid", qid);
-      if(qq.exec() && qq.first())
-      {
-        lastid = qq.value("result").toInt();
-      }
-      else if(qq.lastError().type() != QSqlError::NoError)
-      {
-        systemError(this, qq.lastError().text(), __FILE__, __LINE__);
-        return;
-      }
-    }
-  }
-  if(lastid != -1)
-    omfgThis->sQuotesUpdated(lastid);
 }
 
 void quotes::sNew()
@@ -496,17 +439,11 @@ bool quotes::checkSitePrivs(int orderid)
 
 bool quotes::setParams(ParameterList &params)
 {
-  if (!display::setParams(params))
-    return false;
-
+  display::setParams(params);
   if(_showExpired->isChecked())
     params.append("showExpired");
   if(_convertedtoSo->isChecked())
     params.append("showConverted");
-
-  params.append("open", tr("Open"));
-  params.append("converted", tr("Converted"));
-  params.append("undefined", tr("Undefined"));
 
   return true;
 }

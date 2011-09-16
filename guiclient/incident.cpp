@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -75,8 +75,7 @@ incident::incident(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _incdthist->addColumn(tr("Description"),           -1, Qt::AlignLeft, true, "incdthist_descrip");
 
   _todoList->addColumn(tr("Priority"),      _userColumn, Qt::AlignRight, true, "incdtpriority_name");
-  _todoList->addColumn(tr("Owner"),         _userColumn, Qt::AlignLeft, false, "todoitem_owner_username");
-  _todoList->addColumn(tr("Assigned"),      _userColumn, Qt::AlignLeft,  true, "todoitem_username");
+  _todoList->addColumn(tr("User"),          _userColumn, Qt::AlignLeft,  true, "todoitem_username");
   _todoList->addColumn(tr("Name"),                  100, Qt::AlignLeft,  true, "todoitem_name");
   _todoList->addColumn(tr("Description"),            -1, Qt::AlignLeft,  true, "todoitem_description");
   _todoList->addColumn(tr("Status"),      _statusColumn, Qt::AlignLeft,  true, "todoitem_status");
@@ -93,10 +92,6 @@ incident::incident(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   }
   else
     _lotserial->setVisible(false);
-
-  if(!_metrics->boolean("IncidentsPublicPrivate"))
-    _public->hide();
-  _public->setChecked(_metrics->boolean("IncidentPublicDefault"));
 
   // because this causes a pop-behind situation we are hiding for now.
   //_return->hide();
@@ -351,7 +346,6 @@ bool incident::save(bool partial)
               "       incdt_incdtcat_id, incdt_incdtseverity_id,"
               "       incdt_incdtpriority_id, incdt_incdtresolution_id,"
               "       incdt_ls_id, incdt_aropen_id, incdt_owner_username,"
-              "       incdt_prj_id, incdt_public,"
               "       incdt_recurring_incdt_id) "
               "VALUES(:incdt_id, :incdt_number, :incdt_crmacct_id, :incdt_cntct_id,"
               "       :incdt_description, :incdt_notes, :incdt_item_id,"
@@ -359,7 +353,6 @@ bool incident::save(bool partial)
               "       :incdt_incdtcat_id, :incdt_incdtseverity_id,"
               "       :incdt_incdtpriority_id, :incdt_incdtresolution_id,"
               "       :incdt_ls_id, :incdt_aropen_id, :incdt_owner_username,"
-              "       :incdt_prj_id, :incdt_public,"
               "       :incdt_recurring_incdt_id);" );
   else if (cEdit == _mode || _saved)
     q.prepare("UPDATE incdt"
@@ -376,8 +369,6 @@ bool incident::save(bool partial)
               "       incdt_incdtresolution_id=:incdt_incdtresolution_id,"
               "       incdt_ls_id=:incdt_ls_id,"
               "       incdt_owner_username=:incdt_owner_username,"
-              "       incdt_prj_id=:incdt_prj_id,"
-              "       incdt_public=:incdt_public,"
               "       incdt_recurring_incdt_id=:incdt_recurring_incdt_id"
               " WHERE (incdt_id=:incdt_id); ");
 
@@ -408,9 +399,6 @@ bool incident::save(bool partial)
     q.bindValue(":incdt_aropen_id", _aropenid);
   if (_recurring->isRecurring())
     q.bindValue(":incdt_recurring_incdt_id", _recurring->parentId());
-  if (_project->id() > 0)
-    q.bindValue(":incdt_prj_id", _project->id());
-  q.bindValue(":incdt_public", _public->isChecked());
 
   if(!q.exec() && q.lastError().type() != QSqlError::NoError)
   {
@@ -484,8 +472,6 @@ void incident::populate()
             "            WHEN (aropen_doctype='R') THEN :cashdeposit"
             "            ELSE ''"
             "       END AS docType, "
-            "       COALESCE(incdt_prj_id,-1) AS incdt_prj_id,"
-            "       COALESCE(incdt_public, false) AS incdt_public,"
             "       aropen_doctype "
             "FROM incdt LEFT OUTER JOIN cntct ON (incdt_cntct_id=cntct_id)"
             "           LEFT OUTER JOIN aropen ON (incdt_aropen_id=aropen_id) "
@@ -530,9 +516,6 @@ void incident::populate()
     _comments->setId(_incdtid);
     _documents->setId(_incdtid);
     _alarms->setId(_incdtid);
-
-    _project->setId(q.value("incdt_prj_id").toInt());
-    _public->setChecked(q.value("incdt_public").toBool());
         
     _docType->setText(q.value("docType").toString());
     _docNumber->setText(q.value("docNumber").toString());
@@ -650,20 +633,16 @@ void incident::sPopulateTodoMenu(QMenu *pMenu)
   QAction *menuItem;
 
   bool newPriv = (cNew == _mode || cEdit == _mode) &&
-      (_privileges->check("MaintainPersonalToDoItems") ||
-       _privileges->check("MaintainAllToDoItems") );
+      (_privileges->check("MaintainPersonalTodoList") ||
+       _privileges->check("MaintainOtherTodoLists") );
 
   bool editPriv = (cNew == _mode || cEdit == _mode) && (
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (_privileges->check("MaintainAllToDoItems")) );
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainOtherTodoLists")) );
 
   bool viewPriv =
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("ViewPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("ViewPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (_privileges->check("ViewAllToDoItems")) || (_privileges->check("MaintainAllToDoItems"));
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewOtherTodoLists"));
 
   menuItem = pMenu->addAction(tr("New..."), this, SLOT(sNewTodoItem()));
   menuItem->setEnabled(newPriv);
@@ -681,8 +660,8 @@ void incident::sPopulateTodoMenu(QMenu *pMenu)
 void incident::sHandleTodoPrivs()
 {
   bool newPriv = (cNew == _mode || cEdit == _mode) &&
-      (_privileges->check("MaintainPersonalToDoItems") ||
-       _privileges->check("MaintainAllToDoItems") );
+      (_privileges->check("MaintainPersonalTodoList") ||
+       _privileges->check("MaintainOtherTodoLists") );
 
   bool editPriv = false;
   bool viewPriv = false;
@@ -690,16 +669,12 @@ void incident::sHandleTodoPrivs()
   if(_todoList->currentItem())
   {
     editPriv = (cNew == _mode || cEdit == _mode) && (
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (_privileges->check("MaintainAllToDoItems")) );
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainOtherTodoLists")) );
 
     viewPriv =
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("ViewPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("ViewPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (_privileges->check("ViewAllToDoItems")) || (_privileges->check("MaintainAllToDoItems"));
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewOtherTodoLists"));
   }
 
   _newTodoItem->setEnabled(newPriv);
@@ -783,9 +758,6 @@ void incident::sAssigned()
 
 void incident::sNewCharacteristic()
 {
-  if (! save(true))
-    return;
-
   ParameterList params;
   params.append("mode", "new");
   params.append("incdt_id", _incdtid);
@@ -823,17 +795,12 @@ void incident::sDeleteCharacteristic()
 void incident::sFillCharacteristicsList()
 {
   XSqlQuery qry;
-  qry.prepare( "SELECT charass_id, char_name, "
-               " CASE WHEN char_type < 2 THEN "
-               "   charass_value "
-               " ELSE "
-               "   formatDate(charass_value::date) "
-               "END AS charass_value "
-               "FROM charass, char "
-               "WHERE ( (charass_target_type='INCDT')"
-               " AND (charass_char_id=char_id)"
-               " AND (charass_target_id=:incdt_id) ) "
-               "ORDER BY char_order, char_name;" );
+  qry.prepare( "SELECT charass_id, * "
+             "FROM charass, char "
+             "WHERE ( (charass_target_type='INCDT')"
+             " AND (charass_char_id=char_id)"
+             " AND (charass_target_id=:incdt_id) ) "
+             "ORDER BY char_name;" );
   qry.bindValue(":incdt_id", _incdtid);
   qry.exec();
   _charass->populate(qry);

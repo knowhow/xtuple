@@ -1,0 +1,1130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>simpleSalesOrder</class>
+ <widget class="QMainWindow" name="simpleSalesOrder">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Simple Sales Order</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="Screen" name="_sale">
+      <property name="schemaName">
+       <string>api</string>
+      </property>
+      <property name="tableName">
+       <string>salesorder</string>
+      </property>
+      <property name="primaryKeyColumns">
+       <number>1</number>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="_2">
+         <item>
+          <widget class="QLabel" name="_numberLit">
+           <property name="text">
+            <string>Number:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="XLineEdit" name="_number">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="fieldName">
+            <string notr="true">order_number</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>16</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_cancel">
+           <property name="text">
+            <string>Cancel</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_save">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>&amp;Save</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="_3">
+         <property name="spacing">
+          <number>12</number>
+         </property>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>26</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="_subtotalLit">
+           <property name="text">
+            <string>Subtotal:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CurrCluster" name="_subtotal">
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="currencyVisible">
+            <bool>false</bool>
+           </property>
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="_taxLit">
+           <property name="text">
+            <string>Tax:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CurrCluster" name="_tax">
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="currencyVisible">
+            <bool>false</bool>
+           </property>
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="_totalLit">
+           <property name="text">
+            <string>Total:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="CurrCluster" name="_total">
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="currencyVisible">
+            <bool>false</bool>
+           </property>
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QTabWidget" name="_tab">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="_custTab">
+          <attribute name="title">
+           <string>&amp;Customer</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="0" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="CustInfo" name="_cust">
+                 <property name="focusPolicy">
+                  <enum>Qt::StrongFocus</enum>
+                 </property>
+                 <property name="type">
+                  <enum>CLineEdit::ActiveCustomers</enum>
+                 </property>
+                 <property name="fieldName">
+                  <string notr="true">customer_number</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="XLabel" name="_salesrepLit">
+                 <property name="text">
+                  <string>Sales Rep:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="XComboBox" name="_salesrep">
+                 <property name="allowNull">
+                  <bool>true</bool>
+                 </property>
+                 <property name="type">
+                  <enum>XComboBox::SalesReps</enum>
+                 </property>
+                 <property name="defaultCode">
+                  <enum>XComboBox::None</enum>
+                 </property>
+                 <property name="fieldName">
+                  <string notr="true">sales_rep</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_8">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QGroupBox" name="_shiptoGroup">
+               <property name="title">
+                <string>Ship-To</string>
+               </property>
+               <layout class="QGridLayout" name="_4">
+                <item row="0" column="0">
+                 <widget class="AddressCluster" name="_address">
+                  <property name="fieldNameLine1">
+                   <string notr="true">shipto_address1</string>
+                  </property>
+                  <property name="fieldNameLine2">
+                   <string notr="true">shipto_address2</string>
+                  </property>
+                  <property name="fieldNameLine3">
+                   <string notr="true">shipto_address3</string>
+                  </property>
+                  <property name="fieldNameCity">
+                   <string notr="true">shipto_city</string>
+                  </property>
+                  <property name="fieldNameState">
+                   <string notr="true">shipto_state</string>
+                  </property>
+                  <property name="fieldNamePostalCode">
+                   <string notr="true">shipto_postal_code</string>
+                  </property>
+                  <property name="fieldNameCountry">
+                   <string notr="true">shipto_country</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <spacer name="horizontalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <layout class="QGridLayout" name="gridLayout_2">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="_custponumberLit">
+                   <property name="text">
+                    <string>Purchase Order #:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="XLineEdit" name="_custponumber">
+                   <property name="fieldName">
+                    <string notr="true">cust_po_number</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="shipviaLit">
+                   <property name="text">
+                    <string>Ship Via:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <item>
+                    <widget class="XComboBox" name="_shipvia">
+                     <property name="type">
+                      <enum>XComboBox::ShipVias</enum>
+                     </property>
+                     <property name="fieldName">
+                      <string notr="true">ship_via</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="_taxzoneLit">
+                   <property name="text">
+                    <string>Tax Zone:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <item>
+                    <widget class="XComboBox" name="_taxzone">
+                     <property name="allowNull">
+                      <bool>true</bool>
+                     </property>
+                     <property name="type">
+                      <enum>XComboBox::TaxZones</enum>
+                     </property>
+                     <property name="fieldName">
+                      <string notr="true">tax_zone</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_6">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>38</width>
+                       <height>17</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QLabel" name="_siteLit">
+                   <property name="text">
+                    <string>Site:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <layout class="QHBoxLayout" name="horizontalLayout_7">
+                   <item>
+                    <widget class="WComboBox" name="_site">
+                     <property name="fieldName">
+                      <string notr="true">site</string>
+                     </property>
+                     <property name="type">
+                      <enum>WComboBox::Sold</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_9">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>563</width>
+                 <height>48</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="_itemsTab">
+          <attribute name="title">
+           <string>&amp;Items</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="0">
+            <widget class="XTreeView" name="_saleitems">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>false</bool>
+             </property>
+             <property name="schemaName">
+              <string>api</string>
+             </property>
+             <property name="tableName">
+              <string>salesline</string>
+             </property>
+             <property name="primaryKeyCoulmns" stdset="0">
+              <number>2</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <layout class="QHBoxLayout" name="_5">
+             <property name="spacing">
+              <number>12</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="_add">
+               <property name="text">
+                <string>&amp;Add</string>
+               </property>
+               <property name="default">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="_remove">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>&amp;Remove</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>16</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0">
+            <widget class="Screen" name="_saleitem">
+             <property name="primaryKeyColumns">
+              <number>2</number>
+             </property>
+             <layout class="QGridLayout" name="_6">
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QGroupBox" name="_itemGroup">
+                <property name="title">
+                 <string/>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0" colspan="2">
+                  <widget class="ItemCluster" name="_item">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                   <property name="fieldName">
+                    <string notr="true">item_number</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2" rowspan="2">
+                  <layout class="QGridLayout" name="_7">
+                   <property name="verticalSpacing">
+                    <number>0</number>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="_qtyLit">
+                     <property name="text">
+                      <string>Qty:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="margin">
+                      <number>5</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1">
+                    <layout class="QHBoxLayout" name="_8">
+                     <item>
+                      <widget class="XLineEdit" name="_qty">
+                       <property name="fieldName">
+                        <string notr="true">qty_ordered</string>
+                       </property>
+                       <property name="defaultText">
+                        <string>1</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>81</width>
+                         <height>21</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="_unitPriceLit">
+                     <property name="text">
+                      <string>Unit Price:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="margin">
+                      <number>5</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
+                    <widget class="QLabel" name="_extendedPriceLit">
+                     <property name="text">
+                      <string>Extended:</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="margin">
+                      <number>5</number>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1">
+                    <layout class="QHBoxLayout" name="horizontalLayout_3">
+                     <item>
+                      <widget class="CurrCluster" name="_unitPrice">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="fieldNameValue">
+                        <string notr="true">net_unit_price</string>
+                       </property>
+                       <property name="format">
+                        <enum>CurrDisplay::SalesPrice</enum>
+                       </property>
+                       <property name="currencyEnabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="currencyVisible">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_3">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                   <item row="2" column="1">
+                    <layout class="QHBoxLayout" name="horizontalLayout_4">
+                     <item>
+                      <widget class="CurrCluster" name="_extendedPrice">
+                       <property name="sizePolicy">
+                        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="fieldNameValue">
+                        <string notr="true">extension</string>
+                       </property>
+                       <property name="format">
+                        <enum>CurrDisplay::ExtPrice</enum>
+                       </property>
+                       <property name="currencyEnabled">
+                        <bool>false</bool>
+                       </property>
+                       <property name="currencyVisible">
+                        <bool>false</bool>
+                       </property>
+                       <property name="enabled">
+                        <bool>false</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <spacer name="horizontalSpacer_4">
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="_scheddateLit">
+                   <property name="text">
+                    <string>Scheduled Date:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <layout class="QHBoxLayout" name="horizontalLayout">
+                   <item>
+                    <widget class="DLineEdit" name="_scheddate">
+                     <property name="defaultDate">
+                      <enum>XDateEdit::Current</enum>
+                     </property>
+                     <property name="fieldName">
+                      <string notr="true">scheduled_date</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>AddressCluster</class>
+   <extends>QWidget</extends>
+   <header>addresscluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CurrCluster</class>
+   <extends>CurrDisplay</extends>
+   <header>currcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CurrDisplay</class>
+   <extends>QWidget</extends>
+   <header>currcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CustInfo</class>
+   <extends>QWidget</extends>
+   <header>custcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DLineEdit</class>
+   <extends>QWidget</extends>
+   <header>datecluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ItemCluster</class>
+   <extends>QWidget</extends>
+   <header>itemcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Screen</class>
+   <extends>QWidget</extends>
+   <header>screen.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>WComboBox</class>
+   <extends>XComboBox</extends>
+   <header>wcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLabel</class>
+   <extends>QLabel</extends>
+   <header>xlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>xlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTreeView</class>
+   <extends>QTreeView</extends>
+   <header>xtreeview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_address</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>334</x>
+     <y>249</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_custponumber</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>232</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_number</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>38</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_salesrep</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>593</x>
+     <y>127</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_shipvia</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_total</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>649</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_subtotal</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>218</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_saleitems</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>200</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_cust</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>201</x>
+     <y>126</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_taxzone</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>202</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_sale</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_site</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>288</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>397</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_saleitem</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_extendedPrice</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>452</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_saleitem</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_item</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>245</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_saleitem</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_qty</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>584</x>
+     <y>380</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_saleitem</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_unitPrice</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>602</x>
+     <y>416</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_saleitem</sender>
+   <signal>newDataWidgetMapper(XDataWidgetMapper*)</signal>
+   <receiver>_scheddate</receiver>
+   <slot>setDataWidgetMap(XDataWidgetMapper*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>247</x>
+     <y>457</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_saleitems</sender>
+   <signal>newModel(XSqlTableModel*)</signal>
+   <receiver>_saleitem</receiver>
+   <slot>setModel(XSqlTableModel*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>200</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

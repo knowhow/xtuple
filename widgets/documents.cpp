@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -78,7 +78,6 @@ Documents::Documents(QWidget *pParent) :
   
   _source = Uninitialized;
   _sourceid = -1;
-  _readOnly = false;
 
   _doc->addColumn(tr("Type"),  _itemColumn,  Qt::AlignLeft, true, "target_type" );
   _doc->addColumn(tr("Number"), _itemColumn, Qt::AlignLeft, true, "target_number" );
@@ -90,8 +89,9 @@ Documents::Documents(QWidget *pParent) :
   connect(_editDoc, SIGNAL(clicked()), this, SLOT(sEditDoc()));
   connect(_viewDoc, SIGNAL(clicked()), this, SLOT(sViewDoc()));
   connect(_detachDoc, SIGNAL(clicked()), this, SLOT(sDetachDoc()));
+  connect(_doc, SIGNAL(valid(bool)), _editDoc, SLOT(setEnabled(bool)));
+  connect(_doc, SIGNAL(valid(bool)), _viewDoc, SLOT(setEnabled(bool)));
   connect(_doc, SIGNAL(valid(bool)), this, SLOT(handleSelection()));
-  connect(_doc, SIGNAL(itemSelected(int)), this, SLOT(handleItemSelected()));
   handleSelection();
 
   if (_x_privileges)
@@ -104,26 +104,23 @@ Documents::Documents(QWidget *pParent) :
     newDocMenu->addAction(imgAct);
 
     QAction* incdtAct = new QAction(tr("Incident"), this);
-    incdtAct->setEnabled(_x_privileges->check("MaintainPersonalIncidents") ||
-                         _x_privileges->check("MaintainAllIncidents"));
+    incdtAct->setEnabled(_x_privileges->check("AddIncidents"));
     connect(incdtAct, SIGNAL(triggered()), this, SLOT(sNewIncdt()));
     newDocMenu->addAction(incdtAct);
 
     QAction* todoAct = new QAction(tr("To Do"), this);
-    todoAct->setEnabled(_x_privileges->check("MaintainPersonalToDoItems") ||
-                        _x_privileges->check("MaintainAllToDoItems"));
+    todoAct->setEnabled(_x_privileges->check("MaintainPersonalTodoList") ||
+                        _x_privileges->check("MaintainOtherTodoLists"));
     connect(todoAct, SIGNAL(triggered()), this, SLOT(sNewToDo()));
     newDocMenu->addAction(todoAct);
 
     QAction* oppAct = new QAction(tr("Opportunity"), this);
-    oppAct->setEnabled(_x_privileges->check("MaintainPersonalOpportunities") ||
-                       _x_privileges->check("MaintainAllOpportunities"));
+    oppAct->setEnabled(_x_privileges->check("MaintainOpportunities"));
     connect(oppAct, SIGNAL(triggered()), this, SLOT(sNewOpp()));
     newDocMenu->addAction(oppAct);
 
     QAction* projAct = new QAction(tr("Project"), this);
-    projAct->setEnabled(_x_privileges->check("MaintainPersonalProjects") ||
-                        _x_privileges->check("MaintainAllProjects"));
+    projAct->setEnabled(_x_privileges->check("MaintainProjects"));
     connect(projAct, SIGNAL(triggered()), this, SLOT(sNewProj()));
     newDocMenu->addAction(projAct);
 
@@ -144,14 +141,21 @@ void Documents::setId(int pSourceid)
 
 void Documents::setReadOnly(bool pReadOnly)
 {
-  _readOnly = pReadOnly;
-
   _newDoc->setEnabled(!pReadOnly);
   _attachDoc->setEnabled(!pReadOnly);
   _editDoc->setEnabled(!pReadOnly);
   _detachDoc->setEnabled(!pReadOnly);
 
-  handleSelection();
+  disconnect(_doc, SIGNAL(valid(bool)), _editDoc, SLOT(setEnabled(bool)));
+//  disconnect(_doc, SIGNAL(valid(bool)), _viewDoc, SLOT(setEnabled(bool)));
+  disconnect(_doc, SIGNAL(valid(bool)), this, SLOT(handleSelection()));
+  if(!pReadOnly)
+  {
+    connect(_doc, SIGNAL(valid(bool)), _editDoc, SLOT(setEnabled(bool)));
+//    connect(_doc, SIGNAL(valid(bool)), _viewDoc, SLOT(setEnabled(bool)));
+    connect(_doc, SIGNAL(valid(bool)), this, SLOT(handleSelection()));
+  }
+  handleSelection(pReadOnly);
 }
 
 void Documents::sNewDoc(QString type, QString ui)
@@ -222,12 +226,7 @@ void Documents::sOpenDoc(QString mode)
   QString docType = _doc->currentItem()->rawValue("target_type").toString();
   int targetid = _doc->currentItem()->id("target_number");
   ParameterList params;
-  if (docType == "Q" && mode == "view")
-    params.append("mode", "viewQuote");
-  else if (docType == "Q" && mode == "edit")
-    params.append("mode", "editQuote");
-  else
-    params.append("mode", mode);
+  params.append("mode", mode);
 
   //image -- In the future this needs to be changed to use docass instead of imageass
   if (docType == "IMG")
@@ -244,7 +243,7 @@ void Documents::sOpenDoc(QString mode)
     newdlg.set(params);
 
     if (newdlg.exec() != QDialog::Rejected)
-      refresh();
+    refresh();
     return;
   }
   //url -- In the future this needs to be changed to use docass instead of url
@@ -303,7 +302,7 @@ void Documents::sOpenDoc(QString mode)
       QDesktopServices::openUrl(urldb);
 
       // Add a watch to the file that will save any changes made to the file back to the database.
-      if (_guiClientInterface && !_readOnly) // TODO: only if NOT read-only
+      if (_guiClientInterface)
         _guiClientInterface->addDocumentWatch(tfile.fileName(),qfile.value("url_id").toInt());
       return;
     }
@@ -356,11 +355,6 @@ void Documents::sOpenDoc(QString mode)
   {
     params.append("item_id", targetid);
     ui = "item";
-  }
-  else if (docType == "Q")
-  {
-    params.append("quhead_id", targetid);
-    ui = "salesOrder";
   }
   else if (docType == "S")
   {
@@ -436,12 +430,6 @@ void Documents::sDetachDoc()
   if (_doc->id() < 0)
     return;
 
-  if(QMessageBox::question( this, tr("Confirm Detach"),
-       tr("<p>You have requested to detach the selected document."
-          " In some cases this may permanently remove the document from the system.</p>"
-          "<p>Are you sure you want to continue?</p>"), QMessageBox::Yes|QMessageBox::No, QMessageBox::No) == QMessageBox::No)
-    return; // user doesn't want to continue so get out of here
-
   if ( _doc->currentItem()->rawValue("target_type") == "IMG" )
   {
     detach.prepare( "DELETE FROM imageass "
@@ -500,7 +488,6 @@ void Documents::refresh()
               " WHEN (target_type='J') THEN :project "
               " WHEN (target_type='P') THEN :po "
               " WHEN (target_type='S') THEN :so "
-              " WHEN (target_type='Q') THEN :quote "
               " WHEN (target_type='V') THEN :vendor "
               " WHEN (target_type='W') THEN :wo "
               " WHEN (target_type='TODO') THEN :todo "
@@ -524,7 +511,6 @@ void Documents::refresh()
 
   query.bindValue(":po", tr("Purchase Order"));
   query.bindValue(":so", tr("Sales Order"));
-  query.bindValue(":quote", tr("Quote"));
   query.bindValue(":wo", tr("Work Order"));
   query.bindValue(":image", tr("Image"));
   query.bindValue(":incident", tr("Incident"));
@@ -547,34 +533,24 @@ void Documents::refresh()
   _doc->populate(query,TRUE);
 }
 
-void Documents::handleSelection(bool /*pReadOnly*/)
+void Documents::handleSelection(bool pReadOnly)
 {
+//  disconnect(_doc, SIGNAL(itemSelected(int)), this, SLOT(sViewDoc()));
+  disconnect(_doc, SIGNAL(itemSelected(int)), this, SLOT(sEditDoc()));
+  if (pReadOnly)
+    return;
+
   if (_doc->selectedItems().count() &&
       (_doc->currentItem()->rawValue("target_type").toString() == "URL" ||
        _doc->currentItem()->rawValue("target_type").toString() == "FILE" ))
   {
+//    connect(_doc, SIGNAL(itemSelected(int)), this, SLOT(sViewDoc()));
     _viewDoc->setText(tr("Open"));
   }
   else
   {
+    connect(_doc, SIGNAL(itemSelected(int)), this, SLOT(sEditDoc()));
     _viewDoc->setText(tr("View"));
   }
-
-  bool valid = (_doc->selectedItems().count() > 0);
-  _editDoc->setEnabled(valid && !_readOnly);
-  _viewDoc->setEnabled(valid);
 }
 
-void Documents::handleItemSelected()
-{
-  if(_readOnly ||
-     (_doc->currentItem()->rawValue("target_type").toString() == "URL" ||
-      _doc->currentItem()->rawValue("target_type").toString() == "FILE" ))
-  {
-    _viewDoc->animateClick();
-  }
-  else
-  {
-    _editDoc->animateClick();
-  }
-}

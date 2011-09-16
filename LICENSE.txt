@@ -110,7 +110,7 @@ Software distributed under the License is distributed on an "AS IS" basis, WITHO
 The Original Code is xTuple ERP: PostBooks Edition
 
 The Original Developer is not the Initial Developer and is __________. If left blank, the Original Developer is the Initial Developer. 
-The Initial Developer of the Original Code is OpenMFG, LLC, d/b/a xTuple. All portions of the code written by xTuple are Copyright (c) 1999-2011 OpenMFG, LLC, d/b/a xTuple. All Rights Reserved. 
+The Initial Developer of the Original Code is OpenMFG, LLC, d/b/a xTuple. All portions of the code written by xTuple are Copyright (c) 1999-2010 OpenMFG, LLC, d/b/a xTuple. All Rights Reserved. 
 
 Contributor(s): ______________________.
 
@@ -122,7 +122,7 @@ Alternatively, the contents of this file may be used under the terms of the xTup
  
 EXHIBIT B.  Attribution Information
 
-Attribution Copyright Notice: Copyright (c) 1999-2011 by OpenMFG, LLC, d/b/a xTuple
+Attribution Copyright Notice: Copyright (c) 1999-2010 by OpenMFG, LLC, d/b/a xTuple
 
 Attribution Phrase (not exceeding 10 words): Powered by xTuple ERP: PostBooks Edition
 
@@ -131,4 +131,3 @@ Attribution URL: www.xtuple.org (to be included in the "Community" menu of the a
 Graphic Image as provided in the Covered Code, if any. (online at www.xtuple.com/poweredby)
 
 Display of Attribution Information is required in Larger Works which are defined in the CPAL as a work which combines Covered Code or portions thereof with code not governed by the terms of the CPAL.
-

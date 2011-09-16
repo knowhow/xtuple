@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -240,13 +240,13 @@ void dspMRPDetail::sFillMRPDetail()
     _mrp->addColumn(formatDate(((PeriodListViewItem *)cursor)->startDate()), _qtyColumn, Qt::AlignRight);
   }
 
-  XTreeWidgetItem *qoh = 0;
-  XTreeWidgetItem *allocations = 0;
-  XTreeWidgetItem *orders = 0;
-  XTreeWidgetItem *availability = 0;
-  XTreeWidgetItem *firmedAllocations = 0;
-  XTreeWidgetItem *firmedOrders = 0;
-  XTreeWidgetItem *firmedAvailability = 0;
+  XTreeWidgetItem *qoh;
+  XTreeWidgetItem *allocations;
+  XTreeWidgetItem *orders;
+  XTreeWidgetItem *availability;
+  XTreeWidgetItem *firmedAllocations;
+  XTreeWidgetItem *firmedOrders;
+  XTreeWidgetItem *firmedAvailability;
   double        runningAvailability = 0.0;
   double	runningFirmed = 0.0;
   int           counter = 0;

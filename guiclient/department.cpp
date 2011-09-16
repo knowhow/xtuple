@@ -3,7 +3,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -106,7 +106,7 @@ void department::sSave()
   q.exec();
   if(q.first())
   {
-    QMessageBox::critical(this, tr("Cannot Save Department"),
+    QMessageBox::critical(this, tr("Cannpt Save Department"),
                           tr("The Number you entered already exists. Please choose a different Number."));
     return;
   }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -12,7 +12,6 @@
 #include "ui_displayTimePhased.h"
 
 #include <QSqlError>
-#include <QMessageBox>
 
 #include <parameter.h>
 
@@ -62,31 +61,10 @@ QWidget * displayTimePhased::optionsWidget()
 
 bool displayTimePhased::setParams(ParameterList &params)
 {
-  if (_data->_calendar->id() == -1)
-  {
-    QMessageBox::critical(this, tr("Calendar Required"),
-                          tr("You must select a Calendar"));
-    _data->_calendar->setFocus();
-    return false;
-  }
-
-  if (_data->_periods->selectedItems().length() == 0)
-  {
-    QMessageBox::critical(this, tr("Periods Required"),
-                          tr("You must select at least one Calendar Period"));
-    _data->_calendar->setFocus();
-    return false;
-  }
-
   params.append("period_id_list", _data->_periods->periodList());
   params.append("calendar_id", _data->_calendar->id());
 
   return setParamsTP(params);
-}
-
-void displayTimePhased::setBaseColumns(int columns)
-{
-  _data->_baseColumns = columns;
 }
 
 void displayTimePhased::sFillList()

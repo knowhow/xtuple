@@ -1,204 +1,112 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
+ <author></author>
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
+ <exportmacro></exportmacro>
  <class>applyAPCreditMemo</class>
- <widget class="QDialog" name="applyAPCreditMemo">
-  <property name="geometry">
+ <widget class="QDialog" name="applyAPCreditMemo" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>588</width>
-    <height>440</height>
+    <width>595</width>
+    <height>353</height>
    </rect>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>Apply A/P Credit Memo</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>5</number>
+   </property>
+   <property name="spacing" >
+    <number>5</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>7</number>
+     </property>
      <item>
-      <widget class="VendorCluster" name="_vend">
-       <property name="label">
-        <string>Vendor #:</string>
-       </property>
-      </widget>
+      <widget class="VendorCluster" name="_vend" />
      </item>
      <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
        </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
+       <property name="spacing" >
+        <number>0</number>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>0</width>
-         <height>16</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QDialogButtonBox" name="_buttonBox">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="_priceGroup">
-     <layout class="QGridLayout">
-      <property name="margin">
-       <number>11</number>
-      </property>
-      <item row="0" column="1">
-       <widget class="CurrDisplay" name="_available"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="_availableLit">
-        <property name="text">
-         <string>Available to Apply:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="_appliedLit">
-        <property name="text">
-         <string>Applied:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="_balanceLit">
-        <property name="text">
-         <string>Balance:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="CurrDisplay" name="_balance"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="CurrDisplay" name="_applied"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="_doumentNumberLit">
-         <property name="text">
-          <string>Document #:</string>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Expanding</enum>
          </property>
-        </widget>
+         <property name="sizeHint" >
+          <size>
+           <width>245</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
        </item>
-       <item row="0" column="1">
-        <layout class="QHBoxLayout">
-         <property name="spacing">
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="_docNumber">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
            </property>
-          </widget>
+           <property name="spacing" >
+            <number>5</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="_close" >
+             <property name="text" >
+              <string>&amp;Cancel</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_post" >
+             <property name="text" >
+              <string>&amp;Post</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
           <spacer>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
            </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
+           <property name="sizeType" >
+            <enum>QSizePolicy::Preferred</enum>
            </property>
-           <property name="sizeHint" stdset="0">
+           <property name="sizeHint" >
             <size>
-             <width>36</width>
-             <height>10</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="_distDateLit">
-         <property name="text">
-          <string>Distribution Date:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <layout class="QHBoxLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="DLineEdit" name="_docDate">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>32767</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Expanding</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>25</width>
-             <height>16</height>
+             <width>10</width>
+             <height>21</height>
             </size>
            </property>
           </spacer>
@@ -207,97 +115,343 @@ to be bound by its terms.</comment>
        </item>
       </layout>
      </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
      <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+      <widget class="QGroupBox" name="_priceGroup" >
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>11</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="0" column="1" >
+         <widget class="CurrDisplay" name="_available" />
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="_availableLit" >
+          <property name="text" >
+           <string>Available to Apply:</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="_appliedLit" >
+          <property name="text" >
+           <string>Applied:</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="_balanceLit" >
+          <property name="text" >
+           <string>Balance:</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <widget class="CurrDisplay" name="_balance" />
+        </item>
+        <item row="1" column="1" >
+         <widget class="CurrDisplay" name="_applied" />
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>16</width>
-         <height>13</height>
-        </size>
+       <property name="spacing" >
+        <number>0</number>
        </property>
-      </spacer>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>5</number>
+         </property>
+         <item>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>5</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="_doumentNumberLit" >
+             <property name="text" >
+              <string>Document #:</string>
+             </property>
+             <property name="alignment" >
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="_distDateLit" >
+             <property name="text" >
+              <string>Distribution Date:</string>
+             </property>
+             <property name="alignment" >
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>5</number>
+           </property>
+           <item>
+            <layout class="QHBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="_docNumber" >
+               <property name="minimumSize" >
+                <size>
+                 <width>100</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>36</width>
+                 <height>10</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="DLineEdit" name="_docDate" >
+               <property name="enabled" >
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>100</width>
+                 <height>32767</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>25</width>
+                 <height>16</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>16</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="XTreeWidget" name="_apopen"/>
-   </item>
-   <item row="2" column="2">
-    <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>7</number>
+     </property>
      <item>
-      <widget class="QPushButton" name="_applyToBalance">
-       <property name="text">
-        <string>Apply to &amp;Balance</string>
-       </property>
-      </widget>
+      <widget class="XTreeWidget" name="_apopen" />
      </item>
      <item>
-      <widget class="QPushButton" name="_apply">
-       <property name="enabled">
-        <bool>false</bool>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
        </property>
-       <property name="text">
-        <string>&amp;Apply</string>
+       <property name="spacing" >
+        <number>0</number>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="_clear">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Clear Application</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Expanding</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>13</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>5</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="_applyToBalance" >
+           <property name="text" >
+            <string>Apply to &amp;Balance</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="_apply" >
+             <property name="enabled" >
+              <bool>false</bool>
+             </property>
+             <property name="text" >
+              <string>&amp;Apply</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_clear" >
+             <property name="enabled" >
+              <bool>false</bool>
+             </property>
+             <property name="text" >
+              <string>Clear Application</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>10</width>
+           <height>26</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
+ <layoutdefault spacing="6" margin="11" />
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
+  <customwidget>
+   <class>DLineEdit</class>
+   <extends>XLineEdit</extends>
+   <header>datecluster.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
   <customwidget>
    <class>CurrDisplay</class>
    <extends>QWidget</extends>
    <header>currcluster.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DLineEdit</class>
-   <extends>QWidget</extends>
-   <header>datecluster.h</header>
-   <container>1</container>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>VendorCluster</class>
    <extends>QWidget</extends>
    <header>vendorcluster.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
   <customwidget>
    <class>XTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
-   <container>1</container>
+   <container>0</container>
+   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -307,7 +461,10 @@ to be bound by its terms.</comment>
   <tabstop>_applyToBalance</tabstop>
   <tabstop>_apply</tabstop>
   <tabstop>_clear</tabstop>
+  <tabstop>_post</tabstop>
+  <tabstop>_close</tabstop>
  </tabstops>
+ <includes/>
  <resources/>
  <connections>
   <connection>
@@ -316,11 +473,11 @@ to be bound by its terms.</comment>
    <receiver>_apply</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -332,11 +489,11 @@ to be bound by its terms.</comment>
    <receiver>_clear</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -348,11 +505,11 @@ to be bound by its terms.</comment>
    <receiver>_available</receiver>
    <slot>setEffective(QDate)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -364,11 +521,11 @@ to be bound by its terms.</comment>
    <receiver>_applied</receiver>
    <slot>setId(int)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -380,11 +537,11 @@ to be bound by its terms.</comment>
    <receiver>_balance</receiver>
    <slot>setId(int)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -396,11 +553,11 @@ to be bound by its terms.</comment>
    <receiver>_applied</receiver>
    <slot>setEffective(QDate)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>
@@ -412,11 +569,11 @@ to be bound by its terms.</comment>
    <receiver>_balance</receiver>
    <slot>setEffective(QDate)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>20</x>
      <y>20</y>
     </hint>

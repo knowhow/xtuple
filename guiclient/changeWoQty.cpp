@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -22,8 +22,7 @@ changeWoQty::changeWoQty(QWidget* parent, const char* name, bool modal, Qt::WFla
 {
   setupUi(this);
 
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sChangeQty()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_change, SIGNAL(clicked()), this, SLOT(sChangeQty()));
   connect(_newQtyOrdered, SIGNAL(textChanged(const QString&)), this, SLOT(sQtyChanged(const QString&)));
 
   _captive = FALSE;
@@ -37,7 +36,6 @@ changeWoQty::changeWoQty(QWidget* parent, const char* name, bool modal, Qt::WFla
   _currentQtyBalance->setPrecision(omfgThis->qtyVal());
   _cmnttype->setType(XComboBox::AllCommentTypes);
   _commentGroup->setEnabled(_postComment->isChecked());
-  adjustSize();
 }
 
 changeWoQty::~changeWoQty()

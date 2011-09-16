@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -54,6 +54,7 @@ class menuSales : public QObject
     void sCreateInvoices();
     void sUnpostedInvoices();
     void sPrintInvoices();
+    void sPrintInvoicesByShipvia();
     void sReprintInvoices();
     void sPostInvoices();
     void sPurgeInvoices();
@@ -88,27 +89,61 @@ class menuSales : public QObject
     void sDspOrderLookupByCustomerPO();
     void sDspQuoteLookupByCustomer();
     void sDspQuoteLookupByItem();
-    void sDspInventoryAvailability();
-    void sDspInventoryAvailabilityByCustomerType();
+    void sDspInventoryAvailabilityByItem();
     void sDspInventoryAvailabilityBySalesOrder();
+    void sDspInventoryAvailabilityByCustomerType();
     void sDspReservations();
+    void sDspCustomersByCusttype();
+    void sDspCustomersByCharacteristic();
     void sDspSalesOrderStatus();
-    void sDspBacklog();
+    void sDspBacklogByItem();
+    void sDspBacklogBySalesOrder();
+    void sDspBacklogByCustomer();
+    void sDspBacklogByCustomerType();
+    void sDspBacklogByCustomerGroup();
+    void sDspBacklogByProductCategory();
     void sDspSummarizedBacklogByWarehouse();
     void sDspPartiallyShippedOrders();
     void sDspEarnedCommissions();
     void sDspBriefEarnedCommissions();
     void sDspTaxHistory();
     
-    void sDspSalesHistory();
-    void sDspBriefSalesHistory();
-    void sDspBookings();
-    void sDspSummarizedSales();
-    void sDspTimePhasedBookings();
-    void sDspTimePhasedSales();
+    void sDspSalesHistoryByCustomer();
+    void sDspSalesHistoryByBilltoName();
+    void sDspSalesHistoryByShipTo();
+    void sDspSalesHistoryByItem();
+    void sDspSalesHistoryBySalesRep();
+    void sDspSalesHistoryByProductCategory();
+    void sDspSalesHistoryByCustomerType();
+    void sDspSalesHistoryByCustomerGroup();
+    void sDspBriefSalesHistoryByCustomer();
+    void sDspBriefSalesHistoryByCustomerType();
+    void sDspBriefSalesHistoryBySalesRep();
+    void sDspBookingsByCustomer();
+    void sDspBookingsByCustomerGroup();
+    void sDspBookingsByShipTo();
+    void sDspBookingsByItem();
+    void sDspBookingsByProductCategory();
+    void sDspBookingsBySalesRep();
+    void sDspSummarizedSalesByCustomer();
+    void sDspSummarizedSalesByCustomerType();
+    void sDspSummarizedSalesByCustomerByItem();
+    void sDspSummarizedSalesByCustomerTypeByItem();
+    void sDspSummarizedSalesByItem();
+    void sDspSummarizedSalesBySalesRep();
+    void sDspSummarizedSalesHistoryByShippingZone();
+    void sDspTimePhasedBookingsByItem();
+    void sDspTimePhasedBookingsByProductCategory();
+    void sDspTimePhasedBookingsByCustomer();
+    void sDspTimePhasedSalesByItem();
+    void sDspTimePhasedSalesByProductCategory();
+    void sDspTimePhasedSalesByCustomer();
+    void sDspTimePhasedSalesByCustomerGroup();
+    void sDspTimePhasedSalesByCustomerByItem();
 
     void sPrintSalesOrderForm();
     void sPrintReturnAuthForm();
+    void sPrintSASpecialCalendarForm();
 
     void sNewCustomer();
     void sCustomers();
@@ -118,6 +153,7 @@ class menuSales : public QObject
     void sNewProspect();
     void sProspects();
 
+    void sDspCustomerInformationExport();
     void sReassignCustomerTypeByCustomerType();
     
     void sArchiveSalesHistory();
@@ -139,7 +175,7 @@ class menuSales : public QObject
     QMenu *billingInvoicesMenu;
     QMenu *billingCreditMemosMenu;
     QMenu *billingFormsMenu;
-    QMenu *returnsMenu;
+	QMenu *returnsMenu;
     QMenu *pricingMenu;
     QMenu *pricingReportsMenu;
     QMenu *pricingUpdateMenu;
@@ -150,7 +186,15 @@ class menuSales : public QObject
     QMenu *lookupSoMenu;
     QMenu *formsMenu;
     QMenu *analysisMenu;
+    QMenu *analysisBookMenu;
+    QMenu *analysisSumHistMenu;
+    QMenu *analysisHistMenu;
+    QMenu *analysisBrfHistMenu;
+    QMenu *analysisTpBookMenu;
+    QMenu *analysisTpHistMenu;
     QMenu *reportsMenu;
+    QMenu *reportsCustomersMenu;
+    QMenu *reportsInvAvailMenu;
     QMenu *reportsBacklogMenu;
     QMenu *utilitiesMenu;
     

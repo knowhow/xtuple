@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -11,40 +11,61 @@
 #include "updateOUTLevelsByClassCode.h"
 
 #include <QMessageBox>
+#include <qvariant.h>
 #include <parameter.h>
 #include "submitAction.h"
 
+/*
+ *  Constructs a updateOUTLevelsByClassCode as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
 updateOUTLevelsByClassCode::updateOUTLevelsByClassCode(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-  : XDialog(parent, name, modal, fl)
+    : XDialog(parent, name, modal, fl)
 {
-  setupUi(this);
+    setupUi(this);
 
-  _daysGroupInt = new QButtonGroup(this);
-  _daysGroupInt->addButton(_leadTime);
-  _daysGroupInt->addButton(_fixedDays);
+    _daysGroupInt = new QButtonGroup(this);
+    _daysGroupInt->addButton(_leadTime);
+    _daysGroupInt->addButton(_fixedDays);
 
-  // signals and slots connections
-  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(_update, SIGNAL(clicked()), this, SLOT(sUpdate()));
-  connect(_calendar, SIGNAL(newCalendarId(int)), _periods, SLOT(populate(int)));
-  connect(_fixedDays, SIGNAL(toggled(bool)), _days, SLOT(setEnabled(bool)));
-  connect(_leadTime, SIGNAL(toggled(bool)), _leadTimePad, SLOT(setEnabled(bool)));
-  connect(_submit, SIGNAL(clicked()), this, SLOT(sSubmit()));
+    // signals and slots connections
+    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(_update, SIGNAL(clicked()), this, SLOT(sUpdate()));
+    connect(_calendar, SIGNAL(newCalendarId(int)), _periods, SLOT(populate(int)));
+    connect(_fixedDays, SIGNAL(toggled(bool)), _days, SLOT(setEnabled(bool)));
+    connect(_leadTime, SIGNAL(toggled(bool)), _leadTimePad, SLOT(setEnabled(bool)));
+    connect(_submit, SIGNAL(clicked()), this, SLOT(sSubmit()));
     
-  if (!_metrics->boolean("EnableBatchManager"))
-    _submit->hide();
+    if (!_metrics->boolean("EnableBatchManager"))
+      _submit->hide();
     
-  _classCode->setType(ParameterGroup::ClassCode);
+    init();
 }
 
+/*
+ *  Destroys the object and frees any allocated resources
+ */
 updateOUTLevelsByClassCode::~updateOUTLevelsByClassCode()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
 void updateOUTLevelsByClassCode::languageChange()
 {
-  retranslateUi(this);
+    retranslateUi(this);
+}
+
+
+void updateOUTLevelsByClassCode::init()
+{
+  _classCode->setType(ParameterGroup::ClassCode);
 }
 
 void updateOUTLevelsByClassCode::sUpdate()

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -160,8 +160,7 @@ void itemCost::sSave()
   {
       q.prepare( "UPDATE itemcost SET"
 		 " itemcost_actcost=:itemcost_actcost,"
-                 " itemcost_curr_id=:itemcost_curr_id, "
-                 " itemcost_updated=CURRENT_DATE "
+		 " itemcost_curr_id=:itemcost_curr_id "
 		 "WHERE (itemcost_id=:itemcost_id);");
   }
   q.bindValue(":itemcost_id", _itemcostid);

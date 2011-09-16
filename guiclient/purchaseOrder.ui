@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>829</width>
-    <height>608</height>
+    <width>804</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -912,11 +912,7 @@ to be bound by its terms.</comment>
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-        <widget class="XTextEdit" name="_notes">
-         <property name="spellEnable">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <widget class="QTextEdit" name="_notes"/>
        </item>
       </layout>
      </widget>
@@ -1168,11 +1164,6 @@ to be bound by its terms.</comment>
    <class>XURLLabel</class>
    <extends>QLabel</extends>
    <header>xurllabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
   <customwidget>
    <class>PoitemTableView</class>

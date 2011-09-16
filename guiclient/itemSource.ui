@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -299,7 +299,7 @@ to be bound by its terms.</comment>
       <item row="1" column="1">
        <layout class="QHBoxLayout">
         <property name="spacing">
-         <number>5</number>
+         <number>0</number>
         </property>
         <item>
          <widget class="XLineEdit" name="_vendorUOM">
@@ -308,6 +308,12 @@ to be bound by its terms.</comment>
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>60</width>
+            <height>32767</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -528,7 +534,7 @@ to be bound by its terms.</comment>
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="_notesTab">
       <attribute name="title">
@@ -542,11 +548,7 @@ to be bound by its terms.</comment>
         <number>5</number>
        </property>
        <item>
-        <widget class="XTextEdit" name="_notes">
-         <property name="spellEnable">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <widget class="QTextEdit" name="_notes"/>
        </item>
       </layout>
      </widget>
@@ -641,7 +643,7 @@ to be bound by its terms.</comment>
         <number>5</number>
        </property>
        <item>
-        <widget class="XTextEdit" name="_vendorItemDescrip">
+        <widget class="QTextEdit" name="_vendorItemDescrip">
          <property name="tabChangesFocus">
           <bool>true</bool>
          </property>
@@ -693,9 +695,6 @@ to be bound by its terms.</comment>
              <property name="editable">
               <bool>true</bool>
              </property>
-             <property name="allowNull">
-              <bool>true</bool>
-             </property>
             </widget>
            </item>
           </layout>
@@ -737,7 +736,7 @@ to be bound by its terms.</comment>
           </widget>
          </item>
          <item>
-          <widget class="XTextEdit" name="_manufItemDescrip">
+          <widget class="QTextEdit" name="_manufItemDescrip">
            <property name="tabChangesFocus">
             <bool>true</bool>
            </property>
@@ -781,11 +780,6 @@ to be bound by its terms.</comment>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

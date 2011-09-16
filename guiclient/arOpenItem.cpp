@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -26,8 +26,6 @@ arOpenItem::arOpenItem(QWidget* parent, const char* name, bool modal, Qt::WFlags
 {
   setupUi(this);
 
-  _commprcnt = 0.0;
-
   _save = _buttonBox->button(QDialogButtonBox::Save);
   _save->setDisabled(true);
 
@@ -38,7 +36,6 @@ arOpenItem::arOpenItem(QWidget* parent, const char* name, bool modal, Qt::WFlags
   connect(_terms,          SIGNAL(newID(int)),                this, SLOT(sPopulateDueDate()));
   connect(_docDate,        SIGNAL(newDate(const QDate&)),     this, SLOT(sPopulateDueDate()));
   connect(_taxLit,         SIGNAL(leftClickedURL(const QString&)), this, SLOT(sTaxDetail()));
-  connect(_amount,         SIGNAL(valueChanged()),            this, SLOT(sCalculateCommission()));
 
   _last = -1;
   _aropenid = -1;
@@ -59,7 +56,7 @@ arOpenItem::arOpenItem(QWidget* parent, const char* name, bool modal, Qt::WFlags
   _terms->setType(XComboBox::ARTerms);
   _salesrep->setType(XComboBox::SalesReps);
 
-  _altSalescatid->setType(XComboBox::SalesCategoriesActive);
+  _altSalescatid->setType(XComboBox::SalesCategories);
 
   _rsnCode->setType(XComboBox::ReasonCodes);
 
@@ -143,7 +140,6 @@ enum SetResponse arOpenItem::set( const ParameterList &pParams )
       _orderNumber->setEnabled(FALSE);
       _journalNumber->setEnabled(FALSE);
       _terms->setEnabled(FALSE);
-      _useAltPrepaid->setEnabled(FALSE);
       _altPrepaid->setEnabled(FALSE);
     }
     else if (param.toString() == "view")
@@ -164,7 +160,6 @@ enum SetResponse arOpenItem::set( const ParameterList &pParams )
       _commissionDue->setEnabled(FALSE);
       _commissionPaid->setEnabled(FALSE);
       _rsnCode->setEnabled(FALSE);
-      _useAltPrepaid->setEnabled(FALSE);
       _altPrepaid->setEnabled(FALSE);
       _notes->setReadOnly(TRUE);
       _buttonBox->clear();
@@ -229,7 +224,7 @@ void arOpenItem::sSave()
       return;
     }
 
-    if (_useAltPrepaid->isChecked())
+    if (_altPrepaid->isChecked())
     {
       if(_altSalescatidSelected->isChecked() && !_altSalescatid->isValid())
       {
@@ -262,7 +257,7 @@ void arOpenItem::sSave()
                  "                          :aropen_salescat_id, :aropen_accnt_id, :aropen_duedate,"
                  "                          :aropen_terms_id, :aropen_salesrep_id, :aropen_commission_due, "
                  "                          :curr_id ) AS result;" );
-      storedProc = "createARDebitMemo";
+      storedProc = "createARCreditMemo";
     }
 
     q.bindValue(":cust_id", _cust->id());
@@ -295,20 +290,17 @@ void arOpenItem::sSave()
   q.bindValue(":aropen_docnumber", _docNumber->text());
   q.bindValue(":aropen_ordernumber", _orderNumber->text());
   q.bindValue(":aropen_terms_id", _terms->id());
-
-  if (_salesrep->isValid())
-    q.bindValue(":aropen_salesrep_id", _salesrep->id());
-
+  q.bindValue(":aropen_salesrep_id", _salesrep->id());
   q.bindValue(":aropen_amount", _amount->localValue());
   q.bindValue(":aropen_commission_due", _commissionDue->baseValue());
   q.bindValue(":aropen_notes",          _notes->toPlainText());
   q.bindValue(":aropen_rsncode_id", _rsnCode->id());
   q.bindValue(":curr_id", _amount->id());
-  if(_useAltPrepaid->isChecked() && _altSalescatidSelected->isChecked())
+  if(_altPrepaid->isChecked() && _altSalescatidSelected->isChecked())
     q.bindValue(":aropen_salescat_id", _altSalescatid->id());
   else
     q.bindValue(":aropen_salescat_id", -1);
-  if(_useAltPrepaid->isChecked() && _altAccntidSelected->isChecked())
+  if(_altPrepaid->isChecked() && _altAccntidSelected->isChecked())
     q.bindValue(":aropen_accnt_id", _altAccntid->id());
   else
     q.bindValue(":aropen_accnt_id", -1);
@@ -356,7 +348,7 @@ void arOpenItem::sSave()
 	return;
       }
       if(_printOnPost->isChecked())
-        sPrintOnPost(_last);
+        sPrintOnPost(_aropenid); 
       reset();
     }
   }
@@ -397,7 +389,7 @@ void arOpenItem::sPopulateCustInfo(int pCustid)
   if ( (pCustid != -1) && (_mode == cNew) )
   {
     XSqlQuery c;
-    c.prepare( "SELECT cust_terms_id, cust_salesrep_id, cust_curr_id, cust_commprcnt "
+    c.prepare( "SELECT cust_terms_id, cust_salesrep_id, cust_curr_id "
                "FROM custinfo "
                "WHERE (cust_id=:cust_id);" );
     c.bindValue(":cust_id", pCustid);
@@ -408,7 +400,6 @@ void arOpenItem::sPopulateCustInfo(int pCustid)
       _salesrep->setId(c.value("cust_salesrep_id").toInt());
       _amount->setId(c.value("cust_curr_id").toInt());
       _tax->setId(c.value("cust_curr_id").toInt());
-      _commprcnt = c.value("cust_commprcnt").toDouble();
     }
     else if (c.lastError().type() != QSqlError::NoError)
     {
@@ -427,7 +418,7 @@ void arOpenItem::populate()
              "       aropen_paid, "
              "       (aropen_amount - aropen_paid) AS f_balance,"
              "       aropen_terms_id, aropen_salesrep_id,"
-             "       aropen_commission_due, cust_commprcnt,"
+             "       aropen_commission_due,"
              "       aropen_notes, aropen_rsncode_id, aropen_salescat_id, "
              "       aropen_accnt_id, aropen_curr_id, "
              "       COALESCE(SUM(taxhist_tax),0) AS tax, "
@@ -438,7 +429,6 @@ void arOpenItem::populate()
              "         FALSE "
              "       END AS showTax "
              "FROM aropen "
-             "  JOIN custinfo ON (cust_id=aropen_cust_id) "
              "  LEFT OUTER JOIN aropentax ON (aropen_id=taxhist_parent_id) "
              "  LEFT OUTER JOIN cmhead ON ((aropen_doctype='C') "
              "                         AND (aropen_docnumber=cmhead_number)) "
@@ -446,7 +436,7 @@ void arOpenItem::populate()
              "GROUP BY aropen_cust_id, aropen_docdate, aropen_duedate,      "
              "  aropen_doctype, aropen_docnumber, aropen_ordernumber, aropen_journalnumber,  "
              "  aropen_amount, aropen_amount, aropen_paid, f_balance, aropen_terms_id, "
-             "  aropen_salesrep_id, aropen_commission_due, cust_commprcnt, aropen_notes, aropen_rsncode_id, "
+             "  aropen_salesrep_id, aropen_commission_due, aropen_notes, aropen_rsncode_id, "
              "  aropen_salescat_id, aropen_accnt_id, aropen_curr_id, cmhead_id;" );
   q.bindValue(":aropen_id", _aropenid);
   q.exec();
@@ -466,7 +456,6 @@ void arOpenItem::populate()
     _terms->setId(q.value("aropen_terms_id").toInt());
     _salesrep->setId(q.value("aropen_salesrep_id").toInt());
     _commissionDue->setBaseValue(q.value("aropen_commission_due").toDouble());
-    _commprcnt = q.value("cust_commprcnt").toDouble();
     _notes->setText(q.value("aropen_notes").toString());
     if (q.value("showTax").toBool())
       _tax->setLocalValue(q.value("tax").toDouble());
@@ -481,14 +470,14 @@ void arOpenItem::populate()
 
     if(!q.value("aropen_accnt_id").isNull() && q.value("aropen_accnt_id").toInt() != -1)
     {
-      _useAltPrepaid->setChecked(TRUE);
+      _altPrepaid->setChecked(TRUE);
       _altAccntidSelected->setChecked(TRUE);
       _altAccntid->setId(q.value("aropen_accnt_id").toInt());
     }
 
     if(!q.value("aropen_salescat_id").isNull() && q.value("aropen_salescat_id").toInt() != -1)
     {
-      _useAltPrepaid->setChecked(TRUE);
+      _altPrepaid->setChecked(TRUE);
       _altSalescatidSelected->setChecked(TRUE);
       _altSalescatid->setId(q.value("aropen_salescat_id").toInt());
     }
@@ -604,7 +593,7 @@ void arOpenItem::reset()
   _paid->clear();
   _balance->clear();
   _rsnCode->setId(-1);
-  _useAltPrepaid->setChecked(false);
+  _altPrepaid->setChecked(false);
   _notes->clear();
   _arapply->clear();
 
@@ -613,11 +602,6 @@ void arOpenItem::reset()
   ParameterList params;
   params.append("mode", "new");
   set(params);
-}
-
-void arOpenItem::sCalculateCommission()
-{
-  _commissionDue->setBaseValue(_amount->baseValue() * _commprcnt);
 }
 
 void arOpenItem::sPopulateDueDate()

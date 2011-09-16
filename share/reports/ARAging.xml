@@ -3,12 +3,6 @@
  <title>AR 30 60 90 Aging</title>
  <name>ARAging</name>
  <description>Enhanced AR Aging - Uses 30-60-90 columns - User provides Relative Date - all amounts in base currency based on Document Date.</description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <landscape/>
  <topmargin>100</topmargin>
@@ -593,7 +587,7 @@ FROM araging(&lt;? value("relDate") ?>, &lt;? value("useDocDate") ?>)
      <vcenter/>
      <data>
       <query>detail</query>
-      <column>araging_cust_name</column>
+      <column>cust_name</column>
      </data>
     </field>
     <line>

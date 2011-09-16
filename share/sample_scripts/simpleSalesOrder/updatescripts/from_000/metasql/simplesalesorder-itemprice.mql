@@ -1,0 +1,7 @@
+-- Group: simplesalesorder
+-- Name: itemprice
+-- Notes:
+
+SELECT noneg(itemprice(<? value("item_id") ?>,
+                 <? value("cust_id") ?>,
+                 CAST(<? value("qty") ?> AS numeric))) AS itemprice;

@@ -3,12 +3,6 @@
  <title>List Open Sales Orders</title>
  <name>ListOpenSalesOrders</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -58,11 +52,27 @@ WHERE((true)
 ORDER BY cohead_number </sql>
  </querysource>
  <rpthead>
-  <height>173</height>
+  <height>221</height>
+  <label>
+   <rect>
+    <x>15</x>
+    <y>105</y>
+    <width>80</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Site:</string>
+  </label>
   <label>
    <rect>
     <x>10</x>
-    <y>153</y>
+    <y>200</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -78,7 +88,7 @@ ORDER BY cohead_number </sql>
   <label>
    <rect>
     <x>425</x>
-    <y>153</y>
+    <y>200</y>
     <width>150</width>
     <height>15</height>
    </rect>
@@ -92,16 +102,35 @@ ORDER BY cohead_number </sql>
    <string>Customer P/O Number</string>
   </label>
   <line>
-   <xstart>4</xstart>
-   <ystart>168</ystart>
-   <xend>744</xend>
-   <yend>168</yend>
+   <xstart>5</xstart>
+   <ystart>215</ystart>
+   <xend>745</xend>
+   <yend>215</yend>
    <weight>2</weight>
   </line>
+  <field>
+   <rect>
+    <x>100</x>
+    <y>105</y>
+    <width>200</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>warehouse</column>
+   </data>
+  </field>
   <label>
    <rect>
     <x>95</x>
-    <y>153</y>
+    <y>200</y>
     <width>100</width>
     <height>15</height>
    </rect>
@@ -133,7 +162,7 @@ ORDER BY cohead_number </sql>
   <label>
    <rect>
     <x>580</x>
-    <y>153</y>
+    <y>200</y>
     <width>100</width>
     <height>15</height>
    </rect>
@@ -146,26 +175,6 @@ ORDER BY cohead_number </sql>
    <vcenter/>
    <string>Ordered</string>
   </label>
-  <text>
-   <rect>
-    <x>10</x>
-    <y>43</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>

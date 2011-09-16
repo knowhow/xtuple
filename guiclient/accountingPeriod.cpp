@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -22,8 +22,7 @@ accountingPeriod::accountingPeriod(QWidget* parent, const char* name, bool modal
 {
   setupUi(this);
 
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSave()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
 
   _year->setType(XComboBox::FiscalYears);
 }
@@ -60,8 +59,7 @@ enum SetResponse accountingPeriod::set(const ParameterList &pParams)
       _name->setFocus();
       q.exec("SELECT period_id "
              "FROM period "
-             "WHERE (period_closed) "
-             "LIMIT 1; ");
+             "WHERE (period_closed); ");
       if (q.first())
       {
         _startDate->setEnabled(false);
@@ -103,7 +101,9 @@ enum SetResponse accountingPeriod::set(const ParameterList &pParams)
       _endDate->setEnabled(FALSE);
       _closed->setEnabled(FALSE);
       _frozen->setEnabled(FALSE);
-      _buttonBox->setStandardButtons(QDialogButtonBox::Close);
+      _close->setText(tr("&Close"));
+      _save->hide();
+      _close->setFocus();
     }
   }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -107,14 +107,6 @@ void incidentPriority::sCheck()
 
 void incidentPriority::sSave()
 {
-  if(_name->text().length() == 0)
-  {
-    QMessageBox::critical(this, tr("Priority Name Required"),
-      tr("You must enter a Priority Name to continue.") );
-    _name->setFocus();
-    return;
-  }
-
   if (_mode == cNew)
   {
     q.exec("SELECT NEXTVAL('incdtpriority_incdtpriority_id_seq') AS _incdtpriority_id");

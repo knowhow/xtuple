@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,8 +28,6 @@ plannerCode::plannerCode(QWidget* parent, const char* name, bool modal, Qt::WFla
   }
   else
   {
-    _mrpexcpResched->hide();
-    _mrpexcpDelete->hide();
     _autoExplode->hide();
     _explosionGroup->hide();
   }
@@ -81,8 +79,6 @@ enum SetResponse plannerCode::set(const ParameterList &pParams)
       _mode = cView;
       _code->setEnabled(FALSE);
       _description->setEnabled(FALSE);
-      _mrpexcpResched->setEnabled(FALSE);
-      _mrpexcpDelete->setEnabled(FALSE);
       _autoExplode->setEnabled(FALSE);
       _explosionGroup->setEnabled(FALSE);
       _buttonBox->clear();
@@ -150,12 +146,10 @@ void plannerCode::sSave()
 
     q.prepare( "INSERT INTO plancode "
                "( plancode_id, plancode_code, plancode_name,"
-               "  plancode_mpsexplosion, plancode_consumefcst,"
-               "  plancode_mrpexcp_resched, plancode_mrpexcp_delete ) "
+               "  plancode_mpsexplosion, plancode_consumefcst ) "
                "VALUES "
                "( :plancode_id, :plancode_code, :plancode_name,"
-               "  :plancode_mpsexplosion, :plancode_consumefcst,"
-               "  :plancode_mrpexcp_resched, :plancode_mrpexcp_delete );" );
+               "  :plancode_mpsexplosion, :plancode_consumefcst );" );
   }
   else if (_mode == cEdit)
     q.prepare("SELECT plancode_id"
@@ -176,17 +170,13 @@ void plannerCode::sSave()
     q.prepare( "UPDATE plancode "
                "SET plancode_code=:plancode_code, plancode_name=:plancode_name,"
                "    plancode_mpsexplosion=:plancode_mpsexplosion,"
-               "    plancode_consumefcst=:plancode_consumefcst,"
-               "    plancode_mrpexcp_resched=:plancode_mrpexcp_resched, "
-               "    plancode_mrpexcp_delete=:plancode_mrpexcp_delete "
+               "    plancode_consumefcst=:plancode_consumefcst "
                "WHERE (plancode_id=:plancode_id);" );
 
   q.bindValue(":plancode_id", _plancodeid);
   q.bindValue(":plancode_code", _code->text());
   q.bindValue(":plancode_name", _description->text().trimmed());
   q.bindValue(":plancode_consumefcst", false);
-  q.bindValue(":plancode_mrpexcp_resched", QVariant(_mrpexcpResched->isChecked()));
-  q.bindValue(":plancode_mrpexcp_delete", QVariant(_mrpexcpDelete->isChecked()));
 
   if (_autoExplode->isChecked())
   {
@@ -205,7 +195,7 @@ void plannerCode::sSave()
 
 void plannerCode::populate()
 {
-  q.prepare( "SELECT * "
+  q.prepare( "SELECT plancode_code, plancode_name, plancode_mpsexplosion, plancode_consumefcst "
              "FROM plancode "
              "WHERE (plancode_id=:plancode_id);" );
   q.bindValue(":plancode_id", _plancodeid);
@@ -214,8 +204,6 @@ void plannerCode::populate()
   {
     _code->setText(q.value("plancode_code"));
     _description->setText(q.value("plancode_name"));
-    _mrpexcpResched->setChecked(q.value("plancode_mrpexcp_resched").toBool());
-    _mrpexcpDelete->setChecked(q.value("plancode_mrpexcp_delete").toBool());
 
     if (q.value("plancode_mpsexplosion").toString() == "N")
       _autoExplode->setChecked(FALSE);

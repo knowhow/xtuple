@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -119,7 +119,7 @@ itemAliasList::itemAliasList(QWidget* parent, const char* name, bool modal, Qt::
   _item->addColumn(tr("Description"),  -1, Qt::AlignLeft, true, "item_descrip");
 }
 
-void itemAliasList::set(const ParameterList &pParams)
+void itemAliasList::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

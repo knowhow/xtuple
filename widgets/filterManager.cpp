@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -40,7 +40,7 @@ filterManager::filterManager(QWidget* parent, const char* name)
   shortcuts::setStandardKeys(this);
 }
 
-void filterManager::set(const ParameterList &pParams)
+void filterManager::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -65,7 +65,7 @@ void filterManager::populate()
                   "  true "
                   " else false end as shared "
                   "from filter "
-                  "where COALESCE(filter_username,getEffectiveXtUser())=getEffectiveXtUser() "
+                  "where COALESCE(filter_username,current_user)=current_user "
                   " and filter_screen=:screen "
                   "order by filter_name;");
       qry.bindValue(":screen", parent()->parent()->objectName());
@@ -86,7 +86,7 @@ void filterManager::unshareFilter()
       return;
 	else
 	{
-		qry.prepare("UPDATE filter SET filter_username=getEffectiveXtUser() WHERE (filter_id=:filter_id);");
+		qry.prepare("UPDATE filter SET filter_username=current_user WHERE (filter_id=:filter_id);");
 		qry.bindValue(":filter_id", _filterSet->id());
 		qry.exec();
 	}

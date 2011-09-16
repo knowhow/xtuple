@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -722,7 +722,6 @@ void shipOrder::sFillList()
     }
 
     ParameterList itemp;
-    itemp.append("shiphead_id", _shipment->id());
     itemp.append("ordertype", ordertype);
     if (ordertype == "SO")
       itemp.append("sohead_id", _order->id());
@@ -736,13 +735,15 @@ void shipOrder::sFillList()
 		 "       uom_name,"
 		 "       SUM(shipitem_qty) AS shipitem_qty, "
                  "       'qty' AS shipitem_qty_xtnumericrole "
-                 "FROM shiphead JOIN shipitem ON (shipitem_shiphead_id=shiphead_id) "
-                 "              JOIN coitem ON (coitem_id=shipitem_orderitem_id) "
-                 "              JOIN itemsite ON (itemsite_id=coitem_itemsite_id) "
-                 "              JOIN item ON (item_id=itemsite_item_id) "
-                 "              JOIN uom ON (uom_id=coitem_qty_uom_id) "
-                 "WHERE ( (shiphead_id=<? value(\"shiphead_id\") ?>)"
-                 "  AND   (NOT shiphead_shipped) ) "
+		 "FROM coitem, shiphead, shipitem, itemsite, item, uom "
+		 "WHERE ( (shipitem_orderitem_id=coitem_id)"
+		 " AND (shipitem_shiphead_id=shiphead_id)"
+		 " AND (NOT shiphead_shipped)"
+		 " AND (shiphead_order_type=<? value(\"ordertype\") ?>)"
+		 " AND (coitem_itemsite_id=itemsite_id)"
+		 " AND (itemsite_item_id=item_id)"
+                 " AND (coitem_qty_uom_id=uom_id)"
+		 " AND (shiphead_order_id=<? value(\"sohead_id\") ?>) ) "
 		 "GROUP BY coitem_id, coitem_linenumber, item_number,"
 		 "         uom_name, itemdescrip, coitem_subnumber "
                  "ORDER BY coitem_linenumber, coitem_subnumber;"
@@ -753,12 +754,14 @@ void shipOrder::sFillList()
 		 "       uom_name,"
 		 "       SUM(shipitem_qty) AS shipitem_qty, "
                  "       'qty' AS shipitem_qty_xtnumericrole "
-                 "FROM shiphead JOIN shipitem ON (shipitem_shiphead_id=shiphead_id) "
-                 "              JOIN toitem ON (toitem_id=shipitem_orderitem_id) "
-                 "              JOIN item ON (item_id=toitem_item_id) "
-                 "              JOIN uom ON (uom_id=item_inv_uom_id) "
-                 "WHERE ( (shiphead_id=<? value(\"shiphead_id\") ?>)"
-                 "  AND   (NOT shiphead_shipped) ) "
+		 "FROM toitem, shiphead, shipitem, item, uom "
+		 "WHERE ( (shipitem_orderitem_id=toitem_id)"
+		 " AND (shipitem_shiphead_id=shiphead_id)"
+		 " AND (NOT shiphead_shipped)"
+		 " AND (shiphead_order_type=<? value(\"ordertype\") ?>)"
+		 " AND (toitem_item_id=item_id)"
+                 " AND (item_inv_uom_id=uom_id)"
+		 " AND (shiphead_order_id=<? value(\"tohead_id\") ?>) ) "
 		 "GROUP BY toitem_id, toitem_linenumber, item_number,"
 		 "         uom_name, itemdescrip "
                  "ORDER BY toitem_linenumber;"
@@ -774,16 +777,22 @@ void shipOrder::sFillList()
     
     QString vals = "<? if exists(\"sohead_id\") ?>"
 	    "SELECT SUM(round((shipitem_qty * coitem_qty_invuomratio) * (coitem_price / coitem_price_invuomratio),2)) AS value "
-            "FROM shiphead JOIN shipitem ON (shipitem_shiphead_id=shiphead_id) "
-            "              JOIN coitem ON (coitem_id=shipitem_orderitem_id) "
-            "WHERE ( (shiphead_id=<? value(\"shiphead_id\") ?>)"
-            "  AND   (NOT shiphead_shipped) );"
+	    "FROM coitem, shiphead, shipitem, itemsite, item "
+	    "WHERE ( (shipitem_orderitem_id=coitem_id)"
+	    " AND (shipitem_shiphead_id=shiphead_id)"
+	    " AND (NOT shiphead_shipped)"
+	    " AND (shiphead_order_type='SO')"
+	    " AND (coitem_itemsite_id=itemsite_id)"
+	    " AND (itemsite_item_id=item_id)"
+	    " AND (shiphead_order_id=<? value(\"sohead_id\") ?>) );"
 	    "<? elseif exists(\"tohead_id\") ?>"
 	    "SELECT SUM(toitem_stdcost * shipitem_qty) AS value "
-            "FROM shiphead JOIN shipitem ON (shipitem_shiphead_id=shiphead_id) "
-            "              JOIN toitem ON (toitem_id=shipitem_orderitem_id) "
-            "WHERE ( (shiphead_id=<? value(\"shiphead_id\") ?>)"
-            "  AND   (NOT shiphead_shipped) );"
+	    "FROM toitem, shiphead, shipitem "
+	    "WHERE ((shipitem_orderitem_id=toitem_id)"
+	    "  AND  (shipitem_shiphead_id=shiphead_id)"
+	    "  AND  (NOT shiphead_shipped)"
+	    "  AND  (shiphead_order_type='TO')"
+	    "  AND  (shiphead_order_id=<? value(\"tohead_id\") ?>) ); "
 	    "<? endif ?>" ;
     MetaSQLQuery valm(vals);
     shipq = valm.toQuery(itemp);	// shared parameters

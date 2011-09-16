@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>360</width>
-    <height>260</height>
+    <width>364</width>
+    <height>261</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -210,14 +210,54 @@ to be bound by its terms.</comment>
     </spacer>
    </item>
    <item row="0" column="2">
-    <widget class="QDialogButtonBox" name="_buttonBox">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <layout class="QVBoxLayout">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
+     <item>
+      <layout class="QVBoxLayout">
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="_close">
+         <property name="text">
+          <string>&amp;Cancel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="_save">
+         <property name="text">
+          <string>&amp;Save</string>
+         </property>
+         <property name="autoDefault">
+          <bool>true</bool>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -228,7 +268,6 @@ to be bound by its terms.</comment>
    <class>DLineEdit</class>
    <extends>QWidget</extends>
    <header>datecluster.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>XComboBox</class>
@@ -242,7 +281,26 @@ to be bound by its terms.</comment>
   <tabstop>_endDate</tabstop>
   <tabstop>_year</tabstop>
   <tabstop>_closed</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_close</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>accountingPeriod</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>342</x>
+     <y>31</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

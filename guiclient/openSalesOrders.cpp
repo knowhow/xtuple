@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -18,7 +18,6 @@
 #include "creditcardprocessor.h"
 #include "dspSalesOrderStatus.h"
 #include "dspShipmentsBySalesOrder.h"
-#include "issueToShipping.h"
 #include "printPackingList.h"
 #include "printSoForm.h"
 #include "salesOrder.h"
@@ -84,9 +83,7 @@ enum SetResponse openSalesOrders::set(const ParameterList& pParams)
 
 bool openSalesOrders::setParams(ParameterList &params)
 {
-  if (!display::setParams(params))
-    return false;
-
+  display::setParams(params);
   params.append("error", tr("Error"));
   if (_showClosed->isChecked() && _showClosed->isVisible())
     params.append("showClosed");
@@ -340,9 +337,6 @@ void openSalesOrders::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)
   
   pMenu->addSeparator();
 
-  menuItem = pMenu->addAction(tr("Issue to Shipping..."), this, SLOT(sIssueToShipping()));
-  menuItem->setEnabled(_privileges->check("IssueStockToShipping"));
-
   pMenu->addAction(tr("Shipment Status..."), this, SLOT(sDspShipmentStatus()));
   pMenu->addAction(tr("Shipments..."), this, SLOT(sShipment()));
 }
@@ -380,17 +374,6 @@ bool openSalesOrders::checkSitePrivs()
     }
   }
   return true;
-}
-
-void openSalesOrders::sIssueToShipping()
-{
-  ParameterList params;
-  params.append("sohead_id", list()->id());
-  params.append("run");
-
-  issueToShipping *newdlg = new issueToShipping(this);
-  newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg);
 }
 
 void openSalesOrders::sDspShipmentStatus()

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -16,7 +16,6 @@
 #include <QVariant>
 #include <QVector>
 #include <QTimer>
-#include <QHeaderView> //#13251
 
 #include "widgets.h"
 #include "guiclientinterface.h"
@@ -240,11 +239,9 @@ class XTUPLEWIDGETS_EXPORT XTreeWidget : public QTreeWidget
     Q_INVOKABLE inline void               setHeaderLabels(const QStringList &labels)                        {        QTreeWidget::setHeaderLabels(labels); }
     Q_INVOKABLE inline void               setItemWidget(XTreeWidgetItem *item, int column, QWidget *widget) {        QTreeWidget::setItemWidget(item, column, widget); }
     Q_INVOKABLE inline int                sortColumn() const { return QTreeWidget::sortColumn(); }
-    Q_INVOKABLE inline Qt::SortOrder      sortOrder()  const { return header()->sortIndicatorOrder(); } // temporary(?) until we expose all of qt
     Q_INVOKABLE inline QTreeWidgetItem    *takeTopLevelItem(int index)                                      { return QTreeWidget::takeTopLevelItem(index); }
     Q_INVOKABLE inline int                topLevelItemCount() const { return QTreeWidget::topLevelItemCount(); }
     Q_INVOKABLE inline QRect              visualItemRect(const XTreeWidgetItem *item) const                 { return QTreeWidget::visualItemRect(item); }
-	Q_INVOKABLE inline void               moveColumn(int from, int to)                                      { header()->moveSection(from, to); } //#13251
     // end of scripting exposure
 
     static GuiClientInterface *_guiClientInterface;

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -30,7 +30,7 @@ filterSave::filterSave(QWidget* parent, const char* name)
   shortcuts::setStandardKeys(this);
 }
 
-void filterSave::set(const ParameterList &pParams)
+void filterSave::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -74,13 +74,13 @@ void filterSave::save()
   if (_shared->isChecked())
     user = "null";
   else
-    user = "getEffectiveXtUser()";
+    user = "current_user";
 
   //check to see if filter name exists for this screen
   QString filter_query = "select filter_id, filter_name, filter_username "
                          "from filter "
                          "where filter_name=:name "
-                         " and COALESCE(filter_username,getEffectiveXtUser())=getEffectiveXtUser() "
+                         " and COALESCE(filter_username,current_user)=current_user "
                          " and filter_screen=:screen";
   qry.prepare(filter_query);
   qry.bindValue(":name", _filterName->text());

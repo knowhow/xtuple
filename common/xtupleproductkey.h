@@ -19,7 +19,6 @@ class XTupleProductKey
     QDate expiration() const;
     int users() const;
     QString customerId() const;
-    bool perpetual() const;
 
   private:
     XTupleProductKeyPrivate * _private;

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -18,7 +18,6 @@
 #include <QToolBar>
 #include <QVariant>
 
-#include "characteristic.h"
 #include "guiclient.h"
 #include "opportunity.h"
 #include "parameterwidget.h"
@@ -37,41 +36,37 @@ opportunityList::opportunityList(QWidget* parent, const char*, Qt::WFlags fl)
   setSearchVisible(true);
   setQueryOnStartEnabled(true);
 
-  list()->addColumn(tr("Number"),      _orderColumn,    Qt::AlignLeft,   false, "ophead_number" );
   list()->addColumn(tr("Active"),      _orderColumn,    Qt::AlignLeft,   false, "ophead_active" );
   list()->addColumn(tr("Name"),        -1,              Qt::AlignLeft,   true, "ophead_name"  );
   list()->addColumn(tr("CRM Acct."),   _userColumn,     Qt::AlignLeft,   true, "crmacct_number" );
   list()->addColumn(tr("Owner"),       _userColumn,     Qt::AlignLeft,   true, "ophead_owner_username" );
-  list()->addColumn(tr("Assigned"),    _userColumn,     Qt::AlignLeft,   false, "ophead_username" );
   list()->addColumn(tr("Stage"),       _orderColumn,    Qt::AlignLeft,   true, "opstage_name" );
-  list()->addColumn(tr("Priority"),    _orderColumn,    Qt::AlignLeft,   true, "incdtpriority_name" );
-  list()->addColumn(tr("Source"),      _orderColumn,    Qt::AlignLeft,   true, "opsource_name" );
-  list()->addColumn(tr("Type"),        _orderColumn,    Qt::AlignLeft,   true, "optype_name" );
-  list()->addColumn(tr("Prob.%"),      _prcntColumn,    Qt::AlignCenter, true, "ophead_probability_prcnt" );
-  list()->addColumn(tr("Amount"),      _moneyColumn,    Qt::AlignRight,  true, "ophead_amount" );
+  list()->addColumn(tr("Source"),      _orderColumn,    Qt::AlignLeft,   false, "opsource_name" );
+  list()->addColumn(tr("Type"),        _orderColumn,    Qt::AlignLeft,   false, "optype_name" );
+  list()->addColumn(tr("Prob.%"),      _prcntColumn,    Qt::AlignCenter, false, "ophead_probability_prcnt" );
+  list()->addColumn(tr("Amount"),      _moneyColumn,    Qt::AlignRight,  false, "ophead_amount" );
   list()->addColumn(tr("Currency"),    _currencyColumn, Qt::AlignLeft,   false, "f_currency" );
-  list()->addColumn(tr("Target Date"), _dateColumn,     Qt::AlignLeft,   true, "ophead_target_date" );
+  list()->addColumn(tr("Target Date"), _dateColumn,     Qt::AlignLeft,   false, "ophead_target_date" );
   list()->addColumn(tr("Actual Date"), _dateColumn,     Qt::AlignLeft,   false, "ophead_actual_date" );
 
-  connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sOpen()));
+  connect(list(),       SIGNAL(itemSelected(int)), this, SLOT(sEdit()));
 
-  if (!_privileges->check("MaintainAllOpportunities") && !_privileges->check("MaintainPersonalOpportunities"))
-    newAction()->setEnabled(FALSE);
-
-  parameterWidget()->append(tr("User"), "username", ParameterWidget::User, omfgThis->username());
-  parameterWidget()->append(tr("Owner"), "owner_username", ParameterWidget::User);
-  parameterWidget()->append(tr("Assigned To"), "assigned_username", ParameterWidget::User);
-  parameterWidget()->append(tr("Target Date on or After"), "startDate", ParameterWidget::Date);
-  parameterWidget()->append(tr("Target Date on or Before"),   "endDate",   ParameterWidget::Date);
+  bool canEditUsers = _privileges->check("MaintainOtherTodoLists");
+  parameterWidget()->append(tr("User"), "username", ParameterWidget::User, omfgThis->username(), !canEditUsers);
+  if (canEditUsers)
+    parameterWidget()->append(tr("User Pattern"), "usr_pattern",    ParameterWidget::Text);
+  else
+    parameterWidget()->setEnabled(tr("User"), false);
+  parameterWidget()->append(tr("Start Date"), "startDate", ParameterWidget::Date);
+  parameterWidget()->append(tr("End Date"),   "endDate",   ParameterWidget::Date);
   parameterWidget()->append(tr("CRM Account"), "crmacct_id",  ParameterWidget::Crmacct);
   parameterWidget()->appendComboBox(tr("Type"), "optype_id", XComboBox::OpportunityTypes);
   parameterWidget()->append(tr("Type Pattern"), "optype_pattern",    ParameterWidget::Text);
   parameterWidget()->appendComboBox(tr("Source"), "opsource_id", XComboBox::OpportunitySources);
-  parameterWidget()->append(tr("Source Pattern"), "opsource_pattern",    ParameterWidget::Text);
+  parameterWidget()->append(tr("Source Pattern"), "source_pattern",    ParameterWidget::Text);
   parameterWidget()->appendComboBox(tr("Stage"), "opstage_id", XComboBox::OpportunityStages);
   parameterWidget()->append(tr("Stage Pattern"), "opstage_pattern",    ParameterWidget::Text);
 
-  setupCharacteristics(characteristic::Opportunities);
   parameterWidget()->applyDefaultFilterSet();
 }
 
@@ -79,15 +74,8 @@ void opportunityList::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *, int)
 {
   QAction *menuItem;
 
-  bool editPriv =
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_owner_username") && _privileges->check("MaintainPersonalOpportunities")) ||
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_username") && _privileges->check("MaintainPersonalOpportunities")) ||
-      (_privileges->check("MaintainAllOpportunities"));
-
-  bool viewPriv =
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_owner_username") && _privileges->check("ViewPersonalOpportunities")) ||
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_username") && _privileges->check("ViewPersonalOpportunities")) ||
-      (_privileges->check("ViewAllOpportunities"));
+  bool editPriv = _privileges->check("MaintainOpportunities");
+  bool viewPriv = _privileges->check("VeiwOpportunities") || editPriv;
 
   menuItem = pMenu->addAction(tr("New..."), this, SLOT(sNew()));
   menuItem->setEnabled(editPriv);
@@ -215,31 +203,15 @@ void opportunityList::sActivate()
 
 bool opportunityList::setParams(ParameterList &params)
 {
-  if (!display::setParams(params))
-    return false;
+  parameterWidget()->appendValue(params);
+
+  if (!searchText().isEmpty())
+    params.append("searchpattern", searchText());
 
   if (!findChild<QCheckBox*>("_showInactive")->isChecked())
     params.append("activeOnly");
 
   return true;
-}
-
-void opportunityList::sOpen()
-{
-  bool editPriv =
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_owner_username") && _privileges->check("MaintainPersonalOpportunities")) ||
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_username") && _privileges->check("MaintainPersonalOpportunities")) ||
-      (_privileges->check("MaintainAllOpportunities"));
-
-  bool viewPriv =
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_owner_username") && _privileges->check("ViewPersonalOpportunities")) ||
-      (omfgThis->username() == list()->currentItem()->rawValue("ophead_username") && _privileges->check("ViewPersonalOpportunities")) ||
-      (_privileges->check("ViewAllOpportunities"));
-
-  if (editPriv)
-    sEdit();
-  else if (viewPriv)
-    sView();
 }
 
 

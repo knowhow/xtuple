@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -69,9 +69,6 @@ bool dspJobCosting::setParams(ParameterList &params)
   }
 
   params.append("wo_id", _wo->id());
-  params.append("showsu", true);
-  params.append("showrt", true);
-  params.append("showmatl", true);
   params.append("setup", tr("Setup"));
   params.append("runtime", tr("Run Time"));
   params.append("material", tr("Material"));

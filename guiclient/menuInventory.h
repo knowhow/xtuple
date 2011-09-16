@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -42,7 +42,6 @@ class menuInventory : public QObject
     void sItemSites();
 
     void sAdjustmentTrans();
-    void sAdjustInvValue();
     void sTransferTrans();
     void sNewTransferOrder();
     void sTransferOrders();
@@ -74,6 +73,7 @@ class menuInventory : public QObject
     void sIssueStockToShipping();
     void sShipOrders();
     void sRecallOrders();
+    void sPurgeShippingRecords();
     void sExternalShipping();
     void sDspShippingContents();
 
@@ -93,7 +93,9 @@ class menuInventory : public QObject
     void sAddRate();
     void sDspRatesByDestination();
 
-    void sDspBacklog();
+    void sDspBacklogByItem();
+    void sDspBacklogByCustomer();
+    void sDspBacklogByProductCategory();
     void sDspSummarizedBacklogByWarehouse();
     void sDspShipmentsBySalesOrder();
     void sDspShipmentsByDate();
@@ -109,18 +111,35 @@ class menuInventory : public QObject
     void sDspCountTagsByWarehouse();
     void sDspCountTagsByClassCode();
 
+    void sDspItemSitesByItem();
+    void sDspItemSitesByClassCode();
+    void sDspItemSitesByPlannerCode();
+    void sDspItemSitesByCostCategory();
     void sDspValidLocationsByItem();
-    void sDspQOH();
+    void sDspQOHByItem();
+    void sDspQOHByClassCode();
+    void sDspQOHByItemGroup();
     void sDspQOHByLocation();
     void sDspLocationLotSerialDetail();
     void sDspSlowMovingInventoryByClassCode();
     void sDspExpiredInventoryByClassCode();
-    void sDspInventoryAvailability();
+    void sDspInventoryAvailabilityByItem();
+    void sDspInventoryAvailabilityByItemGroup();
+    void sDspInventoryAvailabilityByClassCode();
+    void sDspInventoryAvailabilityByPlannerCode();
+    void sDspInventoryAvailabilityBySourceVendor();
     void sDspSubstituteAvailabilityByRootItem();
-    void sDspInventoryHistory();
+    void sDspInventoryHistoryByItem();
+    void sDspInventoryHistoryByItemGroup();
+    void sDspInventoryHistoryByOrderNumber();
+    void sDspInventoryHistoryByClassCode();
+    void sDspInventoryHistoryByPlannerCode();
     void sDspDetailedInventoryHistoryByLotSerial();
     void sDspDetailedInventoryHistoryByLocation();
-    void sDspItemUsageStatistics();
+    void sDspItemUsageStatisticsByItem();
+    void sDspItemUsageStatisticsByClassCode();
+    void sDspItemUsageStatisticsByItemGroup();
+    void sDspItemUsageStatisticsByWarehouse();
     void sDspTimePhasedUsageStatisticsByItem();
 
     void sPrintItemLabelsByClassCode();
@@ -170,6 +189,13 @@ class menuInventory : public QObject
     QMenu *formsShipLabelsMenu;
     QMenu *graphsMenu;
     QMenu *reportsMenu;
+    QMenu *reportsItemsitesMenu;
+    QMenu *reportsQohMenu;
+    QMenu *reportsInvAvailMenu;
+    QMenu *reportsInvHistMenu;
+    QMenu *reportsDtlInvHistMenu;
+    QMenu *reportsItemUsgMenu;
+    QMenu *reportsBacklogMenu;
     QMenu *reportsShipmentsMenu;
     QMenu *utilitiesMenu;
     QMenu *updateItemInfoMenu;

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -19,7 +19,6 @@
 #include <QSslConfiguration>
 #include <QUrl>
 #include <QBuffer>
-#include <QDebug>
 
 #include <currcluster.h>
 #include <metasql.h>
@@ -38,14 +37,7 @@
 
 #define DEBUG false
 
-/** \defgroup creditcards Credit Card API
-    The xTuple Credit Card subsystem contains the internal code
-    for processing credit card transactions and the user interface
-    for configuring the credit card handling.
-  */
-/** \ingroup creditcards
-  
-    \class CreditCardProcessor
+/** \class CreditCardProcessor
 
     \brief This is a generic class that defines the interface between
            xTuple ERP and credit card processing services.
@@ -140,8 +132,7 @@
     \see YourPayProcessor
     \see configureCC
 
-    \todo expose portions of this in the scriptapi doxygen module
-    \todo use qabstractmessagehandler instead of qmessagebox
+    \todo figure out how to expose portions of this in the scriptapi doxygen module
 */
 
 QString			 CreditCardProcessor::_errorMsg = "";
@@ -276,9 +267,8 @@ CreditCardProcessor::CreditCardProcessor()
   _defaultLiveServer  = "live.creditcardprocessor.com";
   _defaultTestPort    = 0;
   _defaultTestServer  = "test.creditcardprocessor.com";
-  _errorMsg           = "";
-  _http               = 0;
-  _ignoreSslErrors    = _metrics->boolean("CCIgnoreSSLErrors");
+  _errorMsg       = "";
+  _http = 0;
 
   for (unsigned int i = 0; i < sizeof(messages) / sizeof(messages[0]); i++)
     _msgHash.insert(messages[i].code, tr(messages[i].text));
@@ -1740,55 +1730,31 @@ int CreditCardProcessor::sendViaHTTP(const QString &prequest,
 #endif
 
 #ifndef QT_NO_OPENSSL
-  /* TODO: specific references to YourPay should be replaced with
-     checking a config option indicating that a PEM file is required.
-     http://bugreports.qt.nokia.com/browse/QTBUG-13418
-     means we must use cURL to handle certificates in some Qt versions.
-   */
-  if(!_metrics->boolean("CCUseCurl") &&
-     (_metrics->value("CCCompany") != "YourPay"
-      || (_metrics->value("CCCompany") == "YourPay" && QT_VERSION > 0x040600)))
+  if(!_metrics->boolean("CCUseCurl"))
   {
+    // PEM files are currently only used for YourPay
+    // TODO: The specific reference to YourPay should go away, especially when something other than YourPay starts to use this
     if (!pemfile.isEmpty() && (_metrics->value("CCCompany") == "YourPay"))
     {
       QFile pemio(pemfile);
-      if (! pemio.exists())
-        QMessageBox::warning(0, tr("Could not find PEM file"),
-                             tr("<p>Failed to find the PEM file %1")
-                             .arg(pemfile));
+      if (pemio.error() != QFile::NoError)
+        QMessageBox::warning(0, tr("Could not open PEM file"),
+                             tr("<p>Failed to open the PEM file %1: %2")
+                             .arg(pemfile, pemio.errorString()));
       else
       {
-        QList<QSslCertificate> certlist = QSslCertificate::fromPath(pemfile);
-        if (DEBUG) qDebug("%d certificates", certlist.size());
-        if (certlist.isEmpty())
-          QMessageBox::warning(0, tr("Failed to load Certificate"),
-                               tr("<p>There are no Certificates in %1. "
-                                  "This may cause communication problems.")
-                               .arg(pemfile));
-        else if (certlist.at(0).isNull())
-          QMessageBox::warning(0, tr("Failed to load Certificate"),
-                               tr("<p>Failed to load a Certificate from "
-                                  "the PEM file %1. "
-                                  "This may cause communication problems.")
-                               .arg(pemfile));
-        else if (certlist.at(0).isValid())
+        QSslCertificate localcert(&pemio);
+        if(!localcert.isNull())
         {
-          if (DEBUG)
-            qDebug("Certificate details: valid from %s to %s, issued to %s @ %s in %s, %s",
-                   qPrintable(certlist.at(0).effectiveDate().toString("MMM-dd-yyyy")),
-                   qPrintable(certlist.at(0).expiryDate().toString("MMM-dd-yyyy")),
-                   qPrintable(certlist.at(0).issuerInfo(QSslCertificate::CommonName)),
-                   qPrintable(certlist.at(0).issuerInfo(QSslCertificate::Organization)),
-                   qPrintable(certlist.at(0).issuerInfo(QSslCertificate::LocalityName)),
-                   qPrintable(certlist.at(0).issuerInfo(QSslCertificate::CountryName)));
           QSslConfiguration sslconf = QSslConfiguration::defaultConfiguration();
-          sslconf.setLocalCertificate(certlist.at(0));
+          sslconf.setLocalCertificate(localcert);
           QSslConfiguration::setDefaultConfiguration(sslconf);
         }
         else
         {
-          QMessageBox::warning(0, tr("Invalid Certificate"),
-                               tr("<p>The Certificate in %1 appears to be invalid. "
+          QMessageBox::warning(0, tr("Failed to load Certificate"),
+                               tr("<p>Failed to load a Certificate from "
+                                  "the PEM file %1. "
                                   "This may cause communication problems.")
                                .arg(pemfile));
         }
@@ -1800,8 +1766,6 @@ int CreditCardProcessor::sendViaHTTP(const QString &prequest,
     if(ccurl.scheme().compare("https", Qt::CaseInsensitive) != 0)
       cmode = QHttp::ConnectionModeHttp;
     _http = new QHttp(ccurl.host(), cmode, _metrics->value("CCPort").toInt());
-    connect(_http, SIGNAL(sslErrors(const QList<QSslError> &)),
-            this,  SLOT(sslErrors(const QList<QSslError> &)));
 
     if(_metrics->boolean("CCUseProxyServer"))
     {
@@ -2374,7 +2338,8 @@ QString CreditCardProcessor::buildURL(const QString pserver, const QString pport
   if (! port.isEmpty() && ! (protocol == "https" && port == "443"))
     serverStr += ":" + port;
 
-  serverStr += "/" + remainder;
+  if (! remainder.isEmpty())
+    serverStr += "/" + remainder;
 
   if (DEBUG) qDebug("buildURL: returning %s", serverStr.toAscii().data());
   return serverStr;
@@ -3058,29 +3023,4 @@ CreditCardProcessor::FraudCheckResult *CreditCardProcessor::cvvCodeLookup(QChar 
       return _cvvCodes.at(i);
 
   return 0;
-}
-
-void CreditCardProcessor::sslErrors(const QList<QSslError> &errors)
-{
-  if (DEBUG)
-    qDebug() << "CreditCardProcessor::sslErrors(" << errors << ")";
-
-  QHttp *httpobj = qobject_cast<QHttp*>(sender());
-  if (errors.size() > 0 && httpobj)
-  {
-    QString errlist;
-    for (int i = 0; i < errors.size(); i++)
-      errlist += QString("<li>%1</li>").arg(errors.at(i).errorString());
-    if (_ignoreSslErrors ||
-        QMessageBox::question(0,
-                              tr("Questionable Security"),
-                              tr("<p>The security of this transaction may be compromised."
-                                 " The following SSL errors have been reported:"
-                                 "<ul>%1</ul></p>"
-                                 "<p>Would you like to continue anyway?</p>")
-                              .arg(errlist),
-                              QMessageBox::Yes,
-                              QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
-        httpobj->ignoreSslErrors();
-  }
 }

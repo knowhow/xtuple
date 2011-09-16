@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -12,8 +12,6 @@
 
 #include <QMessageBox>
 
-extern bool shownEncryptedMsg;
-
 configureEncryption::configureEncryption(QWidget* parent, const char* name, bool /*modal*/, Qt::WFlags fl)
     : XAbstractConfigure(parent, fl)
 {
@@ -22,11 +20,10 @@ configureEncryption::configureEncryption(QWidget* parent, const char* name, bool
   if (name)
     setObjectName(name);
 
-  if (_metricsenc == 0 && !shownEncryptedMsg)
+  if (_metricsenc == 0)
   {
     QMessageBox::critical( this, tr("Cannot Read Configuration"),
 		    tr("<p>Cannot read encrypted information from database."));
-    shownEncryptedMsg = true;
   }
 
   _ccEncKeyName->setText(_metrics->value("CCEncKeyName"));

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -20,11 +20,9 @@ arCreditMemoApplication::arCreditMemoApplication(QWidget* parent, const char* na
 {
   setupUi(this);
 
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSave()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
 
   _cust->setReadOnly(TRUE);
-  adjustSize();
 }
 
 arCreditMemoApplication::~arCreditMemoApplication()
@@ -228,8 +226,7 @@ void arCreditMemoApplication::populate()
              "                               SUM(cashrcptitem_amount + cashrcptitem_discount) * -1.0 AS cashapplied"
              "                          FROM cashrcpt JOIN cashrcptitem ON (cashrcptitem_cashrcpt_id=cashrcpt_id)"
              "                                     JOIN aropen ON (cashrcptitem_aropen_id=aropen_id)"
-             "                         WHERE ((NOT cashrcpt_posted)"
-             "                           AND  (NOT cashrcpt_void))"
+             "                         WHERE (NOT cashrcpt_posted)"
              "                         GROUP BY aropen_id ) AS sub2"
              "         ON (cash_aropen_id=aropen_id)"
              "WHERE (aropen_id=:aropen_id) "

@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>102</height>
+    <width>504</width>
+    <height>94</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,15 +46,11 @@ to be bound by its terms.</comment>
      <property name="spacing">
       <number>0</number>
      </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
      <item>
       <widget class="DateCluster" name="_dates"/>
-     </item>
-     <item>
-      <widget class="XCheckBox" name="_showConverted">
-       <property name="text">
-        <string>Show Converted</string>
-       </property>
-      </widget>
      </item>
      <item>
       <spacer>
@@ -104,12 +100,6 @@ to be bound by its terms.</comment>
    <class>ItemCluster</class>
    <extends>QWidget</extends>
    <header>itemcluster.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>XCheckBox</class>
-   <extends>QCheckBox</extends>
-   <header>xcheckbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

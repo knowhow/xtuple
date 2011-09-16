@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>709</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -96,40 +96,16 @@ to be bound by its terms.</comment>
       </widget>
      </item>
      <item row="1" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_4">
-       <item>
-        <widget class="QLineEdit" name="_description">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="_public">
-         <property name="text">
-          <string>Public</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLineEdit" name="_description">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </item>
     </layout>
-   </item>
-   <item row="0" column="1" rowspan="3">
-    <widget class="QDialogButtonBox" name="_buttonBox">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
    </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -348,61 +324,45 @@ to be bound by its terms.</comment>
     </layout>
    </item>
    <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <widget class="QGroupBox" name="_contactGroup">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="title">
-        <string>Contact</string>
-       </property>
-       <layout class="QGridLayout">
-        <item row="0" column="0">
-         <widget class="ContactCluster" name="_cntct">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimalLayout">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <spacer>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>0</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="_projectGroup">
-       <property name="title">
-        <string>Project</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="ProjectCluster" name="_project"/>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QGroupBox" name="_contactGroup">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Contact</string>
+     </property>
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="ContactCluster" name="_cntct">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimalLayout">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item row="3" column="0" colspan="2">
     <widget class="QTabWidget" name="_tab">
@@ -421,7 +381,7 @@ to be bound by its terms.</comment>
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="XTextEdit" name="_notes">
+        <widget class="QTextEdit" name="_notes">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -435,9 +395,6 @@ to be bound by its terms.</comment>
           </size>
          </property>
          <property name="tabChangesFocus">
-          <bool>true</bool>
-         </property>
-         <property name="spellEnable">
           <bool>true</bool>
          </property>
         </widget>
@@ -842,6 +799,16 @@ to be bound by its terms.</comment>
      </widget>
     </widget>
    </item>
+   <item row="0" column="1" rowspan="3">
+    <widget class="QDialogButtonBox" name="_buttonBox">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="5" margin="5"/>
@@ -883,11 +850,6 @@ to be bound by its terms.</comment>
    <header>lotserialcluster.h</header>
   </customwidget>
   <customwidget>
-   <class>ProjectCluster</class>
-   <extends>QWidget</extends>
-   <header>projectcluster.h</header>
-  </customwidget>
-  <customwidget>
    <class>RecurrenceWidget</class>
    <extends>QWidget</extends>
    <header>recurrencewidget.h</header>
@@ -914,17 +876,11 @@ to be bound by its terms.</comment>
    <header>xtreewidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_number</tabstop>
   <tabstop>_category</tabstop>
   <tabstop>_description</tabstop>
-  <tabstop>_public</tabstop>
   <tabstop>_crmacct</tabstop>
   <tabstop>_owner</tabstop>
   <tabstop>_assignedTo</tabstop>
@@ -933,7 +889,6 @@ to be bound by its terms.</comment>
   <tabstop>_priority</tabstop>
   <tabstop>_resolution</tabstop>
   <tabstop>_cntct</tabstop>
-  <tabstop>_project</tabstop>
   <tabstop>_tab</tabstop>
   <tabstop>_notes</tabstop>
   <tabstop>_charass</tabstop>

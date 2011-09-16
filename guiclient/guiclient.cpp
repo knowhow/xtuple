@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -27,6 +27,8 @@
 #include <QApplication>
 #include <QCursor>
 #include <QDir>
+#include <QAssistantClient>
+#include <QProcess>
 #include <QSqlError>
 #include <QPixmap>
 #include <QFrame>
@@ -53,7 +55,6 @@
 #include "xmainwindow.h"
 #include "xdialog.h"
 #include "errorLog.h"
-#include "errorReporter.h"
 
 #include "systemMessage.h"
 #include "menuProducts.h"
@@ -71,8 +72,11 @@
 #include "inputManager.h"
 #include "xdoublevalidator.h"
 
+#include "custcluster.h"
+#include "crmacctcluster.h"
+#include "crmaccount.h"
+#include "customer.h"
 #include "distributeInventory.h"
-#include "documents.h"
 #include "splashconst.h"
 #include "scripttoolbox.h"
 #include "menubutton.h"
@@ -126,7 +130,7 @@ static bool __privCheck(const QString & privname)
   if(privname == "#superuser")
   {
     XSqlQuery su;
-    su.exec("SELECT rolsuper FROM pg_roles WHERE (rolname=getEffectiveXtUser());");
+    su.exec("SELECT rolsuper FROM pg_roles WHERE (rolname=CURRENT_USER);");
     if (su.first())
       return su.value("rolsuper").toBool();
     else
@@ -406,8 +410,27 @@ GUIClient::GUIClient(const QString &pDatabaseURL, const QString &pUsername)
   _ratioVal       = new XDoubleValidator(0,            9999999999.0, decimalPlaces("uomratio"), this);
   _weightVal      = new XDoubleValidator(0,              99999999.0, decimalPlaces("weight"), this);
   _runTimeVal     = new XDoubleValidator(0,              99999999.0, 2, this);
-  _orderVal       = new QIntValidator(0, 9999999, this);
+  _orderVal       = new QIntValidator(0, 999999, this);
   _dayVal         = new QIntValidator(0, 9999, this);
+
+#ifdef Q_WS_MACX
+  _assClient = new QAssistantClient((qApp->applicationDirPath() + "/../Resources"), this);
+#else
+  _assClient = new QAssistantClient(qApp->applicationDirPath(), this);
+#endif
+
+  connect(_assClient, SIGNAL(error(const QString &)), this, SLOT(sReportError(const QString &)));
+
+  QStringList commands;
+  commands //<< "-hideSidebar"
+           << "-profile"
+#ifdef Q_WS_MACX
+           << qApp->applicationDirPath() + QString("/../Resources/helpXTupleGUIClient/XTupleGUIClient.adp");
+#else
+           << qApp->applicationDirPath() + QString("/helpXTupleGUIClient/XTupleGUIClient.adp");
+#endif
+
+  _assClient->setArguments(commands);
 
   _fixedFont = new QFont("courier", 8);
   _systemFont = new QFont(qApp->font());
@@ -444,7 +467,7 @@ GUIClient::GUIClient(const QString &pDatabaseURL, const QString &pUsername)
   XSqlQuery window;
   window.prepare("SELECT usr_window "
                  "  FROM usr "
-                 " WHERE (usr_username=getEffectiveXtUser());");
+                 " WHERE (usr_username=CURRENT_USER);");
   window.exec();
   // keep synchronized with user.ui.h
   _singleWindow = "";
@@ -561,7 +584,6 @@ GUIClient::~GUIClient()
   //omfgThis = 0;
 
   // Close the database connection
-  XSqlQuery qlc("SELECT logout();");
   QSqlDatabase::database().close();  
 }
 
@@ -604,7 +626,7 @@ void GUIClient::setWindowTitle()
   _splash->showMessage(tr("Loading Database Information"), SplashTextAlignment, SplashTextColor);
   qApp->processEvents();
 
-  _q.exec( "SELECT metric_value, getEffectiveXtUser() AS username "
+  _q.exec( "SELECT metric_value, CURRENT_USER AS username "
            "FROM metric "
            "WHERE (metric_name='DatabaseName')" );
   if (_q.first())
@@ -752,17 +774,6 @@ void GUIClient::initMenuBar()
 void GUIClient::saveToolbarPositions()
 {
   xtsettingsSetValue("MainWindowState", saveState(1));
-
-  // Set preferences base on visibility of toolbars
-  _preferences->set("ShowPDToolbar", findChild<QToolBar*>("Products Tools")->isVisible());
-  _preferences->set("ShowIMToolbar", findChild<QToolBar*>("Inventory Tools")->isVisible());
-  if(_metrics->value("Application") != "PostBooks")
-    _preferences->set("ShowMSToolbar", findChild<QToolBar*>("Schedule Tools")->isVisible());
-  _preferences->set("ShowPOToolbar", findChild<QToolBar*>("Purchase Tools")->isVisible());
-  _preferences->set("ShowWOToolbar", findChild<QToolBar*>("Manufacture Tools")->isVisible());
-  _preferences->set("ShowCRMToolbar", findChild<QToolBar*>("CRM Tools")->isVisible());
-  _preferences->set("ShowSOToolbar", findChild<QToolBar*>("Sales Tools")->isVisible());
-  _preferences->set("ShowGLToolbar", findChild<QToolBar*>("Accounting Tools")->isVisible());
 }
 
 void GUIClient::closeEvent(QCloseEvent *event)
@@ -894,7 +905,7 @@ void GUIClient::sTick()
         XSqlQuery msg;
         msg.exec( "SELECT msguser_id "
                   "FROM msg, msguser "
-                  "WHERE ( (msguser_username=getEffectiveXtUser())"
+                  "WHERE ( (msguser_username=CURRENT_USER)"
                   " AND (msguser_msg_id=msg_id)"
                   " AND (CURRENT_TIMESTAMP BETWEEN msg_scheduled AND msg_expires)"
                   " AND (msguser_viewed IS NULL) );" );
@@ -1034,11 +1045,6 @@ void GUIClient::sCustomersUpdated(int pCustid, bool pLocal)
   emit customersUpdated(pCustid, pLocal);
 }
 
-void GUIClient::sEmployeeUpdated(int id)
-{
-  emit employeeUpdated(id);
-}
-
 void GUIClient::sGlSeriesUpdated()
 {
   emit glSeriesUpdated();
@@ -1067,11 +1073,6 @@ void GUIClient::sStandardPeriodsUpdated()
 void GUIClient::sSalesOrdersUpdated(int pSoheadid)
 {
   emit salesOrdersUpdated(pSoheadid, TRUE);
-}
-
-void GUIClient::sSalesRepUpdated(int id)
-{
-  emit salesRepUpdated(id);
 }
 
 void GUIClient::sCreditMemosUpdated()
@@ -1225,11 +1226,6 @@ void GUIClient::sTransferOrdersUpdated(int id)
   emit transferOrdersUpdated(id);
 }
 
-void GUIClient::sUserUpdated(QString username)
-{
-  emit userUpdated(username);
-}
-
 void GUIClient::sIdleTimeout()
 {
  // so we don't accidentally get called again waiting
@@ -1247,18 +1243,19 @@ void GUIClient::sIdleTimeout()
 
 int systemError(QWidget *pParent, const QString &pMessage)
 {
-  ErrorReporter::error(QtCriticalMsg, pParent, QObject::tr("System Message"),
-                       pMessage);
-  return QMessageBox::Ok;
+  int result = QMessageBox::critical( pParent, QObject::tr("System Message"),
+                                      pMessage + QObject::tr("\nReport this to your Systems Administrator.") );
+  return result;
 }
 
 int systemError(QWidget *pParent, const QString &pMessage, const QString &pFileName, const int lineNumber)
 {
-  ErrorReporter::error(QtCriticalMsg, pParent,
-                       QObject::tr("System Message (%1 at %2)")
-                                   .arg(pFileName).arg(lineNumber),
-                       pMessage, pFileName, lineNumber);
-  return QMessageBox::Ok;
+  int result = QMessageBox::critical( pParent,
+                                      QObject::tr("System Message (%1 at %2)")
+                                      .arg(pFileName)
+                                      .arg(lineNumber),
+                                      pMessage + QObject::tr("\nReport this to your Systems Administrator.") );
+  return result;
 }
 
 void message(const QString &pMessage, int pTimeout)
@@ -1337,8 +1334,6 @@ QString translationFile(QString localestr, const QString component)
 QString translationFile(QString localestr, const QString component, QString &version)
 {
   QStringList paths;
-//qDebug() << QDesktopServices::storageLocation(QDesktopServices::DataLocation);
-  paths << QDesktopServices::storageLocation(QDesktopServices::DataLocation);
   paths << "dict";
   paths << "";
   paths << "../dict";
@@ -1493,7 +1488,7 @@ void GUIClient::sCustomCommand()
       }
 
       XUiLoader loader;
-      QByteArray ba = q.value("uiform_source").toString().toUtf8(); 
+      QByteArray ba = q.value("uiform_source").toByteArray();
       QBuffer uiFile(&ba);
       if(!uiFile.open(QIODevice::ReadOnly))
       {
@@ -2139,14 +2134,6 @@ void GUIClient::hunspell_initialize()
     QString fullPathWithoutExt = appPath + "/" + langName;
     QFile affFile(fullPathWithoutExt + tr(".aff"));
     QFile dicFile(fullPathWithoutExt + tr(".dic"));
-    // If we don't have files for the first name lets try a more common naming convention
-    if(!(affFile.exists() && dicFile.exists()))
-    {
-      langName = QLocale().name().toLower(); // retruns lang_cntry format en_us for example
-      fullPathWithoutExt = appPath + "/" + langName;
-      affFile.setFileName(fullPathWithoutExt + tr(".aff"));
-      dicFile.setFileName(fullPathWithoutExt + tr(".dic"));
-    }
     if(affFile.exists() && dicFile.exists())
     {
       _spellReady = true;      

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -23,7 +23,6 @@
 #include "itemSites.h"
 
 #include "adjustmentTrans.h"
-#include "adjustInvValue.h"
 #include "transferTrans.h"
 #include "transferOrders.h"
 #include "transferOrder.h"
@@ -55,6 +54,7 @@
 #include "maintainShipping.h"
 #include "shipOrder.h"
 #include "recallOrders.h"
+#include "purgeShippingRecords.h"
 #include "externalShippingList.h"
 
 #include "enterPoReceipt.h"
@@ -71,6 +71,9 @@
 #include "printLabelsByOrder.h"
 
 #include "dspShipmentsBySalesOrder.h"
+#include "dspBacklogByItem.h"
+#include "dspBacklogByCustomer.h"
+#include "dspBacklogByParameterList.h"
 #include "dspSummarizedBacklogByWarehouse.h"
 #include "dspShipmentsBySalesOrder.h"
 #include "dspShipmentsByDate.h"
@@ -86,19 +89,28 @@
 
 #include "itemAvailabilityWorkbench.h"
 
-#include "dspBacklog.h"
+#include "dspItemSitesByItem.h"
+#include "dspItemSitesByParameterList.h"
 #include "dspValidLocationsByItem.h"
-#include "dspQOH.h"
+#include "dspQOHByItem.h"
+#include "dspQOHByParameterList.h"
 #include "dspQOHByLocation.h"
 #include "dspInventoryLocator.h"
 #include "dspSlowMovingInventoryByClassCode.h"
 #include "dspExpiredInventoryByClassCode.h"
-#include "dspInventoryAvailability.h"
+#include "dspInventoryAvailabilityByItem.h"
+#include "dspInventoryAvailabilityByParameterList.h"
+#include "dspInventoryAvailabilityBySourceVendor.h"
 #include "dspSubstituteAvailabilityByItem.h"
-#include "dspInventoryHistory.h"
+#include "dspInventoryHistoryByItem.h"
+#include "dspInventoryHistoryByOrderNumber.h"
+#include "dspInventoryHistoryByParameterList.h"
 #include "dspDetailedInventoryHistoryByLotSerial.h"
 #include "dspDetailedInventoryHistoryByLocation.h"
-#include "dspUsageStatistics.h"
+#include "dspUsageStatisticsByItem.h"
+#include "dspUsageStatisticsByClassCode.h"
+#include "dspUsageStatisticsByItemGroup.h"
+#include "dspUsageStatisticsByWarehouse.h"
 #include "dspTimePhasedUsageStatisticsByItem.h"
 
 #include "printItemLabelsByClassCode.h"
@@ -151,6 +163,13 @@ menuInventory::menuInventory(GUIClient *Pparent) :
   formsMenu                = new QMenu(parent);
   formsShipLabelsMenu      = new QMenu(parent);
   reportsMenu              = new QMenu(parent);
+  reportsItemsitesMenu     = new QMenu(parent);
+  reportsQohMenu           = new QMenu(parent);
+  reportsInvAvailMenu      = new QMenu(parent);
+  reportsInvHistMenu       = new QMenu(parent);
+  reportsDtlInvHistMenu    = new QMenu(parent);
+  reportsItemUsgMenu       = new QMenu(parent);
+  reportsBacklogMenu       = new QMenu(parent);
   reportsShipmentsMenu     = new QMenu(parent);
   updateItemInfoMenu       = new QMenu(parent);
   updateItemInfoReorderMenu= new QMenu(parent);
@@ -158,6 +177,7 @@ menuInventory::menuInventory(GUIClient *Pparent) :
   utilitiesMenu            = new QMenu(parent);
 
   mainMenu->setObjectName("menu.im");
+  itemSitesMenu->setObjectName("menu.im.itemsites");
   warehouseMenu->setObjectName("menu.im.warehouse");
   transferOrderMenu->setObjectName("menu.im.transferorder");
   transactionsMenu->setObjectName("menu.im.transactions");
@@ -174,6 +194,13 @@ menuInventory::menuInventory(GUIClient *Pparent) :
   formsMenu->setObjectName("menu.im.forms");
   formsShipLabelsMenu->setObjectName("menu.im.formsshiplabels");
   reportsMenu->setObjectName("menu.im.reports");
+  reportsItemsitesMenu->setObjectName("menu.im.reportsitemsites");
+  reportsQohMenu->setObjectName("menu.im.reports.qoh");
+  reportsInvAvailMenu->setObjectName("menu.im.reportsinvavail");
+  reportsInvHistMenu->setObjectName("menu.im.reportsinvhist");
+  reportsDtlInvHistMenu->setObjectName("menu.im.reportdtlinvhist");
+  reportsItemUsgMenu->setObjectName("menu.im.reportsitemusg");
+  reportsBacklogMenu->setObjectName("menu.im.reportsbacklog");
   reportsShipmentsMenu->setObjectName("menu.im.reportsshipments");
   updateItemInfoMenu->setObjectName("menu.im.updateiteminfo");
   updateItemInfoReorderMenu->setObjectName("menu.im.updateiteminforeorder");
@@ -284,7 +311,11 @@ menuInventory::menuInventory(GUIClient *Pparent) :
     { "menu",                               tr("&Reports"),                (char*)shippingReportsMenu,               shippingMenu,        "true",            NULL, NULL, true, NULL },
 
     // Inventory | Shipping | Reports | Backlog
-    { "sr.dspBacklog",                tr("&Backlog..."),             SLOT(sDspBacklog()),                shippingReportsMenu,  "ViewSalesOrders", NULL, NULL, true, NULL },
+    { "menu",                               tr("&Backlog"),                (char*)reportsBacklogMenu,                shippingReportsMenu, "true",            NULL, NULL, true, NULL },
+    { "sr.dspBacklogByItem",                tr("by &Item..."),             SLOT(sDspBacklogByItem()),                reportsBacklogMenu,  "ViewSalesOrders", NULL, NULL, true, NULL },
+    { "sr.dspBacklogByCustomer",            tr("by &Customer..."),         SLOT(sDspBacklogByCustomer()),            reportsBacklogMenu,  "ViewSalesOrders", NULL, NULL, true, NULL },
+    { "sr.dspBacklogByProductCategory",     tr("by &Product Category..."), SLOT(sDspBacklogByProductCategory()),     reportsBacklogMenu,  "ViewSalesOrders", NULL, NULL, true, NULL },
+    { "sr.dspSummarizedBacklogByWarehouse", tr("S&ummarized Backlog..."),  SLOT(sDspSummarizedBacklogByWarehouse()), shippingReportsMenu, "ViewSalesOrders", NULL, NULL, true, NULL },
 
     { "separator", NULL, NULL, shippingReportsMenu, "true", NULL, NULL, true, NULL },
 
@@ -317,12 +348,22 @@ menuInventory::menuInventory(GUIClient *Pparent) :
     //  Inventory | Reports
     { "menu",                           tr("&Reports"),                   (char*)reportsMenu,                   mainMenu,       "true", NULL, NULL, true, NULL },
 
+    //  Inventory | Reports | Item Sites
+    { "menu",                           tr("&Item Sites"),                (char*)reportsItemsitesMenu,          reportsMenu,          "ViewItemSites",  NULL, NULL, true, NULL },
+    { "im.dspItemSitesByPlannerCode",   tr("by &Planner Code..."),        SLOT(sDspItemSitesByPlannerCode()),   reportsItemsitesMenu, "ViewItemSites",  NULL, NULL, true, NULL },
+    { "im.dspItemSitesByCostCategory",  tr("by C&ost Category..."),       SLOT(sDspItemSitesByCostCategory()),  reportsItemsitesMenu, "ViewItemSites",  NULL, NULL, true, NULL },
+    { "im.dspItemSitesByClassCode",     tr("by &Class Code..."),          SLOT(sDspItemSitesByClassCode()),     reportsItemsitesMenu, "ViewItemSites",  NULL, NULL, true, NULL },
+    { "im.dspItemSitesByItem",          tr("by &Item..."),                SLOT(sDspItemSitesByItem()),          reportsItemsitesMenu, "ViewItemSites",  NULL, NULL, true, NULL },
+
     { "im.dspValidLocationsByItem",     tr("&Valid Locations by Item..."),SLOT(sDspValidLocationsByItem()),     reportsMenu,          "ViewLocations",  NULL, NULL, true, NULL },
     {  "separator",                     NULL,                             NULL,                                 reportsMenu,          "true",           NULL, NULL, true, NULL },
 
     //  Inventory | Reports | Quantities On Hand
-    { "im.dspQOH",                    tr("&Quantities On Hand..."),                             SLOT(sDspQOH()),                reportsMenu, "ViewQOH",      NULL, NULL, true, NULL },
-    { "im.dspQOHByLocation",          tr("Quantities On Hand By &Location..."),                 SLOT(sDspQOHByLocation()),      reportsMenu, "ViewQOH",      NULL, NULL, true, NULL },
+    { "menu",                         tr("&Quantities On Hand"),             (char*)reportsQohMenu,                     reportsMenu,    "ViewQOH",      NULL, NULL, true, NULL },
+    { "im.dspQOHByClassCode",         tr("by &Class Code..."),               SLOT(sDspQOHByClassCode()),                reportsQohMenu, "ViewQOH",      NULL, NULL, true, NULL },
+    { "im.dspQOHByItemGroup",         tr("by Item &Group..."),               SLOT(sDspQOHByItemGroup()),                reportsQohMenu, "ViewQOH",      NULL, NULL, true, NULL },
+    { "im.dspQOHByLocation",          tr("by &Location..."),                 SLOT(sDspQOHByLocation()),                 reportsQohMenu, "ViewQOH",      NULL, NULL, true, NULL },
+    { "im.dspQOHByItem",              tr("by &Item..."),                     SLOT(sDspQOHByItem()),                     reportsQohMenu, "ViewQOH",      NULL, NULL, true, NULL },
 
     { "im.dspLocationLotSerialDetail",tr("&Location/Lot/Serial # Detail..."),SLOT(sDspLocationLotSerialDetail()),       reportsMenu,    "ViewQOH",      NULL, NULL, _metrics->boolean("LotSerialControl"), NULL },
     { "im.dspExpiredInventory",       tr("&Expired Inventory..."),           SLOT(sDspExpiredInventoryByClassCode()),   reportsMenu,    "ViewQOH",      NULL, NULL, _metrics->boolean("LotSerialControl"), NULL },
@@ -331,15 +372,33 @@ menuInventory::menuInventory(GUIClient *Pparent) :
     {  "separator",                   NULL,                                  NULL,                                      reportsMenu,    "true",         NULL, NULL, true, NULL },
 
     //  Inventory| Reports | Inventory Availability
-    { "im.dspInventoryAvailability",       tr("Inventory &Availability..."), SLOT(sDspInventoryAvailability()), reportsMenu, "ViewInventoryAvailability", QPixmap(":/images/dspInventoryAvailabilityByPlannerCode.png"), toolBar, true, tr("Inventory Availability by Planner Code") },
+    { "menu",                           tr("Inventory &Availability"),                    (char*)reportsInvAvailMenu,                   reportsMenu,     "ViewInventoryAvailability",   NULL, NULL, true, NULL },
+    { "im.dspInventoryAvailabilityByPlannerCode",       tr("by &Planner Code..."), SLOT(sDspInventoryAvailabilityByPlannerCode()), reportsInvAvailMenu, "ViewInventoryAvailability", QPixmap(":/images/dspInventoryAvailabilityByPlannerCode.png"), toolBar, true, tr("Inventory Availability by Planner Code") },
+    { "im.dspInventoryAvailabilityByClassCode",         tr("by &Class Code..."),         SLOT(sDspInventoryAvailabilityByClassCode()), reportsInvAvailMenu, "ViewInventoryAvailability",        NULL, NULL, true, NULL },
+    { "im.dspInventoryAvailabilityBySourceVendor",      tr("by &Source Vendor..."),SLOT(sDspInventoryAvailabilityBySourceVendor()), reportsInvAvailMenu, "ViewInventoryAvailability",   NULL, NULL, true, NULL },
+    { "im.dspInventoryAvailabilityByItemGroup",         tr("by Item &Group..."),         SLOT(sDspInventoryAvailabilityByItemGroup()), reportsInvAvailMenu, "ViewInventoryAvailability",        NULL, NULL, true, NULL },
+    { "im.dspInventoryAvailabilityByItem",              tr("by &Item..."),       SLOT(sDspInventoryAvailabilityByItem()), reportsInvAvailMenu, "ViewInventoryAvailability",     NULL, NULL, true, NULL },
     { "im.dspSubstituteAvailabilityByRootItem",         tr("&Substitute Availability..."),       SLOT(sDspSubstituteAvailabilityByRootItem()), reportsMenu, "ViewInventoryAvailability",        NULL, NULL, true, NULL },
-    {  "separator",                   NULL,                                  NULL,                                      reportsMenu,    "true",         NULL, NULL, true, NULL },
 
     //  Inventory| Reports | Inventory History
-    { "im.dspInventoryHistory",                   tr("&History..."), SLOT(sDspInventoryHistory()), reportsMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
-    { "im.dspDetailedInventoryHistoryByLocation",                  tr("History by Lo&cation..."), SLOT(sDspDetailedInventoryHistoryByLocation()), reportsMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
-    { "im.dspDetailedInventoryHistoryByLot/SerialNumber",      tr("History by &Lot/Serial #..."), SLOT(sDspDetailedInventoryHistoryByLotSerial()),reportsMenu, "ViewInventoryHistory", NULL, NULL, _metrics->boolean("LotSerialControl"), NULL },
-    { "im.dspItemUsageStatistics",                          tr("&Usage Statistics..."), SLOT(sDspItemUsageStatistics()), reportsMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "menu",                           tr("Inventory &History"),                         (char*)reportsInvHistMenu,                    reportsMenu,    "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspInventoryHistoryByPlannerCode",                   tr("by &Planner Code..."), SLOT(sDspInventoryHistoryByPlannerCode()), reportsInvHistMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspInventoryHistoryByClassCode",                       tr("by &Class Code..."), SLOT(sDspInventoryHistoryByClassCode()), reportsInvHistMenu, "ViewInventoryHistory",   NULL, NULL, true, NULL },
+    { "im.dspInventoryHistoryByOrderNumber",                   tr("by &Order Number..."), SLOT(sDspInventoryHistoryByOrderNumber()), reportsInvHistMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspInventoryHistoryByItemGroup",                       tr("by Item &Group..."), SLOT(sDspInventoryHistoryByItemGroup()), reportsInvHistMenu, "ViewInventoryHistory",   NULL, NULL, true, NULL },
+    { "im.dspInventoryHistoryByItem",                                  tr("by &Item..."), SLOT(sDspInventoryHistoryByItem()), reportsInvHistMenu, "ViewInventoryHistory",        NULL, NULL, true, NULL },
+
+    //  Inventory | Reports | Detailed Inventory History
+    { "menu",                                          tr("&Detailed Inventory History"), (char*)reportsDtlInvHistMenu,                    reportsMenu,          "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspDetailedInventoryHistoryByLocation",                  tr("by Lo&cation..."), SLOT(sDspDetailedInventoryHistoryByLocation()), reportsDtlInvHistMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspDetailedInventoryHistoryByLot/SerialNumber",      tr("by &Lot/Serial #..."), SLOT(sDspDetailedInventoryHistoryByLotSerial()),reportsDtlInvHistMenu, "ViewInventoryHistory", NULL, NULL, _metrics->boolean("LotSerialControl"), NULL },
+
+    //  Inventory | Reports | Usage Statistics
+    { "menu",                                                   tr("&Usage Statistics "), (char*)reportsItemUsgMenu,                  reportsMenu,        "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspItemUsageStatisticsByWarehouse",                          tr("by &Site..."), SLOT(sDspItemUsageStatisticsByWarehouse()), reportsItemUsgMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspItemUsageStatisticsByClassCode",                    tr("by &Class Code..."), SLOT(sDspItemUsageStatisticsByClassCode()), reportsItemUsgMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspItemUsageStatisticsByItemGroup",                    tr("by Item &Group..."), SLOT(sDspItemUsageStatisticsByItemGroup()), reportsItemUsgMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
+    { "im.dspItemUsageStatisticsByItem",                               tr("by &Item..."), SLOT(sDspItemUsageStatisticsByItem()),      reportsItemUsgMenu, "ViewInventoryHistory", NULL, NULL, true, NULL },
 
     { "im.dspTimePhasedItemUsageStatisticsByItem",tr("Time &Phased Usage Statistics..."), SLOT(sDspTimePhasedUsageStatisticsByItem()),reportsMenu, "ViewInventoryHistory",       NULL, NULL, true, NULL },
 
@@ -370,7 +429,6 @@ menuInventory::menuInventory(GUIClient *Pparent) :
     // Inventory | Utilities
     { "menu",                                     tr("&Utilities"),                       (char*)utilitiesMenu,                     mainMenu,       "true",                    NULL, NULL, true, NULL },
     { "im.dspUnbalancedQOHByClassCode",           tr("U&nbalanced QOH..."),               SLOT(sDspUnbalancedQOHByClassCode()),     utilitiesMenu,  "ViewItemSites",           NULL, NULL, true, NULL },
-    { "im.adjustInvValue",                        tr("Adjust Avg. Cost Value..."),        SLOT(sAdjustInvValue()),                  utilitiesMenu,  "CreateAdjustmentTrans ViewCosts", NULL, NULL, _metrics->boolean("AllowAvgCostMethod"), NULL },
     { "separator",                                NULL,                                   NULL,                                     utilitiesMenu,  "true",                    NULL, NULL, true, NULL },
 
     // Inventory | Utilities | Update Item Controls
@@ -394,6 +452,7 @@ menuInventory::menuInventory(GUIClient *Pparent) :
     { "im.summarizeTransactionHistoryByClassCode",tr("Summarize &Transaction History..."),SLOT(sSummarizeInvTransByClassCode()),    utilitiesMenu, "SummarizeInventoryTransactions", NULL, NULL, true, NULL },
     { "im.createItemSitesByClassCode",            tr("&Create Item Sites..."),            SLOT(sCreateItemSitesByClassCode()),      utilitiesMenu, "MaintainItemSites",              NULL, NULL, true, NULL },
     { "separator",                                NULL,                                   NULL,                                     utilitiesMenu, "true",                           NULL, NULL, true, NULL },
+    { "sr.purgeShippingRecords",                  tr("&Purge Shipping Records..."),       SLOT(sPurgeShippingRecords()),            utilitiesMenu, "PurgeShippingRecords",     NULL, NULL, true, NULL },
     { "sr.externalShipping",          tr("Maintain E&xternal Shipping Records..."),       SLOT(sExternalShipping()),                utilitiesMenu, "MaintainExternalShipping", NULL, NULL, true, NULL },
     // Setup
     { "im.setup",	                          tr("&Setup..."),                        SLOT(sSetup()),                           mainMenu,	   "true",                     NULL, NULL, true, NULL}
@@ -497,16 +556,6 @@ void menuInventory::sAdjustmentTrans()
   params.append("mode", "new");
 
   adjustmentTrans *newdlg = new adjustmentTrans();
-  newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg);
-}
-
-void menuInventory::sAdjustInvValue()
-{
-  ParameterList params;
-  params.append("mode", "new");
-
-  adjustInvValue *newdlg = new adjustInvValue();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }
@@ -747,6 +796,11 @@ void menuInventory::sRecallOrders()
   omfgThis->handleNewWindow(new recallOrders());
 }
 
+void menuInventory::sPurgeShippingRecords()
+{
+  purgeShippingRecords(parent, "", TRUE).exec();
+}
+
 void menuInventory::sEnterReceipt()
 {
   ParameterList params;
@@ -784,9 +838,24 @@ void menuInventory::sDspRatesByDestination()
 {
 }
 
-void menuInventory::sDspBacklog()
+void menuInventory::sDspBacklogByItem()
 {
-  omfgThis->handleNewWindow(new dspBacklog());
+  omfgThis->handleNewWindow(new dspBacklogByItem());
+}
+
+void menuInventory::sDspBacklogByCustomer()
+{
+  omfgThis->handleNewWindow(new dspBacklogByCustomer());
+}
+
+void menuInventory::sDspBacklogByProductCategory()
+{
+  ParameterList params;
+  params.append("prodcat");
+
+  dspBacklogByParameterList *newdlg = new dspBacklogByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
 }
 
 void menuInventory::sDspSummarizedBacklogByWarehouse()
@@ -850,14 +919,69 @@ void menuInventory::sDspItemAvailabilityWorkbench()
   omfgThis->handleNewWindow(new itemAvailabilityWorkbench());
 }
 
+void menuInventory::sDspItemSitesByItem()
+{
+  omfgThis->handleNewWindow(new dspItemSitesByItem());
+}
+
+void menuInventory::sDspItemSitesByClassCode()
+{
+  ParameterList params;
+  params.append("classcode");
+
+  dspItemSitesByParameterList *newdlg = new dspItemSitesByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspItemSitesByPlannerCode()
+{
+  ParameterList params;
+  params.append("plancode");
+
+  dspItemSitesByParameterList *newdlg = new dspItemSitesByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspItemSitesByCostCategory()
+{
+  ParameterList params;
+  params.append("costcat");
+
+  dspItemSitesByParameterList *newdlg = new dspItemSitesByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
 void menuInventory::sDspValidLocationsByItem()
 {
   omfgThis->handleNewWindow(new dspValidLocationsByItem());
 }
 
-void menuInventory::sDspQOH()
+void menuInventory::sDspQOHByItem()
 {
-  omfgThis->handleNewWindow(new dspQOH());
+  omfgThis->handleNewWindow(new dspQOHByItem());
+}
+
+void menuInventory::sDspQOHByClassCode()
+{
+  ParameterList params;
+  params.append("classcode");
+
+  dspQOHByParameterList *newdlg = new dspQOHByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspQOHByItemGroup()
+{
+  ParameterList params;
+  params.append("itemgrp");
+
+  dspQOHByParameterList *newdlg = new dspQOHByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
 }
 
 void menuInventory::sDspQOHByLocation()
@@ -880,9 +1004,44 @@ void menuInventory::sDspExpiredInventoryByClassCode()
   omfgThis->handleNewWindow(new dspExpiredInventoryByClassCode());
 }
 
-void menuInventory::sDspInventoryAvailability()
+void menuInventory::sDspInventoryAvailabilityByItem()
 {
-  omfgThis->handleNewWindow(new dspInventoryAvailability());
+  omfgThis->handleNewWindow(new dspInventoryAvailabilityByItem());
+}
+
+void menuInventory::sDspInventoryAvailabilityByItemGroup()
+{
+  ParameterList params;
+  params.append("itemgrp");
+
+  dspInventoryAvailabilityByParameterList *newdlg = new dspInventoryAvailabilityByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspInventoryAvailabilityByClassCode()
+{
+  ParameterList params;
+  params.append("classcode");
+
+  dspInventoryAvailabilityByParameterList *newdlg = new dspInventoryAvailabilityByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspInventoryAvailabilityByPlannerCode()
+{
+  ParameterList params;
+  params.append("plancode");
+
+  dspInventoryAvailabilityByParameterList *newdlg = new dspInventoryAvailabilityByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspInventoryAvailabilityBySourceVendor()
+{
+  omfgThis->handleNewWindow(new dspInventoryAvailabilityBySourceVendor());
 }
 
 void menuInventory::sDspSubstituteAvailabilityByRootItem()
@@ -890,9 +1049,44 @@ void menuInventory::sDspSubstituteAvailabilityByRootItem()
   omfgThis->handleNewWindow(new dspSubstituteAvailabilityByItem());
 }
 
-void menuInventory::sDspInventoryHistory()
+void menuInventory::sDspInventoryHistoryByItem()
 {
-  omfgThis->handleNewWindow(new dspInventoryHistory());
+  omfgThis->handleNewWindow(new dspInventoryHistoryByItem());
+}
+
+void menuInventory::sDspInventoryHistoryByItemGroup()
+{
+  ParameterList params;
+  params.append("itemgrp");
+
+  dspInventoryHistoryByParameterList *newdlg = new dspInventoryHistoryByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspInventoryHistoryByOrderNumber()
+{
+  omfgThis->handleNewWindow(new dspInventoryHistoryByOrderNumber());
+}
+
+void menuInventory::sDspInventoryHistoryByClassCode()
+{
+  ParameterList params;
+  params.append("classcode");
+
+  dspInventoryHistoryByParameterList *newdlg = new dspInventoryHistoryByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuInventory::sDspInventoryHistoryByPlannerCode()
+{
+  ParameterList params;
+  params.append("plancode");
+
+  dspInventoryHistoryByParameterList *newdlg = new dspInventoryHistoryByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
 }
 
 void menuInventory::sDspDetailedInventoryHistoryByLotSerial()
@@ -905,15 +1099,32 @@ void menuInventory::sDspDetailedInventoryHistoryByLocation()
   omfgThis->handleNewWindow(new dspDetailedInventoryHistoryByLocation());
 }
 
-void menuInventory::sDspItemUsageStatistics()
+void menuInventory::sDspItemUsageStatisticsByItem()
 {
-  omfgThis->handleNewWindow(new dspUsageStatistics());
+  omfgThis->handleNewWindow(new dspUsageStatisticsByItem());
+}
+
+void menuInventory::sDspItemUsageStatisticsByClassCode()
+{
+  omfgThis->handleNewWindow(new dspUsageStatisticsByClassCode());
+}
+
+void menuInventory::sDspItemUsageStatisticsByItemGroup()
+{
+  omfgThis->handleNewWindow(new dspUsageStatisticsByItemGroup());
+}
+
+void menuInventory::sDspItemUsageStatisticsByWarehouse()
+{
+  omfgThis->handleNewWindow(new dspUsageStatisticsByWarehouse());
 }
 
 void menuInventory::sDspTimePhasedUsageStatisticsByItem()
 {
   omfgThis->handleNewWindow(new dspTimePhasedUsageStatisticsByItem());
 }
+
+
 
 void menuInventory::sPrintItemLabelsByClassCode()
 {

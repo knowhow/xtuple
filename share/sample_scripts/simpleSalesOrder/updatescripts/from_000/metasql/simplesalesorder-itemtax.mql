@@ -1,0 +1,14 @@
+-- Group: simplesalesorder
+-- Name: itemtax
+-- Notes:
+
+SELECT COALESCE( (
+  SELECT round(calculateTax(getTaxSelection(<? value("taxauth_id") ?>, getItemTaxType(item_id,<? value("taxauth_id") ?>)), 
+               round(<? value("qty") ?> * <? value("unit_price") ?>, 2), 0.0, 'A'),2) +
+         round(calculateTax(getTaxSelection(<? value("taxauth_id") ?>, getItemTaxType(item_id,<? value("taxauth_id") ?>)), 
+               round(<? value("qty") ?> * <? value("unit_price") ?>, 2), 0.0, 'B'),2) +
+         round(calculateTax(getTaxSelection(<? value("taxauth_id") ?>, getItemTaxType(item_id,<? value("taxauth_id") ?>)), 
+               round(<? value("qty") ?> * <? value("unit_price") ?>, 2), 0.0, 'C'),2))
+,0)  AS item_tax
+FROM item
+WHERE (item_number=<? value("item_number") ?>);

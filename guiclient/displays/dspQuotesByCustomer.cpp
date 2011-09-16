@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -25,6 +25,7 @@ dspQuotesByCustomer::dspQuotesByCustomer(QWidget* parent, const char*, Qt::WFlag
   setMetaSQLOptions("quotes", "detail");
 
   connect(_cust, SIGNAL(newId(int)), this, SLOT(sPopulatePo()));
+  connect(_selectedPO, SIGNAL(toggled(bool)), _poNumber, SLOT(setEnabled(bool)));
 
   _dates->setStartNull(tr("Earliest"), omfgThis->startOfTime(), true);
   _dates->setStartCaption(tr("Starting Order Date"));
@@ -35,8 +36,7 @@ dspQuotesByCustomer::dspQuotesByCustomer(QWidget* parent, const char*, Qt::WFlag
   list()->addColumn(tr("Quote Date"),  _dateColumn,  Qt::AlignRight,  true,  "quhead_quotedate"  );
   list()->addColumn(tr("Ship-to"),     -1,           Qt::AlignLeft,   true,  "quhead_shiptoname"   );
   list()->addColumn(tr("Cust. P/O #"), 200,          Qt::AlignLeft,   true,  "quhead_custponumber"   );
-  list()->addColumn(tr("Status"),     _statusColumn,  Qt::AlignCenter, true,  "quhead_status" );
-
+  
   _cust->setFocus();
   connect(omfgThis, SIGNAL(salesOrdersUpdated(int, bool)), this, SLOT(sFillList())  );
 }
@@ -54,11 +54,10 @@ void dspQuotesByCustomer::sPopulatePo()
 
   if ((_cust->isValid()) && (_dates->allValid()))
   {
-    q.prepare( "SELECT MIN(quhead_id), quhead_custponumber "
+    q.prepare( "SELECT DISTINCT -2, quhead_custponumber "
                "FROM quhead "
                "WHERE ( (quhead_cust_id=:cust_id)"
                " AND (quhead_quotedate BETWEEN :startDate AND :endDate) ) "
-               "GROUP BY quhead_custponumber "
                "ORDER BY quhead_custponumber;" );
     _dates->bindValue(q);
     q.bindValue(":cust_id", _cust->id());
@@ -125,8 +124,6 @@ bool dspQuotesByCustomer::setParams(ParameterList & params)
   params.append("customersOnly");
   if (_selectedPO->isChecked())
     params.append("poNumber", _poNumber->currentText());
-  if (_showConverted->isChecked())
-    params.append("showConverted", true);
 
   return true;
 }
@@ -138,7 +135,7 @@ void dspQuotesByCustomer::sConvert()
                                  tr("&Yes"), tr("&No"), QString::null, 0, 1 ) == 0)
   {
     XSqlQuery check;
-    check.prepare( "SELECT quhead_number, quhead_status, cust_creditstatus "
+    check.prepare( "SELECT quhead_number, cust_creditstatus "
                    "FROM quhead, cust "
                    "WHERE ( (quhead_cust_id=cust_id)"
                    " AND (quhead_id=:quhead_id) );" );
@@ -159,33 +156,25 @@ void dspQuotesByCustomer::sConvert()
         check.exec();
         if (check.first())
         {
-          if (check.value("quhead_status").toString() == "C")
-          {
-            QMessageBox::warning( this, tr("Cannot Convert Quote"),
-                                    tr( "Quote #%1 has already been converted to a Sales Order." )
-                            .arg(check.value("quhead_number").toString()) );
-            return;
-          }
-
-          if ( (check.value("cust_creditstatus").toString() == "H") && (!_privileges->check("CreateSOForHoldCustomer")) )
-          {
-            QMessageBox::warning( this, tr("Cannot Convert Quote"),
+	      if ( (check.value("cust_creditstatus").toString() == "H") && (!_privileges->check("CreateSOForHoldCustomer")) )
+	      {
+	        QMessageBox::warning( this, tr("Cannot Convert Quote"),
 					tr( "Quote #%1 is for a Customer that has been placed on a Credit Hold and you do not have\n"
 				    "privilege to create Sales Orders for Customers on Credit Hold.  The selected\n"
 				    "Customer must be taken off of Credit Hold before you may create convert this Quote." )
-                                .arg(check.value("quhead_number").toString()) );
-            return;
-          }
+				.arg(check.value("quhead_number").toString()) );
+	        return;
+	      }	
 
-          if ( (check.value("cust_creditstatus").toString() == "W") && (!_privileges->check("CreateSOForWarnCustomer")) )
-          {
-            QMessageBox::warning( this, tr("Cannot Convert Quote"),
+	      if ( (check.value("cust_creditstatus").toString() == "W") && (!_privileges->check("CreateSOForWarnCustomer")) )
+	      {
+	        QMessageBox::warning( this, tr("Cannot Convert Quote"),
 			    	tr( "Quote #%1 is for a Customer that has been placed on a Credit Warning and you do not have\n"
 				    "privilege to create Sales Orders for Customers on Credit Warning.  The selected\n"
 				    "Customer must be taken off of Credit Warning before you may create convert this Quote." )
-                                .arg(check.value("quhead_number").toString()) );
-            return;
-          }
+				.arg(check.value("quhead_number").toString()) );
+	        return;
+	      }	
         }
         else
         {

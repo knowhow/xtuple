@@ -1,0 +1,11 @@
+-- Group: simplesalesorder
+-- Name: itemtax
+-- Notes:
+
+SELECT calculateTax(<? value("taxzone_id") ?>, 
+                    getItemTaxType(item_id, <? value("taxzone_id") ?>),
+                    current_date, 
+                    baseCurrId(), 
+                    <? value("extension") ?> )  AS item_tax
+FROM item
+WHERE (item_number=<? value("item_number") ?>);

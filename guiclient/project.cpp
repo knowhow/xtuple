@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -35,7 +35,7 @@ project::project(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   connect(_number, SIGNAL(lostFocus()), this, SLOT(sNumberChanged()));
   connect(_activity, SIGNAL(clicked()), this, SLOT(sActivity()));
 
-  _prjtask->addColumn( tr("Number"),			_itemColumn,	Qt::AlignLeft, true, "prjtask_number" );
+  _prjtask->addColumn( tr("Number"),			_itemColumn,	Qt::AlignRight, true, "prjtask_number" );
   _prjtask->addColumn( tr("Name"),				_itemColumn,	Qt::AlignLeft,  true, "prjtask_name"  );
   _prjtask->addColumn( tr("Description"),		-1,				Qt::AlignLeft,  true, "prjtask_descrip" ); 
   _prjtask->addColumn( tr("Hours Balance"),		_itemColumn,	Qt::AlignRight, true, "prjtaskhrbal" );
@@ -109,8 +109,8 @@ enum SetResponse project::set(const ParameterList &pParams)
       _documents->setId(_prjid);
       _recurring->setParent(_prjid, "J");
 
-      _assignedTo->setEnabled(_privileges->check("MaintainAllToDoItems") ||
-                              _privileges->check("ReassignToDoItems"));
+      _assignedTo->setEnabled(_privileges->check("MaintainOtherTodoLists") ||
+			      _privileges->check("ReassignTodoListItem"));
     }
     else if (param.toString() == "edit")
     {
@@ -122,8 +122,8 @@ enum SetResponse project::set(const ParameterList &pParams)
       connect(_prjtask, SIGNAL(valid(bool)), _deleteTask, SLOT(setEnabled(bool)));
       connect(_prjtask, SIGNAL(itemSelected(int)), _editTask, SLOT(animateClick()));
 
-      _assignedTo->setEnabled(_privileges->check("MaintainAllToDoItems") ||
-                              _privileges->check("ReassignToDoItems"));
+      _assignedTo->setEnabled(_privileges->check("MaintainOtherTodoLists") ||
+	                      _privileges->check("ReassignTodoListItem"));
     }
     else if (param.toString() == "view")
     {
@@ -147,9 +147,6 @@ enum SetResponse project::set(const ParameterList &pParams)
       _due->setEnabled(FALSE);
       _completed->setEnabled(FALSE);
       _recurring->setEnabled(FALSE);
-      _buttonBox->removeButton(_buttonBox->button(QDialogButtonBox::Save));
-      _buttonBox->removeButton(_buttonBox->button(QDialogButtonBox::Cancel));
-      _buttonBox->addButton(QDialogButtonBox::Close);
     }
   }
     
@@ -378,34 +375,10 @@ void project::sViewTask()
 
 void project::sDeleteTask()
 {
-  q.prepare("SELECT deleteProjectTask(:prjtask_id) AS result; ");
+  q.prepare("DELETE FROM prjtask"
+            " WHERE (prjtask_id=:prjtask_id); ");
   q.bindValue(":prjtask_id", _prjtask->id());
   q.exec();
-  if(q.first())
-  {
-    int result = q.value("result").toInt();
-    if(result < 0)
-    {
-      QString errmsg;
-      switch(result)
-      {
-        case -1:
-          errmsg = tr("Project task not found.");
-          break;
-        case -2:
-          errmsg = tr("Actual hours have been posted to this project task.");
-          break;
-        case -3:
-          errmsg = tr("Actual expenses have been posted to this project task.");
-          break;
-        default:
-          errmsg = tr("Error #%1 encountered while trying to delete project task.").arg(result);
-      }
-      QMessageBox::critical( this, tr("Cannot Delete Project Task"),
-        tr("Could not delete the project task for one or more reasons.\n") + errmsg);
-      return;
-    }
-  }
   emit deletedTask();
   sFillTaskList();
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,8 +28,8 @@ bomItem::bomItem(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _substituteGroupInt->addButton(_itemDefinedSubstitutes);
   _substituteGroupInt->addButton(_bomDefinedSubstitutes);
 
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSaveClick()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_save, SIGNAL(clicked()), this, SLOT(sSaveClick()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(sClose()));
   connect(_item, SIGNAL(typeChanged(const QString&)), this, SLOT(sItemTypeChanged(const QString&)));
   connect(_item, SIGNAL(newId(int)), this, SLOT(sItemIdChanged()));
   connect(_newSubstitution, SIGNAL(clicked()), this, SLOT(sNewSubstitute()));
@@ -60,7 +60,6 @@ bomItem::bomItem(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _item->setFocus();
   
   _saved=FALSE;
-  adjustSize();
 }
 
 bomItem::~bomItem()
@@ -171,6 +170,8 @@ enum SetResponse bomItem::set(const ParameterList &pParams)
     {
       _mode = cEdit;
       _item->setReadOnly(TRUE);
+
+      _save->setFocus();
     }
     else if (param.toString() == "copy")
     {
@@ -187,6 +188,7 @@ enum SetResponse bomItem::set(const ParameterList &pParams)
       }
 
       _dates->setStartDate(omfgThis->dbDate());
+      _save->setFocus();
     }
     else if (param.toString() == "view")
     {
@@ -203,10 +205,12 @@ enum SetResponse bomItem::set(const ParameterList &pParams)
       _comments->setReadOnly(TRUE);
       _ecn->setEnabled(FALSE);
       _substituteGroup->setEnabled(FALSE);
+      _close->setText(tr("&Close"));
+      _save->hide();
       _notes->setEnabled(FALSE);
       _ref->setEnabled(FALSE);
-      _buttonBox->setStandardButtons(QDialogButtonBox::Close);
-      _buttonBox->setFocus();
+
+      _close->setFocus();
     }
   }
 
@@ -256,14 +260,6 @@ void bomItem::sSave()
     QMessageBox::critical( this, tr("Enter Scrap Value"),
                            tr("You must enter a Scrap value before saving this BOM Item.") );
     _scrap->setFocus();
-    return;
-  }
-
-  if (_dates->endDate() < _dates->startDate())
-  {
-    QMessageBox::critical( this, tr("Invalid Expiration Date"),
-                           tr("The expiration date cannot be earlier than the effective date.") );
-    _dates->setFocus();
     return;
   }
 

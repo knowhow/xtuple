@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -36,13 +36,11 @@ editOwners::editOwners(QWidget* parent, const char* name, bool modal, Qt::WFlags
   _modify->setEnabled(false);
   _modifyAll->setEnabled(false);
 
-  _newOwner->setType(UsernameLineEdit::UsersActive);
-
   _first = true;
 
   q.prepare("SELECT usr_id "
 	    "FROM usr "
-	    "WHERE (usr_username=getEffectiveXtUser());");
+	    "WHERE (usr_username=CURRENT_USER);");
   q.exec();
   if (q.first())
   {
@@ -138,15 +136,13 @@ void editOwners::sFillList()
 
   if(_queryString == "")
     _list->clear();
-  else
-  {
-    q.prepare(_queryString);
-    q.bindValue(":owner", _owner->username());
-    q.exec();
-    _list->populate(q);
-  }
 
+  q.prepare(_queryString);
+  q.bindValue(":owner", _owner->username());
+  q.exec();
+  _list->populate(q);
   _modifyAll->setEnabled(_list->topLevelItemCount() > 0);
+
   _first = true;
   _queryString = "";
 }

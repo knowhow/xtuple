@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -22,9 +22,14 @@ createPlannedOrdersByPlannerCode::createPlannedOrdersByPlannerCode(QWidget* pare
 {
   setupUi(this);
 
+
   // signals and slots connections
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sCreate()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_create, SIGNAL(clicked()), this, SLOT(sCreate()));
+  connect(_submit, SIGNAL(clicked()), this, SLOT(sSubmit()));
+
+  if (!_metrics->boolean("EnableBatchManager"))
+    _submit->hide();
 
   _plannerCode->setType(ParameterGroup::PlannerCode);
 }
@@ -44,49 +49,12 @@ void createPlannedOrdersByPlannerCode::sCreate()
   ParameterList params;
   if (! setParams(params))
     return;
-
-  sCreate(params);
-}
-
-void createPlannedOrdersByPlannerCode::sCreate(ParameterList params)
-{
-  QProgressDialog progress;
-  progress.setWindowModality(Qt::ApplicationModal);
-
-  MetaSQLQuery mql = mqlLoad("schedule", "load");
+  MetaSQLQuery mql = mqlLoad("schedule", "create");
   q = mql.toQuery(params);
   if (q.lastError().type() != QSqlError::NoError)
   {
     systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
-  }
-
-  int count=0;
-  progress.setMaximum(q.size());
-  XSqlQuery create;
-  while (q.next())
-  {
-    progress.setLabelText(tr("Site: %1\n"
-                             "Item: %2 - %3")
-                          .arg(q.value("warehous_code").toString())
-                          .arg(q.value("item_number").toString())
-                          .arg(q.value("item_descrip1").toString()));
-
-    ParameterList rparams = params;
-    rparams.append("itemsite_id", q.value("itemsite_id"));
-    MetaSQLQuery mql2 = mqlLoad("schedule", "create");
-    create = mql2.toQuery(rparams);
-    if (create.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, create.lastError().databaseText(), __FILE__, __LINE__);
-      return;
-    }
-
-    if (progress.wasCanceled())
-      break;
-
-    count++;
-    progress.setValue(count);
   }
 
   accept();

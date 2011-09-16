@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -50,13 +50,18 @@
 #define TOITEM_PRJ_ID_COL		17
 #define TOITEM_FREIGHT_COL		18
 #define TOITEM_FREIGHT_CURR_ID_COL	19
-#define TOITEM_NOTES_COL                20
-#define TOITEM_CLOSEDATE_COL		21
-#define TOITEM_CLOSE_USERNAME_COL	22
-#define TOITEM_LASTUPDATED_COL		23
-#define TOITEM_CREATED_COL		24
-#define TOITEM_CREATOR_COL		25
-#define TOITEM_FREIGHT_RECEIVED_COL	26
+#define TOITEM_FREIGHTTAX_ID_COL	20
+#define TOITEM_FREIGHTTAX_PCTA_COL	21
+#define TOITEM_FREIGHTTAX_PCTB_COL	22
+#define TOITEM_FREIGHTTAX_PCTC_COL	23
+#define TOITEM_FREIGHTTAX_RATEA_COL	24
+#define TOITEM_FREIGHTTAX_RATEB_COL	25
+#define TOITEM_FREIGHTTAX_RATEC_COL	26
+#define TOITEM_CLOSEDATE_COL		27
+#define TOITEM_CLOSE_USERNAME_COL	28
+#define TOITEM_LASTUPDATED_COL		29
+#define TOITEM_CREATED_COL		30
+#define TOITEM_CREATOR_COL		31
 
 class ToitemTableModel : public QSqlRelationalTableModel
 {

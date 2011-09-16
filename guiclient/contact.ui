@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -73,6 +73,43 @@ to be bound by its terms.</comment>
        </item>
       </layout>
      </item>
+     <item row="0" column="1" rowspan="2">
+      <layout class="QVBoxLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="_close">
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="_save">
+         <property name="text">
+          <string>Save</string>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
      <item row="1" column="0">
       <widget class="QGroupBox" name="_cntctGroup">
        <property name="title">
@@ -93,6 +130,9 @@ to be bound by its terms.</comment>
            </property>
            <item row="0" column="0">
             <widget class="ContactWidget" name="_contact">
+             <property name="listVisible">
+              <bool>true</bool>
+             </property>
              <property name="accountVisible">
               <bool>true</bool>
              </property>
@@ -108,9 +148,6 @@ to be bound by its terms.</comment>
              <property name="minimalLayout">
               <bool>false</bool>
              </property>
-             <property name="listVisible" stdset="0">
-              <bool>true</bool>
-             </property>
             </widget>
            </item>
           </layout>
@@ -119,7 +156,7 @@ to be bound by its terms.</comment>
        </layout>
       </widget>
      </item>
-     <item row="2" column="0" colspan="3">
+     <item row="2" column="0" colspan="2">
       <widget class="QTabWidget" name="_tabWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -206,11 +243,7 @@ to be bound by its terms.</comment>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
-             <widget class="XTextEdit" name="_notes">
-              <property name="spellEnable">
-               <bool>true</bool>
-              </property>
-             </widget>
+             <widget class="QTextEdit" name="_notes"/>
             </item>
            </layout>
           </widget>
@@ -362,16 +395,6 @@ to be bound by its terms.</comment>
        </widget>
       </widget>
      </item>
-     <item row="0" column="1" rowspan="2">
-      <widget class="QDialogButtonBox" name="_buttonBox">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>
@@ -409,11 +432,6 @@ to be bound by its terms.</comment>
    <header>xtreewidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_contact</tabstop>
@@ -430,10 +448,28 @@ to be bound by its terms.</comment>
   <tabstop>_editUse</tabstop>
   <tabstop>_viewUse</tabstop>
   <tabstop>_detachUse</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_close</tabstop>
   <tabstop>_active</tabstop>
  </tabstops>
  <resources/>
  <connections>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>contact</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>330</x>
+     <y>66</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>125</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>_charass</sender>
    <signal>itemSelected(int)</signal>

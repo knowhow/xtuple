@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -122,8 +122,7 @@ void lotSerial::sSave()
 
 void lotSerial::sChanged()
 {
-  if (_notes->toPlainText().length() > 0)
-    _changed=true;
+  _changed=true;
 }
 
 void lotSerial::sNewCharass()
@@ -215,17 +214,12 @@ void lotSerial::sDeleteReg()
 
 void lotSerial::sFillList()
 {
-  q.prepare( "SELECT charass_id, char_name, "
-             " CASE WHEN char_type < 2 THEN "
-             "   charass_value "
-             " ELSE "
-             "   formatDate(charass_value::date) "
-             "END AS charass_value "
+  q.prepare( "SELECT charass_id, char_name, charass_value "
              "FROM charass, char "
              "WHERE ((charass_target_type='LS')"
              " AND   (charass_char_id=char_id)"
              " AND   (charass_target_id=:ls_id) ) "
-             "ORDER BY char_order, char_name;" );
+             "ORDER BY char_name;" );
   q.bindValue(":ls_id", _lotSerial->id());
   q.exec();
   _charass->clear();

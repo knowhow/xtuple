@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,7 +13,7 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>724</width>
+    <width>690</width>
     <height>786</height>
    </rect>
   </property>
@@ -293,7 +293,7 @@ to be bound by its terms.</comment>
               <bool>true</bool>
              </property>
              <property name="type">
-              <enum>XComboBox::SalesCategoriesActive</enum>
+              <enum>XComboBox::SalesCategories</enum>
              </property>
             </widget>
            </item>
@@ -366,7 +366,7 @@ to be bound by its terms.</comment>
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="XTextEdit" name="_itemDescrip">
+            <widget class="QTextEdit" name="_itemDescrip">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                <horstretch>0</horstretch>
@@ -499,7 +499,7 @@ to be bound by its terms.</comment>
           </property>
          </widget>
         </item>
-        <item row="3" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="_qtyUOMLit">
           <property name="text">
            <string>Qty. UOM:</string>
@@ -512,21 +512,8 @@ to be bound by its terms.</comment>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="XComboBox" name="_qtyUOM"/>
-        </item>
         <item row="2" column="1">
-         <widget class="QCheckBox" name="_updateInv">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Update Inventory</string>
-          </property>
-          <property name="checked">
-           <bool>false</bool>
-          </property>
-         </widget>
+         <widget class="XComboBox" name="_qtyUOM"/>
         </item>
        </layout>
       </widget>
@@ -550,7 +537,7 @@ to be bound by its terms.</comment>
         <item row="0" column="1">
          <widget class="CurrCluster" name="_price">
           <property name="format">
-           <enum>CurrDisplay::SalesPrice</enum>
+           <enum>CurrDisplay::Cost</enum>
           </property>
           <property name="currencyEditable" stdset="0">
            <bool>false</bool>
@@ -685,7 +672,7 @@ to be bound by its terms.</comment>
                 <item row="1" column="1">
                  <widget class="CurrDisplay" name="_listPrice">
                   <property name="format">
-                   <enum>CurrDisplay::SalesPrice</enum>
+                   <enum>CurrDisplay::Cost</enum>
                   </property>
                   <property name="localControl">
                    <bool>false</bool>
@@ -695,7 +682,7 @@ to be bound by its terms.</comment>
                 <item row="2" column="1">
                  <widget class="CurrDisplay" name="_custPrice">
                   <property name="format">
-                   <enum>CurrDisplay::SalesPrice</enum>
+                   <enum>CurrDisplay::Cost</enum>
                   </property>
                   <property name="localControl">
                    <bool>false</bool>
@@ -863,7 +850,7 @@ to be bound by its terms.</comment>
              <number>0</number>
             </property>
             <item>
-             <widget class="XTextEdit" name="_notes"/>
+             <widget class="QTextEdit" name="_notes"/>
             </item>
            </layout>
           </widget>
@@ -928,11 +915,6 @@ to be bound by its terms.</comment>
    <class>XURLLabel</class>
    <extends>QLabel</extends>
    <header>xurllabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

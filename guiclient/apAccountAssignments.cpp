@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -120,12 +120,9 @@ void apAccountAssignments::sFillList()
              "            WHEN (apaccnt_vendtype<> '') THEN apaccnt_vendtype"
              "            ELSE (SELECT vendtype_code FROM vendtype WHERE (vendtype_id=apaccnt_vendtype_id))"
              "       END AS vendtypecode,"
-             "       CASE WHEN (apaccnt_ap_accnt_id = -1) THEN 'N/A' "
-             "            ELSE formatGLAccount(apaccnt_ap_accnt_id) END AS apaccnt,"
-             "       CASE WHEN (apaccnt_prepaid_accnt_id = -1) THEN 'N/A' "
-             "            ELSE formatGLAccount(apaccnt_prepaid_accnt_id) END AS prepaidaccnt,"
-             "       CASE WHEN (apaccnt_discount_accnt_id = -1) THEN 'N/A' "
-             "            ELSE formatGLAccount(apaccnt_discount_accnt_id) END AS discountaccnt "
+             "       formatGLAccount(apaccnt_ap_accnt_id) AS apaccnt,"
+             "       formatGLAccount(apaccnt_prepaid_accnt_id) AS prepaidaccnt,"
+             "       formatGLAccount(apaccnt_discount_accnt_id) AS discountaccnt "
              "FROM apaccnt "
              "ORDER BY vendtypecode;" );
   q.bindValue(":all", tr("All"));

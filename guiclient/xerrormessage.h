@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -12,12 +12,12 @@
 #define XERRORMESSAGE_H
 
 #include <QDialog>
-#include <QStringList>
-
-class QCheckBox;
-class QLabel;
-class QPushButton;
-class QTextEdit;
+#include "qcheckbox.h"
+#include "qlabel.h"
+#include "qtextedit.h"
+#include "qpushbutton.h"
+#include "qstringlist.h"
+#include <qhash.h>
 
 class XErrorMessage: public QDialog
 {

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -185,8 +185,7 @@ bool dspDetailedInventoryHistoryByLotSerial::setParams(ParameterList &params)
   else
     trace="N";
 
-  if (_dateGroup->isChecked())
-    _dates->appendValue(params);
+  _dates->appendValue(params);
   if (_item->isValid())
     params.append("itemid", _item->id());
   if (_warehouse->isSelected())

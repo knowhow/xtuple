@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -147,24 +147,12 @@ void salesAccounts::sFillList()
 	 "            WHEN (salesaccnt_prodcat_id=-1) THEN salesaccnt_prodcat"
 	 "            ELSE (SELECT prodcat_code FROM prodcat WHERE (prodcat_id=salesaccnt_prodcat_id))"
 	 "       END AS prodcatcode,"
-         "       CASE WHEN (salesaccnt_sales_accnt_id IS NULL) THEN 'N/A' "
-         "            WHEN (salesaccnt_sales_accnt_id = -1) THEN 'N/A' "
-         "            ELSE formatGLAccount(salesaccnt_sales_accnt_id) END AS salesaccount,"
-         "       CASE WHEN (salesaccnt_credit_accnt_id IS NULL) THEN 'N/A' "
-         "            WHEN (salesaccnt_credit_accnt_id = -1) THEN 'N/A' "
-         "            ELSE formatGLAccount(salesaccnt_credit_accnt_id) END AS creditaccount,"
-         "       CASE WHEN (salesaccnt_cos_accnt_id IS NULL) THEN 'N/A' "
-         "            WHEN (salesaccnt_cos_accnt_id = -1) THEN 'N/A' "
-         "            ELSE formatGLAccount(salesaccnt_cos_accnt_id) END AS cosaccount,"
-         "       CASE WHEN (salesaccnt_returns_accnt_id IS NULL) THEN 'N/A' "
-         "            WHEN (salesaccnt_returns_accnt_id = -1) THEN 'N/A' "
-         "            ELSE formatGLAccount(salesaccnt_returns_accnt_id) END AS returnsaccount,"
-         "       CASE WHEN (salesaccnt_cor_accnt_id IS NULL) THEN 'N/A' "
-         "            WHEN (salesaccnt_cor_accnt_id = -1) THEN 'N/A' "
-         "            ELSE formatGLAccount(salesaccnt_cor_accnt_id) END AS coraccount,"
-         "       CASE WHEN (salesaccnt_cow_accnt_id IS NULL) THEN 'N/A' "
-         "            WHEN (salesaccnt_cow_accnt_id = -1) THEN 'N/A' "
-         "            ELSE formatGLAccount(salesaccnt_cow_accnt_id) END AS cowaccount "
+	 "       formatGLAccount(salesaccnt_sales_accnt_id) AS salesaccount,"
+	 "       formatGLAccount(salesaccnt_credit_accnt_id) AS creditaccount,"
+	 "       formatGLAccount(salesaccnt_cos_accnt_id) AS cosaccount,"
+	 "       formatGLAccount(salesaccnt_returns_accnt_id) AS returnsaccount,"
+	 "       formatGLAccount(salesaccnt_cor_accnt_id) AS coraccount,"
+	 "       formatGLAccount(salesaccnt_cow_accnt_id) AS cowaccount "
 	 "FROM salesaccnt "
 	 "ORDER BY warehouscode, custtypecode, prodcatcode;" );
   _salesaccnt->populate(r);

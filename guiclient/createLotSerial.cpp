@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -350,7 +350,7 @@ void createLotSerial::sAssign()
   if (_expiration->isEnabled())
     q.bindValue(":expiration", _expiration->date());
   else
-    q.bindValue(":expiration", omfgThis->endOfTime());
+    q.bindValue(":expiration", omfgThis->startOfTime());
   if (_warranty->isEnabled())
     q.bindValue(":warranty", _warranty->date());
   q.bindValue(":itemlocdist_id", _itemlocdistid);
@@ -378,7 +378,7 @@ void createLotSerial::sLotSerialSelected()
     itemloc.exec();
     if (itemloc.first()) {
       if (_expiration->isEnabled() &&
-          itemloc.value("itemloc_expiration").toDate() != omfgThis->endOfTime())
+          itemloc.value("itemloc_expiration").toDate() != omfgThis->startOfTime())
         _expiration->setDate(itemloc.value("itemloc_expiration").toDate());
       if (_warranty->isEnabled())
         _warranty->setDate(itemloc.value("itemloc_warrpurc").toDate());

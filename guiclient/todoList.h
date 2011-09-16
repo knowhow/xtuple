@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -31,24 +31,20 @@ class todoList : public display, public Ui::todoList
     virtual void sEditTask();
     virtual void sEditProject();
     virtual void sEditCustomer();
-    virtual void sEditOpportunity();
     virtual void sNew();
     virtual void sNewIncdt();
-    virtual void sNewProject();
-    virtual void sNewOpportunity();
     virtual void sPopulateMenu(QMenu *, QTreeWidgetItem *, int);
     virtual void sView();
     virtual void sViewCustomer();
     virtual void sViewIncident();
     virtual void sViewTask();
     virtual void sViewProject();
-    virtual void sViewOpportunity();
-    virtual void sOpen();
     virtual bool setParams(ParameterList &);
 
   private:
     int		    _mode;
-    int		    getId(int pType);
+    int		    getIncidentId();
+    int		    getProjectId();
 };
 
 #endif // TODOLIST_H

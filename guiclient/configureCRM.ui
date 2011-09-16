@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -186,20 +186,6 @@ to be bound by its terms.</comment>
             <widget class="QCheckBox" name="_opportunityChangeLog">
              <property name="text">
               <string>Post Opportunity Changes to the Change Log</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="_incidentsPublicShow">
-             <property name="text">
-              <string>Show Incident Public checkbox</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="_incidentsPublicDefault">
-             <property name="text">
-              <string>Incidents Public by Default</string>
              </property>
             </widget>
            </item>
@@ -480,8 +466,6 @@ to be bound by its terms.</comment>
   <tabstop>_useProjects</tabstop>
   <tabstop>_autoCreate</tabstop>
   <tabstop>_opportunityChangeLog</tabstop>
-  <tabstop>_incidentsPublicShow</tabstop>
-  <tabstop>_incidentsPublicDefault</tabstop>
   <tabstop>_incdtEmailProfile</tabstop>
   <tabstop>_incdtCreated</tabstop>
   <tabstop>_incdtAssigned</tabstop>

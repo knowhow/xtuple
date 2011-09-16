@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -20,7 +20,6 @@
 #include <QVariant>
 #include <QWhatsThis>
 #include <QVector>
-#include <QCheckBox>
 
 #include <parameter.h>
 
@@ -81,13 +80,6 @@ comment::comment( QWidget* parent, const char* name, bool modal, Qt::WindowFlags
 
   QSpacerItem* spacer = new QSpacerItem( 66, 10, QSizePolicy::Expanding, QSizePolicy::Minimum );
   layout9->addItem( spacer );
-
-  _public = new QCheckBox(tr("Public"), this);
-  _public->setObjectName("_public");
-  if(!(_x_metrics && _x_metrics->boolean("CommentPublicPrivate")))
-    _public->hide();
-  _public->setChecked(_x_metrics && _x_metrics->boolean("CommentPublicDefault"));
-  layout9->addWidget(_public);
   layout11->addLayout( layout9 );
 
   _comment = new XTextEdit( this);
@@ -153,7 +145,7 @@ comment::comment( QWidget* parent, const char* name, bool modal, Qt::WindowFlags
   shortcuts::setStandardKeys(this);
 }
 
-void comment::set(const ParameterList &pParams)
+void comment::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -315,7 +307,7 @@ void comment::set(const ParameterList &pParams)
   if (valid)
   {
     _source = Comments::Warehouse;
-    _cmnttype->setType(XComboBox::WarehouseCommentTypes);
+    _cmnttype->setType(XComboBox::ProjectCommentTypes);
     _targetId = param.toInt();
   }
 
@@ -518,12 +510,11 @@ void comment::sSave()
   int result = -1;
   if(_mode == cNew)
   {
-    _query.prepare("SELECT postComment(:cmnttype_id, :source, :source_id, :text, :public) AS result;");
+    _query.prepare("SELECT postComment(:cmnttype_id, :source, :source_id, :text) AS result;");
     _query.bindValue(":cmnttype_id", _cmnttype->id());
     _query.bindValue(":source", Comments::_commentMap[_source].ident);
     _query.bindValue(":source_id", _targetId);
     _query.bindValue(":text", _comment->toPlainText().trimmed());
-    _query.bindValue(":public", _public->isChecked());
     _query.exec();
     if (_query.first())
     {
@@ -545,10 +536,9 @@ void comment::sSave()
   else if(_mode == cEdit)
   {
     result = _commentid;
-    _query.prepare("UPDATE comment SET comment_text=:text, comment_public=:public WHERE comment_id=:comment_id");
+    _query.prepare("UPDATE comment SET comment_text=:text WHERE comment_id=:comment_id");
     _query.bindValue(":text", _comment->toPlainText().trimmed());
     _query.bindValue(":comment_id", _commentid);
-    _query.bindValue(":public", _public->isChecked());
     _query.exec();
     if(_query.lastError().type() != QSqlError::NoError)
     {
@@ -566,7 +556,7 @@ void comment::sSave()
 
 void comment::populate()
 {
-  _query.prepare( "SELECT comment_cmnttype_id, comment_text, comment_public "
+  _query.prepare( "SELECT comment_cmnttype_id, comment_text "
                   "FROM comment "
                   "WHERE (comment_id=:comment_id);" );
   _query.bindValue(":comment_id", _commentid);
@@ -575,7 +565,6 @@ void comment::populate()
   {
     _cmnttype->setId(_query.value("comment_cmnttype_id").toInt());
     _comment->setText(_query.value("comment_text").toString());
-    _public->setChecked(_query.value("comment_public").toBool());
   }
   else if (_query.lastError().type() != QSqlError::NoError)
   {

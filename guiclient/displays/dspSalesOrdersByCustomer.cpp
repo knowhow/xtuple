@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -59,17 +59,18 @@ void dspSalesOrdersByCustomer::sPopulatePo()
 
   if ((_cust->isValid()) && (_dates->allValid()))
   {
-    q.prepare( "SELECT MIN(cohead_id), cohead_custponumber "
+    q.prepare( "SELECT DISTINCT -2, cohead_custponumber "
                "FROM cohead "
                "WHERE ( (cohead_cust_id=:cust_id)"
                " AND (cohead_orderdate BETWEEN :startDate AND :endDate) ) "
-               "GROUP BY cohead_custponumber "
                "ORDER BY cohead_custponumber;" );
     _dates->bindValue(q);
     q.bindValue(":cust_id", _cust->id());
     q.exec();
     _poNumber->populate(q);
   }
+
+  sFillList();
 }
 
 void dspSalesOrdersByCustomer::sPopulateMenu(QMenu *menuThis, QTreeWidgetItem*, int)
@@ -81,7 +82,7 @@ void dspSalesOrdersByCustomer::sPopulateMenu(QMenu *menuThis, QTreeWidgetItem*, 
   menuThis->addAction(tr("Shipment Status..."), this, SLOT(sDspShipmentStatus()));
   menuThis->addAction(tr("Shipments..."), this, SLOT(sDspShipments()));
 
-  if ( (_metrics->boolean("EnableReturnAuth")) && (_privileges->check("MaintainReturns")) )
+  if (_privileges->check("MaintainReturns"))
   {
     menuThis->addSeparator();
     menuThis->addAction(tr("Create Return Authorization..."), this, SLOT(sCreateRA()));

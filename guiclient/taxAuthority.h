@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -27,9 +27,8 @@ public:
 public slots:
     virtual enum SetResponse set( const ParameterList & pParams );
     virtual void sCheck();
-    virtual void sCrmAccount();
-    virtual bool sSave();
-    virtual bool sPopulate();
+    virtual void sSave();
+    virtual void populate();
     virtual void done(int);
 
 protected slots:
@@ -39,11 +38,9 @@ protected:
     virtual void closeEvent(QCloseEvent*);
 
 private:
-    int _crmacctid;
     int _mode;
     int _taxauthid;
     int _NumberGen;
-    QString _crmowner;
 
 };
 

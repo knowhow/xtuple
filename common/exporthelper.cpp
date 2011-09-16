@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -77,13 +77,11 @@ bool ExportHelper::exportHTML(const int qryheadid, ParameterList &params, QStrin
 
   Run all of the queries in the given Query Set in the given order and write
   the results to an XML file. The XML file is constructed very simply:
-  \verbatim
   <tablename>
     <column1name>columnvalue</column1name>
     <column2name>columnvalue</column2name>
     ...
   </tablename>
-  \endverbatim
 
   If the caller passes in an XSLT map id, the simple XML will be processed
   using the export XSLT.
@@ -91,12 +89,12 @@ bool ExportHelper::exportHTML(const int qryheadid, ParameterList &params, QStrin
   \param qryheadid   The internal ID of the query set (qryhead record) to run.
   \param params      A list of parameters and values to use when building SQL
                      statements from MetaSQL statements.
-  \param[in,out] filename The name of the file to create. If passed in empty,
+  \param filename[in,out] The name of the file to create. If passed in empty,
                           a file named after the query set will be created
                           in the current directory (context-dependent) and
                           this filename will be passed back out.
-  \param[out]    errmsg An message describing why the processing failed if there
-                        was a problem.
+  \param errmsg[out] An message describing why the processing failed if there
+                     was a problem.
   \param xsltmapid   An optional parameter. If this is set, it should be
                      the internal ID of an xsltmap record. The xsltmap_export
                      field of this record and the XSLTDefaultDir will be used

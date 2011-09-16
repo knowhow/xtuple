@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -71,7 +71,7 @@ vendorWorkBench::vendorWorkBench(QWidget* parent, const char *name, Qt::WFlags f
 
   if (_privileges->check("MaintainPayments"))
   {
-    _payables = new selectPayments(this, "selectPayments", Qt::Widget, false);
+    _payables = new selectPayments(this, "selectPayments", Qt::Widget);
     _payablesTab->layout()->addWidget(_payables);
     hideme = _payables->findChild<QWidget*>("_close");
     hideme->hide();
@@ -221,17 +221,10 @@ void vendorWorkBench::clear()
 void vendorWorkBench::sCRMAccount()
 {
   ParameterList params;
-  if (_privileges->check("MaintainAllCRMAccounts") ||
-      (_privileges->check("MaintainPersonalCRMAccounts") && omfgThis->username() == _crmowner))
-    params.append("mode", "edit");
-  else if (_privileges->check("ViewAllCRMAccounts") ||
-           (_privileges->check("ViewPersonalCRMAccounts") && omfgThis->username() == _crmowner))
+  if (!_privileges->check("MaintainCRMAccounts"))
     params.append("mode", "view");
   else
-  {
-    qWarning("tried to open CRM Account window without privilege");
-    return;
-  }
+    params.append("mode", "edit");
 
   params.append("crmacct_id", _crmacctId);
 
@@ -251,7 +244,7 @@ void vendorWorkBench::sPopulate()
 
   MetaSQLQuery mql("SELECT vend_name,      vend_vendtype_id, vend_terms_id,"
                    "       vend_shipvia,   vend_active,      vend_cntct1_id,"
-                   "       vend_cntct2_id, crmacct_id, crmacct_owner_username,"
+                   "       vend_cntct2_id, crmacct_id,"
                    "       MIN(pohead_orderdate) AS minpodate, "
                    "       MAX(pohead_orderdate) AS maxpodate, "
                    "       SUM(currToBase(pohead_curr_id,"
@@ -264,7 +257,7 @@ void vendorWorkBench::sPopulate()
                    "WHERE (vend_id=<? value(\"vend_id\") ?>) "
                    "GROUP BY vend_name,      vend_vendtype_id, vend_terms_id,"
                    "         vend_shipvia,   vend_active,      vend_cntct1_id,"
-                   "         vend_cntct2_id, crmacct_id,       crmacct_owner_username;");
+                   "         vend_cntct2_id, crmacct_id;");
 
   q = mql.toQuery(params);
   if (q.first())
@@ -277,7 +270,6 @@ void vendorWorkBench::sPopulate()
     _primaryContact->setId(q.value("vend_cntct1_id").toInt());
     _secondaryContact->setId(q.value("vend_cntct2_id").toInt());
     _crmacctId = q.value("crmacct_id").toInt();
-    _crmowner = q.value("crmacct_owner_username").toString();
     _firstPurchase->setDate(q.value("minpodate").toDate());
     _lastPurchase->setDate(q.value("maxpodate").toDate());
     _backlog->setDouble(q.value("backlog").toDouble());

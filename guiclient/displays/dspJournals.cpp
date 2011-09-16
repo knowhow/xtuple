@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,7 +28,6 @@
 #include "transactionInformation.h"
 #include "storedProcErrorLookup.h"
 #include "parameterwidget.h"
-#include "creditMemo.h"
 
 dspJournals::dspJournals(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "dspJournals", fl)
@@ -198,9 +197,7 @@ void dspJournals::sPopulateMenu(QMenu * menuThis, QTreeWidgetItem* pItem, int)
 
 bool dspJournals::setParams(ParameterList &params)
 {
-  if (!display::setParams(params))
-    return false;
-
+  parameterWidget()->appendValue(params);
   bool valid;
   QVariant param;
 
@@ -363,8 +360,8 @@ void dspJournals::sViewDocument()
     {
       q.prepare("SELECT apopen_id"
                 "  FROM apopen"
-                " WHERE ( (apopen_docnumber=:docnumber) "
-                "  AND (apopen_doctype IN ('C', 'D')) );");
+                " WHERE ((apopen_docnumber=:docnumber) "
+                "  AND (apopen_doctype='C'));");
       q.bindValue(":docnumber", item->rawValue("docnumber").toString());
       q.exec();
       if(!q.first())
@@ -380,8 +377,8 @@ void dspJournals::sViewDocument()
     {
       q.prepare("SELECT aropen_id"
                 "  FROM aropen"
-                " WHERE ( (aropen_docnumber=:docnumber) "
-                "  AND (aropen_doctype IN ('C', 'D')) );");
+                " WHERE ((aropen_docnumber=:docnumber) "
+                "  AND (aropen_doctype='C'));");
       q.bindValue(":docnumber", item->rawValue("docnumber").toString());
       q.exec();
       if(!q.first())
@@ -392,22 +389,6 @@ void dspJournals::sViewDocument()
       arOpenItem newdlg(this, "", true);
       newdlg.set(params);
       newdlg.exec();
-    }
-    else if(item->rawValue("sltrans_source").toString() == "S/O")
-    {
-      q.prepare("SELECT cmhead_id"
-                "  FROM cmhead"
-                " WHERE (cmhead_number=:docnumber);");
-      q.bindValue(":docnumber", item->rawValue("docnumber").toString());
-      q.exec();
-      if(!q.first())
-        return;
-
-      params.append("mode", "view");
-      params.append("cmhead_id", q.value("cmhead_id").toInt());
-      creditMemo *newdlg = new creditMemo();
-      newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg);
     }
   }
   else if(item->rawValue("sltrans_doctype").toString() == "SO")

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,14 +13,11 @@
 #include <QAction>
 #include <QMenu>
 #include <QMessageBox>
-#include <QSqlError>
 
 #include <openreports.h>
-
-#include "errorReporter.h"
-#include "parameterwidget.h"
-#include "storedProcErrorLookup.h"
 #include "vendor.h"
+#include "storedProcErrorLookup.h"
+#include "parameterwidget.h"
 
 vendors::vendors(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "vendors", fl)
@@ -106,22 +103,28 @@ void vendors::sView()
 
 void vendors::sDelete()
 {
+  QString question = tr("Are you sure that you want to delete this vendor?");
   if (QMessageBox::question(this, tr("Delete Vendor?"),
-                            tr("Are you sure that you want to delete this vendor?"),
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+                              question,
+                              QMessageBox::Yes,
+                              QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
     return;
 
-  XSqlQuery delq;
-  delq.prepare("DELETE FROM vendinfo WHERE (vend_id=:vend_id);");
-  delq.bindValue(":vend_id", list()->id());
-  delq.exec();
-  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error Deleting"),
-                           delq, __FILE__, __LINE__))
-    return;
-
-  omfgThis->sVendorsUpdated();
-  sFillList();
+  q.prepare("SELECT deleteVendor(:vend_id) AS result;");
+  q.bindValue(":vend_id", list()->id());
+  q.exec();
+  if (q.first())
+  {
+    int result = q.value("result").toInt();
+    if (result < 0)
+    {
+      QMessageBox::critical( this, tr("Cannot Delete Vendor"),
+			     storedProcErrorLookup("deleteVendor", result));
+      return;
+    }
+    omfgThis->sVendorsUpdated();
+    sFillList();
+  }
 }
 
 void vendors::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)

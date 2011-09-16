@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -63,14 +63,14 @@ to be bound by its terms.</comment>
        </item>
        <item row="1" column="1">
         <widget class="NumberGenComboBox" name="_quoteNumGeneration">
-         <property name="automaticText">
-          <string>Automatic, Use Quote #'s</string>
-         </property>
-         <property name="overrideText">
-          <string>Automatic, Use Quote #'s, Allow Override</string>
-         </property>
          <property name="sharedText">
           <string>Automatic, Use S/O #'s</string>
+         </property>
+         <property name="automaticText" stdset="0">
+          <string>Automatic, Use Quote #'s</string>
+         </property>
+         <property name="overrideText" stdset="0">
+          <string>Automatic, Use Quote #'s, Allow Override</string>
          </property>
         </widget>
        </item>
@@ -95,10 +95,10 @@ to be bound by its terms.</comment>
          <property name="allowedMethods">
           <set>NumberGenComboBox::Automatic|NumberGenComboBox::Manual|NumberGenComboBox::Override</set>
          </property>
-         <property name="automaticText">
+         <property name="automaticText" stdset="0">
           <string>Automatic, Use R/A #'s</string>
          </property>
-         <property name="overrideText">
+         <property name="overrideText" stdset="0">
           <string>Automatic, Use R/A #'s, Allow Override</string>
          </property>
         </widget>
@@ -121,14 +121,14 @@ to be bound by its terms.</comment>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="automaticText">
-          <string>Automatic, Use C/M #'s</string>
-         </property>
-         <property name="overrideText">
-          <string>Automatic, Use C/M #'s, Allow Override</string>
-         </property>
          <property name="sharedText">
           <string>Automatic, Use S/O #'s</string>
+         </property>
+         <property name="automaticText" stdset="0">
+          <string>Automatic, Use C/M #'s</string>
+         </property>
+         <property name="overrideText" stdset="0">
+          <string>Automatic, Use C/M #'s, Allow Override</string>
          </property>
         </widget>
        </item>
@@ -474,7 +474,7 @@ to be bound by its terms.</comment>
                <item row="4" column="0" colspan="2">
                 <widget class="QCheckBox" name="_quoteafterSO">
                  <property name="text">
-                  <string>Show Quotes After Converted</string>
+                  <string>Show Quotes After Converted to Sales Order</string>
                  </property>
                 </widget>
                </item>

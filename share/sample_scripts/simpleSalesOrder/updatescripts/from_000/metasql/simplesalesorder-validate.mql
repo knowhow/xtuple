@@ -1,0 +1,25 @@
+-- Group: simplesalesorder
+-- Name: validate
+-- Notes:
+
+SELECT DISTINCT 'Simple sales order ' ||
+  CASE
+    WHEN (cohead_curr_id != basecurrid()) THEN
+      'only supports orders in base currency'
+    WHEN (cohead_misc_accnt_id IS NOT NULL) THEN
+      'does not support miscellaneous charges'
+    WHEN (cohead_freight > 0 or cohead_calcfreight) THEN
+      'does not support freight calculations'
+    WHEN (item_type='K') THEN
+      'does not support kit items'
+    END || '. Please use the standard sales order window instead.'  AS message
+FROM cohead
+  LEFT OUTER JOIN coitem ON (coitem_cohead_id=cohead_id)
+  LEFT OUTER JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+  LEFT OUTER JOIN item ON ((item_id=itemsite_item_id)
+                       AND (item_type='K'))
+WHERE (cohead_number=CAST(<? value("number") ?> AS text)
+AND ((cohead_curr_id != basecurrid())
+OR (cohead_misc_accnt_id IS NOT NULL)
+OR (cohead_freight > 0 OR cohead_calcfreight)
+OR (item_type='K')));

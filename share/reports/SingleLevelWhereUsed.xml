@@ -3,12 +3,6 @@
  <title>Single Level Where Used</title>
  <name>SingleLevelWhereUsed</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -31,10 +25,33 @@
  WHERE (item_id=&lt;? value("item_id") ?>);
     </sql>
  </querysource>
- <querysource loadFromDb="true">
+ <querysource>
   <name>detail</name>
-  <mqlgroup>whereUsed</mqlgroup>
-  <mqlname>detail</mqlname>
+  <sql>SELECT bomitem_seqnumber, item_number,
+       item_descrip1, item_descrip2, uom_name,
+       formatQty(itemuomtouom(bomitem_item_id, bomitem_uom_id, NULL, bomitem_qtyfxd)) AS f_qtyfxd,
+       formatQtyper(itemuomtouom(bomitem_item_id, bomitem_uom_id, NULL, bomitem_qtyper)) AS f_qtyper,
+       formatScrap(bomitem_scrap) AS f_scrap,
+       formatDate(bomitem_effective, 'Always') AS f_effective,
+       formatDate(bomitem_expires, 'Never') AS f_expires,
+       formatBoolYN(bomitem_createwo) AS f_createwo,
+       CASE WHEN (bomitem_issuemethod='S') THEN 'Push'
+            WHEN (bomitem_issuemethod='L') THEN 'Pull'
+            WHEN (bomitem_issuemethod='M') THEN 'Mixed'
+            ELSE 'Special'
+       END AS f_issuemethod,
+       formatQtyper(itemuomtouom(bomitem_item_id, bomitem_uom_id, NULL, (bomitem_qtyfxd + bomitem_qtyper) * (1 + bomitem_scrap))) as f_qtyreq
+  FROM bomitem, item, uom
+ WHERE ((bomitem_parent_item_id=item_id)
+   AND (item_inv_uom_id=uom_id)
+   AND (bomitem_item_id=&lt;? value("item_id") ?>)
+&lt;? if exists("effective") ?>
+   AND (&lt;? value("effective") ?> BETWEEN bomitem_effective and (bomitem_expires-1))
+&lt;? else ?>
+   AND (CURRENT_DATE BETWEEN bomitem_effective and (bomitem_expires-1))
+&lt;? endif ?>
+)
+ORDER BY item_number;</sql>
  </querysource>
  <rpthead>
   <height>241</height>

@@ -1,14 +1,13 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
  * to be bound by its terms.
  */
 
-#include <QDebug>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSqlError>
@@ -22,11 +21,6 @@
 #include "xmessageboxmessagehandler.h"
 
 #define DEBUG false
-
-/** \ingroup creditcards
-    \class   CyberSourceProcessor
-    \brief   The implementation of CyberSource-specific credit card handling
- */
 
 #define CPDATA_NS   "ns3"
 #define CPTP_NS     "ns1"
@@ -92,12 +86,11 @@ CyberSourceProcessor::CyberSourceProcessor() : CreditCardProcessor()
   _msgHash.insert(-300, tr("The Merchant ID is required"));
   _msgHash.insert(-301, tr("The message sent to CyberSource was incomplete: %1"));
   _msgHash.insert(-302, tr("The message sent to CyberSource had invalid data in the following field: %1"));
-  _msgHash.insert(-303, tr("CyberSource rejected this request (code %1)"));
+  _msgHash.insert(-303, tr("CyberSource rejected or returned an error for this request (code %1)"));
   _msgHash.insert(-304, tr("CyberSource reports a general system failure"));
   _msgHash.insert(-305, tr("The Merchant ID %1 is too long"));
   _msgHash.insert(-306, tr("SOAP error (probably an xTuple ERP bug): %1"));
   _msgHash.insert(-307, tr("Error reading response XML: %1"));
-  _msgHash.insert(-308, tr("CyberSource returned an error for this request (code %1)"));
   _msgHash.insert(-310, tr("The amount authorized was 0."));
   _msgHash.insert( 310, tr("Only a portion of the total amount requested was authorized"));
 
@@ -256,10 +249,9 @@ int CyberSourceProcessor::buildCommon(const int pccardid, const int pcvv, const 
 #endif
                      );
 
-  QString country;
   if (ptranstype == Authorize || ptranstype == Charge || ptranstype == Credit)
   {
-    country = csq.value("ccard_country").toString();
+    QString country = csq.value("ccard_country").toString();
     if (country.length() > 2)
     {
       XSqlQuery countryq;
@@ -619,23 +611,7 @@ QVariant CyberSourceProcessor::xqresult(QXmlQuery *xq, QString query, QVariant::
                       "</result>")
             ).arg(SOAP_ENV_NSVAL, CPDATA_NSVAL, query);
   xq->setQuery(fullq);
-
-  if (xq->isValid() && type == QVariant::StringList)
-  {
-    QStringList listresult;
-    if (xq->evaluateTo(&listresult))
-    {
-      if (DEBUG)
-        qDebug() << "xqresult() evaluateTo evaluated to" << listresult;
-      result = listresult;
-    }
-    else if (xq->evaluateTo(&text))
-    {
-      text = text.remove(QRegExp("</?result[^>]*>")).simplified();
-      result = text;
-    }
-  }
-  else if (xq->isValid() && xq->evaluateTo(&text))
+  if (xq->isValid() && xq->evaluateTo(&text))
   {
     text = text.remove(QRegExp("</?result[^>]*>")).simplified();
     if (DEBUG)
@@ -779,21 +755,13 @@ int CyberSourceProcessor::handleResponse(const QString &presponse, const int pcc
 
       if (r_approved == "REJECT")
       {
-        fieldVal = xqresult(&valueq, "/soap:Envelope/soap:Body/c:replyMessage/c:invalidField", QVariant::StringList);
+        fieldVal = xqresult(&valueq, "c:invalidField");
         if (valueq.isValid() && fieldVal.isValid())
           invalid = fieldVal.toStringList();
 
-        fieldVal = xqresult(&valueq, "/soap:Envelope/soap:Body/c:replyMessage/c:missingField", QVariant::StringList);
+        fieldVal = xqresult(&valueq, "c:missingField");
         if (valueq.isValid() && fieldVal.isValid())
           missing = fieldVal.toStringList();
-
-        fieldVal = xqresult(&valueq, "c:ccAuthReply/c:avsCode");
-        if (valueq.isValid() && fieldVal.isValid())
-          r_avs = fieldVal.toString();
-
-        fieldVal = xqresult(&valueq, "c:ccAuthReply/c:cvCode");
-        if (valueq.isValid() && fieldVal.isValid())
-          r_cvv = fieldVal.toString();
       }
 
       else if (r_approved == "ACCEPT")
@@ -924,8 +892,6 @@ int CyberSourceProcessor::handleResponse(const QString &presponse, const int pcc
           break;
         }
       }
-
-      // let the switch below handle "else if (r_approved == "ERROR")"
     }
   }
 
@@ -936,19 +902,9 @@ int CyberSourceProcessor::handleResponse(const QString &presponse, const int pcc
     case 101: _errorMsg = r_message = errorMsg(-301).arg(missing.join(tr(", ")));
               returnValue = -301;
               break;
-    case 102:
-            {
+    case 102: _errorMsg = r_message = errorMsg(-302).arg(invalid.join(tr(", ")));
               returnValue = -302;
-              if (r_avs == "2")
-                _errorMsg = r_message = avsCodeLookup('2')->text;
-              else if (r_cvv == "2")
-                _errorMsg = r_message = cvvCodeLookup('2')->text;
-              else if (invalid.isEmpty())
-                _errorMsg = r_message = errorMsg(returnValue).arg(tr("[no invalid fields listed]"));
-              else
-                _errorMsg = r_message = errorMsg(returnValue).arg(invalid.join(tr(", ")));
-            }
-            break;
+              break;
     case 110:   // partial approval
             {
               pamount = approvedAmtStr.toDouble();
@@ -971,15 +927,12 @@ int CyberSourceProcessor::handleResponse(const QString &presponse, const int pcc
                 returnValue = 310;
               }
             }
-            break;
     case 150: _errorMsg = r_message = errorMsg(-304);
               break;
     case -1:    // assume _errorMsg and returnValue have already been set
               break;
-    default:
-             returnValue = (r_approved == "REJECT") ?
-                             -303 : (r_approved == "ERROR") ? -308 : -95; 
-             _errorMsg = r_message = errorMsg(returnValue).arg(reasonCode);
+    default: _errorMsg = r_message = errorMsg(-303).arg(reasonCode);
+             returnValue = -303;
              break;
   }
 
@@ -996,8 +949,7 @@ int CyberSourceProcessor::handleResponse(const QString &presponse, const int pcc
   else if (r_approved == "REJECT")
   {
     _errorMsg = errorMsg(-90).arg(r_message);
-    if (returnValue >= 0)
-      returnValue = -90;
+    returnValue = -90;
     status = "D";
   }
   else if (r_approved == "ERROR")

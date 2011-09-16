@@ -1,0 +1,76 @@
+<package id="from_000"
+         name="sso"
+         developer="xTuple"
+         descrip="Simple Sales Order"
+         version="3.2.2"
+         updater="2.1.0">
+  <pkgnotes>Simple Sales Order for xTuple ERP.
+
+  This file is a sample extension package for xTulpe ERP: PostBooks Edition, 
+  a free and open source Enterprise Resource Planning software suite,
+  Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
+  It is licensed to you under the Common Public Attribution License
+  version 1.0, the full text of which (including xTuple-specific Exhibits)
+  is available at www.xtuple.com/CPAL.  By using this software, you agree
+  to be bound by its terms.
+
+  </pkgnotes>
+
+  <prerequisite type="Query"
+                name="Test xTuple ERP version">
+    <query>
+      SELECT (SUBSTRING(fetchMetricText('OpenMFGServerVersion') FOR 3) = '3.2'
+          AND SUBSTRING(fetchMetricText('OpenMFGServerVersion') FROM 5 FOR 1)
+                                                                        >= '2')
+         OR
+             (LENGTH(COALESCE(fetchMetricText('OpenMFGServerVersion'), '')) = 0
+          AND SUBSTRING(fetchMetricText('ServerVersion') FOR 3) = '3.2'
+          AND SUBSTRING(fetchMetricText('ServerVersion') FROM 5 FOR 1) >= '2')
+         ;
+    </query>
+    <message>
+      This version of Simple Sales Order only works only with xTuple ERP
+      versions between 3.2.2 and 3.3. 
+    </message>
+  </prerequisite>
+
+  <prerequisite type="license" name="xTuple Concise EULA">
+    <message>
+      &lt;p>
+          This file is a sample extension package for xTulpe ERP: PostBooks Edition, 
+          a free and open source Enterprise Resource Planning software suite,
+          Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
+          It is licensed to you under the Common Public Attribution License
+          version 1.0, the full text of which (including xTuple-specific Exhibits)
+          is available at www.xtuple.com/CPAL.  By using this software, you agree
+          to be bound by its terms.
+      &lt;/p>
+    </message>
+  </prerequisite>
+
+  <loadcmd          name="openSalesOrdersBySalesrep" 
+                    title="List Open Sales Orders (Simple)"
+                    module="Sales"
+                    privilege="ViewSalesOrders"
+                    executable="!customuiform">
+      <arg value="uiform=openSalesOrdersBySalesrep"/>
+  </loadcmd>
+
+  <loadappscript file="scripts/openSalesOrdersBySalesrep.js"    name="openSalesOrdersBySalesrep"  order="0"/>
+  <loadappscript file="scripts/simpleSalesOrder.js"            name="simpleSalesOrder"           order="0"/>
+
+  <loadappui file="uiforms/openSalesOrdersBySalesrep.ui"         order="0" />
+  <loadappui file="uiforms/simpleSalesOrder.ui"                 order="0" />
+
+  <loadmetasql file="metasql/salesorderscustom-detail.mql" />
+  <loadmetasql file="metasql/simplesalesorder-fetchcustomer.mql" />
+  <loadmetasql file="metasql/simplesalesorder-fetchsonumber.mql" />
+  <loadmetasql file="metasql/simplesalesorder-itemcheck.mql" />
+  <loadmetasql file="metasql/simplesalesorder-itemprice.mql" />
+  <loadmetasql file="metasql/simplesalesorder-itemtax.mql" />
+  <loadmetasql file="metasql/simplesalesorder-releasesonumber.mql" />
+  <loadmetasql file="metasql/simplesalesorder-removecheck.mql" />
+  <loadmetasql file="metasql/simplesalesorder-validate.mql" />
+
+  <loadreport  file="reports/ListOpenSalesOrderBySalesrep.xml" />
+</package>

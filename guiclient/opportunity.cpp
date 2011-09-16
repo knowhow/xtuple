@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -57,7 +57,6 @@ opportunity::opportunity(QWidget* parent, const char* name, bool modal, Qt::WFla
   connect(_newCharacteristic, SIGNAL(clicked()), this, SLOT(sNewCharacteristic()));
   connect(_editCharacteristic, SIGNAL(clicked()), this, SLOT(sEditCharacteristic()));
   connect(_deleteCharacteristic, SIGNAL(clicked()), this, SLOT(sDeleteCharacteristic()));
-  connect(_assignedTo, SIGNAL(newId(int)), this, SLOT(sHandleAssigned()));
 
   _probability->setValidator(0);
   
@@ -65,10 +64,8 @@ opportunity::opportunity(QWidget* parent, const char* name, bool modal, Qt::WFla
   _custid = -1;
   _prospectid = -1;
   
-  _todoList->addColumn(tr("Active"),   _statusColumn, Qt::AlignRight, true, "todoitem_active");
   _todoList->addColumn(tr("Priority"),   _userColumn, Qt::AlignRight, true, "incdtpriority_name");
-  _todoList->addColumn(tr("Owner"),      _userColumn, Qt::AlignLeft, false, "todoitem_owner_username");
-  _todoList->addColumn(tr("Assigned"),   _userColumn, Qt::AlignLeft,  true, "todoitem_username" );
+  _todoList->addColumn(tr("User"),       _userColumn, Qt::AlignLeft,  true, "todoitem_username" );
   _todoList->addColumn(tr("Name"),               100, Qt::AlignLeft,  true, "todoitem_name" );
   _todoList->addColumn(tr("Description"),         -1, Qt::AlignLeft,  true, "todoitem_description" );
   _todoList->addColumn(tr("Status"),   _statusColumn, Qt::AlignLeft,  true, "todoitem_status" );
@@ -85,8 +82,6 @@ opportunity::opportunity(QWidget* parent, const char* name, bool modal, Qt::WFla
 
   _owner->setUsername(omfgThis->username());
   _owner->setType(UsernameLineEdit::UsersActive);
-
-  _assignedTo->setType(UsernameLineEdit::UsersActive);
 
   _saved = false;
 }
@@ -137,19 +132,6 @@ enum SetResponse opportunity::set(const ParameterList &pParams)
       param = pParams.value("crmacct_id", &valid);
       if (valid)
         _crmacct->setId(param.toInt());
-
-      _startDate->setDate(omfgThis->dbDate());
-
-      q.exec("SELECT NEXTVAL('ophead_ophead_id_seq') AS result;");
-      if (q.first())
-      {
-        _opheadid = q.value("result").toInt();
-        _number->setText(QString().number(_opheadid));
-      }
-      else if(q.lastError().type() != QSqlError::NoError)
-      {
-        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      }
     }
     else if (param.toString() == "edit")
     {
@@ -270,24 +252,20 @@ bool opportunity::save(bool partial)
 
   if (cNew == _mode && !_saved)
     q.prepare("INSERT INTO ophead"
-              "      (ophead_id, ophead_name, ophead_crmacct_id,"
+              "      (ophead_name, ophead_crmacct_id,"
               "       ophead_owner_username,"
               "       ophead_opstage_id, ophead_opsource_id,"
               "       ophead_optype_id, ophead_probability_prcnt,"
               "       ophead_amount, ophead_curr_id, ophead_target_date,"
               "       ophead_actual_date,"
-              "       ophead_notes, ophead_active, ophead_cntct_id, "
-              "       ophead_username, ophead_start_date, ophead_assigned_date, "
-              "       ophead_priority_id, ophead_number) "
-              "VALUES(:ophead_id, :ophead_name, :ophead_crmacct_id,"
+              "       ophead_notes, ophead_active, ophead_cntct_id) "
+              "VALUES(:ophead_name, :ophead_crmacct_id,"
               "       :ophead_owner_username,"
               "       :ophead_opstage_id, :ophead_opsource_id,"
               "       :ophead_optype_id, :ophead_probability_prcnt,"
               "       :ophead_amount, :ophead_curr_id, :ophead_target_date,"
               "       :ophead_actual_date,"
-              "       :ophead_notes, :ophead_active, :ophead_cntct_id, "
-              "       :ophead_username, :ophead_start_date, :ophead_assigned_date, "
-              "       :ophead_priority_id, :ophead_number); " );
+              "       :ophead_notes, :ophead_active, :ophead_cntct_id);" );
   else if (cEdit == _mode || _saved)
     q.prepare("UPDATE ophead"
               "   SET ophead_name=:ophead_name,"
@@ -303,11 +281,7 @@ bool opportunity::save(bool partial)
               "       ophead_actual_date=:ophead_actual_date,"
               "       ophead_notes=:ophead_notes,"
               "       ophead_active=:ophead_active, "
-              "       ophead_cntct_id=:ophead_cntct_id, "
-              "       ophead_username=:ophead_username, "
-              "       ophead_start_date=:ophead_start_date, "
-              "       ophead_assigned_date=:ophead_assigned_date, "
-              "       ophead_priority_id=:ophead_priority_id "
+              "       ophead_cntct_id=:ophead_cntct_id "
               " WHERE (ophead_id=:ophead_id); ");
 
   q.bindValue(":ophead_id", _opheadid);
@@ -316,7 +290,6 @@ bool opportunity::save(bool partial)
   if (_crmacct->id() > 0)
     q.bindValue(":ophead_crmacct_id", _crmacct->id());
   q.bindValue(":ophead_owner_username", _owner->username());
-  q.bindValue(":ophead_username", _assignedTo->username());
   if(_oppstage->isValid())
     q.bindValue(":ophead_opstage_id", _oppstage->id());
   if(_oppsource->isValid())
@@ -330,10 +303,6 @@ bool opportunity::save(bool partial)
     q.bindValue(":ophead_amount", _amount->localValue());
     q.bindValue(":ophead_curr_id", _amount->id());
   }
-  if(_startDate->isValid())
-    q.bindValue(":ophead_start_date", _startDate->date());
-  if(_assignDate->isValid())
-    q.bindValue(":ophead_assigned_date", _assignDate->date());
   if(_targetDate->isValid())
     q.bindValue(":ophead_target_date", _targetDate->date());
   if(_actualDate->isValid())
@@ -341,9 +310,6 @@ bool opportunity::save(bool partial)
   q.bindValue(":ophead_notes", _notes->toPlainText());
   if (_cntct->isValid())
     q.bindValue(":ophead_cntct_id", _cntct->id());
-  if (_priority->isValid())
-    q.bindValue(":ophead_priority_id", _priority->id());
-  q.bindValue(":ophead_number", _number->text());
 
   if(!q.exec() && q.lastError().type() != QSqlError::NoError)
   {
@@ -360,6 +326,18 @@ bool opportunity::save(bool partial)
     return false;
   }
 
+  if (cNew == _mode && ! _saved)
+  {
+    q.exec("SELECT CURRVAL('ophead_ophead_id_seq') AS result;");
+    if (q.first())
+      _opheadid = q.value("result").toInt();
+    else if(q.lastError().type() != QSqlError::NoError)
+    {
+      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+      return false;
+    }
+  }
+
   _saved = true;
   return true;
 }
@@ -374,29 +352,21 @@ void opportunity::populate()
             "       ophead_probability_prcnt, ophead_amount,"
             "       COALESCE(ophead_curr_id, basecurrid()) AS curr_id,"
             "       ophead_target_date, ophead_actual_date,"
-            "       ophead_notes, ophead_active, ophead_cntct_id, "
-            "       ophead_username, ophead_start_date, ophead_assigned_date, "
-            "       ophead_number, ophead_priority_id "
+            "       ophead_notes, ophead_active, ophead_cntct_id"
             "  FROM ophead"
             " WHERE(ophead_id=:ophead_id); ");
   q.bindValue(":ophead_id", _opheadid);
   q.exec();
   if(q.first())
   {
-    _number->setText(q.value("ophead_number").toString());
     _name->setText(q.value("ophead_name").toString());
     _active->setChecked(q.value("ophead_active").toBool());
     _crmacct->setId(q.value("ophead_crmacct_id").toInt());
     _owner->setUsername(q.value("ophead_owner_username").toString());
-    _assignedTo->setUsername(q.value("ophead_username").toString());
 
     _oppstage->setNull();
     if(!q.value("ophead_opstage_id").toString().isEmpty())
       _oppstage->setId(q.value("ophead_opstage_id").toInt());
-
-    _priority->setNull();
-    if(!q.value("ophead_priority_id").toString().isEmpty())
-      _priority->setId(q.value("ophead_priority_id").toInt());
 
     _oppsource->setNull();
     if(!q.value("ophead_opsource_id").toString().isEmpty())
@@ -414,14 +384,6 @@ void opportunity::populate()
     _amount->setId(q.value("curr_id").toInt());
     if(!q.value("ophead_amount").toString().isEmpty())
       _amount->setLocalValue(q.value("ophead_amount").toDouble());
-
-    _startDate->clear();
-    if(!q.value("ophead_start_date").toString().isEmpty())
-      _startDate->setDate(q.value("ophead_start_date").toDate());
-
-    _assignDate->clear();
-    if(!q.value("ophead_assigned_date").toString().isEmpty())
-      _assignDate->setDate(q.value("ophead_assigned_date").toDate());
 
     _targetDate->clear();
     if(!q.value("ophead_target_date").toString().isEmpty())
@@ -510,9 +472,9 @@ void opportunity::sDeleteTodoItem()
 void opportunity::sFillTodoList()
 {
   q.prepare("SELECT todoitem_id, incdtpriority_name, incdtpriority_order, "
-            "       todoitem_owner_username, todoitem_username, todoitem_name, "
+	    "       todoitem_username, todoitem_name, "
 	    "       firstLine(todoitem_description) AS todoitem_description, "
-            "       todoitem_status, todoitem_due_date, todoitem_active, "
+	    "       todoitem_status, todoitem_due_date, "
             "       CASE "
             "         WHEN (todoitem_status != 'C' AND todoitem_due_date < current_date) THEN "
             "           'error' "
@@ -521,7 +483,8 @@ void opportunity::sFillTodoList()
             "       END AS qtforegroundrole "
 	    "  FROM todoitem "
             "       LEFT OUTER JOIN incdtpriority ON (incdtpriority_id=todoitem_priority_id) "
-            "WHERE ( (todoitem_ophead_id=:ophead_id) ) "
+	    "WHERE ( (todoitem_ophead_id=:ophead_id) "
+	    "  AND   (todoitem_active) ) "
 	    "ORDER BY incdtpriority_order, todoitem_username;");
 
   q.bindValue(":ophead_id", _opheadid);
@@ -539,20 +502,16 @@ void opportunity::sPopulateTodoMenu(QMenu *pMenu)
   QAction *menuItem;
 
   bool newPriv = (cNew == _mode || cEdit == _mode) &&
-      (_privileges->check("MaintainPersonalToDoItems") ||
-       _privileges->check("MaintainAllToDoItems") );
+      (_privileges->check("MaintainPersonalTodoList") ||
+       _privileges->check("MaintainOtherTodoLists") );
 
   bool editPriv = (cNew == _mode || cEdit == _mode) && (
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (_privileges->check("MaintainAllToDoItems")) );
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainOtherTodoLists")) );
 
   bool viewPriv =
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("ViewPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("ViewPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-      (_privileges->check("ViewAllToDoItems")) || (_privileges->check("MaintainAllToDoItems"));
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewOtherTodoLists"));
 
   menuItem = pMenu->addAction(tr("New..."), this, SLOT(sNewTodoItem()));
   menuItem->setEnabled(newPriv);
@@ -570,8 +529,8 @@ void opportunity::sPopulateTodoMenu(QMenu *pMenu)
 void opportunity::sHandleTodoPrivs()
 {
   bool newPriv = (cNew == _mode || cEdit == _mode) &&
-      (_privileges->check("MaintainPersonalToDoItems") ||
-       _privileges->check("MaintainAllToDoItems") );
+      (_privileges->check("MaintainPersonalTodoList") ||
+       _privileges->check("MaintainOtherTodoLists") );
 
   bool editPriv = false;
   bool viewPriv = false;
@@ -579,16 +538,12 @@ void opportunity::sHandleTodoPrivs()
   if(_todoList->currentItem())
   {
     editPriv = (cNew == _mode || cEdit == _mode) && (
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (_privileges->check("MaintainAllToDoItems")) );
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("MaintainOtherTodoLists")) );
 
     viewPriv =
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("ViewPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("ViewPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (omfgThis->username() == _todoList->currentItem()->rawValue("todoitem_owner_username") && _privileges->check("MaintainPersonalToDoItems")) ||
-        (_privileges->check("ViewAllToDoItems")) || (_privileges->check("MaintainAllToDoItems"));
+      (omfgThis->username() == _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewPersonalTodoList")) ||
+      (omfgThis->username() != _todoList->currentItem()->text("todoitem_username") && _privileges->check("ViewOtherTodoLists"));
   }
 
   _newTodoItem->setEnabled(newPriv);
@@ -802,7 +757,6 @@ void opportunity::sAttachQuote()
 {
   ParameterList params;
   params.append("cust_id", _custid);
-  params.append("openOnly", true);
   
   quoteList newdlg(this, "", TRUE);
   newdlg.set(params);
@@ -1012,18 +966,17 @@ void opportunity::sFillSalesList()
 			"       0 AS sale_extprice_xttotalrole "
             "FROM ( "
             "SELECT quhead_id AS id, 0 AS alt_id, :quote AS sale_type, "
-            "       quhead_number AS sale_number, quhead_quotedate AS sale_date, "
+			"       quhead_number::TEXT AS sale_number, quhead_quotedate AS sale_date, "
             "       calcQuoteAmt(quhead_id) AS sale_extprice "
             "FROM quhead "
-            "WHERE ((quhead_ophead_id=:ophead_id) "
-            "  AND  (quhead_status='O'))"
-            "UNION "
-            "SELECT cohead_id AS id, 1 AS alt_id, :salesorder AS sale_type, "
-            "       cohead_number AS sale_number, cohead_orderdate AS sale_date,  "
+            "WHERE (quhead_ophead_id=:ophead_id) "
+			"UNION "
+			"SELECT cohead_id AS id, 1 AS alt_id, :salesorder AS sale_type, "
+			"       cohead_number AS sale_number, cohead_orderdate AS sale_date,  "
             "       calcSalesOrderAmt(cohead_id) AS sale_extprice "
             "FROM cohead "
             "WHERE (cohead_ophead_id=:ophead_id) "
-            "     ) AS data "
+			"     ) AS data "
             "ORDER BY sale_date;");
   q.bindValue(":ophead_id", _opheadid);
   q.bindValue(":quote", tr("Quote"));
@@ -1046,11 +999,11 @@ void opportunity::sPopulateSalesMenu(QMenu *pMenu)
   if(_salesList->currentItem())
   {
     editPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("MaintainSalesOrders")) );
 
     viewPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("ViewSalesOrders")) );
 
     convertPriv = (cNew == _mode || cEdit == _mode) &&
@@ -1075,7 +1028,7 @@ void opportunity::sHandleSalesPrivs()
 {
   bool isCustomer = (_custid > -1);
   
-  bool newQuotePriv = ((cNew == _mode || cEdit == _mode) && _privileges->check("MaintainAllQuotes"));
+  bool newQuotePriv = ((cNew == _mode || cEdit == _mode) && _privileges->check("MaintainQuotes"));
   bool newSalesOrderPriv = ((cNew == _mode || cEdit == _mode) && isCustomer && _privileges->check("MaintainSalesOrders"));
 
   bool editPriv = false;
@@ -1100,11 +1053,11 @@ void opportunity::sHandleSalesPrivs()
   if(_salesList->currentItem())
   {
     editPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("MaintainSalesOrders")) );
 
     viewPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("ViewSalesOrders")) );
 
     convertPriv = (cNew == _mode || cEdit == _mode) &&
@@ -1170,18 +1123,12 @@ void opportunity::sDeleteCharacteristic()
 
 void opportunity::sFillCharList()
 {
-  q.prepare( "SELECT charass_id, char_name, "
-             " CASE WHEN char_type < 2 THEN "
-             "   charass_value "
-             " ELSE "
-             "   formatDate(charass_value::date) "
-             "END AS charass_value, "
-             "charass_default "
+  q.prepare( "SELECT charass_id, char_name, charass_value, charass_default "
              "FROM charass, char "
              "WHERE ( (charass_target_type='OPP')"
              " AND (charass_char_id=char_id)"
              " AND (charass_target_id=:ophead_id) ) "
-             "ORDER BY char_order, char_name;" );
+             "ORDER BY char_name;" );
   q.bindValue(":ophead_id", _opheadid);
   q.exec();
   _charass->populate(q);
@@ -1207,11 +1154,5 @@ void opportunity::sHandleCrmacct(int pCrmacctid)
     _salesTab->setEnabled(true);
 
   sHandleSalesPrivs();
-}
-
-void opportunity::sHandleAssigned()
-{
-  if (_assignedTo->isValid() && !_assignDate->isValid())
-    _assignDate->setDate(omfgThis->dbDate());
 }
 

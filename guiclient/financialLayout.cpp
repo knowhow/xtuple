@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -144,6 +144,10 @@ enum SetResponse financialLayout::set(const ParameterList &pParams)
       _addCol->setHidden(TRUE);
       _editCol->setHidden(TRUE);
       _deleteCol->setHidden(TRUE);
+
+      _buttonBox->clear();
+      _buttonBox->addButton(QDialogButtonBox::Close);
+      _buttonBox->setFocus();
     }
   }
 
@@ -208,8 +212,7 @@ void financialLayout::sSave()
              "    flhead_usealtdiff=:flhead_usealtdiff,"
              "    flhead_altdiff=:flhead_altdiff,"
              "    flhead_usealttotal=:flhead_usealttotal,"
-             "    flhead_alttotal=:flhead_alttotal,"
-             "    flhead_notes=:flhead_notes"
+             "    flhead_alttotal=:flhead_alttotal"
              " WHERE (flhead_id=:flhead_id);" );
 
   q.bindValue(":flhead_name", _name->text());
@@ -251,7 +254,6 @@ void financialLayout::sSave()
   q.bindValue(":flhead_usealtdiff", QVariant(_altDiff->isChecked()));
   q.bindValue(":flhead_altdiff", _altDiffText->text());
   q.bindValue(":flhead_id", _flheadid);
-  q.bindValue(":flhead_notes", _notes->toPlainText());
   q.exec();
   
   done(_flheadid);
@@ -270,8 +272,7 @@ void financialLayout::populate()
              "       flhead_usealtcredits, flhead_altcredits,"
              "       flhead_usealtbudget, flhead_altbudget,"
              "       flhead_usealtdiff, flhead_altdiff,"
-             "       flhead_usealttotal, flhead_alttotal, "
-             "       flhead_notes "
+             "       flhead_usealttotal, flhead_alttotal "
              "FROM flhead "
              "WHERE (flhead_id=:flhead_id);" );
   q.bindValue(":flhead_id", _flheadid);
@@ -280,7 +281,6 @@ void financialLayout::populate()
   {
     _name->setText(q.value("flhead_name").toString());
     _descrip->setText(q.value("flhead_descrip").toString());
-    _notes->setPlainText(q.value("flhead_notes").toString());
     if(_showTotal->isChecked())
     {
       _showStart->setChecked(q.value("flhead_showstart").toBool());

@@ -102,24 +102,6 @@ FROM financialreport(&lt;? value("flcol_id") ?>,&lt;? value("period_id") ?>,
 &lt;? endif ?>
 ;</sql>
  </querysource>
- <querysource>
-  <name>notes</name>
-  <sql>SELECT * FROM (
-SELECT 1 AS seq, flhead_notes AS notes
-FROM flhead
- JOIN flcol ON (flhead_id=flcol_flhead_id)
-WHERE ((flcol_id=&lt;? value("flcol_id") ?>)
-  AND (length(flhead_notes) > 0))
-UNION ALL
-SELECT 2 AS seq, flnotes_notes AS notes
-FROM flnotes
-  JOIN flcol ON (flcol_flhead_id=flnotes_flhead_id)
-WHERE ((flcol_id=&lt;? value("flcol_id") ?>)
-  AND (flnotes_period_id=&lt;? value("period_id") ?>)
-  AND (length(flnotes_notes) > 0))) data
-ORDER BY seq;
-</sql>
- </querysource>
  <rpthead>
   <height>168</height>
   <line>
@@ -526,35 +508,6 @@ ORDER BY seq;
    </field>
   </detail>
  </section>
- <section>
-  <name>notes</name>
-  <detail>
-   <key>
-    <query>notes</query>
-   </key>
-   <height>24</height>
-   <text>
-    <rect>
-     <x>25</x>
-     <y>9</y>
-     <width>700</width>
-     <height>15</height>
-    </rect>
-    <bottompad>0</bottompad>
-    <font>
-     <face>Arial</face>
-     <size>9</size>
-     <weight>normal</weight>
-    </font>
-    <left/>
-    <top/>
-    <data>
-     <query>notes</query>
-     <column>notes</column>
-    </data>
-   </text>
-  </detail>
- </section>
  <pgfoot>
   <height>23</height>
   <field>
@@ -630,5 +583,12 @@ ORDER BY seq;
  </pgfoot>
  <rptfoot>
   <height>8</height>
+  <line>
+   <xstart>380</xstart>
+   <ystart>0</ystart>
+   <xend>740</xend>
+   <yend>0</yend>
+   <weight>0</weight>
+  </line>
  </rptfoot>
 </report>

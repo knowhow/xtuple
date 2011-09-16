@@ -1,151 +1,157 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
+ <author></author>
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
  <class>syncCompanies</class>
- <widget class="QWidget" name="syncCompanies">
-  <property name="geometry">
+ <widget class="QWidget" name="syncCompanies" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>668</width>
-    <height>400</height>
+    <width>649</width>
+    <height>262</height>
    </rect>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>Synchronize Companies</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <layout class="QVBoxLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="_periodLit">
-       <property name="text">
-        <string>Periods:</string>
-       </property>
-       <property name="buddy">
-        <cstring>_period</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="XTreeWidget" name="_period">
-       <property name="selectionMode">
-        <enum>QAbstractItemView::MultiSelection</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout">
-       <property name="spacing">
-        <number>12</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="_selectPeriod">
-         <property name="text">
-          <string>Select All</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="_clearPeriod">
-         <property name="text">
-          <string>Clear Selection</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="1">
-    <layout class="QVBoxLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="_companyLit">
-       <property name="text">
-        <string>Companies:</string>
-       </property>
-       <property name="buddy">
-        <cstring>_company</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="XTreeWidget" name="_company">
-       <property name="selectionMode">
-        <enum>QAbstractItemView::MultiSelection</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <layout class="QHBoxLayout">
-       <property name="spacing">
-        <number>12</number>
-       </property>
-       <item>
-        <widget class="QPushButton" name="_selectCompany">
-         <property name="text">
-          <string>Select All</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="_clearCompany">
-         <property name="text">
-          <string>Clear Selection</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="2">
-    <layout class="QVBoxLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="_close">
-       <property name="text">
-        <string>&amp;Close</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="_sync">
-       <property name="text">
-        <string>&amp;Synchronize</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-  </layout>
+   <layout class="QGridLayout" >
+    <item row="0" column="0" >
+     <layout class="QVBoxLayout" >
+      <property name="spacing" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="_periodLit" >
+        <property name="text" >
+         <string>Periods:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>_period</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="XTreeWidget" name="_period" >
+        <property name="selectionMode" >
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="topMargin" >
+         <number>3</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>3</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="_selectPeriod" >
+          <property name="text" >
+           <string>Select All</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="_clearPeriod" >
+          <property name="text" >
+           <string>Clear Selection</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="1" >
+     <layout class="QVBoxLayout" >
+      <property name="spacing" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="_companyLit" >
+        <property name="text" >
+         <string>Companies:</string>
+        </property>
+        <property name="buddy" >
+         <cstring>_company</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="XTreeWidget" name="_company" >
+        <property name="selectionMode" >
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="topMargin" >
+         <number>3</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>3</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="_selectCompany" >
+          <property name="text" >
+           <string>Select All</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="_clearCompany" >
+          <property name="text" >
+           <string>Clear Selection</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="2" >
+     <layout class="QVBoxLayout" >
+      <property name="spacing" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="_close" >
+        <property name="text" >
+         <string>&amp;Close</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="_sync" >
+        <property name="text" >
+         <string>&amp;Synchronize</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
  </widget>
  <customwidgets>
   <customwidget>
@@ -172,11 +178,11 @@ to be bound by its terms.</comment>
    <receiver>syncCompanies</receiver>
    <slot>close()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>536</x>
      <y>23</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>464</x>
      <y>6</y>
     </hint>
@@ -188,11 +194,11 @@ to be bound by its terms.</comment>
    <receiver>_period</receiver>
    <slot>clearSelection()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>173</x>
      <y>205</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>166</x>
      <y>156</y>
     </hint>
@@ -204,11 +210,11 @@ to be bound by its terms.</comment>
    <receiver>_company</receiver>
    <slot>clearSelection()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>470</x>
      <y>214</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>460</x>
      <y>169</y>
     </hint>
@@ -220,11 +226,11 @@ to be bound by its terms.</comment>
    <receiver>_period</receiver>
    <slot>selectAll()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>86</x>
      <y>210</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>88</x>
      <y>172</y>
     </hint>
@@ -236,11 +242,11 @@ to be bound by its terms.</comment>
    <receiver>_company</receiver>
    <slot>selectAll()</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>349</x>
      <y>209</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>349</x>
      <y>153</y>
     </hint>

@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>463</width>
-    <height>420</height>
+    <height>416</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,14 +62,44 @@ to be bound by its terms.</comment>
       </layout>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="_buttonBox">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout">
+       <item>
+        <widget class="QPushButton" name="_close">
+         <property name="text">
+          <string>&amp;Cancel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="_change">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Change &amp;Qty.</string>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Preferred</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -97,6 +127,12 @@ to be bound by its terms.</comment>
      </item>
      <item row="1" column="2">
       <widget class="XLineEdit" name="_newQty">
+       <property name="maximumSize">
+        <size>
+         <width>80</width>
+         <height>32767</height>
+        </size>
+       </property>
        <property name="alignment">
         <set>Qt::AlignRight</set>
        </property>
@@ -204,7 +240,7 @@ to be bound by its terms.</comment>
        </property>
       </widget>
      </item>
-     <item row="1" column="3">
+     <item row="1" column="3" rowspan="2">
       <widget class="CurrCluster" name="_freight">
        <property name="baseVisible">
         <bool>false</bool>
@@ -281,7 +317,7 @@ to be bound by its terms.</comment>
          </layout>
         </item>
         <item>
-         <widget class="XTextEdit" name="_comment"/>
+         <widget class="QTextEdit" name="_comment"/>
         </item>
        </layout>
       </widget>
@@ -327,28 +363,57 @@ to be bound by its terms.</comment>
    <class>XLineEdit</class>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_po</tabstop>
   <tabstop>_poitem</tabstop>
   <tabstop>_newQty</tabstop>
+  <tabstop>_freight</tabstop>
   <tabstop>_postComment</tabstop>
   <tabstop>_comment</tabstop>
   <tabstop>_cmnttype</tabstop>
+  <tabstop>_change</tabstop>
+  <tabstop>_close</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>changePoitemQty</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>_po</sender>
    <signal>valid(bool)</signal>
    <receiver>_poitem</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_poitem</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_change</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

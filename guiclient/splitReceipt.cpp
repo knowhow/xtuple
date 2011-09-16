@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -72,7 +72,7 @@ void splitReceipt::populate()
   {
     _orderNumber->setText(q.value("order_number").toString());
     _lineNumber->setText(q.value("orderitem_linenumber").toString());
-    _received->setText(formatQty(q.value("qtyreceived").toDouble()));
+    _received->setText(q.value("f_qtyreceived").toString());
     _receiptDate->setDate(q.value("effective").toDate());
     _freight->setId(q.value("curr_id").toInt());
     _freight->setLocalValue(q.value("recv_freight").toDouble());

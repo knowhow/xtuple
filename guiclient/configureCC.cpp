@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -15,18 +15,10 @@
 #include <QMessageBox>
 #include <QSqlError>
 
-#include "configauthorizedotnetprocessor.h"
 #include "configcybersourceprocessor.h"
 #include "configureEncryption.h"
 #include "creditcardprocessor.h"
 
-bool shownEncryptedMsg = false;
-
-/** \ingroup creditcards
-    \class   configureCC
-    \brief   This is the master setup window for configuring the credit card
-             subsystem.
- */
 configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::WFlags fl)
     : XAbstractConfigure(parent, fl)
 {
@@ -35,6 +27,7 @@ configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::
   if (name)
     setObjectName(name);
 
+  connect(_anDuplicateWindow, SIGNAL(valueChanged(int)), this, SLOT(sDuplicateWindow(int)));
   connect(_ccCompany, SIGNAL(currentIndexChanged(int)), this, SLOT(sCCCompanyChanged(int)));
 
   _enableChargePreauth->setVisible(false);
@@ -47,10 +40,6 @@ configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::
   _ccCompany->append(3, "External",      "EXT");
   if (_metrics->boolean("CCEnablePaymentech"))
     _ccCompany->append(4, "Paymentech",  "PT");
-
-  ConfigAuthorizeDotNetProcessor *an = new ConfigAuthorizeDotNetProcessor(this);
-  _configcclist.append(an);
-  _ccWidgetStack->insertWidget(_ccWidgetStack->indexOf(_yourPayStack), an);
 
   ConfigCyberSourceProcessor *cs = new ConfigCyberSourceProcessor(this);
   _configcclist.append(cs);
@@ -90,6 +79,29 @@ configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::
   }
   if (ccbankq.lastError().type() != QSqlError::NoError)
     systemError(this, ccbankq.lastError().text(), __FILE__, __LINE__);
+
+  if (_metrics->value("CCANVer").isEmpty())
+    _anVersion->setItemText(0, "3.1");
+  else
+    _anVersion->setItemText(0, _metrics->value("CCANVer"));
+  _anDelim->setText(_metrics->value("CCANDelim"));
+  _anEncap->setText(_metrics->value("CCANEncap"));
+  _anDuplicateWindow->setValue(_metrics->value("CCANDuplicateWindow").toInt());
+
+  _anMD5Hash->setText(_metrics->value("CCANMD5Hash"));
+  _anMD5HashSetOnGateway->setChecked(_metrics->boolean("CCANMD5HashSetOnGateway"));
+  _anMD5HashWarn->setChecked(_metrics->value("CCANMD5HashAction") == "W");
+  _anMD5HashFail->setChecked(_metrics->value("CCANMD5HashAction") == "F");
+  
+  if (_metrics->value("CCANCurrency") == "TRANS")
+    _anCurrTransaction->setChecked(true);
+  else if (! _metrics->value("CCANCurrency").isEmpty())
+  {
+    _anCurrFixed->setChecked(true);
+    _anCurrFixedValue->setId(_metrics->value("CCANCurrency").toInt());
+  }
+
+  _anUsingWellsFargoSecureSource->setChecked(_metrics->boolean("CCANWellsFargoSecureSource"));
 
   _ccYPWinPathPEM->setText(_metrics->value("CCYPWinPathPEM"));
   _ccYPLinPathPEM->setText(_metrics->value("CCYPLinPathPEM"));
@@ -156,6 +168,7 @@ configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::
     _ccProxyPassword->setText(_metricsenc->value("CCProxyPassword"));
     _ccYPStoreNum->setText(_metricsenc->value("CCYPStoreNum"));
     _ccPTDivisionNumber->setText(_metricsenc->value("CCPTDivisionNumber"));
+    _anMD5Hash->setText(_metricsenc->value("CCANMD5Hash"));
   }
   else
   {
@@ -165,7 +178,10 @@ configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::
     _ccProxyPassword->setEnabled(false);
     _ccYPStoreNum->setEnabled(false);
     _ccPTDivisionNumber->setEnabled(false);
+    _anMD5Hash->setEnabled(false);
   }
+
+  sDuplicateWindow(_anDuplicateWindow->value());
 
   XAbstractConfigure *encryption = new configureEncryption(this);
   if (encryption)
@@ -180,12 +196,9 @@ configureCC::configureCC(QWidget* parent, const char* name, bool /*modal*/, Qt::
       encbutton->hide();
     encryption->show();
   }
-  else if (_metricsenc == 0 && !shownEncryptedMsg)
-  {
+  else if (_metricsenc == 0)
     QMessageBox::critical( this, tr("Cannot Read Configuration"),
 		    tr("<p>Cannot read encrypted information from database."));
-    shownEncryptedMsg = true;
-  }
 }
 
 configureCC::~configureCC()
@@ -282,6 +295,22 @@ bool configureCC::sSave()
     return false;
   }
 
+  _metrics->set("CCANVer",               _anVersion->currentText());
+  _metrics->set("CCANDelim",             _anDelim->text());
+  _metrics->set("CCANEncap",             _anEncap->text());
+  _metrics->set("CCANDuplicateWindow",   _anDuplicateWindow->cleanText());
+  _metrics->set("CCANMD5HashSetOnGateway", _anMD5HashSetOnGateway->isChecked());
+  if (_anMD5HashWarn->isChecked())
+    _metrics->set("CCANMD5HashAction", QString("W"));
+  else if (_anMD5HashFail->isChecked())
+    _metrics->set("CCANMD5HashAction", QString("F"));
+
+  if (_anCurrFixed->isChecked())
+    _metrics->set("CCANCurrency", _anCurrFixedValue->id());
+  else // if (_anCurrTransaction->isChecked())
+    _metrics->set("CCANCurrency", QString("TRANS"));
+  _metrics->set("CCANWellsFargoSecureSource", _anUsingWellsFargoSecureSource->isChecked());
+
   _metrics->set("CCYPWinPathPEM",    _ccYPWinPathPEM->text());
   _metrics->set("CCYPLinPathPEM",    _ccYPLinPathPEM->text());
   _metrics->set("CCYPMacPathPEM",    _ccYPMacPathPEM->text());
@@ -357,6 +386,7 @@ bool configureCC::sSave()
     _metricsenc->set("CCProxyPassword", _ccProxyPassword->text());
     _metricsenc->set("CCYPStoreNum",    _ccYPStoreNum->text());
     _metricsenc->set("CCPTDivisionNumber", _ccPTDivisionNumber->text());
+    _metricsenc->set("CCANMD5Hash",     _anMD5Hash->text());
 
     _metricsenc->load();
   }
@@ -398,7 +428,13 @@ bool configureCC::sSave()
   return true;
 }
 
-// TODO: move this to the Config*Processor classes
+void configureCC::sDuplicateWindow(int p)
+{
+  QTime time;
+  time.addSecs(p);
+  _anDuplicateWindowAsHMS->setText(time.toString("HH:mm:ss"));
+}
+
 void configureCC::sCCCompanyChanged(const int /*pindex*/)
 {
   if (_ccCompany->code() == "AN")

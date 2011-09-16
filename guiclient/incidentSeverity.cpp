@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -107,14 +107,6 @@ void incidentSeverity::sCheck()
 
 void incidentSeverity::sSave()
 {
-  if(_name->text().length() == 0)
-  {
-    QMessageBox::critical(this, tr("Severity Name Required"),
-      tr("You must enter a Severity Name to continue.") );
-    _name->setFocus();
-    return;
-  }
-
   if (_mode == cNew)
   {
     q.exec("SELECT NEXTVAL('incdtseverity_incdtseverity_id_seq') AS _incdtseverity_id");

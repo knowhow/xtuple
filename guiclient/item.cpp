@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -154,6 +154,16 @@ item::item(QWidget* parent, const char* name, Qt::WFlags fl)
   _itemtax->addColumn(tr("Tax Type"),_itemColumn, Qt::AlignLeft,true,"taxtype_name");
   _itemtax->addColumn(tr("Tax Zone"),    -1, Qt::AlignLeft,true,"taxzone");
 
+  if(!_privileges->check("MaintainBOMs"))
+    _bom->hide();
+    
+  if((!_privileges->check("MaintainItemSites")) || (_metrics->boolean("MultiWhs")))
+    _site->hide();
+
+  if((!_privileges->check("CreateCosts")) && (!_privileges->check("EnterActualCosts")) &&
+    (!_privileges->check("UpdateActualCosts")))
+    _cost->hide();
+
   if (_privileges->check("MaintainItemSources"))
   {
     connect(_itemsrc, SIGNAL(valid(bool)), _editSrc, SLOT(setEnabled(bool)));
@@ -171,6 +181,9 @@ item::item(QWidget* parent, const char* name, Qt::WFlags fl)
   else
     _tab->setTabEnabled(_tab->indexOf(_sourcesTab), FALSE);
 
+  if(!_privileges->check("ViewItemAvailabilityWorkbench"))
+    _workbench->hide();
+    
   if (!_metrics->boolean("Transforms"))
     _transformationsButton->hide();
     
@@ -235,10 +248,14 @@ enum SetResponse item::set(const ParameterList &pParams)
     {
       _tab->setEnabled(false);
 
+      _cost->hide();
       
       setObjectName("item new");
       _mode = cNew;
 
+      _bom->hide();
+      _workbench->hide();
+      _site->hide();
       _newUOM->setEnabled(false);
 	  _print->hide();
 
@@ -269,6 +286,8 @@ enum SetResponse item::set(const ParameterList &pParams)
     {
       _tab->setEnabled(true);
 
+      _cost->show();
+    	
       setObjectName(QString("item edit %1").arg(_itemid));
       _mode = cEdit;
 
@@ -304,6 +323,8 @@ enum SetResponse item::set(const ParameterList &pParams)
     {
       _tab->setEnabled(true);
 
+      _cost->show();
+      
       setObjectName(QString("item view %1").arg(_itemid));
       _mode = cView;
 
@@ -333,23 +354,24 @@ enum SetResponse item::set(const ParameterList &pParams)
       _itemtaxNew->setEnabled(FALSE);
       _close->setText(tr("&Close"));
       _newSrc->setEnabled(false);
+      _newItemSite->setEnabled(false);
       _newUOM->setEnabled(false);
       _upcCode->setEnabled(false);
 
-      if (_privileges->check("MaintainItemSites"))
-      {
-        connect(_itemSite, SIGNAL(valid(bool)), _editItemSite, SLOT(setEnabled(bool)));
-        connect(_itemSite, SIGNAL(itemSelected(int)), _editItemSite, SLOT(animateClick()));
-      }
-      else if (_privileges->check("ViewItemSites"))
+      connect(_itemSite, SIGNAL(itemSelected(int)), _viewItemSite, SLOT(animateClick()));
+
+      disconnect(_itemSite, SIGNAL(valid(bool)), _editItemSite, SLOT(setEnabled(bool)));
+      disconnect(_itemSite, SIGNAL(valid(bool)), _viewItemSite, SLOT(setEnabled(bool)));
+      disconnect(_itemSite, SIGNAL(itemSelected(int)), _editItemSite, SLOT(animateClick()));
+      disconnect(_itemSite, SIGNAL(valid(bool)), _viewItemSite, SLOT(setEnabled(bool)));
+      disconnect(_itemSite, SIGNAL(itemSelected(int)), _viewItemSite, SLOT(animateClick()));
+  
+      if (_privileges->check("ViewItemSites"))
       {
         connect(_itemSite, SIGNAL(valid(bool)), _viewItemSite, SLOT(setEnabled(bool)));
         connect(_itemSite, SIGNAL(itemSelected(int)), _viewItemSite, SLOT(animateClick()));
       }
-
-      if (_privileges->check("DeleteItemSites"))
-        connect(_itemSite, SIGNAL(valid(bool)), _deleteItemSite, SLOT(setEnabled(bool)));
-
+  
       disconnect(_itemsrc, SIGNAL(valid(bool)), _editSrc, SLOT(setEnabled(bool)));
       disconnect(_itemsrc, SIGNAL(valid(bool)), _viewSrc, SLOT(setEnabled(bool)));
       disconnect(_itemsrc, SIGNAL(valid(bool)), _copySrc, SLOT(setEnabled(bool)));
@@ -373,8 +395,6 @@ enum SetResponse item::set(const ParameterList &pParams)
       _close->setFocus();
     }
   }
-
-  sHandleRightButtons();
 
   return NoError;
 }
@@ -438,7 +458,9 @@ void item::saveCore()
     _newUOM->setEnabled(true);
     _tab->setEnabled(true);
 
-    sHandleRightButtons();
+    _cost->show();
+
+    if(QString(_itemTypes[_itemtype->currentIndex()]) == "M") _bom->show(); else _bom->hide();
   }
 } 
 
@@ -446,18 +468,6 @@ void item::sSave()
 {
   QString sql;
   QString itemNumber = _itemNumber->text().trimmed().toUpper();
-
-  //Check To see if the item has active sites associated with it
-  int fActive = false;
-  q.prepare("SELECT itemsite_id "
-            "FROM itemsite "
-            "WHERE ((itemsite_item_id=:item_id)"
-            "  AND  (itemsite_active)) "
-            "LIMIT 1; ");
-  q.bindValue(":item_id", _itemid);
-  q.exec();
-  if (q.first()) fActive = true;
-
 
   if(!_active->isChecked())
   {
@@ -479,8 +489,14 @@ void item::sSave()
       return;
     }
 
-
-    if (fActive)
+    q.prepare("SELECT itemsite_id "
+              "FROM itemsite "
+              "WHERE ((itemsite_item_id=:item_id)"
+              "  AND  (itemsite_active)) "
+              "LIMIT 1; ");
+    q.bindValue(":item_id", _itemid);
+    q.exec();
+    if (q.first())         
     { 
       QMessageBox::warning( this, tr("Cannot Save Item"),
         tr("This Item is used in an active Item Site and must be marked as active. "
@@ -875,8 +891,7 @@ void item::sSave()
 
   omfgThis->sItemsUpdated(_itemid, TRUE);
 
-  if ((!fActive) &&
-     ( (_mode == cNew) || (_mode == cCopy) ) &&
+  if ( ( (_mode == cNew) || (_mode == cCopy) ) && 
      (_privileges->check("MaintainItemSites")) &&
      ( (*_itemTypes[_itemtype->currentIndex()] != 'B') ||
      (*_itemTypes[_itemtype->currentIndex()] != 'F') ||
@@ -904,6 +919,7 @@ void item::sSave()
 
 void item::sNew()
 {
+  QString itemType = QString(*(_itemTypes + _itemtype->currentIndex()));
   ParameterList params;
   params.append("mode", "new");
   params.append("item_id", _itemid);
@@ -945,19 +961,13 @@ void item::sDelete()
 
 void item::sFillList()
 {
-  q.prepare( "SELECT charass_id, char_name, "
-             " CASE WHEN char_type < 2 THEN "
-             "   charass_value "
-             " ELSE "
-             "   formatDate(charass_value::date) "
-             "END AS charass_value, "
-             " charass_default, "
+  q.prepare( "SELECT charass_id, char_name, charass_value, charass_default, "
              " charass_price, 'salesprice' AS charass_price_xtnumericrole "
              "FROM charass, char "
              "WHERE ( (charass_target_type='I')"
              " AND (charass_char_id=char_id)"
              " AND (charass_target_id=:item_id) ) "
-             "ORDER BY char_order, char_name;" );
+             "ORDER BY char_name;" );
   q.bindValue(":item_id", _itemid);
   q.exec();
   _charass->populate(q);
@@ -1252,6 +1262,8 @@ void item::sHandleItemtype()
     _fractional->setChecked(false);
   }
   _fractional->setEnabled(itemType!="K");
+  if(_privileges->check("ViewItemAvailabilityWorkbench"))
+	  _workbench->setVisible(itemType!="K");
   _tab->setTabEnabled(_tab->indexOf(_tabUOM),(itemType!="K"));
   _transformationsButton->setEnabled(itemType!="K");
 
@@ -1274,8 +1286,6 @@ void item::sHandleItemtype()
         (_privileges->check("ViewItemSources") || 
 	 _privileges->check("MaintainItemSources")) && 
 	 purchased);
-
-  sHandleRightButtons();
 }
 
 
@@ -1587,32 +1597,22 @@ void item::sEditItemSite()
   {
     q.prepare("SELECT itemsite_id "
               "FROM itemsite "
-              "WHERE (itemsite_item_id=:item_id AND itemsite_active);");
+              "WHERE (itemsite_item_id=:item_id);");
     q.bindValue(":item_id",_itemid);
     q.exec();
     if (q.first())
       params.append("itemsite_id", q.value("itemsite_id").toInt());
     else
     {
-      q.prepare("SELECT itemsite_id "
-                "FROM itemsite "
-                "WHERE (itemsite_item_id=:item_id);");
-      q.bindValue(":item_id",_itemid);
-      q.exec();
-      if (q.first())
-        params.append("itemsite_id", q.value("itemsite_id").toInt());
-      else
-      {
-        if((_mode == cEdit) &&
-           (QMessageBox::question(this, tr("No Item Site Found"),
-              tr("There is no Item Site for this item. Would you like to create one now?"),
-              QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
-          sNewItemSite();
-        else if(_mode != cEdit)
-          QMessageBox::information(this, tr("No Item Site Found"),
-            tr("There is no Item Site for this item."));
-        return;
-      }
+      if((_mode == cEdit) &&
+         (QMessageBox::question(this, tr("No Item Site Found"),
+            tr("There is no Item Site for this item. Would you like to create one now?"),
+            QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes))
+        sNewItemSite();
+      else if(_mode != cEdit)
+        QMessageBox::information(this, tr("No Item Site Found"),
+          tr("There is no Item Site for this item."));
+      return; 
     }
   }
   else
@@ -1981,54 +1981,6 @@ void item::sHandleButtons()
     _relationshipsStack->setCurrentIndex(1);
   else if (_substitutesButton->isChecked())
     _relationshipsStack->setCurrentIndex(2);
-}
-
-void item::sHandleRightButtons()
-{
-  if ((_inventoryUOM->isValid()) && (_classcode->isValid()))
-  {
-    QString itemtype = _itemTypes[_itemtype->currentIndex()];
-    if(!_privileges->check("ViewItemAvailabilityWorkbench"))
-      _workbench->hide();
-    else
-      if (itemtype == "K" || _itemtype->currentIndex()==-1)
-        _workbench->hide();
-      else
-        _workbench->show();
-
-    if(!_privileges->check("MaintainBOMs"))
-      _bom->hide();
-    else
-      if (itemtype == "M" || // manufactured
-          itemtype == "B" || // breeder
-          itemtype == "F" || // phantom
-          itemtype == "K" || // kit
-          itemtype == "T" || // tooling
-          itemtype == "L")   // planning
-        _bom->show();
-      else
-        _bom->hide();
-
-    if((!_privileges->check("CreateCosts")) &&
-       (!_privileges->check("EnterActualCosts")) &&
-       (!_privileges->check("UpdateActualCosts")))
-      _cost->hide();
-    else
-      _cost->show();
-
-    if((_privileges->check("MaintainItemSites")) &&
-       (!_metrics->boolean("MultiWhs")))
-      _site->show();
-    else
-      _site->hide();
-  }
-  else
-  {
-    _cost->hide();
-    _bom->hide();
-    _workbench->hide();
-    _site->hide();
-  }
 }
 
 void item::sFillSourceList()

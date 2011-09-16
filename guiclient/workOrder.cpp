@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -20,7 +20,7 @@
 #include "correctProductionPosting.h"
 #include "dspInventoryAvailabilityByWorkOrder.h"
 #include "dspRunningAvailability.h"
-#include "dspInventoryAvailability.h"
+#include "dspInventoryAvailabilityByItem.h"
 #include "dspSubstituteAvailabilityByItem.h"
 #include "distributeInventory.h"
 #include "explodeWo.h"
@@ -244,7 +244,8 @@ enum SetResponse workOrder::set(const ParameterList &pParams)
       _item->setQuery("SELECT DISTINCT item_id, item_number, item_descrip1, item_descrip2,"
                       "                (item_descrip1 || ' ' || item_descrip2) AS itemdescrip,"
                       "       item_active, item_config, item_type, uom_name "
-                      "FROM item JOIN uom ON (item_inv_uom_id=uom_id) ");
+                      "FROM item JOIN uom ON (item_inv_uom_id=uom_id) "
+                      "WHERE (item_type IN ('M', 'B')) ");
       XSqlQuery wo;
       wo.prepare( "SELECT wo_itemsite_id, wo_priority,"
                   "       formatWoNumber(wo_id) AS f_wonumber,"
@@ -490,12 +491,6 @@ void workOrder::sCreate()
       q.bindValue(":ordid", -1);
     }
     q.exec();
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return;
-    }
-
     if (!q.first())
     {
       systemError(this, tr("A System Error occurred at %1::%2.")
@@ -700,7 +695,6 @@ void workOrder::sPopulateItemChar( int pItemid )
       _itemchar->setData(idx, q.value("char_id"), Qt::UserRole);
       idx = _itemchar->index(row, 1);
       _itemchar->setData(idx, q.value("charass_value"), Qt::DisplayRole);
-      _itemchar->setData(idx, pItemid, Xt::IdRole);
       _itemchar->setData(idx, pItemid, Qt::UserRole);
       row++;
     }
@@ -786,25 +780,18 @@ void workOrder::sClose()
 {
   if (_woid > 0)
   {
-    if ((_mode == cNew) || (_mode == cRelease))
-    {
-      q.prepare("SELECT deleteWo(:wo_id,true);");
-      q.bindValue(":wo_id", _woid);
-      q.exec();
-      omfgThis->sWorkOrdersUpdated(_woid, TRUE);
-    }
+	  if ( ( (_mode == cNew) || (_mode == cRelease)) &&
+		   ((_metrics->value("WONumberGeneration") == "A") || (_metrics->value("WONumberGeneration") == "O")) )
+	  {
+		q.prepare("SELECT deleteWo(:wo_id,true);"
+				  "SELECT releaseWoNumber(:wonumber);");
+                q.bindValue(":woNumber", _wonumber);
+		q.bindValue(":wo_id", _woid);
+		q.exec();
+	    
+		omfgThis->sWorkOrdersUpdated(_woid, TRUE);
+	  }
   }
-  if (_wonumber > 0)
-  {
-    if ( ( (_mode == cNew) || (_mode == cRelease)) &&
-        ((_metrics->value("WONumberGeneration") == "A") || (_metrics->value("WONumberGeneration") == "O")) )
-    {
-      q.prepare("SELECT releaseWoNumber(:woNumber);");
-      q.bindValue(":woNumber", _wonumber);
-      q.exec();
-    }
-  }
-
   close();
 }
 
@@ -931,6 +918,7 @@ void workOrder::sReleaseWO()
   q.bindValue(":wo_id", _woIndentedList->id());
   q.exec();
 
+  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   int currentId = _woIndentedList->id();
   int currentAltId = _woIndentedList->altId();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
@@ -944,6 +932,7 @@ void workOrder::sRecallWO()
   q.bindValue(":wo_id", _woIndentedList->id());
   q.exec();
 
+  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   int currentId = _woIndentedList->id();
   int currentAltId = _woIndentedList->altId();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
@@ -1027,17 +1016,18 @@ void workOrder::sDeleteWO()
 	systemError(this, storedProcErrorLookup("deleteWo", result));
 	return;
       }
-      omfgThis->sWorkOrdersUpdated(-1, TRUE);
     }
     else if (q.lastError().type() != QSqlError::NoError)
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
 
+    omfgThis->sWorkOrdersUpdated(-1, TRUE);
   }
   else if (q.lastError().type() != QSqlError::NoError)
   {
     systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
+  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   populate();
 }
 
@@ -1109,9 +1099,9 @@ void workOrder::sReprioritizeParent()
     }
     else
       _oldPriority=_priority->value();
-    populate();
-    omfgThis->sWorkOrdersUpdated(_woid, TRUE);
   }
+  populate();
+  omfgThis->sWorkOrdersUpdated(_woid, TRUE);
 }
 
 void workOrder::sRescheduleParent()
@@ -1119,7 +1109,7 @@ void workOrder::sRescheduleParent()
   if(_startDate->date() != _oldStartDate || _dueDate->date() != _oldDueDate)
   {
     if ( QMessageBox::warning( this, tr("Change Date"),
-                               tr( "Changing the start or due date will update all work order requirements.  "
+                               tr( "Changing the start or end date will update all work order requirements.  "
                                    "Are you sure you want to reschedule all dates?" ),
                                tr("&Yes"), tr("&No"), QString::null, 0, 1 ) == 1 )
     {
@@ -1147,9 +1137,6 @@ void workOrder::sRescheduleParent()
   }
   populate();
   omfgThis->sWorkOrdersUpdated(_woid, TRUE);
-  QMessageBox::warning( this, tr("Change Date"),
-                        tr( "Changing the due date may change the Bill of Material components that are effective.\n"
-                            "You may want to consider imploding and exploding the Work Order.\n" ) );
 }
 
 void workOrder::sChangeParentQty()
@@ -1212,9 +1199,9 @@ void workOrder::sChangeParentQty()
       else
         _oldQty=_qty->text().toDouble();
     }
-    populate();
-    omfgThis->sWorkOrdersUpdated(_woid, TRUE);
-  }
+  }  
+  populate();
+  omfgThis->sWorkOrdersUpdated(_woid, TRUE);
 }
 
 void workOrder::sReprioritizeWo()
@@ -1237,6 +1224,7 @@ void workOrder::sRescheduleWO()
   rescheduleWo newdlg(this, "", TRUE);
   newdlg.set(params);
   newdlg.exec();
+  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   populate();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
 }
@@ -1249,6 +1237,7 @@ void workOrder::sChangeWOQty()
   changeWoQty newdlg(this, "", TRUE);
   newdlg.set(params);
   newdlg.exec();
+  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   populate();
   omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
 }
@@ -1309,7 +1298,6 @@ void workOrder::sReturnMatlBatch()
                              .arg(__LINE__)
                              .arg(_woIndentedList->id())
                              .arg(q.value("result").toInt()) );
-          return;
         }
         else if (distributeInventory::SeriesAdjust(q.value("result").toInt(), this) == XDialog::Rejected)
         {
@@ -1319,7 +1307,6 @@ void workOrder::sReturnMatlBatch()
         }
 
         q.exec("COMMIT;");
-        omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
       }
       else
       {
@@ -1330,6 +1317,7 @@ void workOrder::sReturnMatlBatch()
         return;
       }
     }
+    omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
   }
   populate();
 }
@@ -1376,6 +1364,7 @@ void workOrder::sIssueMatlBatch()
   issue.prepare("SELECT issueWoMaterialBatch(:wo_id) AS result;");
   issue.bindValue(":wo_id", _woIndentedList->id());
   issue.exec();
+  omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
 
   if (issue.first())
   {
@@ -1398,7 +1387,6 @@ void workOrder::sIssueMatlBatch()
       }
 
       issue.exec("COMMIT;");
-      omfgThis->sWorkOrdersUpdated(_woIndentedList->id(), TRUE);
     }
   }
   else
@@ -1593,7 +1581,7 @@ void workOrder::sViewMatlAvailability()
     params.append("byDate", q.value("womatl_duedate"));
     params.append("run");
 
-    dspInventoryAvailability *newdlg = new dspInventoryAvailability();
+    dspInventoryAvailabilityByItem *newdlg = new dspInventoryAvailabilityByItem(this);
     newdlg->set(params);
     omfgThis->handleNewWindow(newdlg);
   }
@@ -1882,7 +1870,7 @@ void workOrder::sPopulateMenu(QMenu *pMenu,  QTreeWidgetItem *selected)
 
     menuItem = pMenu->addAction(tr("Availability..."), this, SLOT(sViewMatlAvailability()));
 
-    menuItem = pMenu->addAction(tr("Substitute Availability..."), this, SLOT(sViewMatlSubstituteAvailability()));
+    menuItem = pMenu->addAction(tr("Subsitute Availability..."), this, SLOT(sViewMatlSubstituteAvailability()));
   }
 
 }
@@ -1952,8 +1940,8 @@ void workOrder::populate()
     _startDate->setEnabled(true);
     _woNumber->setEnabled(false);
     _item->setReadOnly(true);
-    _bomRevision->setEnabled(wo.value("wo_status").toString() == "O" && _privileges->boolean("UseInactiveRevisions"));
-    _booRevision->setEnabled(wo.value("wo_status").toString() == "O" && _privileges->boolean("UseInactiveRevisions"));
+    _bomRevision->setEnabled(wo.value("wo_status").toString() == "O");
+    _booRevision->setEnabled(wo.value("wo_status").toString() == "O");
     if ((_mode == cNew || _mode == cRelease) &&
        (wo.value("wo_status").toString() == "I" ||
         wo.value("wo_status").toString() == "C"))

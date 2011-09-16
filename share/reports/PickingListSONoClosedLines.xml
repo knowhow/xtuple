@@ -3,15 +3,9 @@
  <title>Picking List</title>
  <name>PickingListSONoClosedLines</name>
  <description>Omits Closed Lines -- With Barcodes formatitemsitebarcode(itemsite_id) -- SO # barcoded formatsobarcode(cohead_id) -- With Logo, place logo graphic in images DB with name "logo"</description>
- <parameter default="3203" active="true" listtype="static" type="string" name="sohead_id">
+ <parameter default="3203" active="true" listtype="static" type="string" name="sohead_id" >
   <description></description>
  </parameter>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>25</topmargin>
@@ -69,15 +63,13 @@
        item_descrip1,
        item_descrip2,
        formatQty(coitem_qtyord) AS ordered,
-       CASE WHEN ((coitem_qtyshipped - coitem_qtyreturned) > 0.0) THEN formatQty(coitem_qtyshipped - coitem_qtyreturned)
-            ELSE NULL
-       END AS shipped,
-       CASE WHEN ((coitem_qtyshipped - coitem_qtyreturned) > 0.0) THEN formatQty(noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned))
-            ELSE NULL
-       END AS balance,
-       CASE WHEN (qtyAtShipping('SO', coitem_id) > 0.0) THEN formatQty(qtyAtShipping('SO', coitem_id))
-            ELSE NULL
-       END AS atShipping,
+       formatQty(coitem_qtyshipped - coitem_qtyreturned) AS shipped,
+       formatQty(noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned)) AS balance,
+       formatQty( ( SELECT COALESCE(SUM(coship_qty), 0)
+                    FROM coship, cosmisc
+                    WHERE ( (coship_coitem_id=coitem_id)
+                     AND (coship_cosmisc_id=cosmisc_id)
+                     AND (NOT cosmisc_shipped) ) ) ) AS atshipping,
        formatQty(roundUp( ( SELECT COALESCE(SUM(coship_qty), 0)
                             FROM coship, cosmisc
                             WHERE ( (coship_coitem_id=coitem_id)
@@ -133,19 +125,6 @@ WHERE ((image_name='logo'));</sql>
  </querysource>
  <rpthead>
   <height>477</height>
-  <image>
-   <rect>
-    <x>375</x>
-    <y>0</y>
-    <width>425</width>
-    <height>85</height>
-   </rect>
-   <mode>stretch</mode>
-   <data>
-    <query>logo</query>
-    <column>image_data</column>
-   </data>
-  </image>
   <field>
    <rect>
     <x>120</x>
@@ -627,6 +606,19 @@ WHERE ((image_name='logo'));</sql>
     <column>cohead_shiptoname</column>
    </data>
   </field>
+  <image>
+   <rect>
+    <x>375</x>
+    <y>0</y>
+    <width>425</width>
+    <height>85</height>
+   </rect>
+   <mode>stretch</mode>
+   <data>
+    <query>logo</query>
+    <column>image_data</column>
+   </data>
+  </image>
   <label>
    <rect>
     <x>25</x>

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -183,21 +183,14 @@ void maintainBudget::sSave()
       if (_table->item(r, c))
       {
         QString amount = _table->item(r, c)->text();
-        if(amount.isEmpty())
-          amount = "0.0";
-        q.bindValue(":budghead_id", _budgheadid);
-        q.bindValue(":period_id", _periodsRef.at(c));
-        q.bindValue(":accnt_id", accountid);
-        q.bindValue(":amount", amount.toDouble());
-        q.exec();
-      }
-      else
-      {
-        q.bindValue(":budghead_id", _budgheadid);
-        q.bindValue(":period_id", _periodsRef.at(c));
-        q.bindValue(":accnt_id", accountid);
-        q.bindValue(":amount", 0.0);
-        q.exec();
+        if(!amount.isEmpty())
+        {
+          q.bindValue(":budghead_id", _budgheadid);
+          q.bindValue(":period_id", _periodsRef.at(c));
+          q.bindValue(":accnt_id", accountid);
+          q.bindValue(":amount", amount.toDouble());
+          q.exec();
+        }
       }
     }
   }
@@ -437,21 +430,19 @@ void maintainBudget::populate()
     _descrip->setText(q.value("budghead_descrip").toString());
 
     q.prepare("SELECT DISTINCT budgitem_accnt_id, formatGLAccountLong(budgitem_accnt_id) AS result"
-              "  FROM budgitem JOIN accnt ON (accnt_id=budgitem_accnt_id)"
-              " WHERE(budgitem_budghead_id=:budghead_id)"
-              " ORDER BY result;");
+              "  FROM budgitem"
+              " WHERE(budgitem_budghead_id=:budghead_id);");
     q.bindValue(":budghead_id", _budgheadid);
     q.exec();
     while(q.next())
-      /*XTreeWidgetItem *item =*/ new XTreeWidgetItem(_accounts,
+      XTreeWidgetItem *item = new XTreeWidgetItem(_accounts,
                                                   q.value("budgitem_accnt_id").toInt(),
                                                   q.value("result"));
 
 
     q.prepare("SELECT DISTINCT budgitem_period_id"
               "  FROM budgitem"
-              " WHERE(budgitem_budghead_id=:budghead_id)"
-              " ORDER BY budgitem_period_id;");
+              " WHERE(budgitem_budghead_id=:budghead_id);");
     q.bindValue(":budghead_id", _budgheadid);
     q.exec();
     while(q.next())

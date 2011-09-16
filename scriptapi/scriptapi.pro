@@ -6,12 +6,11 @@ CONFIG += qt \
     staticlib
 DBFILE = scriptapi.db
 LANGUAGE = C++
-INCLUDEPATH += $${XTUPLE_DIR}/common          $${XTUPLE_BLD}/common \
-               $${XTUPLE_DIR}/widgets         $${XTUPLE_BLD}/widgets \
-               $${XTUPLE_DIR}/widgets/tmp/lib $${XTUPLE_BLD}/widgets/tmp/lib \
-               $${XTUPLE_DIR}/scriptapi       $${XTUPLE_BLD}/scriptapi
-
-INCLUDEPATH = $$unique(INCLUDEPATH)
+INCLUDEPATH += . \
+    ../common \
+    ../widgets \
+    ../widgets/tmp/lib \
+    .
 DEPENDPATH += $${INCLUDEPATH}
 DESTDIR = ../lib
 MOC_DIR = tmp

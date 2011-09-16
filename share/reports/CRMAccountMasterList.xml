@@ -3,12 +3,6 @@
  <title>CRM Accounts Master List</title>
  <name>CRMAccountMasterList</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -21,11 +15,11 @@
   <mqlname>detail</mqlname>
  </querysource>
  <rpthead>
-  <height>160</height>
+  <height>90</height>
   <label>
    <rect>
     <x>115</x>
-    <y>125</y>
+    <y>55</y>
     <width>95</width>
     <height>15</height>
    </rect>
@@ -41,7 +35,7 @@
   <label>
    <rect>
     <x>550</x>
-    <y>125</y>
+    <y>55</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -57,7 +51,7 @@
   <label>
    <rect>
     <x>680</x>
-    <y>125</y>
+    <y>55</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -71,16 +65,16 @@
    <string>Tax Auth</string>
   </label>
   <line>
-   <xstart>4.76465</xstart>
-   <ystart>156.293</ystart>
-   <xend>744.765</xend>
-   <yend>156.293</yend>
+   <xstart>5.76465</xstart>
+   <ystart>85.2931</ystart>
+   <xend>745.765</xend>
+   <yend>85.2931</yend>
    <weight>2</weight>
   </line>
   <label>
    <rect>
     <x>615</x>
-    <y>125</y>
+    <y>55</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -96,7 +90,7 @@
   <label>
    <rect>
     <x>355</x>
-    <y>125</y>
+    <y>55</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -123,12 +117,12 @@
    </font>
    <right/>
    <vcenter/>
-   <string>CRM Accounts</string>
+   <string>CRM Accounts Master List</string>
   </label>
   <label>
    <rect>
-    <x>420</x>
-    <y>125</y>
+    <x>419</x>
+    <y>55</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -143,8 +137,8 @@
   </label>
   <label>
    <rect>
-    <x>485</x>
-    <y>125</y>
+    <x>484.235</x>
+    <y>55</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -160,7 +154,7 @@
   <label>
    <rect>
     <x>10</x>
-    <y>125</y>
+    <y>55</y>
     <width>95</width>
     <height>15</height>
    </rect>
@@ -175,8 +169,8 @@
   </label>
   <label>
    <rect>
-    <x>115</x>
-    <y>140</y>
+    <x>114</x>
+    <y>69.3233</y>
     <width>95</width>
     <height>15</height>
    </rect>
@@ -191,8 +185,8 @@
   </label>
   <label>
    <rect>
-    <x>300</x>
-    <y>140</y>
+    <x>301</x>
+    <y>69.3233</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -207,8 +201,8 @@
   </label>
   <label>
    <rect>
-    <x>420</x>
-    <y>140</y>
+    <x>420.823</x>
+    <y>69.3233</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -221,26 +215,6 @@
    <vcenter/>
    <string>Email</string>
   </label>
-  <text>
-   <rect>
-    <x>5</x>
-    <y>40</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>
@@ -613,7 +587,7 @@
    <field>
     <rect>
      <x>115</x>
-     <y>15.3526</y>
+     <y>14.6293</y>
      <width>185</width>
      <height>15</height>
     </rect>
@@ -632,7 +606,7 @@
    <field>
     <rect>
      <x>417.941</x>
-     <y>15.3526</y>
+     <y>14.6647</y>
      <width>100</width>
      <height>15</height>
     </rect>

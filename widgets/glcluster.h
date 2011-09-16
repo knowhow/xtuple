@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -25,7 +25,7 @@ public:
     virtual XTreeWidget* xtreewidget();
 
 public slots:
-    virtual void set(const ParameterList & pParams);
+    virtual void set( const ParameterList & pParams );
     virtual void sFillList();
 
 private:
@@ -43,7 +43,7 @@ public:
     accountSearch(QWidget*, Qt::WindowFlags = 0);
 
 public slots:
-    void set(const ParameterList & pParams);
+    void set( ParameterList & pParams );
     void sFillList();
 
 protected:
@@ -65,16 +65,10 @@ class XTUPLEWIDGETS_EXPORT GLClusterLineEdit : public VirtualClusterLineEdit
     public:
       GLClusterLineEdit(QWidget*, const char* = 0);
 
-      unsigned int type()  const       { return _type; }
       void setType(unsigned int pType);
-
+      unsigned int type()  const       { return _type; }
       bool showExternal()              { return _showExternal; }
       void setShowExternal(bool p);
-
-      bool ignoreCompany()              { return _ignoreCompany; }
-      void setIgnoreCompany(bool p);
-
-      int companyId();
 
     public slots:
       void sList();
@@ -93,7 +87,6 @@ class XTUPLEWIDGETS_EXPORT GLClusterLineEdit : public VirtualClusterLineEdit
     private:
       unsigned int _type;
       bool _showExternal;
-      bool _ignoreCompany;
       QStringList  _types;
 };
 
@@ -115,19 +108,13 @@ class XTUPLEWIDGETS_EXPORT GLCluster : public VirtualCluster
       cEquity     = 0x10
     };
 
-    Q_INVOKABLE unsigned int type()  const       { return static_cast<GLClusterLineEdit*>(_number)->type(); }
     Q_INVOKABLE void setType(unsigned int pType) { static_cast<GLClusterLineEdit*>(_number)->setType(pType); }
-
+    Q_INVOKABLE unsigned int type()  const       { return static_cast<GLClusterLineEdit*>(_number)->type(); }
     Q_INVOKABLE bool showExternal()              { return static_cast<GLClusterLineEdit*>(_number)->showExternal(); }
     Q_INVOKABLE void setShowExternal(bool p)     { static_cast<GLClusterLineEdit*>(_number)->setShowExternal(p); }
 
-    Q_INVOKABLE bool ignoreCompany()             { return static_cast<GLClusterLineEdit*>(_number)->ignoreCompany(); }
-    Q_INVOKABLE void setIgnoreCompany(bool p)    { static_cast<GLClusterLineEdit*>(_number)->setIgnoreCompany(p); }
-
     Q_INVOKABLE bool projectVisible();
     Q_INVOKABLE bool setProjectVisible(bool p);
-
-    Q_INVOKABLE int  companyId()                 { return static_cast<GLClusterLineEdit*>(_number)->companyId(); }
 
   public slots:
     void setId(const int p);

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -48,7 +48,7 @@
 #define DEBUG false
 
 #define WORKERINTERVAL 0
-#define WORKERROWS     500
+#define WORKERROWS     100
 
 /* make sure the colroles are kept in sync with
    QStringList knownroles in populate() below,
@@ -72,8 +72,8 @@
 // make sure COLROLE_COUNT = last COLROLE + 1
 #define COLROLE_COUNT         15
 
-#define yesStr QObject::tr("Yes")
-#define noStr  QObject::tr("No")
+static QString  yesStr = QObject::tr("Yes");
+static QString  noStr  = QObject::tr("No");
 
 GuiClientInterface *XTreeWidget::_guiClientInterface = 0;
 
@@ -123,7 +123,6 @@ XTreeWidget::XTreeWidget(QWidget *pParent) :
   _progress = 0;
   _subtotals = 0;
 
-  setUniformRowHeights(true); //#13439 speed improvement if all rows are known to be the same height
   setContextMenuPolicy(Qt::CustomContextMenu);
   setSelectionBehavior(QAbstractItemView::SelectRows);
   header()->setStretchLastSection(false);
@@ -274,8 +273,6 @@ void XTreeWidget::populateWorker()
   bool          pUseAltId  = args._workingUseAlt;
   //PopulateStyle popstyle   = args._workingPopstyle;
 
-  QList<XTreeWidgetItem*> topLevelItems; //#13439
-
   if (_linear)
     qApp->setOverrideCursor(Qt::WaitCursor);
 
@@ -323,8 +320,8 @@ void XTreeWidget::populateWorker()
       //       doesn't require initializing a Vector or new'd array values
       _colIdx = new QVector<int>(_roles.size());
 
-      _colRole = new QVector<int *>(_roles.size(), 0);
-      for (int ref = 0; ref < _roles.size(); ++ref)
+      _colRole = new QVector<int *>(_fieldCount, 0);
+      for (int ref = 0; ref < _fieldCount; ++ref)
         (*_colRole)[ref] = new int[COLROLE_COUNT];
 
       if (! _subtotals)
@@ -450,7 +447,6 @@ void XTreeWidget::populateWorker()
       ++cnt;
       if (!_linear && cnt % WORKERROWS == 0)
       {
-        this->addTopLevelItems(topLevelItems); //#13439 
         _progress->setValue(pQuery.at());
         return;
       }
@@ -520,11 +516,7 @@ void XTreeWidget::populateWorker()
           qWarning("XTreeWidget::populate() there is no role for column %d", col);
           continue;
         }
-
-        QVariant rawValue;
-        if(_colIdx->at(col) >=0)  //#13439 optimization - only try to retrieve value if index is valid
-          rawValue = pQuery.value(_colIdx->at(col));
-
+        QVariant rawValue = pQuery.value(_colIdx->at(col));
         _last->setData(col, Xt::RawRole, rawValue);
 
         // TODO: this isn't necessary for all columns so do less often?
@@ -732,19 +724,11 @@ void XTreeWidget::populateWorker()
       }
 
       if (qobject_cast<XTreeWidget*>(parentItem))
-      {
-        //#13439 optimization - do not add items to 'this' until the very end
-        if(parentItem == this)
-          topLevelItems.append(_last);
-        else
-          qobject_cast<XTreeWidget*>(parentItem)->addTopLevelItem(_last);
-      }
+        qobject_cast<XTreeWidget*>(parentItem)->addTopLevelItem(_last);
       else if (qobject_cast<XTreeWidgetItem*>(parentItem))
         qobject_cast<XTreeWidgetItem*>(parentItem)->addChild(_last);
 
     } while (pQuery.next());
-
-  this->addTopLevelItems(topLevelItems); //#13439 
 
   setId(pIndex);
   emit valid(currentItem() != 0);
@@ -785,7 +769,7 @@ void XTreeWidget::cleanupAfterPopulate()
   //       as per above's todo about the QVector<int*>
   if (_colRole)
   {
-    for (int ref = 0; ref < _roles.size(); ++ref)
+    for (int ref = 0; ref < _fieldCount; ++ref)
     {
       if ((*_colRole)[ref])
         delete [] (*_colRole)[ref];
@@ -881,7 +865,11 @@ void XTreeWidget::addColumn(const QString &pString, int pWidth, int pAlignment, 
   setColumnCount(column + 1);
 
   QTreeWidgetItem *hitem = headerItem();
+#ifdef Q_WS_MAC // bug 6117
+  hitem->setText(column, QString(pString).replace(QRegExp("\\s+"), " "));
+#else
   hitem->setText(column, pString);
+#endif
   hitem->setTextAlignment(column, pAlignment);
   hitem->setData(column, Xt::ScaleRole, scale);
 
@@ -1482,12 +1470,11 @@ void XTreeWidget::sShowMenu(const QPoint &pntThis)
     if (!disableExport)
     {
       _menu->addSeparator();
-      QMenu* copyMenu = _menu->addMenu(tr("Copy to Clipboard"));
-      copyMenu->addAction(tr("All"),  this, SLOT(sCopyVisibleToClipboard()));
-      copyMenu->addAction(tr("Row"),  this, SLOT(sCopyRowToClipboard()));
-      copyMenu->addAction(tr("Cell"),  this, SLOT(sCopyCellToClipboard()));
+      _menu->addAction(tr("Copy All"),  this, SLOT(sCopyVisibleToClipboard()));
+      _menu->addAction(tr("Copy Row"),  this, SLOT(sCopyRowToClipboard()));
+      _menu->addAction(tr("Copy Cell"),  this, SLOT(sCopyCellToClipboard()));
       _menu->addSeparator();
-      _menu->addAction(tr("Export As..."),  this, SLOT(sExport()));
+      _menu->addAction(tr("Export Contents..."),  this, SLOT(sExport()));
     }
 
     if(! _menu->isEmpty())
@@ -1546,25 +1533,15 @@ void XTreeWidget::sShowHeaderMenu(const QPoint &pntThis)
 void XTreeWidget::sExport()
 {
   QString   path = xtsettingsValue(_settingsName + "/exportPath").toString();
-  QString selectedFilter;
   QFileInfo fi(QFileDialog::getSaveFileName(this, tr("Export Save Filename"), path,
-                                            tr("Text CSV (*.csv);;Text (*.txt);;ODF Text Document (*.odt);;HTML Document (*.html)"), &selectedFilter));
-  QString defaultSuffix;
-  if(selectedFilter.contains("csv"))
-    defaultSuffix = ".csv";
-  else if(selectedFilter.contains("odt"))
-    defaultSuffix = ".odt";
-  else if(selectedFilter.contains("html"))
-    defaultSuffix = ".html";
-  else
-    defaultSuffix = ".txt";
+                                            tr("Text CSV (*.csv);;Text (*.txt);;ODF Text Document (*.odt);;HTML Document (*.html)")));
 
   if (!fi.filePath().isEmpty())
   {
     QTextDocument       *doc = new QTextDocument();
     QTextDocumentWriter writer;
     if (fi.suffix().isEmpty())
-      fi.setFile(fi.filePath() += defaultSuffix);
+      fi.setFile(fi.filePath() += ".txt");
     xtsettingsSetValue(_settingsName + "/exportPath", fi.path());
     writer.setFileName(fi.filePath());
 
@@ -2283,9 +2260,9 @@ QString XTreeWidget::toTxt() const
   for (counter = 0; counter < header->columnCount(); counter++)
   {
     if (!QTreeWidget::isColumnHidden(counter))
-      line = line + header->text(counter).replace("\r\n"," ") + "\t";
+      line = line + header->text(counter).replace("\n"," ") + "\t";
   }
-  opText = line + "\r\n";
+  opText = line + "\n";
 
   XTreeWidgetItem *item = topLevelItem(0);
   if (item)
@@ -2303,7 +2280,7 @@ QString XTreeWidget::toTxt() const
             line = line + item->text(counter) + "\t";
         }
       }
-      opText = opText + line + "\r\n";
+      opText = opText + line + "\n";
       idx    = indexBelow(idx);
     }
   }
@@ -2324,11 +2301,11 @@ QString XTreeWidget::toCsv() const
     {
       if (colcount)
         line = line + ",";
-      line = line + header->text(counter).replace("\"","\"\"").replace("\r\n"," ").replace("\n"," ");
+      line = line + header->text(counter).replace("\"","\"\"").replace("\n"," ");
       colcount++;
     }
   }
-  opText = line + "\r\n";
+  opText = line + "\n";
 
   XTreeWidgetItem *item = topLevelItem(0);
   if (item)
@@ -2356,7 +2333,7 @@ QString XTreeWidget::toCsv() const
           }
         }
       }
-      opText = opText + line + "\r\n";
+      opText = opText + line + "\n";
       idx    = indexBelow(idx);
     }
   }
@@ -2370,9 +2347,9 @@ QString XTreeWidget::toHtml() const
   QTextTableFormat  tableFormat;
   QTextTableCell    cell;
   QTextCharFormat   format;
+  QString color;
   QString font;
   int     colcnt = 0;
-  int     rowcnt = 0;
 
   tableFormat.setHeaderRowCount(1);
 
@@ -2381,20 +2358,7 @@ QString XTreeWidget::toHtml() const
     if (!QTreeWidget::isColumnHidden(i))
       colcnt++;
 
-  XTreeWidgetItem *item = topLevelItem(0);
-  if (item)
-  {
-    QModelIndex idx = indexFromItem(item);
-    while (idx.isValid())
-    {
-      item = (XTreeWidgetItem *)itemFromIndex(idx);
-      if (item)
-        rowcnt++;
-      idx = indexBelow(idx);
-    }
-  }
-
-  cursor->insertTable(rowcnt + 1, colcnt, tableFormat);
+  cursor->insertTable(model()->rowCount() + 1, colcnt, tableFormat);
 
   for (int counter = 0; counter < header->columnCount(); counter++)
   {
@@ -2409,7 +2373,7 @@ QString XTreeWidget::toHtml() const
     }
   }
 
-  item = topLevelItem(0);
+  XTreeWidgetItem *item = topLevelItem(0);
   if (item)
   {
     QModelIndex idx = indexFromItem(item);
@@ -2508,7 +2472,7 @@ XTreeWidgetItem *XTreeWidget::invisibleRootItem() const
 void XTreeWidget::sCurrentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
   if (dynamic_cast<XTreeWidgetItem *>(current) &&
-      (dynamic_cast<XTreeWidgetItem *>(previous) || previous == 0))
+      dynamic_cast<XTreeWidgetItem *>(previous))
 
     emit currentItemChanged(dynamic_cast<XTreeWidgetItem *>(current),
                             dynamic_cast<XTreeWidgetItem *>(previous));

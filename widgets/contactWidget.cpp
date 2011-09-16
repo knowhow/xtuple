@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -22,7 +22,6 @@
 #include "xsqlquery.h"
 
 #include "contactwidget.h"
-#include "contactemail.h"
 
 void ContactWidget::init()
 {
@@ -31,7 +30,7 @@ void ContactWidget::init()
     _titleSingular = tr("Contact");
     _titlePlural = tr("Contacts");
     _query = "SELECT cntct.*, crmacct_name "
-             "FROM cntct() LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) ";
+	     "FROM cntct LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) ";
 
     _layoutDone = false;
     _minimalLayout = false;
@@ -115,8 +114,6 @@ void ContactWidget::init()
     _buttonBox->addWidget(_crmAcct,	0, 1, Qt::AlignTop);
     _buttonBox->addWidget(_owner, 	0, 2, Qt::AlignTop);
 
-    QRegExp rx("^([0-9a-z]+[-._+&amp;])*[0-9a-z]+@([-0-9a-z]+[.])+[a-z]{2,6}$");
-    QValidator *validator = new QRegExpValidator(rx, this);
 
     _phoneLit		= new QLabel(tr("Voice:"), this);
     _phoneLit->setObjectName("_phoneLit");
@@ -129,17 +126,11 @@ void ContactWidget::init()
     _fax		= new XLineEdit(this, "_fax");
     _emailLit		= new QLabel(tr("E-Mail:"), this);
     _emailLit->setObjectName("_emailLit");
-    _email		= new XComboBox(this, "_email");
-    _email->setEditable(true);
-    _email->setValidator(validator);
-    _email->lineEdit()->installEventFilter(this);
+    _email		= new XLineEdit(this, "_email");
     _webaddrLit		= new QLabel(tr("Web:"), this);
     _webaddrLit->setObjectName("_webaddrLit");
     _webaddr		= new XLineEdit(this, "_webaddr");
     _address		= new AddressCluster(this, "_address");
-
-    //So we can manipulate just the line edit
-    QLineEdit* emailEdit = _email->lineEdit();
 
 #if defined Q_OS_MAC
     _honorific->setMinimumHeight(26);
@@ -153,12 +144,12 @@ void ContactWidget::init()
 
     QPalette p = _email->palette();
     p.setColor(QPalette::Text, Qt::blue);
-    emailEdit->setPalette(p);
+    _email->setPalette(p);
     _webaddr->setPalette(p);
     
     QFont newFont = _email->font();
     newFont.setUnderline(TRUE);
-    emailEdit->setFont(newFont);
+    _email->setFont(newFont);
     _webaddr->setFont(newFont);
 
     _numberLit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
@@ -209,11 +200,11 @@ void ContactWidget::init()
     connect(_phone,	SIGNAL(lostFocus()), this, SLOT(sCheck()));
     connect(_phone2,	SIGNAL(lostFocus()), this, SLOT(sCheck()));
     connect(_fax,	SIGNAL(lostFocus()), this, SLOT(sCheck()));
-    connect(emailEdit,	SIGNAL(lostFocus()), this, SLOT(sCheck()));
+    connect(_email,	SIGNAL(lostFocus()), this, SLOT(sCheck()));
     connect(_webaddr,	SIGNAL(lostFocus()), this, SLOT(sCheck()));
     connect(_address,	SIGNAL(changed()),   this, SLOT(sCheck()));
-
-    connect(_email,     SIGNAL(currentIndexChanged(int)), this, SLOT(sEmailIndexChanged()));
+    
+    connect(_email,     SIGNAL(doubleClicked()), this, SLOT(sLaunchEmail()));
     connect(_webaddr,   SIGNAL(doubleClicked()), this, SLOT(sLaunchWebaddr()));
     
     setListVisible(true);
@@ -369,9 +360,7 @@ void ContactWidget::silentSetId(const int pId)
   else
   {   
       XSqlQuery idQ;
-      _query.replace("cntct()","cntct"); // Switch to non-restrictive table
       idQ.prepare(_query + " WHERE cntct_id = :id;");
-      _query.replace("FROM cntct", "FROM cntct()"); // Switch back to restrictive table function
       idQ.bindValue(":id", pId);
       idQ.exec();
       if (idQ.first())
@@ -379,7 +368,6 @@ void ContactWidget::silentSetId(const int pId)
           _ignoreSignals = true;
 
           _id = pId;
-
           _valid = true;
           _number->setText(idQ.value("cntct_number").toString());
           _honorific->setEditText(idQ.value("cntct_honorific").toString());
@@ -393,14 +381,12 @@ void ContactWidget::silentSetId(const int pId)
           _phone->setText(idQ.value("cntct_phone").toString());
           _phone2->setText(idQ.value("cntct_phone2").toString());
           _fax->setText(idQ.value("cntct_fax").toString());
-          _emailCache=idQ.value("cntct_email").toString();
+          _email->setText(idQ.value("cntct_email").toString());
           _webaddr->setText(idQ.value("cntct_webaddr").toString());
           _address->setId(idQ.value("cntct_addr_id").toInt());
           _active->setChecked(idQ.value("cntct_active").toBool());
           _notes = idQ.value("cntct_notes").toString();
           _owner->setUsername(idQ.value("cntct_owner_username").toString());
-
-          fillEmail();
 
           if (_mapper->model())
           { 	 
@@ -414,7 +400,7 @@ void ContactWidget::silentSetId(const int pId)
             _mapper->model()->setData(_mapper->model()->index(_mapper->currentIndex(),_mapper->mappedSection(_phone)),        _phone->text()); 	 
             _mapper->model()->setData(_mapper->model()->index(_mapper->currentIndex(),_mapper->mappedSection(_phone2)),       _phone2->text()); 	 
             _mapper->model()->setData(_mapper->model()->index(_mapper->currentIndex(),_mapper->mappedSection(_fax)),          _fax->text()); 	 
-            _mapper->model()->setData(_mapper->model()->index(_mapper->currentIndex(),_mapper->mappedSection(_email)),        _email->currentText());
+            _mapper->model()->setData(_mapper->model()->index(_mapper->currentIndex(),_mapper->mappedSection(_email)),        _email->text()); 	 
             _mapper->model()->setData(_mapper->model()->index(_mapper->currentIndex(),_mapper->mappedSection(_webaddr)),      _webaddr->text()); 	 
            }
 
@@ -603,7 +589,7 @@ int ContactWidget::save(AddressCluster::SaveFlags flag)
   datamodQ.bindValue(":phone",	   _phone->text());
   datamodQ.bindValue(":phone2",	   _phone2->text());
   datamodQ.bindValue(":fax",	   _fax->text());
-  datamodQ.bindValue(":email",	   _email->currentText());
+  datamodQ.bindValue(":email",	   _email->text());
   datamodQ.bindValue(":webaddr",   _webaddr->text());
   datamodQ.bindValue(":notes",	   _notes);
   datamodQ.bindValue(":owner",     _owner->username());
@@ -942,7 +928,7 @@ void ContactWidget::sCheck()
       (! _phone->isVisibleTo(this)   || _phone->text().simplified().isEmpty()) &&
       (! _phone2->isVisibleTo(this)  || _phone2->text().simplified().isEmpty()) &&
       (! _fax->isVisibleTo(this)     || _fax->text().simplified().isEmpty()) &&
-      (! _email->isVisibleTo(this)   || _email->currentText().simplified().isEmpty()) &&
+      (! _email->isVisibleTo(this)   || _email->text().simplified().isEmpty()) &&
       (! _webaddr->isVisibleTo(this) || _webaddr->text().simplified().isEmpty()) &&
       (! _address->isVisibleTo(this) || _address->id() <= 0))
     setId(-1);
@@ -1024,7 +1010,7 @@ void ContactWidget::setChange(QString p)
 
 void ContactWidget::sLaunchEmail()
 {
-  QString extUrl = QString(_email->currentText());
+  QString extUrl = QString(_email->text());
   if (!_subjText.isEmpty() ||
       !_bodyText.isEmpty())
     extUrl.append("?");
@@ -1044,10 +1030,7 @@ void ContactWidget::sLaunchEmail()
 
 void ContactWidget::sLaunchWebaddr()
 {
-    QUrl url(_webaddr->text());
-    if(url.scheme().isEmpty())
-      url.setScheme("http");
-  QDesktopServices::openUrl(url);
+  QDesktopServices::openUrl(QUrl("http://" + _webaddr->text()));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1080,7 +1063,7 @@ ContactList::ContactList(QWidget* pParent, const char* pName, bool, Qt::WFlags)
     setWindowTitle(tr("Contact List"));
 }
 
-void ContactList::set(const ParameterList &pParams)
+void ContactList::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -1260,7 +1243,7 @@ ContactSearch::ContactSearch(QWidget* pParent, Qt::WindowFlags pFlags)
              "FROM cntct LEFT OUTER JOIN crmacct ON (cntct_crmacct_id = crmacct_id) ";
   }
 
-void ContactSearch::set(const ParameterList &pParams)
+void ContactSearch::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -1417,60 +1400,4 @@ void ContactWidget::setEmailSubjectText(const QString text)
 void ContactWidget::setEmailBodyText(const QString text)
 {
   _bodyText = text;
-}
-
-void ContactWidget::fillEmail()
-{
-  _email->blockSignals(true);
-  XSqlQuery qry;
-  qry.prepare("SELECT cntcteml_id AS id, cntcteml_email AS email "
-              "FROM cntcteml "
-              "WHERE (cntcteml_cntct_id=:cntct_id) "
-              "ORDER BY email, id;");
-  qry.bindValue(":cntct_id", _id);
-  qry.exec();
-  _email->populate(qry);
-  _email->insertSeparator(_email->count());
-  _email->append(-3, tr("Edit List"));
-  _email->setText(_emailCache);
-  _email->blockSignals(false);
-}
-
-void ContactWidget::sEmailIndexChanged()
-{
-  // See if just selected another address
-  if (_email->currentIndex() != _email->count() - 1)
-  {
-    _emailCache = _email->currentText();
-    return;
-  }
-
-  // Edit requested
-  ParameterList params;
-  params.append("cntct_id", _id);
-
-  contactEmail newdlg(this, "", TRUE);
-  newdlg.set(params);
-  int selected = newdlg.exec();
-  fillEmail();
-  if (selected)
-    _email->setId(selected);
-  else
-    _email->setText(_emailCache);
-}
-
-bool ContactWidget::eventFilter(QObject *obj, QEvent *event)
-{
-    if (obj != _email->lineEdit())
-        return QObject::eventFilter(obj, event);
-
-    switch (event->type()) {
-    case QEvent::MouseButtonDblClick: {;
-        sLaunchEmail();
-        return true;
-    }
-    default:
-        break;
-    }
-    return QObject::eventFilter(obj, event);
 }

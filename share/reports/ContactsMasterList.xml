@@ -3,25 +3,19 @@
  <title>Contacts Master List</title>
  <name>ContactsMasterList</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <landscape/>
  <topmargin>50</topmargin>
  <bottommargin>50</bottommargin>
  <rightmargin>50</rightmargin>
  <leftmargin>50</leftmargin>
- <querysource loadFromDb="true">
+ <querysource loadFromDb="true" >
   <name>detail</name>
   <mqlgroup>contacts</mqlgroup>
   <mqlname>detail</mqlname>
  </querysource>
  <rpthead>
-  <height>143</height>
+  <height>77</height>
   <label>
    <rect>
     <x>540</x>
@@ -41,7 +35,7 @@
   <label>
    <rect>
     <x>545</x>
-    <y>123</y>
+    <y>55</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -57,7 +51,7 @@
   <label>
    <rect>
     <x>325</x>
-    <y>123</y>
+    <y>55</y>
     <width>100</width>
     <height>15</height>
    </rect>
@@ -73,7 +67,7 @@
   <label>
    <rect>
     <x>450</x>
-    <y>123</y>
+    <y>55</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -87,16 +81,16 @@
    <string>Phone</string>
   </label>
   <line>
-   <xstart>6</xstart>
-   <ystart>137</ystart>
-   <xend>995</xend>
-   <yend>137</yend>
+   <xstart>5</xstart>
+   <ystart>70</ystart>
+   <xend>994</xend>
+   <yend>70</yend>
    <weight>2</weight>
   </line>
   <label>
    <rect>
     <x>10</x>
-    <y>123</y>
+    <y>55</y>
     <width>100</width>
     <height>15</height>
    </rect>
@@ -112,7 +106,7 @@
   <label>
    <rect>
     <x>120</x>
-    <y>123</y>
+    <y>55</y>
     <width>120</width>
     <height>15</height>
    </rect>
@@ -128,7 +122,7 @@
   <label>
    <rect>
     <x>625</x>
-    <y>123</y>
+    <y>55</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -144,7 +138,7 @@
   <label>
    <rect>
     <x>725</x>
-    <y>123</y>
+    <y>55</y>
     <width>145</width>
     <height>15</height>
    </rect>
@@ -160,7 +154,7 @@
   <label>
    <rect>
     <x>250</x>
-    <y>123</y>
+    <y>55</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -176,7 +170,7 @@
   <label>
    <rect>
     <x>875</x>
-    <y>123</y>
+    <y>55</y>
     <width>120</width>
     <height>15</height>
    </rect>
@@ -189,26 +183,6 @@
    <vcenter/>
    <string>Web Address</string>
   </label>
-  <text>
-   <rect>
-    <x>5</x>
-    <y>33</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>

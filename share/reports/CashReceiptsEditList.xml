@@ -3,12 +3,6 @@
  <title>Cash Receipt Edit List</title>
  <name>CashReceiptsEditList</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -20,16 +14,16 @@
   <sql>SELECT cashrcpt_id, 1 AS orderBy,
        cust_number, cust_name,
        formatDate(cashrcpt_distdate) AS f_distdate,
-       CASE WHEN (cashrcpt_fundstype = 'C') THEN &lt;? value("check") ?>
-            WHEN (cashrcpt_fundstype = 'T') THEN &lt;? value("certifiedCheck") ?>
-            WHEN (cashrcpt_fundstype = 'M') THEN &lt;? value("masterCard") ?>
-            WHEN (cashrcpt_fundstype = 'V') THEN &lt;? value("visa") ?>
-            WHEN (cashrcpt_fundstype = 'A') THEN &lt;? value("americanExpress") ?>
-            WHEN (cashrcpt_fundstype = 'D') THEN &lt;? value("discoverCard") ?>
-            WHEN (cashrcpt_fundstype = 'R') THEN &lt;? value("otherCreditCard") ?>
-            WHEN (cashrcpt_fundstype = 'K') THEN &lt;? value("cash") ?>
-            WHEN (cashrcpt_fundstype = 'W') THEN &lt;? value("wireTransfer") ?>
-            ELSE &lt;? value("other") ?>
+       CASE WHEN (cashrcpt_fundstype = 'C') THEN 'Check'
+            WHEN (cashrcpt_fundstype = 'T') THEN 'Certified Check'
+            WHEN (cashrcpt_fundstype = 'M') THEN 'Master Card'
+            WHEN (cashrcpt_fundstype = 'V') THEN 'Visa'
+            WHEN (cashrcpt_fundstype = 'A') THEN 'American Express'
+            WHEN (cashrcpt_fundstype = 'D') THEN 'Discover Card'
+            WHEN (cashrcpt_fundstype = 'R') THEN 'Other Credit Card'
+            WHEN (cashrcpt_fundstype = 'K') THEN 'Cash'
+            WHEN (cashrcpt_fundstype = 'W') THEN 'Wire Transfer'
+            ELSE 'Other'
        END AS f_fundstype,
        'C/R' AS doctype,
        cashrcpt_docnumber AS docnumber,
@@ -41,8 +35,7 @@
 FROM cashrcpt, bankaccnt, cust
 WHERE ( (cashrcpt_bankaccnt_id=bankaccnt_id)
   AND   (cashrcpt_cust_id=cust_id)
-  AND   (NOT cashrcpt_posted)
-  AND   (NOT cashrcpt_void) )
+  AND   (NOT cashrcpt_posted) )
 
 UNION
 SELECT cashrcpt_id, 2 AS orderBy,
@@ -59,8 +52,7 @@ SELECT cashrcpt_id, 2 AS orderBy,
 FROM cashrcptitem, cashrcpt, aropen
 WHERE ( (cashrcptitem_cashrcpt_id=cashrcpt_id)
   AND   (cashrcptitem_aropen_id=aropen_id)
-  AND   (NOT cashrcpt_posted)
-  AND   (NOT cashrcpt_void) )
+  AND   (NOT cashrcpt_posted) )
 
 UNION
 SELECT cashrcpt_id, 3 AS orderBy,
@@ -77,8 +69,7 @@ SELECT cashrcpt_id, 3 AS orderBy,
 FROM cashrcptmisc, cashrcpt, accnt
 WHERE ( (cashrcptmisc_cashrcpt_id=cashrcpt_id)
   AND   (cashrcptmisc_accnt_id=accnt_id)
-  AND   (NOT cashrcpt_posted)
-  AND   (NOT cashrcpt_void) )
+  AND   (NOT cashrcpt_posted) )
 
 ORDER BY cashrcpt_id, orderBy;
 
@@ -431,8 +422,7 @@ ORDER BY cashrcpt_id, orderBy;
       <query>detail</query>
       <column>detailedamount</column>
      </data>
-     <format builtin="true">extprice</format>
-     <tracktotal subtotal="true"/>
+     <tracktotal subtotal="true" builtin="true" >extprice</tracktotal>
     </field>
     <line>
      <xstart>5</xstart>
@@ -616,8 +606,7 @@ ORDER BY cashrcpt_id, orderBy;
     <query>detail</query>
     <column>amount</column>
    </data>
-   <format builtin="true">extprice</format>
-   <tracktotal/>
+   <tracktotal builtin="true" >extprice</tracktotal>
   </field>
   <label>
    <rect>

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -96,7 +96,6 @@ enum SetResponse commentType::set(const ParameterList &pParams)
       _name->setEnabled(FALSE);
       _description->setEnabled(FALSE);
       _editable->setEnabled(FALSE);
-      _order->setEnabled(false);
       _buttonBox->clear();
       _buttonBox->addButton(QDialogButtonBox::Close);
       _buttonBox->setFocus();
@@ -119,23 +118,21 @@ void commentType::sSave()
   if (_mode == cNew)
   {
     q.prepare( "INSERT INTO cmnttype "
-               "( cmnttype_id, cmnttype_name, cmnttype_descrip, cmnttype_editable, cmnttype_order ) "
+               "( cmnttype_id, cmnttype_name, cmnttype_descrip, cmnttype_editable ) "
                "VALUES "
-               "( :cmnttype_id, :cmnttype_name, :cmnttype_descrip, :cmnttype_editable, :cmnttype_order );" );
+               "( :cmnttype_id, :cmnttype_name, :cmnttype_descrip, :cmnttype_editable );" );
   }
   else if (_mode == cEdit)
     q.prepare( "UPDATE cmnttype "
                "SET cmnttype_name=:cmnttype_name,"
                "    cmnttype_descrip=:cmnttype_descrip,"
-               "    cmnttype_editable=:cmnttype_editable,"
-               "    cmnttype_order=:cmnttype_order "
+               "    cmnttype_editable=:cmnttype_editable "
                "WHERE (cmnttype_id=:cmnttype_id);" );
 
   q.bindValue(":cmnttype_id", _cmnttypeid);
   q.bindValue(":cmnttype_name", _name->text());
   q.bindValue(":cmnttype_descrip", _description->text());
   q.bindValue(":cmnttype_editable", _editable->isChecked());
-  q.bindValue(":cmnttype_order", _order->value());
   q.exec();
 
   done(_cmnttypeid);
@@ -174,7 +171,6 @@ void commentType::populate()
     _name->setText(q.value("cmnttype_name"));
     _description->setText(q.value("cmnttype_descrip"));
     _editable->setChecked(q.value("cmnttype_editable").toBool());
-    _order->setValue(q.value("cmnttype_order").toInt());
     if(q.value("cmnttype_sys").toBool())
     {
       _name->setEnabled(false);

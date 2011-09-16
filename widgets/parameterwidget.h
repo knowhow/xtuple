@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -36,8 +36,7 @@ class XTUPLEWIDGETS_EXPORT ParameterWidget : public QWidget, public Ui::Paramete
     {
       Crmacct, User, Text, Date, XComBox, Contact,
       Multiselect, GLAccount, Exists, CheckBox, Project,
-      Customer, Site, Vendor, Item, Employee, Shipto,
-      SalesOrder, WorkOrder, PurchaseOrder, TransferOrder
+      Customer, Site, Vendor, Item, Employee
     };
 
     ParameterWidget(QWidget *pParent, const char * = 0);
@@ -45,7 +44,6 @@ class XTUPLEWIDGETS_EXPORT ParameterWidget : public QWidget, public Ui::Paramete
     Q_INVOKABLE void applyDefaultFilterSet();
     Q_INVOKABLE int paramIndex(QString pName);
     Q_INVOKABLE ParameterList parameters();
-    Q_INVOKABLE QString filter();
     
  public slots:
     void addParam();
@@ -59,10 +57,9 @@ class XTUPLEWIDGETS_EXPORT ParameterWidget : public QWidget, public Ui::Paramete
     void save();
     void setDefault(QString pName, QVariant pDefault = QVariant(), bool pAutoApply = false);
     void setEnabled(QString pName, bool pEnabled);
-    void setFiltersVisible(bool visible);
     void setSavedFilters(int defaultId = -1);
     void setSavedFiltersIndex(QString);
-    void setType(QString, QString, ParameterWidgetTypes = Text, QVariant pDefault = QVariant(), QVariant extraInfo =  QVariant());
+    void setType(QString, QString, enum ParameterWidgetTypes = Text, QVariant pDefault = QVariant(), QVariant extraInfo =  QVariant());
     void setXComboBoxType(QString, QString, enum XComboBox::XComboBoxTypes, QVariant pDefault = QVariant());
     void setXComboBoxType(QString, QString, QString, QVariant pDefault = QVariant());
     void sManageFilters();
@@ -85,7 +82,6 @@ class XTUPLEWIDGETS_EXPORT ParameterWidget : public QWidget, public Ui::Paramete
     QSignalMapper *_filterSignalMapper;
     QMap<int, QString > _usedTypes;
     QString _settingsName, _settingsName2;
-    QMap<int, QWidget*> _filterWidgets;
     QMap<int, QPair<QString, QVariant > > _filterValues;
     bool _initialized;
     bool _shared;

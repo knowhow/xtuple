@@ -3,12 +3,9 @@
  <title>Invoice</title>
  <name>Invoice</name>
  <description>With Logo - With Invoice Currency</description>
- <parameter default="127" active="true" listtype="dynamic" type="integer" name="invchead_id">
+ <parameter default="97" active="true" listtype="dynamic" type="string" name="invchead_id">
   <description></description>
   <query>SELECT invchead_id, invchead_invcnumber FROM invchead ORDER BY invchead_invcnumber;</query>
- </parameter>
- <parameter default="TRUE" active="true" listtype="static" type="string" name="showcosts">
-  <description></description>
  </parameter>
  <watermark>
   <data>
@@ -76,12 +73,8 @@ ORDER BY ordernumber;</sql>
       CASE WHEN (invcitem_custpn != '' AND itemalias_usedescrip=TRUE) THEN itemalias_descrip2
            ELSE item_descrip2
       END AS descrip2,
-      CASE WHEN (&lt;? value("showcosts") ?>=FALSE) THEN 'N/A'
-           ELSE formatPrice(invcitem_qty_invuomratio * invcitem_price / COALESCE(invcitem_price_invuomratio,1))
-      END AS f_unitprice,
-      CASE WHEN (&lt;? value("showcosts") ?>=FALSE) THEN 'N/A'
-           ELSE formatMoney(round((invcitem_billed * invcitem_qty_invuomratio) * (invcitem_price / COALESCE(invcitem_price_invuomratio,1)),2)) 
-      END AS f_extprice,
+      formatPrice(invcitem_qty_invuomratio * invcitem_price / COALESCE(invcitem_price_invuomratio,1)) AS f_unitprice,
+      formatMoney(round((invcitem_billed * invcitem_qty_invuomratio) * (invcitem_price / COALESCE(invcitem_price_invuomratio,1)),2)) AS f_extprice,
       invcitem_notes,
       getInvcitemLotSerial(invcitem_id) AS lotserial,
 --Sub-select updated for 3.1 to support kitting
@@ -93,38 +86,22 @@ ORDER BY invcitem_linenumber;</sql>
  </querysource>
  <querysource>
   <name>foot</name>
-  <sql>SELECT 
-CASE WHEN (&lt;? value("showcosts") ?> = 'FALSE') THEN 'N/A'
-ELSE formatMoney(SUM(round((invcitem_billed * invcitem_qty_invuomratio) * (invcitem_price / COALESCE(invcitem_price_invuomratio,1)),2))) 
-END AS f_extprice
-FROM invcitem LEFT OUTER JOIN item on (invcitem_item_id=item_id)
+  <sql>SELECT formatMoney(SUM(round((invcitem_billed * invcitem_qty_invuomratio) * (invcitem_price / COALESCE(invcitem_price_invuomratio,1)),2))) AS f_extprice&#xd;
+FROM invcitem LEFT OUTER JOIN item on (invcitem_item_id=item_id)&#xd;
 WHERE (invcitem_invchead_id=&lt;? value("invchead_id") ?>);</sql>
  </querysource>
  <querysource>
   <name>GroupExtended</name>
   <sql>SELECT *,
-       CASE WHEN (&lt;? value("showcosts") ?> = 'FALSE') THEN 'N/A'
-       	ELSE formatMoney(invchead_misc_amount) 
-	END AS f_misc,
-       CASE WHEN (&lt;? value("showcosts") ?> = 'FALSE') THEN 'N/A'
-       	ELSE formatMoney(tax)                  
-	END AS f_tax,
-       CASE WHEN (&lt;? value("showcosts") ?> = 'FALSE') THEN 'N/A'
-       	ELSE formatMoney(invchead_freight)
-	END AS f_freight,
-       CASE WHEN (&lt;? value("showcosts") ?> = 'FALSE') THEN 'N/A'
-       	ELSE formatMoney(invchead_payment)
-	END AS f_payment,
-    formatMoney(noNeg(invchead_freight + invchead_misc_amount + tax +
-                         itemtotal - total_allocated))
-	AS f_totaldue,
-       CASE WHEN (&lt;? value("showcosts") ?> = 'FALSE') THEN 'N/A'
-       	ELSE formatMoney(noNeg(invchead_freight + invchead_misc_amount + tax +
-                         itemtotal - total_allocated))
-	END AS f_netdue,
-       CASE WHEN (&lt;? value("showcosts") ?> = 'FALSE') THEN 'N/A'
-       	ELSE formatMoney(total_allocated)
-	END AS f_allocated
+       formatMoney(invchead_misc_amount) AS f_misc,
+       formatMoney(tax)                  AS f_tax,
+       formatMoney(invchead_freight)     AS f_freight,
+       formatMoney(invchead_payment)     AS f_payment,
+       formatMoney(noNeg(invchead_freight + invchead_misc_amount + tax +
+                         itemtotal - total_allocated)) AS f_totaldue,
+       formatMoney(noNeg(invchead_freight + invchead_misc_amount + tax +
+                         itemtotal - total_allocated)) AS f_netdue,
+       formatMoney(total_allocated) AS f_allocated
  FROM (SELECT invchead_misc_amount, invchead_freight,
               invchead_payment, invchead_notes, invchead_misc_descrip,
               (SELECT COALESCE(SUM(tax),0) 
@@ -151,20 +128,19 @@ WHERE (invcitem_invchead_id=&lt;? value("invchead_id") ?>);</sql>
                     AND   (arapply_source_aropen_id=s.aropen_id)))
               ELSE
                  (SELECT SUM(COALESCE(CASE WHEN((aropen_amount - aropen_paid) >=
-                                                currToCurr(aropenalloc_curr_id, aropen_curr_id,
-                                                           aropenalloc_amount, aropen_docdate))
-                                           THEN currToCurr(aropenalloc_curr_id, invchead_curr_id,
-                                                           aropenalloc_amount, aropen_docdate)
+                                                currToCurr(aropenco_curr_id, aropen_curr_id,
+                                                           aropenco_amount, aropen_docdate))
+                                           THEN currToCurr(aropenco_curr_id, invchead_curr_id,
+                                                           aropenco_amount, aropen_docdate)
                                            ELSE currToCurr(aropen_curr_id, invchead_curr_id,
                                                            aropen_amount - aropen_paid,
                                                            aropen_docdate)
                                       END, 0))
-                   FROM aropenalloc, aropen
-                        LEFT OUTER JOIN cohead ON (cohead_number=invchead_ordernumber)
-                  WHERE ( (aropenalloc_aropen_id=aropen_id)
-                    AND   ((aropenalloc_doctype='S' AND aropenalloc_doc_id=cohead_id) OR
-                           (aropenalloc_doctype='I' AND aropenalloc_doc_id=invchead_id))
-                    AND   ((aropen_amount - aropen_paid) > 0)))
+                   FROM aropenco, aropen, cohead
+                  WHERE ( (aropenco_aropen_id=aropen_id)
+                    AND   (aropenco_cohead_id=cohead_id)
+                    AND   ((aropen_amount - aropen_paid) > 0)
+                    AND   (cohead_number=invchead_ordernumber)))
               END, 0) AS total_allocated
        FROM invchead
             LEFT OUTER JOIN invcitem ON (invcitem_invchead_id=invchead_id)
@@ -182,50 +158,50 @@ WHERE (invcitem_invchead_id=&lt;? value("invchead_id") ?>);</sql>
       formatMoney(aropen_amount) AS f_total,
       formatMoney(aropen_paid) AS f_paid,
       formatMoney(aropen_amount - aropen_paid) AS f_balance,
-      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenalloc_curr_id,
+      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenco_curr_id,
 							     aropen_curr_id,
-							     aropenalloc_amount,
+							     aropenco_amount,
 							     aropen_docdate))
-	    THEN currToCurr(aropenalloc_curr_id, aropen_curr_id,
-			    aropenalloc_amount, aropen_docdate)
+	    THEN currToCurr(aropenco_curr_id, aropen_curr_id,
+			    aropenco_amount, aropen_docdate)
            ELSE (aropen_amount - aropen_paid)
       END AS allocated,
-      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenalloc_curr_id,
+      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenco_curr_id,
 							     aropen_curr_id,
-							     aropenalloc_amount,
+							     aropenco_amount,
 							     aropen_docdate))
-	    THEN formatMoney(currToCurr(aropenalloc_curr_id, aropen_curr_id,
-					aropenalloc_amount, aropen_docdate))
+	    THEN formatMoney(currToCurr(aropenco_curr_id, aropen_curr_id,
+					aropenco_amount, aropen_docdate))
            ELSE formatMoney(aropen_amount - aropen_paid)
       END AS f_allocated,
-      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenalloc_curr_id,
+      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenco_curr_id,
 							     aropen_curr_id,
-							     aropenalloc_amount,
+							     aropenco_amount,
 							     aropen_docdate))
-	    THEN currToCurr(aropenalloc_curr_id, invchead_curr_id,
-			    aropenalloc_amount, aropen_docdate)
+	    THEN currToCurr(aropenco_curr_id, invchead_curr_id,
+			    aropenco_amount, aropen_docdate)
            ELSE currToCurr(aropen_curr_id, invchead_curr_id,
                            aropen_amount - aropen_paid, aropen_docdate)
       END AS allocated_invccurr,
-      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenalloc_curr_id,
+      CASE WHEN((aropen_amount - aropen_paid) >= currToCurr(aropenco_curr_id,
 							     aropen_curr_id,
-							     aropenalloc_amount,
+							     aropenco_amount,
 							     aropen_docdate))
-	    THEN formatMoney(currToCurr(aropenalloc_curr_id, invchead_curr_id,
-					aropenalloc_amount, aropen_docdate))
+	    THEN formatMoney(currToCurr(aropenco_curr_id, invchead_curr_id,
+					aropenco_amount, aropen_docdate))
            ELSE formatMoney(currToCurr(aropen_curr_id, invchead_curr_id,
                                        aropen_amount - aropen_paid,
                                        aropen_docdate))
       END AS f_allocated_invccurr,
       curr_symbol AS aropen_currsymbol
- FROM invchead LEFT OUTER JOIN cohead ON (cohead_number=invchead_ordernumber)
-               JOIN aropenalloc ON ((aropenalloc_doctype='S' AND aropenalloc_doc_id=cohead_id) OR
-                                    (aropenalloc_doctype='I' AND aropenalloc_doc_id=invchead_id))
-               JOIN aropen ON (aropenalloc_aropen_id=aropen_id)
-               JOIN curr_symbol ON (aropen_curr_id=curr_id)
-WHERE  ((aropen_amount - aropen_paid) > 0)
+ FROM aropenco, aropen, cohead, invchead, curr_symbol
+WHERE ( (aropenco_aropen_id=aropen_id)
+  AND   (aropenco_cohead_id=cohead_id)
+  AND   ((aropen_amount - aropen_paid) > 0)
+  AND   (aropen_curr_id=curr_id)
+  AND   (cohead_number=invchead_ordernumber)
   AND   (NOT invchead_posted)
-  AND   (invchead_id=&lt;? value("invchead_id") ?>)
+  AND   (invchead_id=&lt;? value("invchead_id") ?>) )
 UNION
 SELECT cohead_id,
       arapply_source_docnumber AS aropen_docnumber,
@@ -262,10 +238,13 @@ ORDER BY aropen_docnumber;</sql>
  </querysource>
  <querysource>
   <name>currency</name>
-  <sql>SELECT currConcat(curr_id) AS currConcat
-FROM invchead, curr_symbol
-WHERE (invchead_id = &lt;? value("invchead_id") ?>)
- AND  (invchead_curr_id = curr_id);</sql>
+  <sql>SELECT&#xd;
+curr_symbol&#xd;
+FROM&#xd;
+   invchead,&#xd;
+   curr_symbol&#xd;
+WHERE (invchead_id = &lt;? value("invchead_id") ?>) AND&#xd;
+     invchead_curr_id = curr_id;</sql>
  </querysource>
  <querysource>
   <name>logo</name>
@@ -1034,7 +1013,7 @@ order by cosmisc_shipdate;</sql>
     <rect>
      <x>490</x>
      <y>10</y>
-     <width>71</width>
+     <width>31</width>
      <height>20</height>
     </rect>
     <font>
@@ -1042,11 +1021,11 @@ order by cosmisc_shipdate;</sql>
      <size>10</size>
      <weight>normal</weight>
     </font>
-    <left/>
+    <right/>
     <vcenter/>
     <data>
      <query>currency</query>
-     <column>currConcat</column>
+     <column>curr_symbol</column>
     </data>
    </field>
    <line>
@@ -1395,7 +1374,7 @@ order by cosmisc_shipdate;</sql>
      </font>
      <left/>
      <vcenter/>
-     <string>Doc #</string>
+     <string>C/M #</string>
     </label>
     <line>
      <xstart>45</xstart>
@@ -1457,7 +1436,7 @@ order by cosmisc_shipdate;</sql>
      </font>
      <left/>
      <vcenter/>
-     <string>Pre-Allocated Credits</string>
+     <string>Allocated Credit Memos</string>
     </label>
     <label>
      <rect>
@@ -1894,7 +1873,7 @@ order by cosmisc_shipdate;</sql>
    </font>
    <right/>
    <vcenter/>
-   <string>Pre-Allocated Credit</string>
+   <string>Less Allocated C/M's</string>
   </label>
   <field>
    <rect>

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -20,9 +20,6 @@
 #include "crmacctcluster.h"
 #include "itemSourcePrice.h"
 #include "xcombobox.h"
-#include <metasql.h>
-#include <parameter.h>
-#include "mqlutil.h"
 
 itemSource::itemSource(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
     : XDialog(parent, name, modal, fl)
@@ -38,11 +35,6 @@ itemSource::itemSource(QWidget* parent, const char* name, bool modal, Qt::WFlags
   connect(_vendor,            SIGNAL(newId(int)), this, SLOT(sVendorChanged(int)));
   connect(_vendorCurrency,    SIGNAL(newID(int)), this, SLOT(sFillPriceList()));
   connect(this,               SIGNAL(rejected()), this, SLOT(sRejected()));
-
-//  TODO method doesn't exist?
-//  connect(_vendorUOM, SIGNAL(textChanged()), this, SLOT(sClearVendorUOM()));
-//  connect(_invVendorUOMRatio, SIGNAL(textChanged(QString)), this, SLOT(sClearVendorUOM()));
-
 
   _item->setType(ItemLineEdit::cGeneralPurchased | ItemLineEdit::cGeneralManufactured | ItemLineEdit::cTooling);
   _item->setDefaultType(ItemLineEdit::cGeneralPurchased);
@@ -76,7 +68,7 @@ itemSource::itemSource(QWidget* parent, const char* name, bool modal, Qt::WFlags
   _vendorCurrency->setType(XComboBox::Currencies);
   _vendorCurrency->setLabel(_vendorCurrencyLit);
   
-  q.exec("SELECT MAX(itemsrc_id),itemsrc_manuf_name, itemsrc_manuf_name FROM itemsrc GROUP BY itemsrc_manuf_name ORDER BY itemsrc_manuf_name;");
+  q.exec("SELECT MAX(itemsrc_id),itemsrc_manuf_name, itemsrc_manuf_name FROM itemsrc GROUP BY itemsrc_manuf_name;");
   _manufName->populate(q);
   _manufName->setCurrentIndex(0);
 }
@@ -204,7 +196,7 @@ enum SetResponse itemSource::set(const ParameterList &pParams)
                   "SELECT :itemsrcid, itemsrcp_qtybreak, "
                   "itemsrcp_price, current_date, itemsrcp_curr_id "
                   "FROM itemsrcp "
-                  "WHERE (itemsrcp_itemsrc_id=:itemsrcidold); ");
+                  "WHERE (itemsrcp_id=:itemsrcidold); ");
         q.bindValue(":itemsrcid", _itemsrcid);
         q.bindValue(":itemsrcidold", itemsrcidold);
         q.exec();

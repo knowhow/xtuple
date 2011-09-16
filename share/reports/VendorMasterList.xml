@@ -3,12 +3,6 @@
  <title>Vendor Master List</title>
  <name>VendorMasterList</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -21,11 +15,11 @@
   <mqlname>detail</mqlname>
  </querysource>
  <rpthead>
-  <height>153</height>
+  <height>76</height>
   <label>
    <rect>
     <x>5</x>
-    <y>118</y>
+    <y>40</y>
     <width>95</width>
     <height>15</height>
    </rect>
@@ -41,7 +35,7 @@
   <label>
    <rect>
     <x>175</x>
-    <y>118</y>
+    <y>40</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -73,7 +67,7 @@
   <label>
    <rect>
     <x>175</x>
-    <y>133</y>
+    <y>55</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -87,32 +81,12 @@
    <string>Address</string>
   </label>
   <line>
-   <xstart>8</xstart>
-   <ystart>149</ystart>
-   <xend>748</xend>
-   <yend>149</yend>
+   <xstart>5</xstart>
+   <ystart>70</ystart>
+   <xend>745</xend>
+   <yend>70</yend>
    <weight>2</weight>
   </line>
-  <text>
-   <rect>
-    <x>10</x>
-    <y>43</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>

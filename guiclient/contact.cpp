@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -34,18 +34,13 @@ contact::contact(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 {
   setupUi(this);
 
-  // Legacy compatibility removed
-  // For legacy compatibility
-  //_save = _buttonBox->button(QDialogButtonBox::Save);
-  //_save->setObjectName("_save");
-
+  connect(_close,		  SIGNAL(clicked()), this, SLOT(sClose()));
   connect(_deleteCharacteristic,  SIGNAL(clicked()), this, SLOT(sDeleteCharass()));
   connect(_detachUse,		  SIGNAL(clicked()), this, SLOT(sDetachUse()));
   connect(_editCharacteristic,    SIGNAL(clicked()), this, SLOT(sEditCharass()));
   connect(_editUse,  		  SIGNAL(clicked()), this, SLOT(sEditUse()));
   connect(_newCharacteristic,     SIGNAL(clicked()), this, SLOT(sNewCharass()));
-  connect(_buttonBox,	          SIGNAL(accepted()), this, SLOT(sSave()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(sClose()));
+  connect(_save,	          SIGNAL(clicked()), this, SLOT(sSave()));
   connect(_uses, SIGNAL(populateMenu(QMenu*,QTreeWidgetItem*)), this, SLOT(sPopulateUsesMenu(QMenu*)));
   connect(_uses, SIGNAL(valid(bool)), this, SLOT(sHandleValidUse(bool)));
   connect(_viewUse,	          SIGNAL(clicked()), this, SLOT(sViewUse()));
@@ -64,7 +59,6 @@ contact::contact(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _uses->addColumn(tr("Name"),	           -1, Qt::AlignLeft, true, "name");
   _uses->addColumn(tr("Role"),	           -1, Qt::AlignLeft, true, "role");
   _uses->addColumn(tr("Active"),    _ynColumn, Qt::AlignCenter,true, "active");
-  _uses->addColumn(tr("Owner"),   _userColumn, Qt::AlignLeft,  false,"owner");
 
   _activeCache = false;
 
@@ -75,9 +69,7 @@ contact::contact(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _contact->setOwnerVisible(false);
   _contact->setListVisible(false);
 
-  _owner->setType(UsernameLineEdit::UsersActive);
   if(!_privileges->check("EditOwner")) _owner->setEnabled(false);
-
 }
 
 contact::~contact()
@@ -175,12 +167,15 @@ enum SetResponse contact::set(const ParameterList &pParams)
 
       connect(_charass, SIGNAL(valid(bool)), _editCharacteristic, SLOT(setEnabled(bool)));
       connect(_charass, SIGNAL(valid(bool)), _deleteCharacteristic, SLOT(setEnabled(bool)));
+
+      _save->setFocus();
     }
     else if (param.toString() == "view")
     {
       _mode = cView;
 
-      _buttonBox->setStandardButtons(QDialogButtonBox::Close);
+      _save->hide();
+      _close->setText(tr("&Close"));
 
       _contact->setEnabled(FALSE);
       _notes->setEnabled(FALSE);
@@ -189,7 +184,8 @@ enum SetResponse contact::set(const ParameterList &pParams)
       _newCharacteristic->setEnabled(FALSE);
       _editCharacteristic->setEnabled(FALSE);
       _deleteCharacteristic->setEnabled(FALSE);
-      _charass->setEnabled(FALSE);
+
+      _close->setFocus();
     }
   }
 
@@ -202,27 +198,17 @@ void contact::sPopulateUsesMenu(QMenu* pMenu)
   QString editStr = tr("Edit...");
   QString viewStr = tr("View...");
   QString detachStr = tr("Detach");
-  bool editPriv = false;
-  bool viewPriv = false;
 
   switch (_uses->altId())
   {
     case 1:
     case 2:
-    editPriv =
-        (omfgThis->username() == _uses->currentItem()->rawValue("owner") && _privileges->check("MaintainPersonalCRMAccounts")) ||
-        (omfgThis->username() != _uses->currentItem()->rawValue("owner") && _privileges->check("MaintainAllCRMAccounts"));
-
-    viewPriv =
-        (omfgThis->username() == _uses->currentItem()->rawValue("owner") && _privileges->check("ViewPersonalCRMAccounts")) ||
-        (omfgThis->username() != _uses->currentItem()->rawValue("owner") && _privileges->check("ViewAllCRMAccounts"));
-
       menuItem = pMenu->addAction(editStr, this, SLOT(sEditCRMAccount()));
-      menuItem->setEnabled(editPriv && (cView != _mode));
+      menuItem->setEnabled(_privileges->check("MaintainCRMAccounts") && (cView != _mode));
       menuItem = pMenu->addAction(viewStr, this, SLOT(sViewCRMAccount()));
-      menuItem->setEnabled(viewPriv);
+      menuItem->setEnabled(_privileges->check("ViewCRMAccounts"));
       menuItem = pMenu->addAction(detachStr, this, SLOT(sDetachUse()));
-      menuItem->setEnabled(editPriv && (cView != _mode));
+      menuItem->setEnabled(_privileges->check("MaintainCRMAccounts") && (cView != _mode));
       break;
 
     case 3:
@@ -246,18 +232,12 @@ void contact::sPopulateUsesMenu(QMenu* pMenu)
       break;
 
     case 7:
-      editPriv =
-          (omfgThis->username() != _uses->currentItem()->rawValue("owner") && _privileges->check("MaintainProspectMasters"));
-
-      viewPriv =
-          (omfgThis->username() != _uses->currentItem()->rawValue("owner") && _privileges->check("ViewProspectMasters"));
-
       menuItem = pMenu->addAction(editStr, this, SLOT(sEditProspect()));
-      menuItem->setEnabled(editPriv && (cView != _mode));
+      menuItem->setEnabled(_privileges->check("MaintainProspects") && (cView != _mode));
       menuItem = pMenu->addAction(viewStr, this, SLOT(sViewProspect()));
-      menuItem->setEnabled(viewPriv);
+      menuItem->setEnabled(_privileges->check("ViewProspects"));
       menuItem = pMenu->addAction(detachStr, this, SLOT(sDetachUse()));
-      menuItem->setEnabled(editPriv && (cView != _mode));
+      menuItem->setEnabled(_privileges->check("MaintainProspects") && (cView != _mode));
       break;
 
     case 8:
@@ -496,17 +476,12 @@ void contact::sDeleteCharass()
 
 void contact::sFillList()
 {
-  q.prepare( "SELECT charass_id, char_name, "
-             " CASE WHEN char_type < 2 THEN "
-             "   charass_value "
-             " ELSE "
-             "   formatDate(charass_value::date) "
-             "END AS charass_value "
+  q.prepare( "SELECT charass_id, char_name, charass_value "
              "FROM charass, char "
              "WHERE ((charass_target_type='CNTCT')"
              " AND   (charass_char_id=char_id)"
              " AND   (charass_target_id=:cntct_id) ) "
-             "ORDER BY char_order, char_name;" );
+             "ORDER BY char_name;" );
   q.bindValue(":cntct_id", _contact->id());
   q.exec();
   _charass->populate(q);
@@ -519,76 +494,65 @@ void contact::sFillList()
   q.prepare("SELECT crmacct_id AS id, 1 AS altId, :crmacct AS type,"
 	    "       crmacct_number AS number,"
 	    "       crmacct_name AS name, :primary AS role,"
-            "       (crmacct_active) AS active,"
-            "       crmacct_owner_username AS owner"
+	    "       (crmacct_active) AS active"
 	    "  FROM crmacct WHERE (crmacct_cntct_id_1=:id)"
             "UNION "
 	    "SELECT crmacct_id AS id, 2 AS altId, :crmacct AS type,"
 	    "       crmacct_number AS number,"
 	    "       crmacct_name AS name, :secondary AS role,"
-            "       (crmacct_active) AS active,"
-            "       crmacct_owner_username AS owner"
-            "  FROM crmacct WHERE (crmacct_cntct_id_2=:id)"
+	    "       (crmacct_active) AS active"
+	    "  FROM crmacct WHERE (crmacct_cntct_id_2=:id)"
 	    "UNION "
 	    "SELECT cust_id AS id, 3 AS altId, :cust AS type,"
 	    "       cust_number AS number,"
 	    "       cust_name AS name, :billing AS role,"
-            "       (cust_active) AS active,"
-            "       '' AS owner"
+	    "       (cust_active) AS active"
 	    "  FROM custinfo WHERE (cust_cntct_id=:id)"
 	    "UNION "
 	    "SELECT cust_id AS id, 4 AS altId, :cust AS type,"
 	    "       cust_number AS number,"
 	    "       cust_name AS name, :correspond AS role,"
-            "       (cust_active) AS active,"
-            "       '' AS owner"
+	    "       (cust_active) AS active"
 	    "  FROM custinfo WHERE (cust_corrcntct_id=:id)"
 	    "UNION "
 	    "SELECT vend_id AS id, 5 AS altId, :vend AS type,"
 	    "       vend_number AS number,"
 	    "       vend_name AS name, :primary AS role,"
-            "       (vend_active) AS active,"
-            "       '' AS owner"
+	    "       (vend_active) AS active"
 	    "  FROM vendinfo WHERE (vend_cntct1_id=:id)"
 	    "UNION "
 	    "SELECT vend_id AS id, 6 AS altId, :vend AS type,"
 	    "       vend_number AS number,"
 	    "       vend_name AS name, :secondary AS role,"
-            "       (vend_active) AS active,"
-            "       '' AS owner"
+	    "       (vend_active) AS active"
 	    "  FROM vendinfo WHERE (vend_cntct2_id=:id)"
 	    "UNION "
 	    "SELECT prospect_id AS id, 7 AS altId, :prospect AS type,"
 	    "       prospect_number AS number,"
 	    "       prospect_name AS name, '' AS role,"
-            "       (prospect_active) AS active,"
-            "       '' AS owner"
+	    "       (prospect_active) AS active"
 	    "  FROM prospect WHERE (prospect_cntct_id=:id)"
 	    "UNION "
 	    "SELECT shipto_id AS id, 8 AS altId, :shipto AS type,"
 	    "       shipto_num AS number,"
 	    "       shipto_name AS name, '' AS role,"
-            "       (shipto_active) AS active,"
-            "       '' AS owner"
+	    "       (shipto_active) AS active"
 	    "  FROM shiptoinfo WHERE (shipto_cntct_id=:id)"
 	    "UNION "
 	    "SELECT vendaddr_id AS id, 9 AS altId, :vendaddr AS type,"
 	    "       vendaddr_code AS number,"
 	    "       vendaddr_name AS name, '' AS role,"
-            "       (true) AS active,"
-            "       '' AS owner"
+	    "       (true) AS active"
 	    "  FROM vendaddrinfo WHERE (vendaddr_cntct_id=:id)"
 	    "UNION SELECT warehous_id AS id, 10 AS altId, :whs AS type,"
 	    "       warehous_code AS number,"
 	    "       warehous_descrip AS name, '' AS role,"
-            "       (warehous_active) AS active,"
-            "       '' AS owner"
+	    "       (warehous_active) AS active"
 	    "  FROM whsinfo WHERE (warehous_cntct_id=:id)"
 	    "UNION SELECT emp_id AS id, 11 AS altId, :emp AS type,"
 	    "       emp_code AS number,"
 	    "       emp_number AS name, '' AS role,"
-            "       (emp_active) AS active,"
-            "       '' AS owner"
+	    "       (emp_active) AS active"
 	    "  FROM emp WHERE (emp_cntct_id=:id)"
 	    "ORDER BY type, number;");
   q.bindValue(":id",		_contact->id());
@@ -805,35 +769,27 @@ void contact::sViewUse()
 void contact::sHandleValidUse(bool valid)
 {
   bool editPriv = (
-                  (_uses->altId() == 1 && _privileges->check("MaintainAllCRMAccounts")) ||
-                  (_uses->altId() == 1 && _privileges->check("MaintainPersonalCRMAccounts")
-                                       && _uses->currentItem()->rawValue("owner") == omfgThis->username()) ||
-                  (_uses->altId() == 2 && _privileges->check("MaintainAllCRMAccounts")) ||
-                  (_uses->altId() == 2 && _privileges->check("MaintainPersonalCRMAccounts")
-                                       && _uses->currentItem()->rawValue("owner") == omfgThis->username()) ||
-                  (_uses->altId() == 3 && _privileges->check("MaintainCustomerMasters")) ||
+		  (_uses->altId() == 1 && _privileges->check("MaintainCRMAccounts")) ||
+		  (_uses->altId() == 2 && _privileges->check("MaintainCRMAccounts")) ||
+		  (_uses->altId() == 3 && _privileges->check("MaintainCustomerMasters")) ||
 		  (_uses->altId() == 4 && _privileges->check("MaintainCustomerMasters")) ||
 		  (_uses->altId() == 5 && _privileges->check("MaintainVendors")) ||
 		  (_uses->altId() == 6 && _privileges->check("MaintainVendors")) ||
-                  (_uses->altId() == 7 && _privileges->check("MaintainProspectMasters")) ||
-                  (_uses->altId() == 8 && _privileges->check("MaintainShiptos")) ||
+		  (_uses->altId() == 7 && _privileges->check("MaintainProspects")) ||
+		  (_uses->altId() == 8 && _privileges->check("MaintainShiptos")) ||
 		  (_uses->altId() == 9 && _privileges->check("MaintainVendorAddresses")) ||
 		  (_uses->altId() ==10 && _privileges->check("MaintainWarehouses")) ||
 		  (_uses->altId() ==11 && _privileges->check("MaintainEmployees")) 
   );
   bool viewPriv = (
-                  (_uses->altId() == 1 && _privileges->check("ViewAllCRMAccounts")) ||
-                  (_uses->altId() == 1 && _privileges->check("ViewPersonalCRMAccounts")
-                                       && _uses->currentItem()->rawValue("owner") == omfgThis->username()) ||
-                  (_uses->altId() == 2 && _privileges->check("ViewAllCRMAccounts")) ||
-                  (_uses->altId() == 2 && _privileges->check("ViewPersonalCRMAccounts")
-                                       && _uses->currentItem()->rawValue("owner") == omfgThis->username()) ||
-                  (_uses->altId() == 3 && _privileges->check("ViewCustomerMasters")) ||
+		  (_uses->altId() == 1 && _privileges->check("ViewCRMAccounts")) ||
+		  (_uses->altId() == 2 && _privileges->check("ViewCRMAccounts")) ||
+		  (_uses->altId() == 3 && _privileges->check("ViewCustomerMasters")) ||
 		  (_uses->altId() == 4 && _privileges->check("ViewCustomerMasters")) ||
 		  (_uses->altId() == 5 && _privileges->check("ViewVendors")) ||
 		  (_uses->altId() == 6 && _privileges->check("ViewVendors")) ||
-                  (_uses->altId() == 7 && _privileges->check("ViewProspectMasters")) ||
-                  (_uses->altId() == 8 && _privileges->check("ViewShiptos")) ||
+		  (_uses->altId() == 7 && _privileges->check("ViewProspects")) ||
+		  (_uses->altId() == 8 && _privileges->check("ViewShiptos")) ||
 		  (_uses->altId() == 9 && _privileges->check("ViewVendorAddresses")) ||
 		  (_uses->altId() ==10 && _privileges->check("ViewWarehouses"))  ||
 		  (_uses->altId() ==11 && _privileges->check("ViewEmployees")) 

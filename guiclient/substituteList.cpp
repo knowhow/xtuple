@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -10,56 +10,74 @@
 
 #include "substituteList.h"
 
-#include <QMessageBox>
 #include <QVariant>
 
+/*
+ *  Constructs a substituteList as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
 substituteList::substituteList(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-  : XDialog(parent, name, modal, fl)
+    : XDialog(parent, name, modal, fl)
 {
-  setupUi(this);
+    setupUi(this);
 
-  QButtonGroup * showByButtonGroup = new QButtonGroup(this);
-  showByButtonGroup->addButton(_byLeadTime);
-  showByButtonGroup->addButton(_byDays);
-  showByButtonGroup->addButton(_byDate);
+    QButtonGroup * showByButtonGroup = new QButtonGroup(this);
+    showByButtonGroup->addButton(_byLeadTime);
+    showByButtonGroup->addButton(_byDays);
+    showByButtonGroup->addButton(_byDate);
 
-  // signals and slots connections
-  connect(_byDays, SIGNAL(toggled(bool)), _days, SLOT(setEnabled(bool)));
-  connect(_byDate, SIGNAL(toggled(bool)), _date, SLOT(setEnabled(bool)));
-  connect(_subs, SIGNAL(valid(bool)), _select, SLOT(setEnabled(bool)));
-  connect(_subs, SIGNAL(itemSelected(int)), _select, SLOT(animateClick()));
-  connect(showByButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(sFillList()));
-  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
-  connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
-  connect(_item, SIGNAL(newId(int)), _warehouse, SLOT(findItemsites(int)));
-  connect(_item, SIGNAL(warehouseIdChanged(int)), _warehouse, SLOT(setId(int)));
+    // signals and slots connections
+    connect(_byDays, SIGNAL(toggled(bool)), _days, SLOT(setEnabled(bool)));
+    connect(_byDate, SIGNAL(toggled(bool)), _date, SLOT(setEnabled(bool)));
+    connect(_subs, SIGNAL(valid(bool)), _select, SLOT(setEnabled(bool)));
+    connect(_subs, SIGNAL(itemSelected(int)), _select, SLOT(animateClick()));
+    connect(showByButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(sFillList()));
+    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
+    connect(_item, SIGNAL(newId(int)), _warehouse, SLOT(findItemsites(int)));
+    connect(_item, SIGNAL(warehouseIdChanged(int)), _warehouse, SLOT(setId(int)));
+    init();
 
+    //If not multi-warehouse hide whs control
+    if (!_metrics->boolean("MultiWhs"))
+    {
+      _warehouseLit->hide();
+      _warehouse->hide();
+    }
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+substituteList::~substituteList()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void substituteList::languageChange()
+{
+    retranslateUi(this);
+}
+
+
+void substituteList::init()
+{
   _subs->addColumn(tr("Item Number"),  _itemColumn, Qt::AlignLeft,   true,  "item_number"  );
   _subs->addColumn(tr("Description"),  -1,          Qt::AlignLeft,   true,  "itemdescrip"  );
   _subs->addColumn(tr("QOH"),          _qtyColumn,  Qt::AlignRight,  true,  "qoh" );
   _subs->addColumn(tr("Norm. QOH"),    _qtyColumn,  Qt::AlignRight,  true,  "normqoh" );
   _subs->addColumn(tr("Availability"), _qtyColumn,  Qt::AlignRight,  true,  "available" );
   _subs->addColumn(tr("Norm. Avail."), _qtyColumn,  Qt::AlignRight,  true,  "normavailable" );
-
-  //If not multi-warehouse hide whs control
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
 }
 
-substituteList::~substituteList()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
-
-void substituteList::languageChange()
-{
-  retranslateUi(this);
-}
-
-enum SetResponse substituteList::set(const ParameterList &pParams)
+enum SetResponse substituteList::set( ParameterList &pParams )
 {
   XDialog::set(pParams);
   QVariant param;
@@ -69,24 +87,13 @@ enum SetResponse substituteList::set(const ParameterList &pParams)
   if (valid)
   {
     q.prepare( "SELECT womatl_itemsite_id,"
-               "       bomitem_id, COALESCE(bomitem_subtype, 'I') AS subtype,"
-               "       COALESCE(wo_id, 0) AS wo_id "
+               "       bomitem_id, COALESCE(bomitem_subtype, 'I') AS subtype "
                "FROM womatl LEFT OUTER JOIN bomitem ON (bomitem_id=womatl_bomitem_id) "
-               "            LEFT OUTER JOIN wo ON ( (wo_ordtype='W') AND"
-               "                                    (wo_ordid=womatl_wo_id) AND"
-               "                                    (wo_itemsite_id=womatl_itemsite_id) ) "
                "WHERE (womatl_id=:womatl_id);" );
     q.bindValue(":womatl_id", param.toInt());
     q.exec();
     if (q.first())
     {
-      if (q.value("wo_id").toInt() > 0)
-      {
-        QMessageBox::warning(this, tr("Child Work Order"),
-            tr("A child Work Order exists for this Material \n"
-               "Requirement.  You should delete this \n"
-               "child Work Order before substituting.") );
-      }
       _item->setItemsiteid(q.value("womatl_itemsite_id").toInt());
       _item->setReadOnly(TRUE);
       _warehouse->setEnabled(FALSE);

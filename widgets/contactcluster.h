@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -12,13 +12,13 @@
 
 #define _contactCluster_h
 
-#include "crmcluster.h"
+#include "virtualCluster.h"
 #include "addresscluster.h"
 #include "xurllabel.h"
 #include "contactwidget.h"
 
 
-class XTUPLEWIDGETS_EXPORT ContactClusterLineEdit : public CrmClusterLineEdit
+class XTUPLEWIDGETS_EXPORT ContactClusterLineEdit : public VirtualClusterLineEdit
 {
     Q_OBJECT
 
@@ -40,6 +40,7 @@ class XTUPLEWIDGETS_EXPORT ContactClusterLineEdit : public CrmClusterLineEdit
     protected slots:
       ContactList* listFactory();
       ContactSearch* searchFactory();
+      void silentSetId(const int);
 
     private:
       QStringList _newAddr;
@@ -71,7 +72,6 @@ class XTUPLEWIDGETS_EXPORT ContactCluster : public VirtualCluster
       Q_INVOKABLE void setEmailSubjectText(const QString text);
       Q_INVOKABLE void setEmailBodyText(const QString text);
 
-      Q_INVOKABLE QString name() const;
       Q_INVOKABLE QString honorific() const { return _fname->at(0); }
       Q_INVOKABLE QString first() const { return _fname->at(1); }
       Q_INVOKABLE QString middle() const { return _fname->at(2); }

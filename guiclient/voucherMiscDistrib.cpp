@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -87,9 +87,6 @@ enum SetResponse voucherMiscDistrib::set(const ParameterList &pParams)
     if (param.toString() == "new")
     {
       _mode = cNew;
-      param = pParams.value("vend_id", &valid);
-      if (valid)
-        sPopulateVendorInfo(param.toInt());
       param = pParams.value("amount", &valid);
       if (valid)
         _amount->setLocalValue(param.toDouble());
@@ -264,34 +261,3 @@ else if(_taxSelected->isChecked() && _mode == cNew)
   }
  }
 }
-
-void voucherMiscDistrib::sPopulateVendorInfo(int pVendid)
-{
-  q.prepare( "SELECT vend_accnt_id, vend_expcat_id, vend_tax_id "
-             "FROM vendinfo "
-             "WHERE (vend_id=:vend_id);" );
-  q.bindValue(":vend_id", pVendid);
-  q.exec();
-  if (q.first())
-  {
-    if(q.value("vend_accnt_id").toInt() != -1)
-    {
-      _accountSelected->setChecked(TRUE);
-      _account->setId(q.value("vend_accnt_id").toInt());
-      _amount->setFocus();
-    }
-    if(q.value("vend_expcat_id").toInt() != -1)
-    {
-      _expcatSelected->setChecked(TRUE);
-      _expcat->setId(q.value("vend_expcat_id").toInt());
-      _amount->setFocus();
-    }
-    if(q.value("vend_tax_id").toInt() != -1)
-    {
-      _taxSelected->setChecked(TRUE);
-      _taxCode->setId(q.value("vend_tax_id").toInt());
-      _amount->setFocus();
-    }
-  }
-}
-

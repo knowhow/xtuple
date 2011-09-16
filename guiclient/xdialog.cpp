@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -124,7 +124,7 @@ void XDialog::showEvent(QShowEvent *event)
     if(!pos.isNull() && availableGeometry.contains(r) && xtsettingsValue(objName + "/geometry/rememberPos", true).toBool())
       move(pos);
 
-    _private->_rememberPos = new QAction(tr("Remember Position"), this);
+    _private->_rememberPos = new QAction(tr("Remember Posisition"), this);
     _private->_rememberPos->setCheckable(true);
     _private->_rememberPos->setChecked(xtsettingsValue(objectName() + "/geometry/rememberPos", true).toBool());
     connect(_private->_rememberPos, SIGNAL(triggered(bool)), this, SLOT(setRememberPos(bool)));

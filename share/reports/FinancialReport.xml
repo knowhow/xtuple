@@ -2,13 +2,7 @@
 <report>
  <title>Financial Report</title>
  <name>FinancialReport</name>
- <description>Ad Hoc Report</description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
+ <description>New Standard Report</description>
  <size>Letter</size>
  <landscape/>
  <topmargin>50</topmargin>
@@ -103,7 +97,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
    AND  (flrpt_type_id=flgrp_id)
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=getEffectiveXtUser())
+   AND  (flrpt_username=CURRENT_USER)
    AND  (flrpt_interval=&lt;? value("interval") ?>)
    AND  (period_id IN (
 &lt;? foreach("period_id_list") ?>
@@ -139,7 +133,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
    AND  (flrpt_type_id=flitem_id)
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=getEffectiveXtUser())
+   AND  (flrpt_username=CURRENT_USER)
    AND  (flrpt_interval=&lt;? value("interval") ?>)
 &lt;? if not exists("showzeros") ?>
    AND ((flrpt_beginning &lt;> 0) 
@@ -180,7 +174,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
    AND  (flrpt_type_id=flspec_id)
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=getEffectiveXtUser())
+   AND  (flrpt_username=CURRENT_USER)
    AND  (flrpt_interval=&lt;? value("interval") ?>)
    AND  (period_id IN (
 &lt;? foreach("period_id_list") ?>
@@ -216,7 +210,7 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
  WHERE ((NOT (flrpt_type IN ('G','I','S')))
    AND  (flrpt_flhead_id=&lt;? value("flhead_id") ?>)
    AND  (flrpt_period_id=period_id)
-   AND  (flrpt_username=getEffectiveXtUser())
+   AND  (flrpt_username=CURRENT_USER)
    AND  (flrpt_interval=&lt;? value("interval") ?>)
    AND  (period_id IN (
 &lt;? foreach("period_id_list") ?>
@@ -227,13 +221,6 @@ SELECT period_id, period_start, formatperiodname(period_id,&lt;? value("interval
 &lt;? endforeach ?>
                      )))
  ORDER BY period_start, flrpt_order;</sql>
- </querysource>
- <querysource>
-  <name>notes</name>
-  <sql>SELECT flhead_notes AS notes
-FROM flhead
-WHERE ((flhead_id=&lt;? value("flhead_id") ?>)
-  AND (length(flhead_notes) > 0))</sql>
  </querysource>
  <rpthead>
   <height>136</height>
@@ -1166,35 +1153,6 @@ WHERE ((flhead_id=&lt;? value("flhead_id") ?>)
      <column>creditsprcnt</column>
     </data>
    </field>
-  </detail>
- </section>
- <section>
-  <name>notes</name>
-  <detail>
-   <key>
-    <query>head</query>
-   </key>
-   <height>26</height>
-   <text>
-    <rect>
-     <x>10</x>
-     <y>6</y>
-     <width>980</width>
-     <height>15</height>
-    </rect>
-    <bottompad>0</bottompad>
-    <font>
-     <face>Arial</face>
-     <size>9</size>
-     <weight>normal</weight>
-    </font>
-    <left/>
-    <top/>
-    <data>
-     <query>notes</query>
-     <column>notes</column>
-    </data>
-   </text>
   </detail>
  </section>
  <pgfoot>

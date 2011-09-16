@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>661</width>
-    <height>700</height>
+    <height>667</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -581,7 +581,7 @@ to be bound by its terms.</comment>
         </attribute>
         <layout class="QGridLayout">
          <item row="0" column="0">
-          <widget class="XTextEdit" name="_notes"/>
+          <widget class="QTextEdit" name="_notes"/>
          </item>
         </layout>
        </widget>
@@ -590,11 +590,8 @@ to be bound by its terms.</comment>
          <string>Account</string>
         </attribute>
         <layout class="QGridLayout">
-         <item row="1" column="0">
+         <item row="0" column="0">
           <widget class="QGroupBox" name="_altPrepaid">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -602,10 +599,10 @@ to be bound by its terms.</comment>
             </size>
            </property>
            <property name="title">
-            <string/>
+            <string>Use Alternate Prepaid Account</string>
            </property>
            <property name="checkable">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="checked">
             <bool>false</bool>
@@ -613,9 +610,6 @@ to be bound by its terms.</comment>
            <layout class="QGridLayout">
             <item row="0" column="2">
              <widget class="XComboBox" name="_altSalescatid">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -626,9 +620,6 @@ to be bound by its terms.</comment>
             </item>
             <item row="0" column="0" colspan="2">
              <widget class="QRadioButton" name="_altSalescatidSelected">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
               <property name="text">
                <string>From Sales Category:</string>
               </property>
@@ -639,9 +630,6 @@ to be bound by its terms.</comment>
             </item>
             <item row="1" column="0">
              <widget class="QRadioButton" name="_altAccntidSelected">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
               <property name="text">
                <string>Account Number:</string>
               </property>
@@ -657,7 +645,7 @@ to be bound by its terms.</comment>
            </layout>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="1" column="0">
           <spacer>
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -669,13 +657,6 @@ to be bound by its terms.</comment>
             </size>
            </property>
           </spacer>
-         </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="_useAltPrepaid">
-           <property name="text">
-            <string>Use Alternate Prepaid Account</string>
-           </property>
-          </widget>
          </item>
         </layout>
        </widget>
@@ -770,11 +751,6 @@ to be bound by its terms.</comment>
    <class>XURLLabel</class>
    <extends>QLabel</extends>
    <header>xurllabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1005,54 +981,6 @@ to be bound by its terms.</comment>
     <hint type="destinationlabel">
      <x>438</x>
      <y>785</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_useAltPrepaid</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_altSalescatidSelected</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>334</x>
-     <y>495</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>120</x>
-     <y>552</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_useAltPrepaid</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_altAccntidSelected</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>334</x>
-     <y>495</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>109</x>
-     <y>592</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_useAltPrepaid</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_altSalescatid</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>70</x>
-     <y>486</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>78</x>
-     <y>513</y>
     </hint>
    </hints>
   </connection>

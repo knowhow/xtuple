@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>670</width>
-    <height>753</height>
+    <width>642</width>
+    <height>718</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -1011,12 +1011,9 @@ to be bound by its terms.</comment>
           </layout>
          </item>
          <item row="1" column="1" colspan="2">
-          <widget class="XTextEdit" name="_vendorDescrip">
+          <widget class="QTextEdit" name="_vendorDescrip">
            <property name="focusPolicy">
             <enum>Qt::ClickFocus</enum>
-           </property>
-           <property name="spellEnable">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -1107,7 +1104,7 @@ to be bound by its terms.</comment>
             </widget>
            </item>
            <item>
-            <widget class="XTextEdit" name="_manufItemDescrip">
+            <widget class="QTextEdit" name="_manufItemDescrip">
              <property name="tabChangesFocus">
               <bool>true</bool>
              </property>
@@ -1167,15 +1164,12 @@ to be bound by its terms.</comment>
            <widget class="QWidget" name="_notesPage">
             <layout class="QGridLayout">
              <item row="0" column="0">
-              <widget class="XTextEdit" name="_notes">
+              <widget class="QTextEdit" name="_notes">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
-               </property>
-               <property name="spellEnable">
-                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -1472,11 +1466,6 @@ to be bound by its terms.</comment>
    <class>XURLLabel</class>
    <extends>QLabel</extends>
    <header>xurllabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

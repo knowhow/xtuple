@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -132,14 +132,6 @@ void reassignLotSerial::sReassign()
     return;
   }
 
-  if (_lotNumber->text().length() == 0)
-  {
-    QMessageBox::critical( this, tr("Enter New Lot Number to Reassign"),
-                           tr("You must enter a New Lot Number to reassign.") );
-    _qty->setFocus();
-    return;
-  }
-
   QDoubleValidator* qtyVal = (QDoubleValidator*)(_qty->validator());
   q.prepare("SELECT reassignLotSerial(:source, CAST (:qty AS NUMERIC(100,:decimals)), "
 	    "                         :lotNumber, :expirationDate, :warrantyDate) AS result;");
@@ -151,7 +143,7 @@ void reassignLotSerial::sReassign()
   if (_expirationDate->isEnabled())
     q.bindValue(":expirationDate", _expirationDate->date());
   else
-    q.bindValue(":expirationDate", omfgThis->endOfTime());
+    q.bindValue(":expirationDate", omfgThis->startOfTime());
 
   if (_warrantyDate->isEnabled())
     q.bindValue(":warrantyDate", _warrantyDate->date());

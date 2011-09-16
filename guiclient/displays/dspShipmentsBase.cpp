@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -98,10 +98,7 @@ bool dspShipmentsBase::setParams(ParameterList& params)
     params.append("sohead_id", _salesOrder->id());
 
   if(_shipment->isVisibleTo(this))
-  {
     params.append("shiphead_id", _shipment->id());
-    params.append("MultiWhs", true);
-  }
 
   return true;
 }
@@ -154,20 +151,19 @@ void dspShipmentsBase::sPopulateShipment(int pShipheadid)
                "       custponumber,"
                "       cust_name,"
                "       cust_phone"
-               "  FROM (SELECT cust_name, cust_phone,"
-               "               cohead_orderdate AS orderdate,"
-               "               cohead_custponumber AS custponumber"
-               "        FROM shiphead JOIN cohead ON (shiphead_order_id=cohead_id)"
-               "                      JOIN cust ON (cohead_cust_id=cust_id)"
-               "        WHERE (shiphead_id=:shiphead_id) AND (shiphead_order_type='SO')"
-               "        UNION"
-               "        SELECT warehous_code AS cust_name, NULL AS cust_phone,"
-               "               tohead_orderdate AS orderdate,"
-               "               NULL AS custponumber"
-               "        FROM shiphead JOIN tohead ON (shiphead_order_id=tohead_id)"
-               "                      JOIN whsinfo ON (tohead_dest_warehous_id=warehous_id)"
-               "                 WHERE (shiphead_id=:shiphead_id) AND (shiphead_order_type='TO')"
-               "        ) AS taborder;");
+               "  FROM cust, (SELECT cohead_cust_id AS order_cust_id,"
+               "                       cohead_orderdate AS orderdate,"
+               "                       cohead_custponumber AS custponumber"
+               "                  FROM cohead JOIN shiphead ON (shiphead_order_id=cohead_id AND shiphead_order_type='SO')"
+               "                 WHERE(shiphead_id=:shiphead_id)"
+               "                UNION"
+               "                SELECT NULL AS order_cust_id,"
+               "                       tohead_orderdate AS orderdate,"
+               "                       NULL AS custponumber"
+               "                  FROM tohead JOIN shiphead ON (shiphead_order_id=tohead_id AND shiphead_order_type='TO')"
+               "                 WHERE(shiphead_id=:shiphead_id)"
+               "               ) AS taborder "
+               " WHERE(order_cust_id=cust_id);");
     q.bindValue(":shiphead_id", pShipheadid);
     q.exec();
     if (q.first())

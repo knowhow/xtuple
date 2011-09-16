@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -564,7 +564,7 @@ void ItemLineEdit::sList()
   if ((id = newdlg->exec())!= _id)
     setId(id);
 
-  connect(this, SIGNAL(editingFinished()), this, SLOT(sParse()));
+  disconnect(this, SIGNAL(editingFinished()), this, SLOT(sParse()));
 }
 
 void ItemLineEdit::sSearch()
@@ -908,7 +908,7 @@ itemList::itemList(QWidget* pParent, Qt::WindowFlags pFlags ) :
   _listTab->addColumn(tr("Bar Code"),    100, Qt::AlignLeft, true);
 }
 
-void itemList::set(const ParameterList &pParams)
+void itemList::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -1069,7 +1069,7 @@ itemSearch::itemSearch(QWidget* pParent, Qt::WindowFlags pFlags)
   _listTab->addColumn(tr("Bar Code"),    100,  Qt::AlignLeft, true );
 }
 
-void itemSearch::set(const ParameterList &pParams)
+void itemSearch::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

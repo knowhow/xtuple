@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -44,7 +44,9 @@
 #include "correctProductionPosting.h"
 #include "postMiscProduction.h"
 
-#include "dspWoSchedule.h"
+#include "dspWoScheduleByItem.h"
+#include "dspWoScheduleByParameterList.h"
+#include "dspWoScheduleByWorkOrder.h"
 #include "dspWoHistoryByItem.h"
 #include "dspWoHistoryByNumber.h"
 #include "dspWoHistoryByClassCode.h"
@@ -58,6 +60,8 @@
 #include "dspMaterialUsageVarianceByComponentItem.h"
 #include "dspMaterialUsageVarianceByWorkOrder.h"
 #include "dspMaterialUsageVarianceByWarehouse.h"
+#include "dspWoSoStatus.h"
+#include "dspWoSoStatusMismatch.h"
 
 #include "printWoForm.h"
 
@@ -84,9 +88,11 @@ menuManufacture::menuManufacture(GUIClient *Pparent) :
   materialsReturnMenu = new QMenu(parent);
   transactionsMenu = new QMenu(parent);
   reportsMenu	 = new QMenu(parent);
+  reportsScheduleMenu = new QMenu(parent);
   reportsHistoryMenu = new QMenu(parent);
   reportsMatlReqMenu = new QMenu(parent);
   reportsMatlUseVarMenu = new QMenu(parent);
+  reportsOpenWoMenu = new QMenu(parent);
   utilitiesMenu = new QMenu(parent);
 
   mainMenu->setObjectName("menu.manu");
@@ -97,9 +103,11 @@ menuManufacture::menuManufacture(GUIClient *Pparent) :
   materialsReturnMenu->setObjectName("menu.manu.materialsreturn");
   transactionsMenu->setObjectName("menu.manu.transactions");
   reportsMenu->setObjectName("menu.manu.reports");
+  reportsScheduleMenu->setObjectName("menu.manu.reportsschedule");
   reportsHistoryMenu->setObjectName("menu.manu.reportshistory");
   reportsMatlReqMenu->setObjectName("menu.manu.reportsmatlreq");
   reportsMatlUseVarMenu->setObjectName("menu.manu.reportsmatlusevar");
+  reportsOpenWoMenu->setObjectName("menu.manu.reportsopenwo");
   utilitiesMenu->setObjectName("menu.manu.utilities");
 
   actionProperties acts[] = {
@@ -156,7 +164,12 @@ menuManufacture::menuManufacture(GUIClient *Pparent) :
     { "menu",                           tr("&Reports"), (char*)reportsMenu,     mainMenu,       "true", 0, 0,   true, NULL },
     
     //  Production | Reports | Schedule
-    { "wo.dspWoSchedule",  tr("Work Order &Schedule"), SLOT(sDspWoSchedule()),reportsMenu, "MaintainWorkOrders ViewWorkOrders", QPixmap(":/images/dspWoScheduleByPlannerCode.png"), toolBar, true, tr("Work Order Schedule by Planner Code") },
+    { "menu",                           tr("Work Order &Schedule"),(char*)reportsScheduleMenu,         reportsMenu,         "true",                              0, 0, true, NULL },
+    { "wo.dspWoScheduleByPlannerCode",  tr("by &Planner Code..."), SLOT(sDspWoScheduleByPlannerCode()),reportsScheduleMenu, "MaintainWorkOrders ViewWorkOrders", QPixmap(":/images/dspWoScheduleByPlannerCode.png"), toolBar, true, tr("Work Order Schedule by Planner Code") },
+    { "wo.dspWoScheduleByClassCode",    tr("by &Class Code..."),   SLOT(sDspWoScheduleByClassCode()),  reportsScheduleMenu, "MaintainWorkOrders ViewWorkOrders", 0, 0, true, NULL },
+    { "wo.dspWoScheduleByItemGroup",    tr("by Item &Group..."),   SLOT(sDspWoScheduleByItemGroup()),  reportsScheduleMenu, "MaintainWorkOrders ViewWorkOrders", 0, 0, true, NULL },
+    { "wo.dspWoScheduleByItem",         tr("by &Item..."),         SLOT(sDspWoScheduleByItem()),       reportsScheduleMenu, "MaintainWorkOrders ViewWorkOrders", 0, 0, true, NULL },
+    { "wo.dspWoScheduleByWorkOrder",    tr("by &Work Order..."),   SLOT(sDspWoScheduleByWorkOrder()),  reportsScheduleMenu, "MaintainWorkOrders ViewWorkOrders", 0, 0, true, NULL },
 
     //  Production | Reports | Material Requirements
     { "menu",                                       tr("&Material Requirements"),(char*)reportsMatlReqMenu,              reportsMenu,        "true",                              0, 0, true, NULL },
@@ -184,6 +197,13 @@ menuManufacture::menuManufacture(GUIClient *Pparent) :
     { "wo.dspMaterialUsageVarianceByBOMItem",      tr("by &BOM Item..."),         SLOT(sDspMaterialUsageVarianceByBOMItem()),      reportsMatlUseVarMenu, "ViewMaterialVariances", 0, 0, true, NULL },
     { "wo.dspMaterialUsageVarianceByComponentItem",tr("by &Component Item..."),   SLOT(sDspMaterialUsageVarianceByComponentItem()),reportsMatlUseVarMenu, "ViewMaterialVariances", 0, 0, true, NULL },
     { "wo.dspMaterialUsageVarianceByWorkOrder",    tr("by &Work Order..."),       SLOT(sDspMaterialUsageVarianceByWorkOrder()),    reportsMatlUseVarMenu, "ViewMaterialVariances", 0, 0, true, NULL },
+
+    { "separator",                                      NULL,   NULL,   reportsMenu,    "true", 0, 0,   true, NULL },
+    
+    //  Production | Reports | Open Work Orders
+    { "menu",                                           tr("Ope&n Work Orders"),                  (char*)reportsOpenWoMenu,      reportsMenu,      "true",                             0, 0, true, NULL},
+    { "wo.dspOpenWorkOrdersWithClosedParentSalesOrders",tr("with &Closed Parent Sales Orders..."),SLOT(sDspWoSoStatusMismatch()),reportsOpenWoMenu,"MaintainWorkOrders ViewWorkOrders",0, 0, true, NULL},
+    { "wo.dspOpenWorkOrdersWithParentSalesOrders",      tr("with &Parent Sales Orders..."),       SLOT(sDspWoSoStatus()),        reportsOpenWoMenu,"MaintainWorkOrders ViewWorkOrders",0, 0, true, NULL},
 
     { "separator",              NULL,                               NULL,                           mainMenu,      "true",            0, 0, true, NULL },
     { "menu",                   tr("&Utilities"),                   (char*)utilitiesMenu,           mainMenu,      "true",            0, 0, true, NULL },
@@ -413,9 +433,44 @@ void menuManufacture::sDspPendingAvailability()
   omfgThis->handleNewWindow(new dspPendingAvailability());
 }
 
-void menuManufacture::sDspWoSchedule()
+void menuManufacture::sDspWoScheduleByItem()
 {
-  omfgThis->handleNewWindow(new dspWoSchedule());
+  omfgThis->handleNewWindow(new dspWoScheduleByItem());
+}
+
+void menuManufacture::sDspWoScheduleByItemGroup()
+{
+  ParameterList params;
+  params.append("itemgrp");
+
+  dspWoScheduleByParameterList *newdlg = new dspWoScheduleByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuManufacture::sDspWoScheduleByClassCode()
+{
+  ParameterList params;
+  params.append("classcode");
+
+  dspWoScheduleByParameterList *newdlg = new dspWoScheduleByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuManufacture::sDspWoScheduleByPlannerCode()
+{
+  ParameterList params;
+  params.append("plancode");
+
+  dspWoScheduleByParameterList *newdlg = new dspWoScheduleByParameterList();
+  newdlg->set(params);
+  omfgThis->handleNewWindow(newdlg);
+}
+
+void menuManufacture::sDspWoScheduleByWorkOrder()
+{
+  omfgThis->handleNewWindow(new dspWoScheduleByWorkOrder());
 }
 
 void menuManufacture::sDspJobCosting()
@@ -446,6 +501,16 @@ void menuManufacture::sDspMaterialUsageVarianceByWorkOrder()
 void menuManufacture::sDspMaterialUsageVarianceByWarehouse()
 {
   omfgThis->handleNewWindow(new dspMaterialUsageVarianceByWarehouse());
+}
+
+void menuManufacture::sDspWoSoStatusMismatch()
+{
+  omfgThis->handleNewWindow(new dspWoSoStatusMismatch());
+}
+
+void menuManufacture::sDspWoSoStatus()
+{
+  omfgThis->handleNewWindow(new dspWoSoStatus());
 }
 
 void menuManufacture::sPrintWorkOrderForm()

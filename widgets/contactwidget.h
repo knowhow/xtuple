@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -42,7 +42,7 @@ class XTUPLEWIDGETS_EXPORT ContactList : public VirtualList
 
 public:
   ContactList(QWidget*, const char* = 0, bool = false, Qt::WFlags = 0);
-  virtual void set(const ParameterList & pParams);
+  virtual void set( ParameterList & pParams );
 
 public slots:
   virtual void sFillList(const bool searchAcct);
@@ -66,7 +66,7 @@ class XTUPLEWIDGETS_EXPORT ContactSearch : public VirtualSearch
 
 public:
   ContactSearch(QWidget*, Qt::WindowFlags = 0);
-  virtual void set(const ParameterList & pParams);
+  virtual void set( ParameterList & pParams );
 
 public slots:
   virtual void sFillList();
@@ -167,7 +167,7 @@ public:
 
   Q_INVOKABLE virtual bool    active()		const { return _active->isChecked(); }
   Q_INVOKABLE virtual int     id()	        const { return _id; }
-  Q_INVOKABLE virtual QString emailAddress()	const { return _email->currentText(); }
+  Q_INVOKABLE virtual QString emailAddress()	const { return _email->text(); }
   Q_INVOKABLE virtual QString fax()		const { return _fax->text(); }
   Q_INVOKABLE virtual QString first()		const { return _first->text(); }
   Q_INVOKABLE virtual QString honorific()       const { return _honorific->currentText(); }
@@ -303,7 +303,6 @@ public slots:
 
 private slots:
   void sCheck();
-  void sEmailIndexChanged();
   void setChanged();
 
 signals:
@@ -339,7 +338,7 @@ protected:
   QLabel* _faxLit;
   XLineEdit* _fax;
   QLabel* _emailLit;
-  XComboBox* _email;
+  XLineEdit* _email;
   QLabel* _webaddrLit;
   XLineEdit* _webaddr;
   QCheckBox* _active;
@@ -358,25 +357,21 @@ protected:
   int _crmacctid;
   QString _crmacctname;
 
-  bool eventFilter(QObject *obj, QEvent* event);
-
 private:
-  virtual void  init();
-  virtual void  fillEmail();
-  virtual void  layout();
-  virtual void  silentSetId(const int);
+  virtual void	init();
+  virtual void	layout();
+  virtual void	silentSetId(const int);
   XDataWidgetMapper* _mapper;
 
   QPushButton* _list;
 
-  int     _id;
-  bool    _layoutDone;
-  int     _limits;
-  bool    _minimalLayout;
-  QString _notes;
-  bool    _valid;
-  bool    _changed;
-  QString _emailCache;
+  int	_id;
+  bool _layoutDone;
+  int	 _limits;
+  bool _minimalLayout;
+  QString	_notes;
+  bool _valid;
+  bool _changed;
 
   //Data Mapping Values
   QString  _fieldNameChange;

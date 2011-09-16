@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -30,11 +30,9 @@ applyARCreditMemo::applyARCreditMemo(QWidget* parent, const char* name, bool mod
   connect(_applyToBalance,   SIGNAL(clicked()),      this, SLOT(sApplyBalance()));
   connect(_available,        SIGNAL(idChanged(int)), this, SLOT(sPriceGroup()));
   connect(_clear,            SIGNAL(clicked()),      this, SLOT(sClear()));
-  connect(_buttonBox,        SIGNAL(accepted()),     this, SLOT(sPost()));
-  connect(_buttonBox,        SIGNAL(rejected()),     this, SLOT(reject()));
+  connect(_close,            SIGNAL(clicked()),      this, SLOT(sClose()));
+  connect(_post,             SIGNAL(clicked()),      this, SLOT(sPost()));
   connect(_searchDocNum,     SIGNAL(textChanged(const QString&)), this, SLOT(sSearchDocNumChanged(const QString&)));
-
-  _buttonBox->button(QDialogButtonBox::Save)->setText(tr("Post"));
 
   _captive = FALSE;
 
@@ -55,7 +53,6 @@ applyARCreditMemo::applyARCreditMemo(QWidget* parent, const char* name, bool mod
     _applyToBalance->hide();
 
   sPriceGroup();
-  adjustSize();
 }
 
 applyARCreditMemo::~applyARCreditMemo()
@@ -237,8 +234,7 @@ void applyARCreditMemo::populate()
              "                               SUM(cashrcptitem_amount + cashrcptitem_discount) * -1.0 AS cashapplied"
              "                          FROM cashrcpt JOIN cashrcptitem ON (cashrcptitem_cashrcpt_id=cashrcpt_id)"
              "                                     JOIN aropen ON (cashrcptitem_aropen_id=aropen_id)"
-             "                         WHERE ((NOT cashrcpt_posted)"
-             "                           AND  (NOT cashrcpt_void))"
+             "                         WHERE (NOT cashrcpt_posted)"
              "                         GROUP BY aropen_id ) AS sub2"
              "         ON (cash_aropen_id=aropen_id)"
              "WHERE (aropen_id=:aropen_id) "

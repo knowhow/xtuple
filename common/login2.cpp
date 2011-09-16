@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -52,8 +52,6 @@ login2::login2(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sLogin()));
   connect(_options, SIGNAL(clicked()), this, SLOT(sOptions()));
   connect(_cloudLink, SIGNAL(linkActivated(QString)), this, SLOT(cloudLink(QString)));
-  connect(_otherOption, SIGNAL(toggled(bool)), _options, SLOT(setEnabled(bool)));
-  connect(_otherOption, SIGNAL(toggled(bool)), _recent, SLOT(setEnabled(bool)));
 
   _splash = 0;
 
@@ -87,9 +85,9 @@ void login2::languageChange()
   retranslateUi(this);
 }
 
-int login2::set(const ParameterList &pParams) { return set(pParams, 0); }
+int login2::set(ParameterList &pParams) { return set(pParams, 0); }
 
-int login2::set(const ParameterList &pParams, QSplashScreen *pSplash)
+int login2::set(ParameterList &pParams, QSplashScreen *pSplash)
 {
   _splash = pSplash;
   
@@ -336,7 +334,7 @@ void login2::sLogin()
   if(!_nonxTupleDB)
   {
     XSqlQuery login( "SELECT login() AS result,"
-                     "       getEffectiveXtUser() AS user;" );
+                     "       CURRENT_USER AS user;" );
     setCursor(QCursor(Qt::ArrowCursor));
     if (login.first())
     {

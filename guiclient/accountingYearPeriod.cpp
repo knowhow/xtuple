@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -21,8 +21,7 @@ accountingYearPeriod::accountingYearPeriod(QWidget* parent, const char* name, bo
 {
     setupUi(this);
 
-    connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSave()));
-    connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
 }
 
 accountingYearPeriod::~accountingYearPeriod()
@@ -51,33 +50,9 @@ enum SetResponse accountingYearPeriod::set(const ParameterList &pParams)
   param = pParams.value("mode", &valid);
   if (valid)
   {
-    XSqlQuery check;
-    check.exec("SELECT yearperiod_id "
-               "FROM yearperiod "
-               "WHERE (yearperiod_closed) "
-               "LIMIT 1; ");
-    if (check.first())
-    {
-      _startDate->setEnabled(false);
-      _endDate->setFocus();
-    }
-    else
-      _startDate->setFocus();
-
     if (param.toString() == "new")
     {
       _mode = cNew;
-
-      check.exec("SELECT yearperiod_end + 1 AS start_date "
-                 "FROM yearperiod "
-                 "ORDER BY yearperiod_end DESC "
-                 "LIMIT 1; ");
-      if (check.first())
-      {
-        _startDate->setDate(check.value("start_date").toDate());
-        _endDate->setDate(check.value("start_date").toDate().addYears(1).addDays(-1));
-      }
-
       _startDate->setFocus();
     }
     else if (param.toString() == "edit")
@@ -91,7 +66,9 @@ enum SetResponse accountingYearPeriod::set(const ParameterList &pParams)
       _startDate->setEnabled(FALSE);
       _endDate->setEnabled(FALSE);
       _closed->setEnabled(FALSE);
-      _buttonBox->setStandardButtons(QDialogButtonBox::Close);
+      _close->setText(tr("&Close"));
+      _save->hide();
+      _close->setFocus();
     }
   }
 
@@ -196,18 +173,6 @@ void accountingYearPeriod::sSave()
 
 void accountingYearPeriod::populate()
 {
-  q.exec( "SELECT FIRST(yearperiod_id) AS first_yearperiod_id, "
-            "  LAST(yearperiod_id) AS last_yearperiod_id "
-            "FROM (SELECT yearperiod_id FROM yearperiod "
-            "      ORDER BY yearperiod_start) AS data; ");
-  if (q.first())
-  {
-    if (q.value("first_yearperiod_id").toInt() != _periodid)
-      _startDate->setEnabled(false);
-    if (q.value("last_yearperiod_id").toInt() != _periodid)
-      _endDate->setEnabled(false);
-  }
-
   q.prepare( "SELECT yearperiod_start, yearperiod_end, yearperiod_closed "
              "FROM yearperiod "
              "WHERE (yearperiod_id=:period_id);" );

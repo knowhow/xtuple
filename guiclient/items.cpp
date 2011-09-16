@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -17,7 +17,6 @@
 #include <QVariant>
 #include <metasql.h>
 
-#include "characteristic.h"
 #include "copyItem.h"
 #include "item.h"
 #include "storedProcErrorLookup.h"
@@ -26,56 +25,30 @@
 items::items(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "items", fl)
 {
+  setupUi(optionsWidget());
   setWindowTitle(tr("Items"));
-  setReportName("Items");
   setMetaSQLOptions("items", "detail");
   setNewVisible(true);
   setSearchVisible(true);
   setQueryOnStartEnabled(true);
   setParameterWidgetVisible(true);
 
-  QString qryType = QString( "SELECT  1, '%1' UNION "
-                             "SELECT  2, '%2' UNION "
-                             "SELECT  3, '%3' UNION "
-                             "SELECT  4, '%4' UNION "
-                             "SELECT  5, '%5' UNION "
-                             "SELECT  6, '%6' UNION "
-                             "SELECT  7, '%7' UNION "
-                             "SELECT  8, '%8' UNION "
-                             "SELECT  9, '%9' UNION "
-                             "SELECT  10, '%10' UNION "
-                             "SELECT  11, '%11' UNION "
-                             "SELECT  12, '%12' UNION "
-                             "SELECT  13, '%13' UNION "
-                             "SELECT  14, '%14' UNION "
-                             "SELECT  15, '%15'")
-      .arg(tr("Buy Items"))
-      .arg(tr("Make Items"))
-      .arg(tr("Sold Items"))
-      .arg(tr("Purchased"))
-      .arg(tr("Manufactured"))
-      .arg(tr("Phantom"))
-      .arg(tr("Reference"))
-      .arg(tr("Costing"))
-      .arg(tr("Tooling"))
-      .arg(tr("Outside Process"))
-      .arg(tr("Planning"))
-      .arg(tr("Kit"))
-      .arg(tr("Breeder"))
-      .arg(tr("Co-Product"))
-      .arg(tr("By-Product"));
-
-  parameterWidget()->appendComboBox(tr("Class Code"), "classcode_id", XComboBox::ClassCodes);
-  parameterWidget()->append(tr("Class Code Pattern"), "classcode_pattern", ParameterWidget::Text);
-  parameterWidget()->appendComboBox(tr("Freight Class"), "freightclass_id", XComboBox::FreightClasses);
-  parameterWidget()->append(tr("Freight Class Pattern"), "freightclass_pattern", ParameterWidget::Text);
+  parameterWidget()->append(tr("Show Inactive"), "showInactive", ParameterWidget::Exists);
   parameterWidget()->append(tr("Item Number Pattern"), "item_number_pattern", ParameterWidget::Text);
   parameterWidget()->append(tr("Item Description"), "item_descrip_pattern", ParameterWidget::Text);
   parameterWidget()->appendComboBox(tr("Item Group"), "itemgrp_id", XComboBox::ItemGroups);
-  parameterWidget()->appendComboBox(tr("Item Types"), "item_types", qryType);
+  parameterWidget()->appendComboBox(tr("Class Code"), "classcode_id", XComboBox::ClassCodes);
+  parameterWidget()->append(tr("Class Code Pattern"), "classcode_pattern", ParameterWidget::Text);
   parameterWidget()->appendComboBox(tr("Product Category"), "prodcat_id", XComboBox::ProductCategories);
   parameterWidget()->append(tr("Product Category Pattern"), "prodcat_pattern", ParameterWidget::Text);
-  parameterWidget()->append(tr("Show Inactive"), "showInactive", ParameterWidget::Exists);
+  parameterWidget()->appendComboBox(tr("Freight Class"), "freightclass_id", XComboBox::FreightClasses);
+  parameterWidget()->append(tr("Freight Class Pattern"), "freightclass_pattern", ParameterWidget::Text);
+
+  QButtonGroup* _statusGroupInt = new QButtonGroup(this);
+  _statusGroupInt->addButton(_showAll);
+  _statusGroupInt->addButton(_showPurchased);
+  _statusGroupInt->addButton(_showManufactured);
+  _statusGroupInt->addButton(_showSold);
 
   list()->addColumn(tr("Item Number"), _itemColumn, Qt::AlignLeft   , true, "item_number" );
   list()->addColumn(tr("Active"),      _ynColumn,   Qt::AlignCenter , true, "item_active" );
@@ -86,9 +59,8 @@ items::items(QWidget* parent, const char*, Qt::WFlags fl)
   list()->addColumn(tr("Product Category"),  _itemColumn, Qt::AlignLeft , false, "prodcat_code");
   list()->addColumn(tr("Freight Class"),  _itemColumn, Qt::AlignLeft , false, "freightclass_code");
   
-  setupCharacteristics(characteristic::Items);
-  parameterWidget()->applyDefaultFilterSet();
-
+  connect(omfgThis, SIGNAL(itemsUpdated(int, bool)), this, SLOT(sFillList()));
+  
   if (_privileges->check("MaintainItemMasters"))
     connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sEdit()));
   else
@@ -96,8 +68,6 @@ items::items(QWidget* parent, const char*, Qt::WFlags fl)
     newAction()->setEnabled(FALSE);
     connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sView()));
   }
-
-  connect(omfgThis, SIGNAL(itemsUpdated(int, bool)), this, SLOT(sFillList()));
 }
 
 
@@ -146,9 +116,9 @@ void items::sDelete()
     qry.prepare("SELECT deleteItem(:item_id) AS returnVal;");
     qry.bindValue(":item_id", list()->id());
     qry.exec();
-    if (qry.first())
+    if (q.first())
     {
-      int returnVal = qry.value("returnVal").toInt();
+      int returnVal = q.value("returnVal").toInt();
       if (returnVal < 0)
       {
         systemError(this, storedProcErrorLookup("deleteItem", returnVal), __FILE__, __LINE__);
@@ -167,49 +137,16 @@ void items::sDelete()
 bool items::setParams(ParameterList &params)
 {
   display::setParams(params);
-
-  bool valid;
-  QVariant param;
-
-  param = params.value("item_types", &valid);
-  if (valid)
-  {
-    int types = param.toInt();
-    if (types == 1)
-      params.append("showPurchased");
-    else if (types == 2)
-      params.append("showManufactured");
-    else if (types == 3)
-      params.append("showSold");
-    else if (types == 4)
-      params.append("item_type", "P");
-    else if (types == 5)
-      params.append("item_type", "M");
-    else if (types == 6)
-      params.append("item_type", "F");
-    else if (types == 7)
-      params.append("item_type", "R");
-    else if (types == 8)
-      params.append("item_type", "S");
-    else if (types == 9)
-      params.append("item_type", "T");
-    else if (types == 10)
-      params.append("item_type", "O");
-    else if (types == 11)
-      params.append("item_type", "L");
-    else if (types == 12)
-      params.append("item_type", "K");
-    else if (types == 13)
-      params.append("item_type", "B");
-    else if (types == 14)
-      params.append("item_type", "C");
-    else if (types == 15)
-      params.append("item_type", "Y");
-  }
+  if(_showPurchased->isChecked())
+    params.append("showPurchased");
+  else if(_showManufactured->isChecked())
+    params.append("showManufactured");
+  else if(_showSold->isChecked())
+    params.append("showSold");
 
   if (_preferences->boolean("ListNumericItemNumbersFirst"))
     params.append("ListNumericItemNumbersFirst");
-
+  
   params.append("purchased", tr("Purchased"));
   params.append("manufactured", tr("Manufactured"));
   params.append("phantom", tr("Phantom"));

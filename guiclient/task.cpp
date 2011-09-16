@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -29,10 +29,10 @@ task::task(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   
   _budgetHours->setValidator(omfgThis->qtyVal());
   _actualHours->setValidator(omfgThis->qtyVal());
-  _budgetExp->setValidator(omfgThis->costVal());
-  _actualExp->setValidator(omfgThis->costVal());
+  _budgetExp->setValidator(omfgThis->qtyVal());
+  _actualExp->setValidator(omfgThis->qtyVal());
   _balanceHours->setPrecision(omfgThis->qtyVal());
-  _balanceExp->setPrecision(omfgThis->costVal());
+  _balanceExp->setPrecision(omfgThis->qtyVal());
 
   _prjid = -1;
   _prjtaskid = -1;

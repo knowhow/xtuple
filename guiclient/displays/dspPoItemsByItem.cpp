@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -40,8 +40,7 @@ dspPoItemsByItem::dspPoItemsByItem(QWidget* parent, const char*, Qt::WFlags fl)
 
   list()->addColumn(tr("P/O #"),       _orderColumn, Qt::AlignRight,  true,  "pohead_number"  );
   list()->addColumn(tr("Site"),        _whsColumn,   Qt::AlignCenter, true,  "warehous_code" );
-  list()->addColumn(tr("Status"),      0,            Qt::AlignCenter, true,  "poitem_status" );
-  list()->addColumn(tr("Status"),      _dateColumn,  Qt::AlignCenter, true,  "f_poitem_status" );
+  list()->addColumn(tr("Status"),      _dateColumn,  Qt::AlignCenter, true,  "poitem_status" );
   list()->addColumn(tr("Vendor"),      -1,           Qt::AlignLeft,   true,  "vend_name"   );
   list()->addColumn(tr("Due Date"),    _dateColumn,  Qt::AlignCenter, true,  "poitem_duedate" );
   list()->addColumn(tr("Ordered"),     _qtyColumn,   Qt::AlignRight,  true,  "poitem_qty_ordered"  );

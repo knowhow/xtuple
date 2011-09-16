@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,7 +13,7 @@
 #include "glcluster.h"
 
 GLClusterLineEdit::GLClusterLineEdit(QWidget* pParent, const char* pName) :
-    VirtualClusterLineEdit(pParent, "accnt", "accnt_id", "accnt_name", "accnt_descrip", "accnt_extref", 0, pName, "accnt_active")
+    VirtualClusterLineEdit(pParent, "accnt", "accnt_id", "formatGLAccount(accnt_id)", "accnt_descrip", "accnt_extref", 0, pName)
 {
   setTitles(tr("Account"), tr("Accounts"));
   setUiName("accountNumber");
@@ -22,20 +22,11 @@ GLClusterLineEdit::GLClusterLineEdit(QWidget* pParent, const char* pName) :
   setNewPriv("MaintainChartOfAccounts");
 
   _showExternal = false;
-  _ignoreCompany = false;
-  if (_x_metrics)
-  {
-    if (_x_metrics->value("GLCompanySize").toInt() == 0)
-      _ignoreCompany = true;
-  }
 
-  _query = "SELECT accnt_id AS id, accnt_name AS number, "
+  _query = "SELECT accnt_id AS id, public.formatGLAccount(accnt_id) AS number, "
            "  accnt_descrip AS name, accnt_extref AS description, "
-           "  accnt_active AS active, accnt_type, "
-           "  COALESCE(company_id, -1) AS company_id, "
-           "  COALESCE(company_yearend_accnt_id, -1) AS company_yearend_accnt_id, "
-           "  COALESCE(company_gainloss_accnt_id, -1) AS company_gainloss_accnt_id, "
-           "  COALESCE(company_dscrp_accnt_id, -1) AS company_dscrp_accnt_id "
+           "  NULL AS active, accnt_type, "
+           "  COALESCE(company_external,false) AS external "
            "FROM ONLY accnt "
            "  LEFT OUTER JOIN company ON (accnt_company=company_number) "
            "WHERE (true) ";
@@ -66,21 +57,6 @@ void GLClusterLineEdit::setShowExternal(bool p)
 {
   _showExternal = p;
   buildExtraClause();
-}
-
-void GLClusterLineEdit::setIgnoreCompany(bool p)
-{
-  _ignoreCompany = p;
-}
-
-int GLClusterLineEdit::companyId()
-{
-  if (model())
-  {
-    if (model()->rowCount())
-      return    model()->data(model()->index(0,6)).toInt();
-  }
-  return -1;
 }
 
 void GLClusterLineEdit::buildExtraClause()
@@ -180,19 +156,13 @@ void GLClusterLineEdit::sParse()
   if (_id != oldid &&
       model()->rowCount())
   {
+    bool external = model()->data(model()->index(0,6)).toBool();
     QString type = model()->data(model()->index(0,5)).toString();
-    int yearendid = model()->data(model()->index(0,7)).toInt();
-    int gainlossid = model()->data(model()->index(0,8)).toInt();
-    int dscrpid = model()->data(model()->index(0,9)).toInt();
 
-    if (!_ignoreCompany &&
-        (yearendid == -1 ||
-         gainlossid == -1 ||
-         dscrpid == -1 ))
+    if (external)
     {
-      QMessageBox::critical(this,tr("Company Incomplete"),
-                            tr("The Company associated with this Account has incomplete information. "
-                               "You must complete the Company record to use this Account."));
+      QMessageBox::critical(this,tr("External Number"),
+                            tr("You may not use an Account associated with an external Company."));
       setId(-1);
     }
     else if (_type && !_types.contains(type))
@@ -247,7 +217,6 @@ GLCluster::GLCluster(QWidget *pParent, const char *pName) :
   _grid->addWidget(_project, 0, 3);
 
   setFocusProxy(_number);
-  setTabOrder(_number, _project);
   setOrientation(Qt::Horizontal);
 }
 
@@ -342,7 +311,7 @@ void GLCluster::sHandleProjectId()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-accountList::accountList(QWidget* pParent, Qt::WindowFlags pFlags) :
+accountList::accountList(QWidget* pParent, Qt::WFlags pFlags) :
     VirtualList(pParent, pFlags)
 {
   setObjectName("accountList");
@@ -436,11 +405,6 @@ void accountList::sFillList()
   if (! _showExternal)
     where << "(NOT COALESCE(company_external, false)) ";
 
-  where << "accnt_active ";
-  where << "(company_yearend_accnt_id <> -1)";
-  where << "(company_gainloss_accnt_id <> -1)";
-  where << "(company_dscrp_accnt_id <> -1)";
-
   if (!where.isEmpty())
     sql += " WHERE " + where.join(" AND ");
 
@@ -521,7 +485,7 @@ void accountSearch::showEvent(QShowEvent* e)
   VirtualSearch::showEvent(e);
 }
 
-void accountSearch::set(const ParameterList &pParams)
+void accountSearch::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -590,12 +554,10 @@ void accountSearch::sFillList()
     where << "(accnt_type IN (" + types.join(",") + "))";
 
   if (!_search->text().isEmpty())
-    where << "((accnt_name ~* :descrip) OR (accnt_descrip ~* :descrip) OR (accnt_extref ~* :descrip))";
+    where << "((formatglaccount(accnt_id) ~* :descrip) OR (accnt_descrip ~* :descrip) OR (accnt_extref ~* :descrip))";
 
   if (! _showExternal)
     where << "(NOT COALESCE(company_external, false))";
-
-  where << "accnt_active ";
 
   if (!where.isEmpty())
     sql += " WHERE " + where.join(" AND ");

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -55,7 +55,7 @@ CLineEdit::CLineEdit(QWidget *pParent, const char *pName) :
            "    LEFT OUTER JOIN cntct  ON (cust_cntct_id=cntct_id) "
            "    LEFT OUTER JOIN addr   ON (cntct_addr_id=addr_id) "
            "    LEFT OUTER JOIN crmacct ON (crmacct_cust_id=cust_id) "
-           "  UNION ALL "
+           "  UNION "
            "  SELECT prospect_id AS id, "
            "         prospect_number AS number,"
            "         prospect_name AS name,"
@@ -262,24 +262,13 @@ bool CLineEdit::canEdit()
 
 void CLineEdit::setCanEdit(bool p)
 {
-  if (p == _canEdit || !_x_metrics)
+  if (p == _canEdit)
     return;
 
-  if (p)
-  {
-    if (_x_privileges && _subtype == CRMAcctLineEdit::Cust)
-      _canEdit = _x_privileges->check("MaintainCustomerMasters");
-    else if (_x_privileges && _subtype == CRMAcctLineEdit::Prospect)
-      _canEdit = _x_privileges->check("MaintainProspectMasters");
-    else if (_x_privileges)
-      _canEdit = _x_privileges->check("MaintainCustomerMasters") ||
-                 _x_privileges->check("MaintainProspectMasters");
-  }
-  else
-    _canEdit=p;
+  if (!p)
+    setEditMode(false);
 
-if (!_canEdit)
-  setEditMode(false);
+  _canEdit=p;
 
   sUpdateMenu();
 }
@@ -424,3 +413,7 @@ void CustCluster::sHandleEditMode(bool p)
   else
     disconnect(number, SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
 }
+
+
+
+

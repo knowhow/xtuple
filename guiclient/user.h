@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,7 +28,7 @@ public:
 public slots:
     virtual enum SetResponse set( const ParameterList & pParams );
     virtual void sCheck();
-    virtual bool sPopulate();
+    virtual void populate();
     virtual void populateSite();
     virtual void done(int);
 
@@ -36,7 +36,6 @@ protected slots:
     virtual void languageChange();
 
     virtual void sClose();
-    virtual void sCrmAccount();
     virtual void sSave();
     virtual void sModuleSelected( const QString & pModule );
     virtual void sAdd();
@@ -51,11 +50,9 @@ protected slots:
 
 private:
     QString _cUsername;
+    int _mode;
     bool _authCache;
-    int  _crmacctid;
-    QString _crmowner;
     bool _inTransaction;
-    int  _mode;
 
 };
 

@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>756</width>
-    <height>818</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -71,29 +71,6 @@ to be bound by its terms.</comment>
              </property>
              <property name="type">
               <enum>XComboBox::VendorTypes</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="_crmacct">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="text">
-              <string>CRM Account...</string>
              </property>
             </widget>
            </item>
@@ -184,36 +161,59 @@ to be bound by its terms.</comment>
      </item>
      <item row="0" column="1">
       <layout class="QVBoxLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item>
-        <widget class="QPushButton" name="_close">
-         <property name="text">
-          <string>&amp;Cancel</string>
+        <layout class="QVBoxLayout">
+         <property name="spacing">
+          <number>0</number>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="_save">
-         <property name="text">
-          <string>&amp;Save</string>
-         </property>
-         <property name="default">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="_next">
-         <property name="text">
-          <string>Next</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="_previous">
-         <property name="text">
-          <string>Previous</string>
-         </property>
-        </widget>
+         <item>
+          <widget class="QPushButton" name="_close">
+           <property name="text">
+            <string>&amp;Cancel</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_save">
+           <property name="text">
+            <string>&amp;Save</string>
+           </property>
+           <property name="default">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_next">
+           <property name="text">
+            <string>Next</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="_previous">
+           <property name="text">
+            <string>Previous</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item>
         <spacer>
@@ -458,162 +458,6 @@ to be bound by its terms.</comment>
               </widget>
              </item>
             </layout>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="_distribGroup">
-             <property name="title">
-              <string>Default Miscellaneous Distribution</string>
-             </property>
-             <property name="checkable">
-              <bool>false</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="_accountSelected">
-                <property name="text">
-                 <string>Account</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QRadioButton" name="_taxSelected">
-                <property name="text">
-                 <string>Tax</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QGroupBox" name="_taxGroup">
-                <property name="title">
-                 <string/>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_6">
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_5">
-                   <item>
-                    <widget class="QLabel" name="_taxCodeLit">
-                     <property name="minimumSize">
-                      <size>
-                       <width>0</width>
-                       <height>24</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>Tax Code</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="XComboBox" name="_taxCode">
-                     <property name="enabled">
-                      <bool>false</bool>
-                     </property>
-                     <property name="allowNull">
-                      <bool>true</bool>
-                     </property>
-                     <property name="nullStr">
-                      <string>None</string>
-                     </property>
-                     <property name="type">
-                      <enum>XComboBox::TaxCodes</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer>
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>0</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QGroupBox" name="_expenseGroup">
-                <property name="title">
-                 <string/>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_7">
-                 <item row="0" column="0">
-                  <widget class="ExpenseCluster" name="_expcat">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="focusPolicy">
-                    <enum>Qt::StrongFocus</enum>
-                   </property>
-                   <property name="label">
-                    <string/>
-                   </property>
-                   <property name="readonly" stdset="0">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QGroupBox" name="_accountGroup">
-                <property name="title">
-                 <string/>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_8">
-                 <item row="0" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_6">
-                   <item>
-                    <widget class="GLCluster" name="_account">
-                     <property name="enabled">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_3">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>0</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-                <zorder></zorder>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QRadioButton" name="_expcatSelected">
-                <property name="text">
-                 <string>Expense Category</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
            </item>
            <item>
             <spacer>
@@ -1053,7 +897,7 @@ to be bound by its terms.</comment>
         </attribute>
         <layout class="QGridLayout">
          <item row="0" column="0">
-          <widget class="XTextEdit" name="_notes"/>
+          <widget class="QTextEdit" name="_notes"/>
          </item>
         </layout>
        </widget>
@@ -1068,7 +912,7 @@ to be bound by its terms.</comment>
             <enum>Qt::StrongFocus</enum>
            </property>
            <property name="type">
-            <enum>Comments::CRMAccount</enum>
+            <enum>Comments::Vendor</enum>
            </property>
           </widget>
          </item>
@@ -1080,7 +924,7 @@ to be bound by its terms.</comment>
         </attribute>
         <layout class="QGridLayout">
          <item row="0" column="0">
-          <widget class="XTextEdit" name="_poComments"/>
+          <widget class="QTextEdit" name="_poComments"/>
          </item>
         </layout>
        </widget>
@@ -1308,16 +1152,6 @@ to be bound by its terms.</comment>
    <header>contactcluster.h</header>
   </customwidget>
   <customwidget>
-   <class>ExpenseCluster</class>
-   <extends>QWidget</extends>
-   <header>expensecluster.h</header>
-  </customwidget>
-  <customwidget>
-   <class>GLCluster</class>
-   <extends>QWidget</extends>
-   <header>glcluster.h</header>
-  </customwidget>
-  <customwidget>
    <class>XComboBox</class>
    <extends>QComboBox</extends>
    <header>xcombobox.h</header>
@@ -1333,11 +1167,6 @@ to be bound by its terms.</comment>
    <extends>QTreeWidget</extends>
    <header>xtreewidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -1381,7 +1210,11 @@ to be bound by its terms.</comment>
   <tabstop>_achAccountNumber</tabstop>
   <tabstop>_individualId</tabstop>
   <tabstop>_individualName</tabstop>
+  <tabstop>_previous</tabstop>
   <tabstop>_mainButton</tabstop>
+  <tabstop>_close</tabstop>
+  <tabstop>_next</tabstop>
+  <tabstop>_save</tabstop>
   <tabstop>_altButton</tabstop>
  </tabstops>
  <resources/>
@@ -1415,22 +1248,6 @@ to be bound by its terms.</comment>
     <hint type="destinationlabel">
      <x>741</x>
      <y>283</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_taxreg</sender>
-   <signal>valid(bool)</signal>
-   <receiver>_viewTaxreg</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>219</x>
-     <y>438</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>311</x>
-     <y>358</y>
     </hint>
    </hints>
   </connection>
@@ -1469,6 +1286,22 @@ to be bound by its terms.</comment>
   <connection>
    <sender>_taxreg</sender>
    <signal>valid(bool)</signal>
+   <receiver>_viewTaxreg</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>438</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>311</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_taxreg</sender>
+   <signal>valid(bool)</signal>
    <receiver>_deleteTaxreg</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
@@ -1495,54 +1328,6 @@ to be bound by its terms.</comment>
     <hint type="destinationlabel">
      <x>311</x>
      <y>334</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_accountSelected</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_account</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>121</x>
-     <y>516</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>335</x>
-     <y>515</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_expcatSelected</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_expcat</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>121</x>
-     <y>596</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>453</x>
-     <y>595</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_taxSelected</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_taxCode</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>121</x>
-     <y>679</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>333</x>
-     <y>678</y>
     </hint>
    </hints>
   </connection>

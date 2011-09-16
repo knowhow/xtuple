@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -27,7 +27,6 @@ userCostingElement::userCostingElement(QWidget* parent, const char* name, bool m
   connect(_acceptPO, SIGNAL(toggled(bool)), _expense, SLOT(setDisabled(bool)));
 
   _item->setType(ItemLineEdit::cCosting);
-  _expense->setType(GLCluster::cExpense);
 }
 
 userCostingElement::~userCostingElement()
@@ -150,7 +149,7 @@ void userCostingElement::sSave()
   q.bindValue(":costelem_type", _name->text().trimmed());
   q.bindValue(":costelem_active", QVariant(_active->isChecked()));
   q.bindValue(":costelem_po", QVariant(_acceptPO->isChecked()));
-  if (_expense->isEnabled() && _expense->isValid())
+  if (_expense->isEnabled())
     q.bindValue(":costelem_exp_accnt_id",_expense->id());
 
   if (_useCostItem->isChecked())

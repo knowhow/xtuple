@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -40,14 +40,16 @@
 
 #include "itemSource.h"
 #include "itemSources.h"
-#include  "itemSites.h"
 
 #include "dspPurchaseReqsByItem.h"
 #include "dspPurchaseReqsByPlannerCode.h"
+#include "dspItemSitesByParameterList.h"
 #include "dspPoItemsByVendor.h"
 #include "dspPoItemsByItem.h"
 #include "dspPoItemsByDate.h"
 #include "dspPoHistory.h"
+#include "dspItemSourcesByVendor.h"
+#include "dspItemSourcesByItem.h"
 #include "buyCard.h"
 #include "dspPoItemReceivingsByVendor.h"
 #include "dspPoItemReceivingsByItem.h"
@@ -96,6 +98,7 @@ menuPurchase::menuPurchase(GUIClient *Pparent) :
   reportsMenu = new QMenu(parent);
   reportsPoMenu = new QMenu(parent);
   reportsPoItemsMenu = new QMenu(parent);
+  reportsItemSrcMenu = new QMenu(parent);
   reportsRcptRtrnMenu = new QMenu(parent);
   reportsPriceVarMenu = new QMenu(parent);
   reportsDelvVarMenu = new QMenu(parent);
@@ -111,6 +114,7 @@ menuPurchase::menuPurchase(GUIClient *Pparent) :
   reportsMenu->setObjectName("menu.purch.reports");
   reportsPoMenu->setObjectName("menu.purch.reportspo");
   reportsPoItemsMenu->setObjectName("menu.purch.reportpoitems");
+  reportsItemSrcMenu->setObjectName("menu.purch.reportsitemsrc");
   reportsRcptRtrnMenu->setObjectName("menu.purch.reportsrcptrtrn");
   reportsPriceVarMenu->setObjectName("menu.purch.reportspricevar");
   reportsDelvVarMenu->setObjectName("menu.purch.reportsdelvvar");
@@ -155,9 +159,12 @@ menuPurchase::menuPurchase(GUIClient *Pparent) :
     //  Purchasing | Reports
     { "menu", tr("&Reports"), (char*)reportsMenu, mainMenu, "true", NULL, NULL, true , NULL },
     
-    { "po.itemSites", tr("Item &Sites..."), SLOT(sItemSites()), reportsMenu, "ViewItemSites", NULL, NULL, true , NULL },
+    { "po.dspItemSitesByPlannerCode", tr("Item &Sites..."), SLOT(sDspItemSitesByPlannerCode()), reportsMenu, "ViewItemSites", NULL, NULL, true , NULL },
     
     // Purchasing | Reports | Item Sources
+    { "menu", tr("&Items Sources"), (char*)reportsItemSrcMenu, reportsMenu, "true", NULL, NULL, true , NULL },
+    { "po.dspItemSourcesByVendor", tr("by &Vendor..."), SLOT(sDspItemSourcesByVendor()), reportsItemSrcMenu, "ViewItemSources", NULL, NULL, true , NULL },
+    { "po.dspItemSourcesByItem", tr("by &Item..."), SLOT(sDspItemSourcesByItem()), reportsItemSrcMenu, "ViewItemSources", NULL, NULL, true , NULL },
     { "po.dspBuyCard", tr("&Buy Card..."), SLOT(sDspBuyCard()), reportsMenu, "ViewItemSources", NULL, NULL, true , NULL },
     { "separator", NULL, NULL, reportsMenu, "true", NULL, NULL, true , NULL },
  
@@ -416,11 +423,12 @@ void menuPurchase::sDspPurchaseReqsByPlannerCode()
   omfgThis->handleNewWindow(new dspPurchaseReqsByPlannerCode());
 }
 
-void menuPurchase::sItemSites()
+void menuPurchase::sDspItemSitesByPlannerCode()
 {
   ParameterList params;
+  params.append("plancode");
 
-  itemSites *newdlg = new itemSites();
+  dspItemSitesByParameterList *newdlg = new dspItemSitesByParameterList();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }
@@ -453,6 +461,16 @@ void menuPurchase::sDspPoItemsByDate()
 void menuPurchase::sDspPoHistory()
 {
   omfgThis->handleNewWindow(new dspPoHistory());
+}
+
+void menuPurchase::sDspItemSourcesByVendor()
+{
+  omfgThis->handleNewWindow(new dspItemSourcesByVendor());
+}
+
+void menuPurchase::sDspItemSourcesByItem()
+{
+  omfgThis->handleNewWindow(new dspItemSourcesByItem());
 }
 
 void menuPurchase::sDspBuyCard()

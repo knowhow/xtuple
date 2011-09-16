@@ -51,32 +51,10 @@ collectAndRenameLibs() {
   [ -d $FRAMEWORKSDIR ] || mkdir $FRAMEWORKSDIR                     || return 1
   cd $FRAMEWORKSDIR                                                 || return 1
 
-  LIBSTORENAME=`otool -L $FILE | tail -n +2 |\
-                egrep "($QTDIR|$PGDIR|boost)" |\
-                grep -v @executable |\
-                awk '{print $1}'`
+  LIBSTORENAME=`otool -L $FILE | egrep "($QTDIR|$PGDIR)" |  awk '{print $1}'`
   for TORENAME in $LIBSTORENAME ; do
-    FOUNDTORENAME=false
     BASETORENAME=`basename $TORENAME`
-# if TORENAME is a relative path, try various searchpaths until we find it
-    if [ -e "$TORENAME" -a `echo $TORENAME | cut -c1 ` = / ] ; then
-      cp "$TORENAME" .                                              || return 1
-      FOUNDTORENAME=true
-    else
-      for LIBDIR in `echo "$DYLD_LIBRARY_PATH:$LD_LIBRARY_PATH:$LIBRARY_PATH:/usr/local/lib" |\
-                     tr : " "` ; do
-        if [ -e "$LIBDIR/$BASETORENAME" ] ; then
-          cp "$LIBDIR/$BASETORENAME" .                              || return 1
-          FOUNDTORENAME=true
-          break
-        fi
-      done
-    fi
-    if ! $FOUNDTORENAME ; then
-      echo "Could not find $TORENAME to copy"
-      return 1
-    fi
-
+    [ -e "$BASETORENAME" ] || cp "$TORENAME" .                      || return 1
     install_name_tool -id $NEWLOC/$BASETORENAME $BASETORENAME       || return 1
     install_name_tool -change $TORENAME $NEWLOC/$BASETORENAME $FILE || return 1
   done
@@ -88,7 +66,6 @@ collectAndRenameLibs() {
 collectAndRenameLibs $APPROOT/Contents/MacOS/$EXECNAME              || exit 2
 
 for PLUGIN in sqldrivers/libqsqlpsql.dylib sqldrivers/libqsqlodbc.dylib \
-              sqldrivers/libqsqlite.dylib \
               imageformats/libqgif.dylib imageformats/libqjpeg.dylib    \
               imageformats/libqmng.dylib \
               designer/libxtuplewidgets.dylib \
@@ -115,6 +92,18 @@ for PDIR in sqldrivers imageformats ; do
   fi
 done
 cd $APPROOT
+
+cp -r $QTDIR/bin/Assistant_adp.app $APPROOT/Contents/Resources/Assistant_adp.app                || exit 3
+collectAndRenameLibs $APPROOT/Contents/Resources/Assistant_adp.app/Contents/MacOS/Assistant_adp || exit 3
+cd $APPROOT/Contents/Resources/Assistant_adp.app/Contents       || exit 3
+if [ ! -e Frameworks ] ; then
+  ln -s ../../../Frameworks .                                   || exit 3
+fi
+if [ ! -e imageformats ] ; then
+  ln -s ../../../plugins/imageformats        || exit 4
+fi
+echo "[Paths]" > qt.conf
+echo "Prefix = .." >> qt.conf
 
 while [ `otool -L $APPROOT/Contents/Frameworks/* | egrep "($QTDIR|$PGDIR)" | wc -l` -gt 0 ] ; do
   for LIB in $APPROOT/Contents/Frameworks/* ; do

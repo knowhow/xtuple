@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -31,7 +31,6 @@
 #include "transactionInformation.h"
 #include "storedProcErrorLookup.h"
 #include "dspJournals.h"
-#include "creditMemo.h"
 
 dspGLTransactions::dspGLTransactions(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "dspGLTransactions", fl)
@@ -168,7 +167,7 @@ enum SetResponse dspGLTransactions::set(const ParameterList &pParams)
 
   if (pParams.inList("run"))
   {
-    emit fillList();
+    sFillList();
     return NoError_Run;
   }
 
@@ -182,11 +181,8 @@ void dspGLTransactions::sPopulateMenu(QMenu * menuThis, QTreeWidgetItem* pItem, 
     return;
 
   menuThis->addAction(tr("View..."), this, SLOT(sViewTrans()));
-  if (item->rawValue("gltrans_journalnumber").toInt() > 0)
-  {
-    QAction* viewSeriesAct = menuThis->addAction(tr("View Journal Series..."), this, SLOT(sViewSeries()));
-    viewSeriesAct->setDisabled(item->data(0, Xt::DeletedRole).toBool());
-  }
+  QAction* viewSeriesAct = menuThis->addAction(tr("View Journal Series..."), this, SLOT(sViewSeries()));
+  viewSeriesAct->setDisabled(item->data(0, Xt::DeletedRole).toBool());
 
   if(item->rawValue("gltrans_doctype").toString() == "VO")
     menuThis->addAction(tr("View Voucher..."), this, SLOT(sViewDocument()));
@@ -212,9 +208,7 @@ void dspGLTransactions::sPopulateMenu(QMenu * menuThis, QTreeWidgetItem* pItem, 
 
 bool dspGLTransactions::setParams(ParameterList &params)
 {
-  if (!display::setParams(params))
-    return false;
-
+  parameterWidget()->appendValue(params);
   bool valid;
   QVariant param;
 
@@ -328,7 +322,7 @@ void dspGLTransactions::sPrint()
   display::sPrint();
 }
 
-void dspGLTransactions::sFillList(ParameterList pParams, bool forceSetParams)
+void dspGLTransactions::sFillList()
 {
   if (!_metrics->boolean("ManualForwardUpdate") && 
       _showRunningTotal->isChecked() &&
@@ -338,19 +332,21 @@ void dspGLTransactions::sFillList(ParameterList pParams, bool forceSetParams)
       return;
   }
 
-  if (! setParams(pParams))
+  ParameterList params;
+  if (! setParams(params))
     return;
 
   if (_showRunningTotal->isChecked() &&
       _showRunningTotal->isVisible())
   {
     list()->showColumn("running");
-    _beginningBalance->setDouble(pParams.value("beginningBalance").toDouble());
+    qDebug("begbal %f", params.value("beginningBalance").toDouble());
+    _beginningBalance->setDouble(params.value("beginningBalance").toDouble());
   }
   else
     list()->hideColumn("running");
 
-  display::sFillList(pParams, forceSetParams);
+  display::sFillList();
 }
 
 void dspGLTransactions::sViewTrans()
@@ -382,7 +378,7 @@ void dspGLTransactions::sViewSeries()
 
   dspGLSeries *newdlg = new dspGLSeries();
   newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
+  omfgThis->handleNewWindow(newdlg);
 }
 
 void dspGLTransactions::sViewDocument()
@@ -409,13 +405,13 @@ void dspGLTransactions::sViewDocument()
     {
       miscVoucher *newdlg = new miscVoucher();
       newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
+      omfgThis->handleNewWindow(newdlg);
     }
     else
     {
       voucher *newdlg = new voucher();
       newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
+      omfgThis->handleNewWindow(newdlg);
     }
 
   }
@@ -447,7 +443,7 @@ void dspGLTransactions::sViewDocument()
 
     purchaseOrder *newdlg = new purchaseOrder();
     newdlg->set(params);
-    omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
+    omfgThis->handleNewWindow(newdlg);
   }
   else if(item->rawValue("gltrans_doctype").toString() == "SH")
   {
@@ -463,7 +459,7 @@ void dspGLTransactions::sViewDocument()
 
     dspShipmentsByShipment *newdlg = new dspShipmentsByShipment();
     newdlg->set(params);
-    omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
+    omfgThis->handleNewWindow(newdlg);
   }
   else if( (item->rawValue("gltrans_doctype").toString() == "CM") || (item->rawValue("gltrans_doctype").toString() == "DM") )
   {
@@ -471,8 +467,8 @@ void dspGLTransactions::sViewDocument()
     {
       q.prepare("SELECT apopen_id"
                 "  FROM apopen"
-                " WHERE ( (apopen_docnumber=:docnumber) "
-                "  AND (apopen_doctype IN ('C', 'D')) );");
+                " WHERE ((apopen_docnumber=:docnumber) "
+                "  AND (apopen_doctype='C'));");
       q.bindValue(":docnumber", item->rawValue("docnumber").toString());
       q.exec();
       if(!q.first())
@@ -489,7 +485,7 @@ void dspGLTransactions::sViewDocument()
       q.prepare("SELECT aropen_id"
                 "  FROM aropen"
                 " WHERE ((aropen_docnumber=:docnumber) "
-                "  AND (aropen_doctype IN ('C', 'D')) );");
+                "  AND (aropen_doctype='C'));");
       q.bindValue(":docnumber", item->rawValue("docnumber").toString());
       q.exec();
       if(!q.first())
@@ -500,22 +496,6 @@ void dspGLTransactions::sViewDocument()
       arOpenItem newdlg(this, "", TRUE);
       newdlg.set(params);
       newdlg.exec();
-    }
-    else if(item->rawValue("gltrans_source").toString() == "S/O")
-    {
-      q.prepare("SELECT cmhead_id"
-                "  FROM cmhead"
-                " WHERE (cmhead_number=:docnumber);");
-      q.bindValue(":docnumber", item->rawValue("docnumber").toString());
-      q.exec();
-      if(!q.first())
-        return;
-
-      params.append("mode", "view");
-      params.append("cmhead_id", q.value("cmhead_id").toInt());
-      creditMemo *newdlg = new creditMemo();
-      newdlg->set(params);
-      omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
     }
   }
   else if(item->rawValue("gltrans_doctype").toString() == "SO")
@@ -536,7 +516,7 @@ void dspGLTransactions::sViewDocument()
 
     dspWoHistoryByNumber *newdlg = new dspWoHistoryByNumber();
     newdlg->set(params);
-    omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
+    omfgThis->handleNewWindow(newdlg);
   }
   else if(item->rawValue("gltrans_source").toString() == "I/M")
   {
@@ -569,7 +549,7 @@ void dspGLTransactions::sViewJournal()
 
   dspJournals *newdlg = new dspJournals();
   newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg, Qt::ApplicationModal);
+  omfgThis->handleNewWindow(newdlg);
 }
 
 bool dspGLTransactions::forwardUpdate()
@@ -604,6 +584,7 @@ bool dspGLTransactions::forwardUpdate()
 
 void dspGLTransactions::handleTotalCheckbox()
 {
+  QVariant param;
   ParameterList params;
   parameterWidget()->appendValue(params);
 

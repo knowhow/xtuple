@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -26,7 +26,7 @@ to be bound by its terms.</comment>
      <item row="0" column="0">
       <widget class="QLabel" name="_nameLit">
        <property name="text">
-        <string>&amp;Name:</string>
+        <string>&amp;Name</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -78,45 +78,12 @@ to be bound by its terms.</comment>
      <item row="1" column="1">
       <widget class="XLineEdit" name="_description"/>
      </item>
-     <item row="3" column="1">
+     <item row="2" column="1">
       <widget class="QCheckBox" name="_editable">
        <property name="text">
         <string>Editable</string>
        </property>
       </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="_orderLit">
-       <property name="text">
-        <string>&amp;Order:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="buddy">
-        <cstring>_order</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QSpinBox" name="_order"/>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
      </item>
     </layout>
    </item>
@@ -304,7 +271,6 @@ to be bound by its terms.</comment>
  <tabstops>
   <tabstop>_name</tabstop>
   <tabstop>_description</tabstop>
-  <tabstop>_order</tabstop>
   <tabstop>_editable</tabstop>
   <tabstop>_module</tabstop>
   <tabstop>_available</tabstop>
@@ -313,7 +279,6 @@ to be bound by its terms.</comment>
   <tabstop>_revoke</tabstop>
   <tabstop>_revokeAll</tabstop>
   <tabstop>_granted</tabstop>
-  <tabstop>_buttonBox</tabstop>
  </tabstops>
  <includes>
   <include location="global">parameter.h</include>

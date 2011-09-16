@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -73,8 +73,8 @@ enum SetResponse todoItem::set(const ParameterList &pParams)
       }
 
       _name->setFocus();
-      _assignedTo->setEnabled(_privileges->check("MaintainAllToDoItems") &&
-                          _privileges->check("ReassignToDoItems"));
+      _assignedTo->setEnabled(_privileges->check("MaintainOtherTodoLists") &&
+			  _privileges->check("ReassignTodoListItem"));
     }
     else if (param.toString() == "edit")
     {
@@ -85,8 +85,8 @@ enum SetResponse todoItem::set(const ParameterList &pParams)
       _ophead->setEnabled(FALSE);
       _assigned->setEnabled(FALSE);
       _due->setEnabled(FALSE);
-      _assignedTo->setEnabled(_privileges->check("MaintainAllToDoItems") &&
-                            _privileges->check("ReassignToDoItems"));
+      _assignedTo->setEnabled(_privileges->check("MaintainOtherTodoLists") &&
+			    _privileges->check("ReassignTodoListItem"));
       _description->setEnabled(FALSE);
 
       _name->setFocus();
@@ -251,20 +251,6 @@ void todoItem::sSave()
       return;
     }
   }
-  else
-  {
-    XSqlQuery recurq;
-    recurq.prepare("UPDATE todoitem"
-                   "   SET todoitem_recurring_todoitem_id=NULL"
-                   " WHERE todoitem_id=:id;");
-    recurq.bindValue(":id",        _todoitemid);
-    if (! recurq.exec())
-    {
-      rollbackq.exec();
-      systemError(this, recurq.lastError().text(), __FILE__, __LINE__);
-      return;
-    }
-  }
 
   QString errmsg;
   if (! _recurring->save(true, cp, &errmsg))
@@ -315,7 +301,7 @@ void todoItem::sPopulate()
 
     if (cEdit == _mode && 
 	(omfgThis->username()==q.value("todoitem_creator_username").toString() ||
-         _privileges->check("MaintainAllToDoItems")))
+	 _privileges->check("OverrideTodoListItemData")))
     {
       _name->setEnabled(true);
       _incident->setEnabled(true);

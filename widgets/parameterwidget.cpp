@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -15,8 +15,6 @@
 #include <QtScript>
 #include <QMessageBox>
 #include <QTableWidget>
-#include <QTableWidgetItem>
-#include <QDebug>
 
 #ifdef Q_WS_MAC
 #include <QFont>
@@ -38,9 +36,6 @@
 #include "vendorcluster.h"
 #include "itemcluster.h"
 #include "empcluster.h"
-#include "shiptocluster.h"
-#include "ordercluster.h"
-#include "wocluster.h"
 
 #define DEBUG false
 
@@ -57,39 +52,6 @@
            qtablewidget violates the one-unit-high rule
  */
 
-/** \ingroup widgets
-
-    \class ParameterWidget
-
-    \brief The ParameterWidget provides a consistent user and
-           programming interface for managing query criteria.
-
-    The ParameterWidget can be used to set filtering criteria to
-    apply to MetaSQL queries. The application developer defines
-    what criteria can be used (e.g. filter by a date range), what
-    the default values should be, if any, and which criteria are
-    mandatory.  The user then chooses which criteria to actually
-    use at runtime and supplies values (e.g. 'January 1, 2010'
-    through 'December 31, 2010').
-
-    It is the application developer's responsibility to ensure that
-    the user's selections are honored by the query.
-
-    Specific sets of filtering criteria can be saved, reused, and
-    shared between users. The details of the filter can be hidden
-    from view or made visible, allowing for efficient use of screen
-    real estate.
-
-    If application preferences are available, the most recently
-    selected filter will saved when the parent window closes and
-    will be reselected when the window is next opened.
-
- */
-
-/** \brief Create a new Parameter Widget.
-    \param pParent The parent of this widget
-    \param pName   The object name to assign to this widget
-  */
 ParameterWidget::ParameterWidget(QWidget *pParent, const char *pName)  :
     QWidget(pParent)
 {
@@ -109,13 +71,13 @@ ParameterWidget::ParameterWidget(QWidget *pParent, const char *pName)  :
   _filterButton->setChecked(false);
 
   connect(_addFilterRow, SIGNAL(clicked()), this, SLOT( addParam() ) );
+  connect(_filterButton, SIGNAL(toggled(bool)), this, SLOT( setFiltersVisabiltyPreference() ) );
   connect(_filterSignalMapper, SIGNAL(mapped(int)), this, SLOT( removeParam(int) ));
   connect(_saveButton, SIGNAL(clicked()), this, SLOT( save() ) );
   connect(_manageButton, SIGNAL(clicked()), this, SLOT( sManageFilters() ) );
   connect(_filterList, SIGNAL(currentIndexChanged(int)), this, SLOT( applySaved(int) ) );
   connect(_filterList, SIGNAL(currentIndexChanged(int)), this, SLOT( setFiltersDefault() ) );
   connect(this, SIGNAL(updated()), this, SLOT( toggleSave() ) );
-  connect(_filterButton, SIGNAL(toggled(bool)), this, SLOT(setFiltersVisible(bool)));
 
   _saveButton->setShortcut(QKeySequence::Save);
   _saveButton->setToolTip(_saveButton->text()
@@ -127,34 +89,31 @@ ParameterWidget::ParameterWidget(QWidget *pParent, const char *pName)  :
 void ParameterWidget::showEvent(QShowEvent * event)
 {
 
-  if(!_initialized)
+  if(_initialized)
+    return;
+
+  QString pname;
+  if(window())
+    pname = window()->objectName() + "/";
+  _settingsName = pname + objectName();
+  if(_x_preferences)
   {
-    QString pname;
-    if(window())
-      pname = window()->objectName() + "/";
-    _settingsName = pname + objectName();
-    if(_x_preferences)
-      setFiltersVisible(_x_preferences->boolean(_settingsName + "/checked"));
-    _initialized = true;
+    if (!_x_preferences->boolean(_settingsName + "/checked"))
+    {
+      _filterGroup->setVisible(false);
+      _filterButton->setChecked(false);
+    }
+    else
+    {
+      _filterGroup->setVisible(true);
+      _filterButton->setChecked(true);
+    }
   }
+  _initialized = true;
   QWidget::showEvent(event);
 
 }
 
-/** \brief Add name/value pairs to the input ParameterList
-	   to reflect the current user selections.
-
-    The ParameterList passed in to this method is modified to reflect
-    the current selections. Parameters already in the list have
-    their associated values changed and parameters not in the list
-    are added. No name/value pairs are removed from the list.
-
-    This should be used carefully, as cached ParameterLists may have
-    name/value pairs that the caller does not expect.
-
-    \param[in,out] pParams The ParameterList to modify
-
-*/
 void ParameterWidget::appendValue(ParameterList &pParams)
 {
   QMapIterator<int, QPair<QString, QVariant> > i(_filterValues);
@@ -171,15 +130,6 @@ void ParameterWidget::appendValue(ParameterList &pParams)
   }
 }
 
-/** \brief Find the default filter set for the ParameterWidget with
-           the current parent and apply it.
-
-    This method searches for the default filter set based on the
-    QObject::objectName of the parent and the QObject::objectName
-    of this ParameterWidget instance. If it is found, then this
-    filter set is applied.
-
-*/
 
 void ParameterWidget::applyDefaultFilterSet()
 {
@@ -318,62 +268,45 @@ void ParameterWidget::addParam()
 
 }
 
-/** \brief Add a new filter to the set of available filters.
-
-  \param pName      The user-visible name for this filter to distinguish
-                    it from other filters in the same set
-  \param pParam     The name to use for the parameter in the ParameterList
-  \param pType      The type of widget for the user to enter a criterion in
-  \param pDefault   The default value to use for this parameter
-  \param pRequired  Required parameters cannot be removed from the filter set
-  \param pExtraInfo A query string to use if pType indicates a combo box or multiselect
+/*!
+  Appends a parameter selection \a pName using parameterWidgetTypes \a pType to the filter set list using
+  output parameter name \a pParam.  An optional default value can be set using \a pDefault. Use \a pRequired
+  to flag whether the parameter is required or not. Use \a extraInfo
+  to pass a query string for multi-select types.
 */
 void ParameterWidget::append(QString pName, QString pParam, ParameterWidgetTypes pType, QVariant pDefault, bool pRequired, QString pExtraInfo)
 {
-  if (DEBUG)
-    qDebug("%s::append(%s, %s, %d, %s, %d, %s) entered",
-           qPrintable(objectName()), qPrintable(pName), qPrintable(pParam),
-           pType, qPrintable(pDefault.toString()), pRequired,
-           qPrintable(pExtraInfo.left(50)));
   ParamProps *pp = _params.value(_params.count(), 0);
 
   if (! pp)
   {
-    if (DEBUG)
-      qDebug("%s::append() instantiating a new ParamProps",
-             qPrintable(objectName()));
     pp = new ParamProps();
     pp->name = pName;
     pp->param = pParam;
     pp->paramType = pType;
     pp->defaultValue = pDefault;
     pp->required = pRequired;
-    pp->comboType = XComboBox::Adhoc;
     pp->query = pExtraInfo;
     pp->enabled = true;
     _params.insert(_params.count(), pp);
   }
 
-  if (pType == Multiselect && !pExtraInfo.length())
+  if (pType == Multiselect)
   {
+    if (!pExtraInfo.length())
       qWarning("%s::setType(%s, %s, %d, %s, %s) called for Multiselect but "
                "was not given a query to use",
                qPrintable(objectName()), qPrintable(pName), qPrintable(pParam),
                pType, qPrintable(pDefault.toString()),
                qPrintable(pExtraInfo));
   }
-
 }
 
-/** \brief Add a new XComboBox-based filter to the set of available filters.
-
-  \param pName      The user-visible name for this filter to distinguish
-                    it from other filters in the same set
-  \param pParam     The name to use for the parameter in the ParameterList
-  \param pType      Set the XComboBox to use the corresponding
-                    XComboBox::XComboBoxTypes value
-  \param pDefault   The default internal id to select for this XComboBox
-  \param pRequired  Required parameters cannot be removed from the filter set
+/*!
+  Appends a parameter selection \a pName using an xcombobox to the filter set list using
+  output parameter name \a pParam.  The xcombobox type is specified by \a pType with an optional
+  default id that can be set using \a pDefault.  Use \a pRequired to flag whether the parameter is
+  required or not.
 */
 void ParameterWidget::appendComboBox(QString pName, QString pParam, int pType, QVariant pDefault, bool pRequired)
 {
@@ -393,14 +326,11 @@ void ParameterWidget::appendComboBox(QString pName, QString pParam, int pType, Q
   }
 }
 
-/** \brief Add a new XComboBox-based filter to the set of available filters.
-
-  \param pName      The user-visible name for this filter to distinguish
-                    it from other filters in the same set
-  \param pParam     The name to use for the parameter in the ParameterList
-  \param pQuery     Set the XComboBox to populate itself with this query
-  \param pDefault   The default internal id to select for this XComboBox
-  \param pRequired  Required parameters cannot be removed from the filter set
+/*!
+  Appends a parameter selection \a pName using an xcombobox to the filter set list using
+  output parameter name \a pParam.  The xcombobox type is populated by query string \a pQry with
+  an optional default id that can be set using \a pDefault. Use \a pRequired to flag whether the parameter is
+  required or not.
 */
 void ParameterWidget::appendComboBox(QString pName, QString pParam, QString pQuery, QVariant pDefault, bool pRequired)
 {
@@ -424,6 +354,7 @@ void ParameterWidget::appendComboBox(QString pName, QString pParam, QString pQue
 void ParameterWidget::applySaved(int pId, int filter_id)
 {
   QWidget *found = 0;
+  QDate tempdate;
   XSqlQuery qry;
   QString query;
   QString filterValue;
@@ -431,6 +362,9 @@ void ParameterWidget::applySaved(int pId, int filter_id)
   int xid, init_filter_id;
 
   init_filter_id = filter_id;
+
+  QMapIterator<int, QPair<QString, QVariant> > j(_filterValues);
+  QPair<QString, ParameterWidgetTypes> tempPair;
 
   clearFilters();
 
@@ -490,8 +424,7 @@ void ParameterWidget::applySaved(int pId, int filter_id)
       if (key.isEmpty())
       {
         //parametertype is no longer found, prompt user to delete filter
-        if (!isVisible() ||
-            QMessageBox::question(this, tr("Invalid Filter Set"), tr("This filter set contains an obsolete filter and will be deleted. Do you want to do this?"),
+        if (QMessageBox::question(this, tr("Invalid Filter Set"), tr("This filter set contains an obsolete filter and will be deleted. Do you want to do this?"),
                                   QMessageBox::No | QMessageBox::Default,
                                   QMessageBox::Yes) == QMessageBox::No)
           return;
@@ -550,12 +483,6 @@ void ParameterWidget::applySaved(int pId, int filter_id)
           if (custCluster != 0)
             custCluster->setId(tempFilterList[1].toInt());
           break;
-        case Shipto:
-          ShiptoCluster *shiptoCluster;
-          shiptoCluster = qobject_cast<ShiptoCluster*>(found);
-          if (shiptoCluster != 0)
-            shiptoCluster->setId(tempFilterList[1].toInt());
-          break;
         case Vendor:
           VendorCluster *vendCluster;
           vendCluster = qobject_cast<VendorCluster*>(found);
@@ -592,30 +519,6 @@ void ParameterWidget::applySaved(int pId, int filter_id)
           if (employeeCluster != 0)
             employeeCluster->setId(tempFilterList[1].toInt());
           break;
-        case SalesOrder:
-          OrderCluster *soCluster;
-          soCluster = qobject_cast<OrderCluster*>(found);
-          if (soCluster != 0)
-            soCluster->setId(tempFilterList[1].toInt());
-          break;
-        case PurchaseOrder:
-          OrderCluster *poCluster;
-          poCluster = qobject_cast<OrderCluster*>(found);
-          if (poCluster != 0)
-            poCluster->setId(tempFilterList[1].toInt());
-          break;
-        case TransferOrder:
-          OrderCluster *toCluster;
-          toCluster = qobject_cast<OrderCluster*>(found);
-          if (toCluster != 0)
-            toCluster->setId(tempFilterList[1].toInt());
-          break;
-        case WorkOrder:
-          WoCluster *woCluster;
-          woCluster = qobject_cast<WoCluster*>(found);
-          if (woCluster != 0)
-            woCluster->setId(tempFilterList[1].toInt());
-          break;
         case Site:
           WComboBox *wBox;
           wBox = qobject_cast<WComboBox*>(found);
@@ -643,13 +546,13 @@ void ParameterWidget::applySaved(int pId, int filter_id)
             {
               QStringList   savedval = tempFilterList[1].split(",");
               bool oldblk = tab->blockSignals(true);
-
-	      /* the obvious, loop calling tab->selectRow(), gives
-		 one selected row, so try this to get multiple
-		 selections: make only the desired values selectable,
-		 select everything, and connect to a slot that can
-		 clean up after us.  yuck.
-               */
+              /* the obvious, loop calling tab->selectRow(), gives one selected row,
+							 so try this to get multiple selections:
+							   make only the desired values selectable,
+							   select everything, and
+							   connect to a slot that can clean up after us.
+							 yuck.
+						*/
               for (int j = 0; j < tab->rowCount(); j++)
               {
                 if (! savedval.contains(tab->item(j, 0)->data(Qt::UserRole).toString()))
@@ -742,12 +645,6 @@ void ParameterWidget::applySaved(int pId, int filter_id)
         if (custCluster != 0)
           custCluster->setId(pp->defaultValue.toInt());
         break;
-      case Shipto:
-        ShiptoCluster *shiptoCluster;
-        shiptoCluster = qobject_cast<ShiptoCluster*>(found);
-        if (shiptoCluster != 0)
-          shiptoCluster->setId(pp->defaultValue.toInt());
-        break;
       case Vendor:
         VendorCluster *vendCluster;
         vendCluster = qobject_cast<VendorCluster*>(found);
@@ -783,30 +680,6 @@ void ParameterWidget::applySaved(int pId, int filter_id)
         employeeCluster = qobject_cast<EmpCluster*>(found);
         if (employeeCluster != 0)
           employeeCluster->setId(pp->defaultValue.toInt());
-        break;
-      case SalesOrder:
-        OrderCluster *soCluster;
-        soCluster = qobject_cast<OrderCluster*>(found);
-        if (soCluster != 0)
-          soCluster->setId(pp->defaultValue.toInt());
-        break;
-      case TransferOrder:
-        OrderCluster *toCluster;
-        toCluster = qobject_cast<OrderCluster*>(found);
-        if (toCluster != 0)
-          toCluster->setId(pp->defaultValue.toInt());
-        break;
-      case PurchaseOrder:
-        OrderCluster *poCluster;
-        poCluster = qobject_cast<OrderCluster*>(found);
-        if (poCluster != 0)
-          poCluster->setId(pp->defaultValue.toInt());
-        break;
-      case WorkOrder:
-        WoCluster *woCluster;
-        woCluster = qobject_cast<WoCluster*>(found);
-        if (woCluster != 0)
-          woCluster->setId(pp->defaultValue.toInt());
         break;
       case Site:
         WComboBox *wBox;
@@ -847,7 +720,6 @@ void ParameterWidget::applySaved(int pId, int filter_id)
             connect(tab, SIGNAL(itemClicked(QTableWidgetItem*)), this, SLOT(resetMultiselect(QTableWidgetItem*)));
 
             tab->blockSignals(oldblk);
-            storeFilterValue(-1, tab);
           }
         }
         break;
@@ -904,16 +776,13 @@ void ParameterWidget::changeFilterObject(int index)
   int siteid = -1;
 
   QWidget *widget = _filterGroup->findChild<QWidget *>("widget" + row);
-  QWidget *widget2 = _filterGroup->findChild<QWidget *>("widget2" + row);
   QWidget *button = _filterGroup->findChild<QToolButton *>("button" + row);
-  QHBoxLayout *layout = _filterGroup->findChild<QHBoxLayout *>("widgetLayout1" + row);
+  QHBoxLayout *layout = _filterGroup->findChild<QHBoxLayout *>("widgetLayout1" + row);;
+
+  QPair<QString, ParameterWidgetTypes> tempPair;
 
   if (widget && layout && button)
-  {
     delete widget;
-    if (widget2)
-      delete widget2;
-  }
   else
     return;
 
@@ -937,6 +806,7 @@ void ParameterWidget::changeFilterObject(int index)
       usernameCluster->setOrientation(Qt::Horizontal);
       usernameCluster->setLabel("");
 
+      connect(button, SIGNAL(clicked()), usernameCluster, SLOT( deleteLater() ) );
       connect(usernameCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -947,6 +817,7 @@ void ParameterWidget::changeFilterObject(int index)
       crmacctCluster->setOrientation(Qt::Horizontal);
       crmacctCluster->setLabel("");
 
+      connect(button, SIGNAL(clicked()), crmacctCluster, SLOT( deleteLater() ) );
       connect(crmacctCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -956,37 +827,9 @@ void ParameterWidget::changeFilterObject(int index)
       newWidget = custCluster;
       custCluster->setOrientation(Qt::Horizontal);
       custCluster->setLabel("");
-      custCluster->setDescriptionVisible(false);
-
-      connect(custCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
-    }
-    break;
-  case Shipto:
-    {
-      CustCluster *custCluster = new CustCluster(_filterGroup);
-      QWidget *custWidget = custCluster;
-      custCluster->setOrientation(Qt::Horizontal);
-      custCluster->setLabel("");
-      custCluster->setNameVisible(false);
-      custCluster->setDescriptionVisible(false);
 
       connect(button, SIGNAL(clicked()), custCluster, SLOT( deleteLater() ) );
-
-      ShiptoCluster *shiptoCluster = new ShiptoCluster(_filterGroup);
-      QWidget *newWidgetAlt = shiptoCluster;
-      shiptoCluster->setOrientation(Qt::Horizontal);
-      shiptoCluster->setLabel("");
-      shiptoCluster->setDescriptionVisible(false);
-
-      connect(custCluster, SIGNAL(newId(int)), shiptoCluster, SLOT(setCustid(int)));
-      connect(button, SIGNAL(clicked()), shiptoCluster, SLOT( deleteLater() ) );
-      connect(shiptoCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
-
-      custCluster->setObjectName("widget" + row);
-      newWidgetAlt->setObjectName("widget2" + row);
-      layout->insertWidget(0,custWidget);
-      layout->insertWidget(1,newWidgetAlt);
-      layout->addStretch(1);
+      connect(custCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
   case Vendor:
@@ -996,6 +839,7 @@ void ParameterWidget::changeFilterObject(int index)
       vendCluster->setOrientation(Qt::Horizontal);
       vendCluster->setLabel("");
 
+      connect(button, SIGNAL(clicked()), vendCluster, SLOT( deleteLater() ) );
       connect(vendCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1006,6 +850,7 @@ void ParameterWidget::changeFilterObject(int index)
       contactCluster->setDescriptionVisible(false);
       contactCluster->setLabel("");
 
+      connect(button, SIGNAL(clicked()), contactCluster, SLOT( deleteLater() ) );
       connect(contactCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1015,6 +860,7 @@ void ParameterWidget::changeFilterObject(int index)
       newWidget = glCluster;
       glCluster->setLabel("");
 
+      connect(button, SIGNAL(clicked()), glCluster, SLOT( deleteLater() ) );
       connect(glCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1025,6 +871,7 @@ void ParameterWidget::changeFilterObject(int index)
       projectCluster->setOrientation(Qt::Horizontal);
       projectCluster->setLabel("");
 
+      connect(button, SIGNAL(clicked()), projectCluster, SLOT( deleteLater() ) );
       connect(projectCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1036,6 +883,7 @@ void ParameterWidget::changeFilterObject(int index)
       itemCluster->setLabel("");
       itemCluster->setNameVisible(false);
 
+      connect(button, SIGNAL(clicked()), itemCluster, SLOT( deleteLater() ) );
       connect(itemCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1046,56 +894,8 @@ void ParameterWidget::changeFilterObject(int index)
       employeeCluster->setOrientation(Qt::Horizontal);
       employeeCluster->setLabel("");
 
+      connect(button, SIGNAL(clicked()), employeeCluster, SLOT( deleteLater() ) );
       connect(employeeCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
-    }
-    break;
-  case SalesOrder:
-    {
-      OrderCluster *soCluster = new OrderCluster(_filterGroup);
-      newWidget = soCluster;
-      soCluster->setDescriptionVisible(false);
-      soCluster->setOrientation(Qt::Horizontal);
-      soCluster->setAllowedTypes(OrderLineEdit::Sales);
-      soCluster->setAllowedStatuses(OrderLineEdit::AnyStatus);
-      soCluster->setLabel("");
-
-      connect(soCluster, SIGNAL(newId(int,QString)), this, SLOT( storeFilterValue(int) ) );
-    }
-    break;
-  case TransferOrder:
-    {
-      OrderCluster *toCluster = new OrderCluster(_filterGroup);
-      newWidget = toCluster;
-      toCluster->setDescriptionVisible(false);
-      toCluster->setOrientation(Qt::Horizontal);
-      toCluster->setAllowedTypes(OrderLineEdit::Transfer);
-      toCluster->setAllowedStatuses(OrderLineEdit::AnyStatus);
-      toCluster->setLabel("");
-
-      connect(toCluster, SIGNAL(newId(int,QString)), this, SLOT( storeFilterValue(int) ) );
-    }
-    break;
-  case PurchaseOrder:
-    {
-      OrderCluster *poCluster = new OrderCluster(_filterGroup);
-      newWidget = poCluster;
-      poCluster->setDescriptionVisible(false);
-      poCluster->setOrientation(Qt::Horizontal);
-      poCluster->setAllowedTypes(OrderLineEdit::Purchase);
-      poCluster->setAllowedStatuses(OrderLineEdit::AnyStatus);
-      poCluster->setLabel("");
-
-      connect(poCluster, SIGNAL(newId(int,QString)), this, SLOT( storeFilterValue(int) ) );
-    }
-    break;
-  case WorkOrder:
-    {
-      WoCluster *woCluster = new WoCluster(_filterGroup);
-      newWidget = woCluster;
-      woCluster->setOrientation(Qt::Horizontal);
-      woCluster->setLabel("");
-
-      connect(woCluster, SIGNAL(newId(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
   case Site:
@@ -1104,6 +904,7 @@ void ParameterWidget::changeFilterObject(int index)
       siteid = wBox->id();
       newWidget = wBox;
 
+      connect(button, SIGNAL(clicked()), wBox, SLOT( deleteLater() ) );
       connect(wBox, SIGNAL(newID(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1115,8 +916,7 @@ void ParameterWidget::changeFilterObject(int index)
       xBox->setAllowNull(true);
 
       xBox->setType(_params[paramIndex(mybox->currentText())]->comboType);
-      if (_params[paramIndex(mybox->currentText())]->comboType == XComboBox::Adhoc &&
-          _params[paramIndex(mybox->currentText())]->query.length())
+      if (_params[paramIndex(mybox->currentText())]->comboType == XComboBox::Adhoc)
       {
         qry.prepare( _params[paramIndex(mybox->currentText())]->query );
 
@@ -1124,6 +924,7 @@ void ParameterWidget::changeFilterObject(int index)
         xBox->populate(qry);
       }
       //xBox->setAllowNull(true);
+      connect(button, SIGNAL(clicked()), xBox, SLOT( deleteLater() ) );
       connect(xBox, SIGNAL(newID(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1174,6 +975,8 @@ void ParameterWidget::changeFilterObject(int index)
       QLineEdit *lineEdit = new QLineEdit(_filterGroup);
       lineEdit->hide();
       newWidget = lineEdit;
+
+      connect(button, SIGNAL(clicked()), lineEdit, SLOT( deleteLater() ) );
     }
     break;
   case CheckBox:
@@ -1181,6 +984,7 @@ void ParameterWidget::changeFilterObject(int index)
       QCheckBox *checkBox = new QCheckBox(_filterGroup);
       newWidget = checkBox;
 
+      connect(button, SIGNAL(clicked()), checkBox, SLOT( deleteLater() ) );
       connect(checkBox, SIGNAL(stateChanged(int)), this, SLOT( storeFilterValue(int) ) );
     }
     break;
@@ -1189,7 +993,8 @@ void ParameterWidget::changeFilterObject(int index)
       QLineEdit *lineEdit = new QLineEdit(_filterGroup);
       newWidget = lineEdit;
 
-      connect(lineEdit, SIGNAL(textChanged(QString)), this, SLOT( storeFilterValue() ) );
+      connect(button, SIGNAL(clicked()), lineEdit, SLOT( deleteLater() ) );
+      connect(lineEdit, SIGNAL(editingFinished()), this, SLOT( storeFilterValue() ) );
     }
     break;
   }
@@ -1210,8 +1015,6 @@ void ParameterWidget::changeFilterObject(int index)
       storeFilterValue(siteid, newWidget);
       return;
     }
-    else
-      storeFilterValue(-1, newWidget);
   }
   _saveButton->setDisabled(true);
 }
@@ -1248,16 +1051,9 @@ void ParameterWidget::clearFilters()
     del.takeFirst();
   }
 
-  _filtersLayout = new QGridLayout();
-  _filtersLayout->setObjectName("_filtersLayout");
-  gridLayout_2->addLayout(_filtersLayout, 1, 0, 1, 1);
-
   _filterValues.clear();
-  _filterWidgets.clear();
   _usedTypes.clear();
   _addFilterRow->setDisabled(false);
-
-  emit cleared();
 }
 
 
@@ -1329,8 +1125,9 @@ void ParameterWidget::removeParam(int pRow)
   QString filterType = filterVar.toString();
   QStringList split = filterType.split(":");
 
+  QPair<QString, QVariant> tempPair = _filterValues.value(split[0].toInt());
+
   _filterValues.remove(split[0].toInt());
-  _filterWidgets.remove(split[0].toInt());
 
 
   test2 = _filtersLayout->itemAtPosition(pRow, 0)->layout()->takeAt(1);
@@ -1349,6 +1146,8 @@ void ParameterWidget::save()
 {
   QString filter = "";
   QString variantString;
+  QString username;
+  QString query;
   QVariant tempVar;
   QDate today = QDate::currentDate();
   int filter_id;
@@ -1448,20 +1247,6 @@ void ParameterWidget::setEnabled(QString pName, bool pEnabled)
     qWarning("Parameter %s not found.", qPrintable(pName));
 }
 
-void ParameterWidget::setFiltersVisible(bool visible)
-{
-  if (_filterGroup->isVisible() == visible)
-    return;
-
-  if (visible && _filtersLayout->rowCount() == 1)
-    addParam();
-
-  _filterGroup->setVisible(visible);
-  if (!_filterButton->isChecked() == visible)
-    _filterButton->setChecked(visible);
-  setFiltersVisabiltyPreference();
-}
-
 void ParameterWidget::setFiltersVisabiltyPreference()
 {
   QString pname;
@@ -1514,7 +1299,7 @@ void ParameterWidget::setSavedFilters(int defaultId)
             " UNION "
             " SELECT filter_id, filter_name, 2 AS seq "
             " FROM filter "
-            " WHERE COALESCE(filter_username,getEffectiveXtUser())=getEffectiveXtUser() "
+            " WHERE COALESCE(filter_username,current_user)=current_user "
             " AND filter_screen=:screen "
             " ORDER BY seq, filter_name ";
 
@@ -1594,16 +1379,10 @@ int ParameterWidget::getFilterIndex(const QWidget *filterwidget)
       {
         QLayoutItem *childLI = rowgrid->itemAtPosition(0, 0);
         QHBoxLayout *filterlyt = qobject_cast<QHBoxLayout *>(childLI->layout()->itemAt(0)->layout());
-        if (filterlyt)
+        if (filterlyt && filterlyt->itemAt(0)->widget() == filterwidget)
         {
-          for (int n = 0; n < filterlyt->count(); n++)
-          {
-            if (filterlyt->itemAt(n)->widget() == filterwidget)
-            {
-              index = i;
-              break;
-            }
-          }
+          index = i;
+          break;
         }
       }
     }
@@ -1705,13 +1484,6 @@ void ParameterWidget::storeFilterValue(int pId, QObject* filter)
     _filterValues[foundRow] = qMakePair(pp->param, QVariant(value));
     emit updated();
   }
-  else if (classname == "ProjectCluster")
-  {
-    ProjectCluster *projectCluster = (ProjectCluster *)filter;
-    _filterValues[foundRow] = qMakePair(pp->param, QVariant(projectCluster->id()));
-    emit updated();
-  }
-  _filterWidgets[foundRow] = (QWidget *)filter;
 
   if (!_usedTypes.isEmpty())
     _usedTypes.remove(foundRow);
@@ -1767,9 +1539,9 @@ void ParameterWidget::setSelectedFilter(int filter_id)
     classname = parent()->metaObject()->className();
 
   QString query = "UPDATE filter SET filter_selected=false "
-                  "WHERE filter_screen=:screen AND filter_username=getEffectiveXtUser()";
+                  "WHERE filter_screen=:screen AND filter_username=current_user";
   QString query2 = "UPDATE filter SET filter_selected=true "
-                   "WHERE filter_screen=:screen AND filter_id=:id AND filter_username=getEffectiveXtUser()";
+                   "WHERE filter_screen=:screen AND filter_id=:id AND filter_username=current_user";
   qry.prepare(query);
   qry.bindValue(":screen", classname);
 
@@ -1792,95 +1564,6 @@ bool ParameterWidget::containsUsedType(QString value)
   }
 
   return false;
-}
-
-/*!
-  Returns a text based list separated by line feeds of parameter names and selected values.
-  Can be useful when passed to printed reports as a header description of what filter has been
-  applied to the presented data.
-*/
-QString ParameterWidget::filter()
-{
-  QStringList filters;
-  QMapIterator<int, QPair<QString, QVariant> > i(_filterValues);
-  while (i.hasNext())
-  {
-    i.next();
-    QPair<QString, QVariant> tempPair = i.value();
-
-    QMapIterator<int, ParamProps*> p(_params);
-    while (p.hasNext())
-    {
-      p.next();
-      ParamProps *pp = p.value();
-      if (pp->param == tempPair.first)
-      {
-        QString value = ": ";
-        QWidget *w = _filterWidgets.value(i.key());
-        if (w->inherits("UsernameCluster"))
-        {
-          UsernameCluster *usernameCluster = (UsernameCluster *)w;
-          value.append(usernameCluster->username());
-        }
-        else if (w->inherits("ContactCluster"))
-        {
-          ContactCluster *contactCluster = (ContactCluster *)w;
-          value.append(contactCluster->name());
-        }
-        else if (w->inherits("ItemCluster"))
-        {
-          ItemCluster *itemCluster = (ItemCluster *)w;
-          value.append(itemCluster->number() + " - " + itemCluster->description());
-        }
-        else if (w->inherits("VirtualCluster"))
-        {
-          VirtualCluster *virtualCluster = (VirtualCluster *)w;
-          value.append(virtualCluster->number() + " - " + virtualCluster->name());
-        }
-        else if (w->inherits("XComboBox"))
-        {
-          XComboBox *comboBox = (XComboBox *)w;
-          value.append(comboBox->currentText());
-        }
-        else if (w->inherits("DLineEdit"))
-        {
-          DLineEdit *dlineEdit = (DLineEdit *)w;
-          value.append(dlineEdit->date().toString());
-        }
-        else if (w->inherits("QLineEdit"))
-        {
-          QLineEdit *lineEdit = (QLineEdit *)w;
-          if (!w->isHidden())
-            value.append(lineEdit->text());
-          else
-            value.clear();
-        }
-        else if (w->inherits("QTableWidget"))
-        {
-          QTableWidget *table = (QTableWidget *)w;
-          QList<QTableWidgetItem *> items = table->selectedItems();
-          QStringList rowvals;
-          for (int i = 0; i < items.count(); i++)
-            rowvals.append(items.at(i)->data(Qt::DisplayRole).toString());
-          value.append(rowvals.join(","));
-        }
-        else if (w->inherits("QCheckBox"))
-        {
-          QCheckBox *checkBox = (QCheckBox *)w;
-          if (checkBox->isChecked())
-            value.append(tr("True"));
-          else
-            value.append(tr("False"));
-        }
-        else
-          value.clear();
-
-        filters.append(pp->name + value);
-        break;
-      }
-    }
-  }
-  return filters.join("\n");
 }
 
 // script exposure ///////////////////////////////////////////////////////////
@@ -1918,7 +1601,6 @@ void setupParameterWidget(QScriptEngine *engine)
 
   widget.setProperty("Crmacct", QScriptValue(engine, ParameterWidget::Crmacct), QScriptValue::ReadOnly | QScriptValue::Undeletable);
   widget.setProperty("Customer", QScriptValue(engine, ParameterWidget::Customer), QScriptValue::ReadOnly | QScriptValue::Undeletable);
-  widget.setProperty("Shipto", QScriptValue(engine, ParameterWidget::Shipto), QScriptValue::ReadOnly | QScriptValue::Undeletable);
   widget.setProperty("Vendor", QScriptValue(engine, ParameterWidget::Vendor), QScriptValue::ReadOnly | QScriptValue::Undeletable);
   widget.setProperty("User", QScriptValue(engine, ParameterWidget::User), QScriptValue::ReadOnly | QScriptValue::Undeletable);
   widget.setProperty("Text", QScriptValue(engine, ParameterWidget::Text), QScriptValue::ReadOnly | QScriptValue::Undeletable);
@@ -1933,11 +1615,8 @@ void setupParameterWidget(QScriptEngine *engine)
   widget.setProperty("Item", QScriptValue(engine, ParameterWidget::Item), QScriptValue::ReadOnly | QScriptValue::Undeletable);
   widget.setProperty("Employee", QScriptValue(engine, ParameterWidget::Employee), QScriptValue::ReadOnly | QScriptValue::Undeletable);
   widget.setProperty("Site", QScriptValue(engine, ParameterWidget::Site), QScriptValue::ReadOnly | QScriptValue::Undeletable);
-  widget.setProperty("SalesOrder", QScriptValue(engine, ParameterWidget::SalesOrder), QScriptValue::ReadOnly | QScriptValue::Undeletable);
-  widget.setProperty("WorkOrder", QScriptValue(engine, ParameterWidget::WorkOrder), QScriptValue::ReadOnly | QScriptValue::Undeletable);
-  widget.setProperty("PurchaseOrder", QScriptValue(engine, ParameterWidget::PurchaseOrder), QScriptValue::ReadOnly | QScriptValue::Undeletable);
-  widget.setProperty("TransferOrder", QScriptValue(engine, ParameterWidget::TransferOrder), QScriptValue::ReadOnly | QScriptValue::Undeletable);
 
   engine->globalObject().setProperty("ParameterWidget", widget, QScriptValue::ReadOnly | QScriptValue::Undeletable);
 }
+
 

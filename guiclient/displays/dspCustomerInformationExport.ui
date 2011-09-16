@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
+open source Enterprise Resource Planning software suite,
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
+It is licensed to you under the Common Public Attribution License
+version 1.0, the full text of which (including xTuple-specific Exhibits)
+is available at www.xtuple.com/CPAL.  By using this software, you agree
+to be bound by its terms.</comment>
+ <class>dspCustomerInformationExport</class>
+ <widget class="QWidget" name="dspCustomerInformationExport">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>574</width>
+    <height>349</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Customer Information Export</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="ParameterGroup" name="_customerType">
+           <property name="title">
+            <string/>
+           </property>
+           <property name="fixedSize">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="_optionsGroup">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout">
+              <property name="spacing">
+               <number>0</number>
+              </property>
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="margin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="XCheckBox" name="_showInactive">
+                  <property name="text">
+                   <string>Show Inactive</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::Expanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>0</width>
+                    <height>16</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+           <zorder></zorder>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QGroupBox" name="groupBox29">
+           <property name="title">
+            <string>General</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout">
+                <item>
+                 <widget class="XCheckBox" name="_number">
+                  <property name="text">
+                   <string>Number</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="XCheckBox" name="_name">
+                  <property name="text">
+                   <string>Name</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>16</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+           <zorder></zorder>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="_billingGroup">
+           <property name="title">
+            <string>Billing Address:</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_3">
+                <item row="0" column="0">
+                 <widget class="XCheckBox" name="_billAddress1">
+                  <property name="text">
+                   <string>Address 1</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="XCheckBox" name="_billContact">
+                  <property name="text">
+                   <string>Contact</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="XCheckBox" name="_billAddress2">
+                  <property name="text">
+                   <string>Address 2</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="XCheckBox" name="_billPhone">
+                  <property name="text">
+                   <string>Phone</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="XCheckBox" name="_billAddress3">
+                  <property name="text">
+                   <string>Address 3</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="XCheckBox" name="_billFAX">
+                  <property name="text">
+                   <string>FAX</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="XCheckBox" name="_billCity">
+                  <property name="text">
+                   <string>City</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="XCheckBox" name="_billEmail">
+                  <property name="text">
+                   <string>Email</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="XCheckBox" name="_billState">
+                  <property name="text">
+                   <string>State</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="XCheckBox" name="_billZipCode">
+                  <property name="text">
+                   <string>Zip Code</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="XCheckBox" name="_billCountry">
+                  <property name="text">
+                   <string>Country</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Preferred</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="_corrGroup">
+           <property name="title">
+            <string>Correspondence Address:</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_5">
+                <item row="0" column="0">
+                 <widget class="XCheckBox" name="_corrAddress1">
+                  <property name="text">
+                   <string>Address 1</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="XCheckBox" name="_corrContact">
+                  <property name="text">
+                   <string>Contact</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="XCheckBox" name="_corrAddress2">
+                  <property name="text">
+                   <string>Address 2</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="XCheckBox" name="_corrPhone">
+                  <property name="text">
+                   <string>Phone</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="XCheckBox" name="_corrAddress3">
+                  <property name="text">
+                   <string>Address 3</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="XCheckBox" name="_corrFAX">
+                  <property name="text">
+                   <string>FAX</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0">
+                 <widget class="XCheckBox" name="_corrCity">
+                  <property name="text">
+                   <string>City</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1">
+                 <widget class="XCheckBox" name="_corrEmail">
+                  <property name="text">
+                   <string>Email</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="XCheckBox" name="_corrState">
+                  <property name="text">
+                   <string>State</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="XCheckBox" name="_corrZipCode">
+                  <property name="text">
+                   <string>Zip Code</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="XCheckBox" name="_corrCountry">
+                  <property name="text">
+                   <string>Country</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Preferred</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>52</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="5" margin="5"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>ParameterGroup</class>
+   <extends>QGroupBox</extends>
+   <header>parametergroup.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_customerType</tabstop>
+  <tabstop>_number</tabstop>
+  <tabstop>_name</tabstop>
+  <tabstop>_billAddress1</tabstop>
+  <tabstop>_billAddress2</tabstop>
+  <tabstop>_billAddress3</tabstop>
+  <tabstop>_billCity</tabstop>
+  <tabstop>_billState</tabstop>
+  <tabstop>_billZipCode</tabstop>
+  <tabstop>_billCountry</tabstop>
+  <tabstop>_billContact</tabstop>
+  <tabstop>_billPhone</tabstop>
+  <tabstop>_billFAX</tabstop>
+  <tabstop>_billEmail</tabstop>
+  <tabstop>_corrAddress1</tabstop>
+  <tabstop>_corrAddress2</tabstop>
+  <tabstop>_corrAddress3</tabstop>
+  <tabstop>_corrCity</tabstop>
+  <tabstop>_corrState</tabstop>
+  <tabstop>_corrZipCode</tabstop>
+  <tabstop>_corrCountry</tabstop>
+  <tabstop>_corrContact</tabstop>
+  <tabstop>_corrPhone</tabstop>
+  <tabstop>_corrFAX</tabstop>
+  <tabstop>_corrEmail</tabstop>
+  <tabstop>_showInactive</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

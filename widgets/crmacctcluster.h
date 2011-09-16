@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -11,7 +11,7 @@
 #ifndef _crmaccttCluster_h
 #define _crmaccttCluster_h
 
-#include "crmcluster.h"
+#include "virtualCluster.h"
 #include "xcheckbox.h"
 
 class XComboBox;
@@ -23,16 +23,16 @@ class XTUPLEWIDGETS_EXPORT CRMAcctInfoAction
     virtual void crmacctInformation(QWidget* parent, int pCustid) = 0;
 };
 
-class XTUPLEWIDGETS_EXPORT CRMAcctLineEdit : public CrmClusterLineEdit
+class XTUPLEWIDGETS_EXPORT CRMAcctLineEdit : public VirtualClusterLineEdit
 {
     Q_OBJECT
 
     public:
 	CRMAcctLineEdit(QWidget*, const char* = 0);
 
-        enum CRMAcctSubtype { Crmacct, Competitor, Cust,     Employee,
-                              Partner, Prospect,   SalesRep, Taxauth,
-                              User,    Vend,       CustAndProspect };
+	enum CRMAcctSubtype { Crmacct,	Competitor,	Cust,	Partner,
+			      Prospect,	Taxauth,	Vend,
+			      CustAndProspect };
 
 	virtual void		setSubtype(const CRMAcctSubtype);
 	virtual CRMAcctSubtype	subtype()	const;
@@ -63,9 +63,9 @@ class XTUPLEWIDGETS_EXPORT CRMAcctList : public VirtualList
 
     protected:
 	QWidget* _parent;
+	QString	 _query;
 	bool	 _showInactive;
 	enum CRMAcctLineEdit::CRMAcctSubtype _subtype;
-        ParameterList *_queryParams;
 };
 
 class XTUPLEWIDGETS_EXPORT CRMAcctSearch : public VirtualSearch
@@ -100,7 +100,6 @@ class XTUPLEWIDGETS_EXPORT CRMAcctSearch : public VirtualSearch
         XComboBox*      _comboCombo;
 
 	enum CRMAcctLineEdit::CRMAcctSubtype _subtype;
-        ParameterList *_queryParams;
 
     private:
 };

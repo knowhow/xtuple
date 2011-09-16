@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -10,11 +10,17 @@
 
 #include "massExpireComponent.h"
 
+#include <qvariant.h>
 #include <QMessageBox>
 #include <QSqlQuery>
 
+/*
+ *  Constructs a massExpireComponent as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ */
 massExpireComponent::massExpireComponent(QWidget* parent, const char* name, Qt::WFlags fl)
-  : XWidget(parent, name, fl)
+    : XWidget(parent, name, fl)
 {
   setupUi(this);
 
@@ -34,17 +40,24 @@ massExpireComponent::massExpireComponent(QWidget* parent, const char* name, Qt::
   connect(_close, SIGNAL(clicked()), this, SLOT(close()));
 }
 
+/*
+ *  Destroys the object and frees any allocated resources
+ */
 massExpireComponent::~massExpireComponent()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
 void massExpireComponent::languageChange()
 {
-  retranslateUi(this);
+    retranslateUi(this);
 }
 
-enum SetResponse massExpireComponent::set(const ParameterList &pParams)
+enum SetResponse massExpireComponent::set(ParameterList &pParams)
 {
   XWidget::set(pParams);
   _captive = TRUE;

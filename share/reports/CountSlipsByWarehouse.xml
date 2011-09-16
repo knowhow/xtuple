@@ -3,12 +3,6 @@
  <title>Count Slips By Site</title>
  <name>CountSlipsByWarehouse</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -17,22 +11,22 @@
  <leftmargin>50</leftmargin>
  <querysource>
   <name>head</name>
-  <sql>SELECT &lt;? if exists("warehous_id") ?>
+  <sql>SELECT &lt;? if exists(&quot;warehous_id&quot;) ?>
          ( SELECT warehous_code
              FROM warehous
-            WHERE (warehous_id=&lt;? value("warehous_id") ?>) )
+            WHERE (warehous_id=&lt;? value(&quot;warehous_id&quot;) ?>) )
        &lt;? else ?>
          text('All Sites')
        &lt;? endif ?>
        AS warehouse,
-       formatDate(&lt;? value("startDate") ?>) AS startdate,
-       formatDate(&lt;? value("endDate") ?>) AS enddate
+       formatDate(&lt;? value(&quot;startDate&quot;) ?>) AS startdate,
+       formatDate(&lt;? value(&quot;endDate&quot;) ?>) AS enddate
 </sql>
  </querysource>
  <querysource>
   <name>detail</name>
   <sql>SELECT invcnt_tagnumber AS tagnum,
-       &lt;? if exists("asNumeric") ?>
+       &lt;? if exists(&quot;asNumeric&quot;) ?>
          int4(cntslip_number)
        &lt;? else ?>
          cntslip_number
@@ -51,12 +45,12 @@
    AND (invcnt_itemsite_id=itemsite_id)
    AND (itemsite_item_id=item_id)
    AND (itemsite_warehous_id=warehous_id)
-   AND (cntslip_entered BETWEEN &lt;? value("startDate") ?> AND (&lt;? value("endDate") ?>::DATE + 1))
-&lt;? if not exists("showUnposted") ?>
+   AND (cntslip_entered BETWEEN &lt;? value(&quot;startDate&quot;) ?> AND &lt;? value(&quot;endDate&quot;) ?>)
+&lt;? if not exists(&quot;showUnposted&quot;) ?>
    AND (cntslip_posted)
 &lt;? endif ?>
-&lt;? if exists("warehous_id") ?>
-   AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
+&lt;? if exists(&quot;warehous_id&quot;) ?>
+   AND (itemsite_warehous_id=&lt;? value(&quot;warehous_id&quot;) ?>)
 &lt;? endif ?>
 )
 ORDER BY slipnum;</sql>

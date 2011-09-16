@@ -3,10 +3,6 @@
  <title>Receipts and Returns By Date</title>
  <name>ReceiptsReturnsByDate</name>
  <description></description>
- <grid>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -357,22 +353,6 @@
    <vcenter/>
    <string>Qty.</string>
   </label>
-  <label>
-   <rect>
-    <x>5</x>
-    <y>200</y>
-    <width>100</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Vendor</string>
-  </label>
  </rpthead>
  <pghead>
   <firstpage/>
@@ -536,22 +516,6 @@
    <hcenter/>
    <vcenter/>
    <string>Qty.</string>
-  </label>
-  <label>
-   <rect>
-    <x>5</x>
-    <y>21</y>
-    <width>100</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <left/>
-   <vcenter/>
-   <string>Vendor</string>
   </label>
  </pghead>
  <section>

@@ -3,12 +3,6 @@
  <title>Inventory Availability by Source Vendor</title>
  <name>InventoryAvailabilityBySourceVendor</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -17,7 +11,15 @@
  <leftmargin>50</leftmargin>
  <querysource>
   <name>head</name>
-  <sql>SELECT &lt;? if exists("byDays") ?>
+  <sql>SELECT &lt;? if exists("warehous_id") ?>
+         ( SELECT warehous_code
+             FROM warehous
+            WHERE (warehous_id=&lt;? value("warehous_id") ?>) )
+       &lt;? else ?>
+         text('All Sites')
+       &lt;? endif ?>
+       AS warehouse,
+       &lt;? if exists("byDays") ?>
          (text('Look ahead ') || text(&lt;? value("byDays") ?>) || text(' days'))
        &lt;? elseif exists("byDate") ?>
          (text('Cutoff date ') || formatDate(&lt;? value("byDate") ?>))
@@ -26,7 +28,24 @@
        &lt;? else ?>
          text('Item Site Lead Time')
        &lt;? endif ?>
-       AS ltcriteria</sql>
+       AS ltcriteria,
+&lt;? if exists("vend_id") ?>
+       text('Vendor:') AS vend_label,
+       vend_name AS vend_value
+  FROM vend
+ WHERE (vend_id=&lt;? value("vend_id") ?>)
+&lt;? elseif exists("vendtype_id") ?>
+       text('Vendor Type:') AS vend_label,
+       vendtype_code AS vend_value
+  FROM vendtype
+ WHERE (vendtype_id=&lt;? value("vendtype_id") ?>)
+&lt;? elseif exists("vendtype_pattern") ?>
+       text('Vendor Type:') AS vend_label,
+       text(&lt;? value("vendtype_pattern") ?>) AS vend_value
+&lt;? else ?>
+       text('Vendor:') AS vend_label,
+       text('All Vendors') AS vend_value
+&lt;? endif ?></sql>
  </querysource>
  <querysource>
   <name>detail</name>
@@ -44,95 +63,46 @@
        formatQty(outlevel) AS f_outlevel,
        (qtyonhand - allocated + ordered) AS available,
        formatQty(qtyonhand - allocated + ordered) AS f_available
-  FROM (SELECT 
-           &lt;? if reExists("[vV]end") ?>
-             DISTINCT
-           &lt;? endif ?>
-             itemsite_id,
-             CASE WHEN (item_type IN ('P', 'O')) THEN 1
-                  WHEN (item_type IN ('M')) THEN 2
-                  ELSE 0
-             END AS altId,
-             item_number, item_descrip1, item_descrip2, item_inv_uom_id,
-             warehous_id, warehous_code, itemsite_leadtime,
-             itemsite_qtyonhand AS qtyonhand,
-             CASE WHEN itemsite_useparams THEN itemsite_reorderlevel
-                  ELSE 0.0
-             END AS reorderlevel,
-             CASE WHEN itemsite_useparams THEN itemsite_ordertoqty
-                  ELSE 0.0
-             END AS outlevel,
-             &lt;? if exists("byVend") ?>
+  FROM (SELECT item_number,
+               item_descrip1,
+               item_descrip2,
+               warehous_code,
+               itemsite_leadtime,
+               CASE WHEN(itemsite_useparams) THEN itemsite_reorderlevel ELSE 0.0 END AS reorderlevel,
+               CASE WHEN(itemsite_useparams) THEN itemsite_ordertoqty ELSE 0.0 END AS outlevel,
+               itemsite_qtyonhand AS qtyonhand,
                vend_number,
-             &lt;? else ?>
-               NULL AS vend_number,
-             &lt;? endif ?>
-             &lt;? if exists("byLeadTime") ?>
-               qtyAllocated(itemsite_id, itemsite_leadtime) AS allocated,
-               qtyOrdered(itemsite_id,   itemsite_leadtime) AS ordered, 
-               qtypr(itemsite_id,   itemsite_leadtime) AS requests
-             &lt;? elseif exists("byDays") ?>
-               qtyAllocated(itemsite_id, CAST(&lt;? value("byDays") ?> AS INTEGER)) AS allocated,
-               qtyOrdered(itemsite_id,   CAST(&lt;? value("byDays") ?> AS INTEGER)) AS ordered,
-               qtypr(itemsite_id,   CAST(&lt;? value("byDays") ?> AS INTEGER)) AS requests  
-             &lt;? elseif exists("byDate") ?>
+&lt;? if exists("byDays") ?>
+               qtyAllocated(itemsite_id, &lt;? value("byDays") ?>) AS allocated,
+               qtyOrdered(itemsite_id, &lt;? value("byDays") ?>) AS ordered
+&lt;? elseif exists("byDate") ?>
                qtyAllocated(itemsite_id, (&lt;? value("byDate") ?> - CURRENT_DATE)) AS allocated,
-               qtyOrdered(itemsite_id,   (&lt;? value("byDate") ?> - CURRENT_DATE)) AS ordered,
-               qtypr(itemsite_id,   (&lt;? value("byDate") ?> - CURRENT_DATE)) AS requests 
-             &lt;? elseif exists("byDates") ?>
+               qtyOrdered(itemsite_id, (&lt;? value("byDate") ?> - CURRENT_DATE)) AS ordered
+&lt;? elseif exists("byDates") ?>
                qtyAllocated(itemsite_id, &lt;? value("startDate") ?>, &lt;? value("endDate") ?>) AS allocated,
-               qtyOrdered(itemsite_id,   &lt;? value("startDate") ?>, &lt;? value("endDate") ?>) AS ordered,
-               qtypr(itemsite_id,   &lt;? value("startDate") ?>, &lt;? value("endDate") ?>) AS requests
-             &lt;? endif ?>
-      FROM item, itemsite, warehous 
-           &lt;? if reExists("[vV]end") ?>
-             , vend JOIN itemsrc ON (itemsrc_vend_id=vend_id)
-           &lt;? endif ?>
-      WHERE ( (itemsite_active)
-          AND (itemsite_item_id=item_id)
-          AND (itemsite_warehous_id=warehous_id)
-          &lt;? if exists("warehous_id") ?>
-            AND (warehous_id=&lt;? value("warehous_id") ?>)
-          &lt;? endif ?>
-          &lt;? if exists("item_id") ?>
-            AND (item_id=&lt;? value("item_id") ?>)
-          &lt;? elseif exists("classcode_id") ?>
-            AND (item_classcode_id=&lt;? value("classcode_id") ?>)
-          &lt;? elseif exists("classcode_pattern") ?>
-            AND (item_classcode_id IN (SELECT classcode_id
-                                       FROM classcode
-                                       WHERE (classcode_code ~ &lt;? value("classcode_pattern") ?>)))
-          &lt;? elseif exists("plancode_id") ?>
-            AND (itemsite_plancode_id=&lt;? value("plancode_id") ?>)
-          &lt;? elseif exists("plancode_pattern") ?>
-            AND (itemsite_plancode_id IN (SELECT plancode_id
-                                          FROM plancode
-                                          WHERE (plancode_code ~ &lt;? value("plancode_pattern") ?>)))
-          &lt;? elseif exists("itemgrp_id") ?>
-            AND (item_id IN (SELECT itemgrpitem_item_id
-                             FROM itemgrpitem
-                             WHERE (itemgrpitem_itemgrp_id=&lt;? value("itemgrp_id") ?>)))
-          &lt;? elseif exists("itemgrp_pattern") ?>
-            AND (item_id IN (SELECT itemgrpitem_item_id
-                             FROM itemgrpitem, itemgrp
-                             WHERE ( (itemgrpitem_itemgrp_id=itemgrp_id)
-                                    AND (itemgrp_name ~ &lt;? value("itemgrp_pattern") ?>) ) ))
-          &lt;? elseif exists("itemgrp") ?>
-            AND (item_id IN (SELECT DISTINCT itemgrpitem_item_id FROM itemgrpitem))
-          &lt;? endif ?>
-          &lt;? if reExists("[vV]end") ?>
-            AND (itemsrc_item_id=item_id)
-          &lt;? endif ?>
-          &lt;? if exists("vend_id") ?>
-            AND (vend_id=&lt;? value("vend_id") ?>)
-          &lt;? elseif exists("vendtype_id") ?>
-            AND (vend_vendtype_id=&lt;? value("vendtype_id") ?>)
-          &lt;? elseif exists("vendtype_pattern") ?>
-            AND (vend_vendtype_id IN (SELECT vendtype_id
-                                      FROM vendtype
-                                      WHERE (vendtype_code ~ &lt;? value("vendtype_pattern") ?>)))
-          &lt;? endif ?>
-      ) ) AS data
+               qtyOrdered(itemsite_id, &lt;? value("startDate") ?>, &lt;? value("endDate") ?>) AS ordered
+&lt;? else ?>
+               qtyAllocated(itemsite_id, itemsite_leadtime) AS allocated,
+               qtyOrdered(itemsite_id, itemsite_leadtime) AS ordered
+&lt;? endif ?>
+          FROM item, itemsite, warehous, vend, itemsrc
+         WHERE ((itemsite_active)
+           AND (itemsite_item_id=item_id)
+           AND (itemsrc_item_id=item_id)
+           AND (itemsite_warehous_id=warehous_id)
+           AND (itemsrc_vend_id=vend_id)
+&lt;? if exists("vend_id") ?>
+           AND (vend_id=&lt;? value("vend_id") ?>)
+&lt;? elseif exists("vendtype_id") ?>
+           AND (vend_vendtype_id=&lt;? value("vendtype_id") ?>)
+&lt;? elseif exists("vendtype_pattern") ?>
+           AND (vend_vendtype_id IN (SELECT vendtype_id FROM vendtype WHERE (vendtype_code ~ &lt;? value("vendtype_pattern") ?>)))
+&lt;? endif ?>
+&lt;? if exists("warehous_id") ?>
+           AND (warehous_id=&lt;? value("warehous_id") ?>)
+&lt;? endif ?>
+           )
+       ) AS data
 &lt;? if exists("showReorder") ?>
  WHERE ( ((qtyonhand - allocated + ordered) &lt;= reorderlevel)
   &lt;? if exists("ignoreReorderAtZero") ?>
@@ -146,6 +116,22 @@ ORDER BY vend_number, item_number, warehous_code DESC;</sql>
  </querysource>
  <rpthead>
   <height>221</height>
+  <label>
+   <rect>
+    <x>30</x>
+    <y>140</y>
+    <width>105</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Site:</string>
+  </label>
   <label>
    <rect>
     <x>330</x>
@@ -194,6 +180,25 @@ ORDER BY vend_number, item_number, warehous_code DESC;</sql>
    <vcenter/>
    <string>Allocated</string>
   </label>
+  <field>
+   <rect>
+    <x>15</x>
+    <y>120</y>
+    <width>120</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>vend_label</column>
+   </data>
+  </field>
   <label>
    <rect>
     <x>540</x>
@@ -210,6 +215,25 @@ ORDER BY vend_number, item_number, warehous_code DESC;</sql>
    <vcenter/>
    <string>On Order</string>
   </label>
+  <field>
+   <rect>
+    <x>140</x>
+    <y>140</y>
+    <width>150</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>warehouse</column>
+   </data>
+  </field>
   <line>
    <xstart>5</xstart>
    <ystart>215</ystart>
@@ -217,6 +241,25 @@ ORDER BY vend_number, item_number, warehous_code DESC;</sql>
    <yend>215</yend>
    <weight>2</weight>
   </line>
+  <field>
+   <rect>
+    <x>140</x>
+    <y>120</y>
+    <width>385</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>vend_value</column>
+   </data>
+  </field>
   <label>
    <rect>
     <x>645</x>
@@ -251,8 +294,8 @@ ORDER BY vend_number, item_number, warehous_code DESC;</sql>
   </label>
   <field>
    <rect>
-    <x>135</x>
-    <y>43</y>
+    <x>455</x>
+    <y>140</y>
     <width>280</width>
     <height>20</height>
    </rect>
@@ -366,8 +409,8 @@ ORDER BY vend_number, item_number, warehous_code DESC;</sql>
   </label>
   <label>
    <rect>
-    <x>0</x>
-    <y>43</y>
+    <x>320</x>
+    <y>140</y>
     <width>130</width>
     <height>20</height>
    </rect>
@@ -396,26 +439,6 @@ ORDER BY vend_number, item_number, warehous_code DESC;</sql>
    <vcenter/>
    <string>Description</string>
   </label>
-  <text>
-   <rect>
-    <x>10</x>
-    <y>63</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>

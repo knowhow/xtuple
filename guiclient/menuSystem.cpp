@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -10,7 +10,7 @@
 
 #include <QAction>
 #include <QApplication>
-#include <QLibraryInfo>
+#include <QAssistantClient>
 #include <QDir>
 #include <QMenu>
 #include <QMenuBar>
@@ -22,7 +22,6 @@
 
 #include "xtsettings.h"
 #include "guiclient.h"
-#include "helpDownload.h"
 
 #include <parameter.h>
 #include <openreports.h>
@@ -65,7 +64,6 @@
 #include "reports.h"
 #include "scripts.h"
 #include "states.h"
-#include "helpView.h"
 #include "uiforms.h"
 
 #include "fixACL.h"
@@ -233,8 +231,7 @@ menuSystem::menuSystem(GUIClient *Pparent) :
 #ifndef Q_WS_MACX
     { "separator",		NULL,				NULL,		helpMenu, "true", NULL, NULL, true	},
 #endif
-    { "help.tableOfContents",	tr("Table of &Contents..."),	SLOT(sTOC()),	helpMenu, "true", NULL, NULL, true	},
-    { "help.download",          tr("Download..."),           SLOT(sDownload()), helpMenu, "true", NULL, NULL, true      }
+    { "help.tableOfContents",	tr("Table of &Contents..."),	SLOT(sTOC()),	helpMenu, "true", NULL, NULL, true	}
   };
   addActionsToMenu(help, sizeof(help) / sizeof(help[0]));
 
@@ -552,13 +549,7 @@ void menuSystem::sAbout()
 
 void menuSystem::sTOC()
 {
-  helpView *_help = helpView::getInstance(parent);
-  _help->show();
-}
-
-void menuSystem::sDownload()
-{
-  omfgThis->handleNewWindow(new helpDownload());
+  parent->_assClient->openAssistant();
 }
 
 void menuSystem::sFixACL()
@@ -578,18 +569,6 @@ void menuSystem::sExportData()
 
 void menuSystem::sCSVAtlases()
 {
-
-#ifdef Q_WS_MAC
-  if (_preferences->value("InterfaceWindowOption") == "Workspace")
-  {
-    QMessageBox::critical( parent, tr("Interface Option is Invalid"),
-                          tr("<p>The Maintain CSV Atlases utility "
-                             "is only available when user preferences "
-                             "are set to show windows as free-floating.") );
-    return;
-  }
-#endif
-
   omfgThis->handleNewWindow(ImportHelper::getCSVImpPlugin(parent)->getCSVToolWindow(omfgThis, 0));
   omfgThis->handleNewWindow(ImportHelper::getCSVImpPlugin(parent)->getCSVAtlasWindow(omfgThis, 0));
 }

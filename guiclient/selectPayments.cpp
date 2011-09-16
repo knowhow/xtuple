@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -23,12 +23,10 @@
 #include "selectPayment.h"
 #include "storedProcErrorLookup.h"
 
-selectPayments::selectPayments(QWidget* parent, const char* name, Qt::WFlags fl, bool pAutoFill)
+selectPayments::selectPayments(QWidget* parent, const char* name, Qt::WFlags fl)
     : XWidget(parent, name, fl)
 {
   setupUi(this);
-
-  _ignoreUpdates = true;
 
   connect(_clear, SIGNAL(clicked()), this, SLOT(sClear()));
   connect(_clearAll, SIGNAL(clicked()), this, SLOT(sClearAll()));
@@ -45,6 +43,8 @@ selectPayments::selectPayments(QWidget* parent, const char* name, Qt::WFlags fl,
   connect(_vendorgroup, SIGNAL(updated()), this, SLOT(sFillList()));
   connect(_bankaccnt, SIGNAL(newID(int)), this, SLOT(sFillList()));
   connect(_apopen, SIGNAL(populateMenu(QMenu*, QTreeWidgetItem*, int)), this, SLOT(sPopulateMenu(QMenu*, QTreeWidgetItem*)));
+
+  _ignoreUpdates = false;
 
   _bankaccnt->setType(XComboBox::APBankAccounts);
 
@@ -66,18 +66,15 @@ selectPayments::selectPayments(QWidget* parent, const char* name, Qt::WFlags fl,
   _apopen->addColumn(tr("Currency"),       _currencyColumn, Qt::AlignLeft,       true, "curr_concat" );
   _apopen->addColumn(tr("Status"),         _currencyColumn, Qt::AlignCenter,     true, "apopen_status" );
 
-//  if (omfgThis->singleCurrency())
-//  {
-//    _apopen->hideColumn("curr_concat");
-//    _apopen->headerItem()->setText(11, tr("Running"));
-//  }
+  if (omfgThis->singleCurrency())
+  {
+    _apopen->hideColumn("curr_concat");
+    _apopen->headerItem()->setText(11, tr("Running"));
+  }
 
   connect(omfgThis, SIGNAL(paymentsUpdated(int, int, bool)), this, SLOT(sFillList()));
 
-  _ignoreUpdates = false;
-
-  if(pAutoFill)
-    sFillList();
+  sFillList();
 }
 
 selectPayments::~selectPayments()
@@ -132,15 +129,15 @@ void selectPayments::sSelectDue()
                      "<? if exists(\"vend_id\") ?>"
                      ";"
                      "<? elseif exists(\"vendtype_id\") ?>"
-                     "FROM vendinfo "
+                     "FROM vend "
                      "WHERE (vend_vendtype_id=<? value(\"vendtype_id\") ?>);"
                      "<? elseif exists(\"vendtype_pattern\") ?>"
-                     "FROM vendinfo "
+                     "FROM vend "
                      "WHERE (vend_vendtype_id IN (SELECT vendtype_id"
                      "                            FROM vendtype"
                      "                            WHERE (vendtype_code ~ <? value(\"vendtype_pattern\") ?>)));"
                      "<? else ?>"
-                     "FROM vendinfo;"
+                     "FROM vend;"
                      "<? endif ?>");
     ParameterList params;
     if (! setParams(params))
@@ -189,15 +186,15 @@ void selectPayments::sSelectDiscount()
                      "<? if exists(\"vend_id\") ?>"
                      ";"
                      "<? elseif exists(\"vendtype_id\") ?>"
-                     "FROM vendinfo "
+                     "FROM vend "
                      "WHERE (vend_vendtype_id=<? value(\"vendtype_id\") ?>);"
                      "<? elseif exists(\"vendtype_pattern\") ?>"
-                     "FROM vendinfo "
+                     "FROM vend "
                      "WHERE (vend_vendtype_id IN (SELECT vendtype_id"
                      "                            FROM vendtype"
                      "                            WHERE (vendtype_code ~ <? value(\"vendtype_pattern\") ?>)));"
                      "<? else ?>"
-                     "FROM vendinfo;"
+                     "FROM vend;"
                      "<? endif ?>");
     ParameterList params;
     if (! setParams(params))
@@ -233,22 +230,25 @@ void selectPayments::sClearAll()
         break;
     case VendorGroup::Selected:
       q.prepare( "SELECT clearPayment(apselect_id) AS result "
-                 "FROM apopen JOIN apselect ON (apselect_apopen_id=apopen_id) "
-                 "WHERE (apopen_vend_id=:vend_id);" );
+                 "FROM apopen, apselect "
+                 "WHERE ( (apselect_apopen_id=apopen_id)"
+                 " AND (apopen_vend_id=:vend_id) );" );
       break;
     case VendorGroup::SelectedType:
       q.prepare( "SELECT clearPayment(apselect_id) AS result "
-                 "FROM vendinfo JOIN apopen ON (apopen_vend_id=vend_id) "
-                 "              JOIN apselect ON (apselect_apopen_id=apopen_id) "
-                 "WHERE (vend_vendtype_id=:vendtype_id) ;" );
+                 "FROM vend, apopen, apselect "
+                 "WHERE ( (apselect_apopen_id=apopen_id)"
+                 " AND (apopen_vend_id=vend_id)"
+                 " AND (vend_vendtype_id=:vendtype_id) );" );
       break;
     case VendorGroup::TypePattern:
       q.prepare( "SELECT clearPayment(apselect_id) AS result "
-                 "FROM vendinfo JOIN apopen ON (apopen_vend_id=vend_id) "
-                 "              JOIN apselect ON (apselect_apopen_id=apopen_id) "
-                 "WHERE (vend_vendtype_id IN (SELECT vendtype_id"
-                 "                            FROM vendtype"
-                 "                            WHERE (vendtype_code ~ :vendtype_pattern)));" );
+                 "FROM vend, apopen, apselect "
+                 "WHERE ( (apselect_apopen_id=apopen_id)"
+                 " AND (apopen_vend_id=vend_id)"
+                 " AND (vend_vendtype_id IN (SELECT vendtype_id"
+                 "                           FROM vendtype"
+                 "                           WHERE (vendtype_code ~ :vendtype_pattern))));" );
         break;
     }
 
@@ -430,10 +430,10 @@ void selectPayments::sFillList()
   if(_ignoreUpdates)
     return;
 
-//  if (_vendorgroup->isSelectedVend())
-//    _apopen->showColumn(9);
-//  else
-//    _apopen->hideColumn(9);
+  if (_vendorgroup->isSelectedVend())
+    _apopen->showColumn(9);
+  else
+    _apopen->hideColumn(9);
 
   if ( (_selectDate->currentIndex() == 1 && !_onOrBeforeDate->isValid())  ||
         (_selectDate->currentIndex() == 2 && (!_startDate->isValid() || !_endDate->isValid())) )
@@ -468,6 +468,7 @@ void selectPayments::sFillList()
 
   MetaSQLQuery mql = mqlLoad("apOpenItems", "selectpayments");
   q = mql.toQuery(params);
+  q.exec();
   _apopen->populate(q,true);
   if (q.lastError().type() != QSqlError::NoError)
   {

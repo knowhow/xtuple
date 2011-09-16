@@ -1,0 +1,10 @@
+-- Group: simplesalesorder
+-- Name: itemprice
+-- Notes:
+
+SELECT noneg(itemprice(<? value("item_id") ?>,
+                 <? value("cust_id") ?>,
+                 -1,
+                 CAST(<? value("qty") ?> AS numeric),
+                 basecurrid(),
+                 current_date)) AS itemprice;

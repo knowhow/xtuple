@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -14,10 +14,8 @@
 #include <QSqlError>
 #include <QVariant>
 
-#include "characteristic.h"
 #include "customer.h"
 #include "customerTypeList.h"
-#include "errorReporter.h"
 #include "storedProcErrorLookup.h"
 #include "parameterwidget.h"
 
@@ -27,7 +25,6 @@ customers::customers(QWidget* parent, const char*, Qt::WFlags fl)
   setUseAltId(true);
   setWindowTitle(tr("Customers"));
   setMetaSQLOptions("customers", "detail");
-  setReportName("Customers");
   setParameterWidgetVisible(true);
   setNewVisible(true);
   setSearchVisible(true);
@@ -54,37 +51,19 @@ customers::customers(QWidget* parent, const char*, Qt::WFlags fl)
     connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sView()));
   }
 
-  list()->addColumn(tr("Number"), _orderColumn,Qt::AlignLeft,true,  "cust_number");
-  list()->addColumn(tr("Active"),_ynColumn, Qt::AlignCenter, false, "cust_active");
-  list()->addColumn(tr("Name"),         -1, Qt::AlignLeft,   true,  "cust_name");
-  list()->addColumn(tr("Type"),_itemColumn, Qt::AlignLeft,   true,  "custtype_code");
-  list()->addColumn(tr("Bill First"),   50, Qt::AlignLeft  , true,  "bill_first_name" );
-  list()->addColumn(tr("Bill Last"),    -1, Qt::AlignLeft  , true,  "bill_last_name" );
-  list()->addColumn(tr("Bill Phone"),  100, Qt::AlignLeft  , true,  "bill_phone" );
-  list()->addColumn(tr("Bill Fax"),    100, Qt::AlignLeft  , false, "bill_fax" );
-  list()->addColumn(tr("Bill Email"),  100, Qt::AlignLeft  , true,  "bill_email" );
-  list()->addColumn(tr("Bill Addr. 1"), -1, Qt::AlignLeft  , true,  "bill_line1" );
-  list()->addColumn(tr("Bill Addr. 2"), -1, Qt::AlignLeft  , false, "bill_line2" );
-  list()->addColumn(tr("Bill Addr. 3"), -1, Qt::AlignLeft  , false, "bill_line3" );
-  list()->addColumn(tr("Bill City"),    75, Qt::AlignLeft  , false, "bill_city" );
-  list()->addColumn(tr("Bill State"),   50, Qt::AlignLeft  , false, "bill_state" );
-  list()->addColumn(tr("Bill Country"),100, Qt::AlignLeft  , false, "bill_country" );
-  list()->addColumn(tr("Bill Postal"),  75, Qt::AlignLeft  , false, "bill_postalcode" );
-  list()->addColumn(tr("Corr. First"),  50, Qt::AlignLeft  , false, "corr_first_name" );
-  list()->addColumn(tr("Corr. Last"),   -1, Qt::AlignLeft  , false, "corr_last_name" );
-  list()->addColumn(tr("Corr. Phone"), 100, Qt::AlignLeft  , false, "corr_phone" );
-  list()->addColumn(tr("Corr. Fax"),   100, Qt::AlignLeft  , false, "corr_fax" );
-  list()->addColumn(tr("Corr. Email"), 100, Qt::AlignLeft  , false, "corr__email" );
-  list()->addColumn(tr("Corr. Addr. 1"),-1, Qt::AlignLeft  , false, "corr_line1" );
-  list()->addColumn(tr("Corr. Addr. 2"),-1, Qt::AlignLeft  , false, "corr_line2" );
-  list()->addColumn(tr("Corr. Addr. 3"),-1, Qt::AlignLeft  , false, "corr_line3" );
-  list()->addColumn(tr("Corr. City"),   75, Qt::AlignLeft  , false, "corr_city" );
-  list()->addColumn(tr("Corr. State"),  50, Qt::AlignLeft  , false, "corr_state" );
-  list()->addColumn(tr("Corr. Postal"), 75, Qt::AlignLeft  , false, "corr_postalcode" );
-  list()->addColumn(tr("Corr. Country"),100, Qt::AlignLeft , false, "corr_country" );
-
-  setupCharacteristics(characteristic::Customers);
-  parameterWidget()->applyDefaultFilterSet();
+  list()->addColumn(tr("Number"),  _orderColumn, Qt::AlignLeft, true, "cust_number");
+  list()->addColumn(tr("Active"),  _ynColumn,    Qt::AlignCenter, false, "cust_active");
+  list()->addColumn(tr("Name"),    -1,           Qt::AlignLeft,   true, "cust_name");
+  list()->addColumn(tr("Type"),    _itemColumn,  Qt::AlignLeft, true, "custtype_code");
+  list()->addColumn(tr("First"),   50, Qt::AlignLeft  , true, "cntct_first_name" );
+  list()->addColumn(tr("Last"),    -1, Qt::AlignLeft  , true, "cntct_last_name" );
+  list()->addColumn(tr("Phone"),   100, Qt::AlignLeft  , true, "cntct_phone" );
+  list()->addColumn(tr("Email"),   100, Qt::AlignLeft  , true, "cntct_email" );
+  list()->addColumn(tr("Address"), -1, Qt::AlignLeft  , false, "addr_line1" );
+  list()->addColumn(tr("City"),    75, Qt::AlignLeft  , false, "addr_city" );
+  list()->addColumn(tr("State"),   50, Qt::AlignLeft  , false, "addr_state" );
+  list()->addColumn(tr("Country"), 100, Qt::AlignLeft  , false, "addr_country" );
+  list()->addColumn(tr("Postal Code"), 75, Qt::AlignLeft  , false, "addr_postalcode" );
 
   connect(omfgThis, SIGNAL(customersUpdated(int, bool)), SLOT(sFillList()));
 }
@@ -131,17 +110,12 @@ void customers::sReassignCustomerType()
   int custtypeid = newdlg->exec();
   if ( (custtypeid != -1) && (custtypeid != XDialog::Rejected) )
   {
-    XSqlQuery infoq;
-    infoq.prepare( "UPDATE custinfo "
+    q.prepare( "UPDATE custinfo "
                "SET cust_custtype_id=:custtype_id "
                "WHERE (cust_id=:cust_id);" );
-    infoq.bindValue(":cust_id", list()->id());
-    infoq.bindValue(":custtype_id", custtypeid);
-    infoq.exec();
-    if (ErrorReporter::error(QtCriticalMsg, this, tr("Setting Customer Type"),
-                            infoq, __FILE__, __LINE__))
-      return;
-
+    q.bindValue(":cust_id", list()->id());
+    q.bindValue(":custtype_id", custtypeid);
+    q.exec();
     omfgThis->sCustomersUpdated(list()->id(), TRUE);
     sFillList();
   }
@@ -149,22 +123,33 @@ void customers::sReassignCustomerType()
 
 void customers::sDelete()
 {
-  if (QMessageBox::question(this, tr("Delete Customer?"),
-                           tr("<p>Are you sure that you want to completely "
-			      "delete the selected Customer?"),
-			   QMessageBox::Yes,
-			   QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
-    return;
-
-  XSqlQuery delq;
-  delq.prepare("DELETE FROM custinfo WHERE (cust_id=:cust_id);");
-  delq.bindValue(":cust_id", list()->id());
-  delq.exec();
-  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error Deleting"),
-                           delq, __FILE__, __LINE__))
-    return;
-
-  omfgThis->sCustomersUpdated(list()->id(), TRUE); // TODO: TRUE or FALSE????
+  if ( QMessageBox::warning(this, tr("Delete Customer?"),
+                            tr("<p>Are you sure that you want to completely "
+			       "delete the selected Customer?"),
+			    QMessageBox::Yes,
+			    QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+  {
+    q.prepare("SELECT deleteCustomer(:cust_id) AS result;");
+    q.bindValue(":cust_id", list()->id());
+    q.exec();
+    if (q.first())
+    {
+      int returnVal = q.value("result").toInt();
+      if (returnVal < 0)
+      {
+        QMessageBox::critical(this, tr("Cannot Delete Customer"),
+                              storedProcErrorLookup("deleteCustomer", returnVal));
+        return;
+      }
+      omfgThis->sCustomersUpdated(-1, TRUE);
+      sFillList();
+    }
+    else if (q.lastError().type() != QSqlError::NoError)
+    {
+      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+      return;
+    }
+  }
 }
 
 void customers::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)
@@ -185,3 +170,4 @@ void customers::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)
   menuItem->setEnabled(_privileges->check("MaintainCustomerMasters"));
 
 }
+

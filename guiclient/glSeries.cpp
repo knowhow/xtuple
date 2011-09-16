@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -184,8 +184,8 @@ enum SetResponse glSeries::set(const ParameterList &pParams)
       _mode = cView;
 
       _new->setEnabled(false);
-      disconnect(_glseries, SIGNAL(valid(bool)), _edit, SLOT(setEnabled(bool)));
-      disconnect(_glseries, SIGNAL(valid(bool)), _delete, SLOT(setEnabled(bool)));
+      _edit->setEnabled(false);
+      _delete->setEnabled(false);
       _source->setEnabled(false);
       _doctype->setEnabled(false);
       _docnumber->setEnabled(false);
@@ -243,7 +243,6 @@ void glSeries::sEdit()
   ParameterList params;
   params.append("mode", "edit");
   params.append("glseries_id", _glseries->id());
-  params.append("glSequence", _glsequence);
   params.append("distDate", _date->date());
 
   if (_mode == cPostStandardJournal)
@@ -415,22 +414,18 @@ void glSeries::reject()
     qDebug("glSeries::reject() entered with _mode %d, topLevelItemCount %d",
            _mode, _glseries->topLevelItemCount());
   if (cNew == _mode &&
-      _glseries->topLevelItemCount() > 0)
+      _glseries->topLevelItemCount() > 0 &&
+      QMessageBox::question(this, tr("Delete G/L Series?"),
+			    tr("<p>Are you sure you want to delete this G/L "
+			       "Series Entry?"),
+			    QMessageBox::Yes | QMessageBox::No,
+			    QMessageBox::No) == QMessageBox::Yes)
   {
-    if (QMessageBox::question(this, tr("Delete G/L Series?"),
-                              tr("<p>Are you sure you want to delete this G/L "
-                                 "Series Entry?"),
-                              QMessageBox::Yes | QMessageBox::No,
-                              QMessageBox::No) == QMessageBox::Yes)
-    {
-      q.prepare("SELECT deleteGLSeries(:glsequence);");
-      q.bindValue(":glsequence", _glsequence);
-      q.exec();
-      if (q.lastError().type() != QSqlError::NoError)
-        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-    }
-    else
-      return;
+    q.prepare("SELECT deleteGLSeries(:glsequence);");
+    q.bindValue(":glsequence", _glsequence);
+    q.exec();
+    if (q.lastError().type() != QSqlError::NoError)
+      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
   }
 
   omfgThis->sGlSeriesUpdated();

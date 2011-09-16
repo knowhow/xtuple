@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -232,7 +232,6 @@ void transformTrans::sPost()
     }
     else if (q.lastError().type() != QSqlError::NoError)
     {
-      rollback.exec();
       systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
       return;
     }
@@ -292,7 +291,6 @@ void transformTrans::sPopulateTarget(int /*pItemid*/)
              "FROM itemsite JOIN item ON (item_id=itemsite_item_id) "
              "WHERE ( (itemsite_item_id=:item_id) "
              "  AND   (itemsite_warehous_id=:warehous_id) "
-             "  AND   (itemsite_active) "
              "  AND   (itemsite_controlmethod <> 'N') );" );
   q.bindValue(":item_id",     _target->id());
   q.bindValue(":warehous_id", _warehouse->id());
@@ -316,8 +314,8 @@ void transformTrans::sPopulateTarget(int /*pItemid*/)
   {
     QMessageBox::warning(this, tr("No Transform Targets"),
                          tr("This Target Item cannot be Transformed because "
-                            "it has no Item Site or the Item Site is either "
-                            "Inactive or has a Control Method of None."));
+                            "either it has no Item Site or the Item Site "
+                            "has a Control Method of None."));
     _targetIsValid = false;
     _target->setFocus();
     return;

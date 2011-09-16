@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,12 +28,9 @@ assignLotSerial::assignLotSerial(QWidget* parent, const char* name, bool modal, 
 {
   setupUi(this);
 
-  _print = _buttonBox->addButton(tr("Print"), QDialogButtonBox::ActionRole);
-
   connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
   connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sAssign()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_assign, SIGNAL(clicked()), this, SLOT(sAssign()));
   connect(_print, SIGNAL(clicked()), this, SLOT(sPrint()));
   connect(_options, SIGNAL(clicked()), this, SLOT(sPrintOptions()));
 
@@ -50,6 +47,7 @@ assignLotSerial::assignLotSerial(QWidget* parent, const char* name, bool modal, 
   _qtyToAssign->setPrecision(omfgThis->qtyVal());
   _qtyAssigned->setPrecision(omfgThis->qtyVal());
   _qtyBalance->setPrecision(omfgThis->qtyVal());
+  _assign->setFocus();
 }
 
 assignLotSerial::~assignLotSerial()

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -18,7 +18,7 @@
 #include <datecluster.h>
 
 #include "guiclient.h"
-#include "dspInventoryAvailability.h"
+#include "dspInventoryAvailabilityByItem.h"
 #include "dspAllocations.h"
 #include "dspOrders.h"
 #include "workOrder.h"
@@ -55,7 +55,7 @@ void dspTimePhasedAvailability::sViewAvailability()
   params.append("byDate", _columnDates[_column - 3].startDate);
   params.append("run");
 
-  dspInventoryAvailability *newdlg = new dspInventoryAvailability();
+  dspInventoryAvailabilityByItem *newdlg = new dspInventoryAvailabilityByItem();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }

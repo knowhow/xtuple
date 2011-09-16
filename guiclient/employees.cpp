@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -10,7 +10,6 @@
 
 #include "employees.h"
 
-#include <QMessageBox>
 #include <QSqlError>
 #include <QVariant>
 
@@ -19,7 +18,6 @@
 #include <metasql.h>
 
 #include "employee.h"
-#include "errorReporter.h"
 #include "guiclient.h"
 #include "storedProcErrorLookup.h"
 
@@ -69,20 +67,24 @@ void employees::languageChange()
 
 void employees::sDelete()
 {
-  if (QMessageBox::question(this, tr("Delete?"),
-                            tr("<p>Are you sure you want to delete the "
-                               "selected employee?"),
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+  q.prepare( "SELECT deleteEmp(:id) AS result;");
+  q.bindValue(":id", _emp->id());
+  q.exec();
+  if (q.first())
+  {
+    int result = q.value("result").toInt();
+    if (result < 0)
+    {
+      systemError(this, storedProcErrorLookup("deleteEmp", result),
+                  __FILE__, __LINE__);
+      return;
+    }
+  }
+  else if (q.lastError().type() != QSqlError::NoError)
+  {
+    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
-
-  XSqlQuery delq;
-  delq.prepare("DELETE FROM emp WHERE (emp_id=:id);");
-  delq.bindValue(":id", _emp->id());
-  delq.exec();
-  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error Deleting"),
-                           delq, __FILE__, __LINE__))
-    return;
+  }
   sFillList();
 }
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -19,9 +19,6 @@
 
 #include <openreports.h>
 
-#include "crmaccount.h"
-#include "errorReporter.h"
-#include "guiErrorCheck.h"
 #include "printQuote.h"
 #include "salesOrder.h"
 #include "storedProcErrorLookup.h"
@@ -31,23 +28,23 @@ prospect::prospect(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   setupUi(this);
 
-  connect(_crmacct,     SIGNAL(clicked()),      this,   SLOT(sCrmAccount()));
-  connect(_deleteQuote, SIGNAL(clicked()),	this,	SLOT(sDeleteQuote()));
+  connect(_deleteQuote,SIGNAL(clicked()),	this,	SLOT(sDeleteQuote()));
   connect(_editQuote,	SIGNAL(clicked()),	this,	SLOT(sEditQuote()));
   connect(_newQuote,	SIGNAL(clicked()),	this,	SLOT(sNewQuote()));
   connect(_number,	SIGNAL(lostFocus()),	this,	SLOT(sCheckNumber()));
-  connect(_printQuote,  SIGNAL(clicked()),	this,	SLOT(sPrintQuote()));
+  connect(_printQuote,SIGNAL(clicked()),	this,	SLOT(sPrintQuote()));
   connect(_quotes,	SIGNAL(populateMenu(QMenu*,QTreeWidgetItem*)),	this,	SLOT(sPopulateQuotesMenu(QMenu*)));
   connect(_save,	SIGNAL(clicked()),	this,	SLOT(sSave()));
   connect(_viewQuote,	SIGNAL(clicked()),	this,	SLOT(sViewQuote()));
   connect(omfgThis,	SIGNAL(quotesUpdated(int, bool)), this, SLOT(sFillQuotesList()));
 
-  if (_privileges->check("MaintainAllQuotes") || _privileges->check("MaintainPersonalQuotes"))
+  if (_privileges->check("MaintainProspectMasters"))
     connect(_quotes, SIGNAL(itemSelected(int)), _editQuote, SLOT(animateClick()));
   else
     connect(_quotes, SIGNAL(itemSelected(int)), _viewQuote, SLOT(animateClick()));
 
   _prospectid = -1;
+  _crmacct->setId(-1);
 
   _taxzone->setAllowNull(true);
   _taxzone->setType(XComboBox::TaxZones);
@@ -74,17 +71,27 @@ enum SetResponse prospect::set(const ParameterList &pParams)
   QVariant param;
   bool     valid;
 
+  param = pParams.value("crmacct_name", &valid);
+  if (valid)
+    _name->setText(param.toString());
+
+  param = pParams.value("crmacct_number", &valid);
+  if (valid)
+    _number->setText(param.toString());
+
   param = pParams.value("crmacct_id", &valid);
   if (valid)
-    _crmacctid = param.toInt();
+  {
+    _crmacct->setId(param.toInt());
+  }
 
   param = pParams.value("prospect_id", &valid);
   if (valid)
+  {
     _prospectid = param.toInt();
-
-  if (_crmacctid >= 0 || _prospectid >= 0)
-    if (! sPopulate())
-      return UndefinedError;
+    populate();
+    emit newId(_prospectid);
+  }
 
   param = pParams.value("mode", &valid);
   if (valid)
@@ -93,18 +100,34 @@ enum SetResponse prospect::set(const ParameterList &pParams)
     {
       _mode = cNew;
 
+      // prospects and customers share an id sequence
+      q.exec("SELECT NEXTVAL('cust_cust_id_seq') AS prospect_id;");
+      if (q.first())
+      {
+        _prospectid = q.value("prospect_id").toInt();
+        emit newId(_prospectid);
+	_number->setFocus();
+      }
+      else
+      {
+        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+        return UndefinedError;
+      }
+
       if(((_metrics->value("CRMAccountNumberGeneration") == "A") ||
           (_metrics->value("CRMAccountNumberGeneration") == "O"))
        && _number->text().isEmpty() )
       {
-        XSqlQuery getq;
-        getq.exec("SELECT fetchCRMAccountNumber() AS number;");
-        if (getq.first())
+        q.exec("SELECT fetchCRMAccountNumber() AS number;");
+        if (q.first())
         {
-          _number->setText(getq.value("number"));
-          _NumberGen = getq.value("number").toInt();
+          _number->setText(q.value("number"));
+          _NumberGen = q.value("number").toInt();
         }
+
+
       }
+
     }
     else if (param.toString() == "edit")
     {
@@ -115,6 +138,13 @@ enum SetResponse prospect::set(const ParameterList &pParams)
     {
       _mode = cView;
 
+      _number->setEnabled(FALSE);
+      _name->setEnabled(FALSE);
+      _active->setEnabled(FALSE);
+      _contact->setEnabled(FALSE);
+      _taxzone->setEnabled(FALSE);
+      _notes->setReadOnly(TRUE);
+      _newQuote->setEnabled(FALSE);
       _save->hide();
 
       disconnect(_quotes, SIGNAL(itemSelected(int)), _editQuote, SLOT(animateClick()));
@@ -129,32 +159,42 @@ enum SetResponse prospect::set(const ParameterList &pParams)
     }
   }
 
-  bool canEdit = (cEdit == _mode || cNew == _mode);
-  _number->setEnabled(canEdit &&
-                      _metrics->value("CRMAccountNumberGeneration") != "A");
-  _active->setEnabled(canEdit);
-  _contact->setEnabled(canEdit);
-  _name->setEnabled(canEdit);
-  _newQuote->setEnabled(canEdit);
-  _notes->setReadOnly(! canEdit);
-  _salesrep->setEnabled(canEdit);
-  _site->setEnabled(canEdit);
-  _taxzone->setEnabled(canEdit);
-
+  if(_metrics->value("CRMAccountNumberGeneration") == "A")
+    _number->setEnabled(FALSE);
+  
   return NoError;
 }
 
 void prospect::sSave()
 {
-  QList<GuiErrorCheck> errors;
-  errors << GuiErrorCheck(_number->text().trimmed().isEmpty(), _number,
-                          tr("You must enter a number for this Prospect"))
+  struct {
+    bool	condition;
+    QString	msg;
+    QWidget*	widget;
+  } error[] = {
+    { _number->text().trimmed().length() == 0,
+      tr("You must enter a number for this Prospect before saving"),
+      _number
+    },
+
+    { true, "", NULL }
+  };
+
+  int errIndex;
+  for (errIndex = 0; ! error[errIndex].condition; errIndex++)
     ;
-  // disallow overlap of prospect and customer numbers
+  if (! error[errIndex].msg.isEmpty())
+  {
+    QMessageBox::critical(this, tr("Cannot Save Prospect"),
+			  QString("<p>") + error[errIndex].msg);
+    error[errIndex].widget->setFocus();
+    return;
+  }
+
   if (_number->text().trimmed() != _cachedNumber)
   {
-    XSqlQuery dupq;
-    dupq.prepare( "SELECT prospect_name AS name "
+    // in anticipation of converting prospects to customers, disallow overlap of prospect and customer numbers
+    q.prepare( "SELECT prospect_name AS name "
 	       "FROM prospect "
 	       "WHERE (UPPER(prospect_number)=UPPER(:prospect_number)) "
 	       "  AND (prospect_id<>:prospect_id) "
@@ -162,24 +202,33 @@ void prospect::sSave()
 	       "SELECT cust_name AS name "
 	       "FROM cust "
 	       "WHERE (UPPER(cust_number)=UPPER(:prospect_number));" );
-    dupq.bindValue(":prospect_number", _number->text().trimmed());
-    dupq.bindValue(":prospect_id",     _prospectid);
-    dupq.exec();
-    if (dupq.first())
-      errors << GuiErrorCheck(true, _number,
+    q.bindValue(":prospect_number", _number->text().trimmed());
+    q.bindValue(":prospect_id", _prospectid);
+    q.exec();
+    if (q.first())
+    {
+      QMessageBox::critical( this, tr("Prospect Number Used"),
 			     tr("<p>The newly entered Prospect Number cannot "
 				"be used as it is currently in use by '%1'. "
 				"Please enter a different Prospect Number." )
-			     .arg(dupq.value("name").toString()) );
+			     .arg(q.value("name").toString()) );
+      _number->setFocus();
+      return;
+    }
   }
 
-  if (GuiErrorCheck::reportErrors(this, tr("Cannot Save Prospect"), errors))
-    return;
+  XSqlQuery rollback;
+  rollback.prepare("ROLLBACK;");
 
-  XSqlQuery upsq;
+  if (! q.exec("BEGIN;"))
+  {
+    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    return;
+  }
+
   if (_mode == cEdit)
   {
-    upsq.prepare( "UPDATE prospect SET "
+    q.prepare( "UPDATE prospect SET "
                "       prospect_number=:prospect_number,"
                "       prospect_name=:prospect_name,"
                "       prospect_cntct_id=:prospect_cntct_id,"
@@ -187,48 +236,65 @@ void prospect::sSave()
                "       prospect_taxzone_id=:prospect_taxzone_id,"
                "       prospect_salesrep_id=:prospect_salesrep_id,"
                "       prospect_warehous_id=:prospect_warehous_id,"
-               "       prospect_active=:prospect_active"
-               " WHERE (prospect_id=:prospect_id)"
-               " RETURNING prospect_id;" );
-    upsq.bindValue(":prospect_id",	_prospectid);
+               "       prospect_active=:prospect_active "
+               "WHERE (prospect_id=:prospect_id);" );
   }
   else
-    upsq.prepare("INSERT INTO prospect "
+  {
+    q.prepare( "INSERT INTO prospect "
                "( prospect_id,	      prospect_number,	    prospect_name,"
                "  prospect_cntct_id,  prospect_taxzone_id,  prospect_comments,"
-               "  prospect_salesrep_id, prospect_warehous_id, prospect_active )"
+               "  prospect_salesrep_id, prospect_warehous_id, prospect_active) "
                " VALUES "
-               "( DEFAULT,     	      :prospect_number,	    :prospect_name,"
+               "( :prospect_id,	      :prospect_number,	    :prospect_name,"
                "  :prospect_cntct_id, :prospect_taxzone_id, :prospect_comments,"
-               "  :prospect_salesrep_id, :prospect_warehous_id, :prospect_active )"
-               " RETURNING prospect_id;");
+               "  :prospect_salesrep_id, :prospect_warehous_id, :prospect_active);");
+  }
 
-  upsq.bindValue(":prospect_number",	_number->text().trimmed());
-  upsq.bindValue(":prospect_name",	_name->text().trimmed());
-  upsq.bindValue(":prospect_comments",	_notes->toPlainText());
-  upsq.bindValue(":prospect_active",	QVariant(_active->isChecked()));
+  q.bindValue(":prospect_id",		_prospectid);
+  q.bindValue(":prospect_number",	_number->text().trimmed());
+  q.bindValue(":prospect_name",		_name->text().trimmed());
   if (_contact->isValid())
-    upsq.bindValue(":prospect_cntct_id",    _contact->id());
+    q.bindValue(":prospect_cntct_id",	_contact->id());	// else NULL
   if (_taxzone->isValid())
-    upsq.bindValue(":prospect_taxzone_id",  _taxzone->id());
+    q.bindValue(":prospect_taxzone_id",	_taxzone->id());	// else NULL
   if (_salesrep->isValid())
-    upsq.bindValue(":prospect_salesrep_id", _salesrep->id());
+    q.bindValue(":prospect_salesrep_id", _salesrep->id());      // else NULL
   if (_site->isValid())
-    upsq.bindValue(":prospect_warehous_id", _site->id());
+    q.bindValue(":prospect_warehous_id", _site->id());          // else NULL
+  q.bindValue(":prospect_comments",	_notes->toPlainText());
+  q.bindValue(":prospect_active",	QVariant(_active->isChecked()));
 
-  upsq.exec();
-  if (upsq.first())
-    _prospectid = upsq.value("prospect_id").toInt();
-  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Saving Prospect"),
-                                upsq, __FILE__, __LINE__))
+  q.exec();
+  if (q.lastError().type() != QSqlError::NoError)
+  {
+    rollback.exec();
+    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
+  }
 
+  if (_crmacct->isValid())
+  {
+    q.prepare("UPDATE crmacct SET crmacct_prospect_id = :prospect_id "
+	      "WHERE (crmacct_id=:crmacct_id);");
+    q.bindValue(":prospect_id",	_prospectid);
+    q.bindValue(":crmacct_id",	_crmacct->id());
+    q.exec();
+    if (q.lastError().type() != QSqlError::NoError)
+    {
+	rollback.exec();
+	systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+	return;
+    }
+  }
+
+  q.exec("COMMIT;");
   _NumberGen = -1;
   omfgThis->sProspectsUpdated();
   emit saved(_prospectid);
   if (_mode == cNew)
   {
-    omfgThis->sCrmAccountsUpdated(_crmacctid);
+    omfgThis->sCrmAccountsUpdated(_crmacct->id());
     emit newId(_prospectid);   // cluster listeners couldn't handle set()'s emit
   }
 
@@ -241,7 +307,7 @@ void prospect::sCheckNumber()
 
   if (_mode == cNew)
   {
-    if (-1 != _NumberGen && _number->text().toInt() != _NumberGen)
+    if(cNew == _mode && -1 != _NumberGen && _number->text().toInt() != _NumberGen)
     {
       XSqlQuery query;
       query.prepare( "SELECT releaseCRMAccountNumber(:Number);" );
@@ -250,17 +316,16 @@ void prospect::sCheckNumber()
       _NumberGen = -1;
     }
 
-    XSqlQuery getq;
-    getq.prepare( "SELECT prospect_id "
+    q.prepare( "SELECT prospect_id "
                "FROM prospect "
                "WHERE (prospect_number=:prospect);" );
-    getq.bindValue(":prospect", _number->text());
-    getq.exec();
-    if (getq.first())
+    q.bindValue(":prospect", _number->text());
+    q.exec();
+    if (q.first())
     {
-      _prospectid = getq.value("prospect_id").toInt();
+      _prospectid = q.value("prospect_id").toInt();
       _mode = cEdit;
-      sPopulate();
+      populate();
       emit newId(_prospectid);
       _name->setFocus();
     }
@@ -312,48 +377,48 @@ void prospect::sViewQuote()
 
 void prospect::sDeleteQuote()
 {
-  if (QMessageBox::question(this, tr("Delete Selected Quote"),
-                            tr("Are you sure that you want to delete the selected Quote?" ),
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
-    return;
-
-  XSqlQuery delq;
-  delq.prepare("SELECT deleteQuote(:quhead_id) AS result;");
-  delq.bindValue(":quhead_id", _quotes->id());
-  delq.exec();
-  if (delq.first())
+  if ( QMessageBox::warning( this, tr("Delete Selected Quote"),
+                             tr("Are you sure that you want to delete the selected Quote?" ),
+                             tr("&Yes"), tr("&No"), QString::null, 0, 1 ) == 0)
   {
-    int result = delq.value("result").toInt();
-    if (result < 0)
+    q.prepare("SELECT deleteQuote(:quhead_id) AS result;");
+    q.bindValue(":quhead_id", _quotes->id());
+    q.exec();
+    if (q.first())
     {
-      ErrorReporter::error(QtCriticalMsg, this, tr("Deleting Quote"),
-                           storedProcErrorLookup("deleteQuote", result),
-                           __FILE__, __LINE__);
+      int result = q.value("result").toInt();
+      if (result < 0)
+      {
+	systemError(this, storedProcErrorLookup("deleteQuote", result),
+		    __FILE__, __LINE__);
+	return;
+      }
+      else
+	omfgThis->sQuotesUpdated(-1);
+    }
+    else if (q.lastError().type() != QSqlError::NoError)
+    {
+      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
       return;
     }
-    else
-      omfgThis->sQuotesUpdated(-1);
   }
-  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Deleting Quote"),
-                                delq, __FILE__, __LINE__))
-    return;
 }
 
 void prospect::sFillQuotesList()
 {
-  XSqlQuery getq;
-  getq.prepare("SELECT quhead_id, quhead_number, quhead_quotedate "
+  q.prepare("SELECT DISTINCT quhead_id, quhead_number, "
+	    "                quhead_quotedate "
 	    "FROM quhead "
 	    "WHERE (quhead_cust_id=:prospect_id) "
 	    "ORDER BY quhead_number;");
-  getq.bindValue(":prospect_id", _prospectid);
-  getq.exec();
-  if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Quote"),
-                           getq, __FILE__, __LINE__))
+  q.bindValue(":prospect_id", _prospectid);
+  q.exec();
+  if (q.lastError().type() != QSqlError::NoError)
+  {
+    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
-
-  _quotes->populate(getq);
+  }
+  _quotes->populate(q);
 }
 
 void prospect::sPopulateQuotesMenu(QMenu *menuThis)
@@ -364,62 +429,37 @@ void prospect::sPopulateQuotesMenu(QMenu *menuThis)
   menuThis->addAction(tr("Print..."),  this, SLOT(sPrintQuote()));
 }
 
-bool prospect::sPopulate()
+void prospect::populate()
 {
-  XSqlQuery getq;
-  if (_prospectid >= 0)
+  XSqlQuery prospect;
+  prospect.prepare("SELECT prospect.*, crmacct_id "
+                "FROM prospect, crmacct "
+                "WHERE ((prospect_id=:prospect_id)"
+		"  AND  (prospect_id=crmacct_prospect_id));" );
+  prospect.bindValue(":prospect_id", _prospectid);
+  prospect.exec();
+  if (prospect.first())
   {
-    getq.prepare("SELECT prospect.*, crmacct_id, crmacct_owner_username"
-                 "  FROM prospect, crmacct"
-                 " WHERE ((prospect_id=:prospect_id)"
-                 "   AND  (prospect_id=crmacct_prospect_id));" );
-    getq.bindValue(":prospect_id", _prospectid);
+    _crmacct->setId(prospect.value("crmacct_id").toInt());
+
+    _number->setText(prospect.value("prospect_number"));
+    _cachedNumber = prospect.value("prospect_number").toString();
+    _name->setText(prospect.value("prospect_name").toString());
+    _contact->setId(prospect.value("prospect_cntct_id").toInt());
+    _taxzone->setId(prospect.value("prospect_taxzone_id").toInt());
+    _salesrep->setId(prospect.value("prospect_salesrep_id").toInt());
+    _site->setId(prospect.value("prospect_warehous_id").toInt());
+    _notes->setText(prospect.value("prospect_comments").toString());
+    _active->setChecked(prospect.value("prospect_active").toBool());
   }
-  else if (_crmacctid >= 0)
+  else if (prospect.lastError().type() != QSqlError::NoError)
   {
-    getq.prepare("SELECT crmacct_active AS prospect_active,"
-                 "       crmacct_name   AS prospect_name,"
-                 "       crmacct_number AS prospect_number,"
-                 "       crmacct_cntct_id_1 AS prospect_cntct_id,"
-                 "       crmacct_owner_username AS prospect_owner_username,"
-                 "       NULL AS prospect_comments, -1 AS prospect_taxzone_id,"
-                 "      -1 AS prospect_salesrep_id, -1 AS prospect_warehous_id,"
-                 "      crmacct_id, crmacct_owner_username"
-                 "  FROM crmacct"
-                 " WHERE (crmacct_id=:id);");
-    getq.bindValue(":id", _crmacctid);
+    systemError(this, prospect.lastError().databaseText(), __FILE__, __LINE__);
+    return;
   }
-
-  getq.exec();
-  if (getq.first())
-  {
-    _crmacctid = getq.value("crmacct_id").toInt();
-
-    _number->setText(getq.value("prospect_number").toString());
-    _cachedNumber = getq.value("prospect_number").toString();
-    _name->setText(getq.value("prospect_name").toString());
-    _contact->setId(getq.value("prospect_cntct_id").toInt());
-    _taxzone->setId(getq.value("prospect_taxzone_id").toInt());
-    _salesrep->setId(getq.value("prospect_salesrep_id").toInt());
-    _site->setId(getq.value("prospect_warehous_id").toInt());
-    _notes->setText(getq.value("prospect_comments").toString());
-    _active->setChecked(getq.value("prospect_active").toBool());
-    _crmowner = getq.value("crmacct_owner_username").toString();
-  }
-  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Prospect"),
-                                getq, __FILE__, __LINE__))
-    return false;
-
-  _crmacct->setEnabled(_crmacctid > 0 &&
-                       (_privileges->check("MaintainAllCRMAccounts") ||
-                        _privileges->check("ViewAllCRMAccounts") ||
-                        (omfgThis->username() == _crmowner && _privileges->check("MaintainPersonalCRMAccounts")) ||
-                        (omfgThis->username() == _crmowner && _privileges->check("ViewPersonalCRMAccounts"))));
 
   sFillQuotesList();
   emit populated();
-
-  return true;
 }
 
 void prospect::closeEvent(QCloseEvent *pEvent)
@@ -431,40 +471,7 @@ void prospect::closeEvent(QCloseEvent *pEvent)
     query.bindValue(":Number", _NumberGen);
     query.exec();
     _NumberGen = -1;
-    ErrorReporter::error(QtCriticalMsg, this, tr("Getting Prospect"),
-                         query, __FILE__, __LINE__);
   }
   XWidget::closeEvent(pEvent);
 }
 
-void prospect::sCrmAccount()
-{
-  ParameterList params;
-  params.append("crmacct_id", _crmacctid);
-  if ((cView == _mode && _privileges->check("ViewAllCRMAccounts")) ||
-      (cView == _mode && _privileges->check("ViewPersonalCRMAccounts")
-                      && omfgThis->username() == _crmowner) ||
-      (cEdit == _mode && _privileges->check("ViewAllCRMAccounts")
-                      && ! _privileges->check("MaintainAllCRMAccounts")) ||
-      (cEdit == _mode && _privileges->check("ViewPersonalCRMAccounts")
-                      && ! _privileges->check("MaintainPersonalCRMAccounts")
-                      && omfgThis->username() == _crmowner))
-    params.append("mode", "view");
-  else if ((cEdit == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
-           (cEdit == _mode && _privileges->check("MaintainPersonalCRMAccounts")
-                           && omfgThis->username() == _crmowner))
-    params.append("mode", "edit");
-  else if ((cNew == _mode && _privileges->check("MaintainAllCRMAccounts")) ||
-           (cNew == _mode && _privileges->check("MaintainPersonalCRMAccounts")
-                          && omfgThis->username() == _crmowner))
-    params.append("mode", "edit");
-  else
-  {
-    qWarning("tried to open CRM Account window without privilege");
-    return;
-  }
-
-  crmaccount *newdlg = new crmaccount();
-  newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg);
-}

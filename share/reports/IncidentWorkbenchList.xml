@@ -3,36 +3,80 @@
  <title>Incident List</title>
  <name>IncidentWorkbenchList</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
  <bottommargin>50</bottommargin>
  <rightmargin>50</rightmargin>
  <leftmargin>50</leftmargin>
- <querysource loadFromDb="true">
+ <querysource loadFromDb="true" >
   <name>detail</name>
   <mqlgroup>incidents</mqlgroup>
   <mqlname>detail</mqlname>
  </querysource>
+ <querysource>
+  <name>username</name>
+  <sql>SELECT
+  &lt;? if exists("username") ?>
+    &lt;? value("username") ?> AS usr
+  &lt;? elseif exists("usr_pattern") ?>
+    &lt;? value("usr_pattern") ?> AS usr
+  &lt;? else ?>
+    'ALL' AS usr
+  &lt;? endif ?>
+;</sql>
+ </querysource>
  <rpthead>
-  <height>144</height>
+  <height>122</height>
   <line>
-   <xstart>2</xstart>
-   <ystart>139</ystart>
-   <xend>742</xend>
-   <yend>139</yend>
+   <xstart>1</xstart>
+   <ystart>114</ystart>
+   <xend>741</xend>
+   <yend>114</yend>
    <weight>2</weight>
   </line>
+  <field>
+   <rect>
+    <x>307.651</x>
+    <y>61</y>
+    <width>100</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>9</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Parameter Query</query>
+    <column>endDate</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>157</x>
+    <y>44.2028</y>
+    <width>100</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>9</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>username</query>
+    <column>usr</column>
+   </data>
+  </field>
   <label>
    <rect>
     <x>560</x>
-    <y>122.5</y>
+    <y>100</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -63,8 +107,24 @@
   </label>
   <label>
    <rect>
+    <x>26</x>
+    <y>44</y>
+    <width>125</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>User:</string>
+  </label>
+  <label>
+   <rect>
     <x>10</x>
-    <y>122.5</y>
+    <y>100</y>
     <width>60</width>
     <height>15</height>
    </rect>
@@ -80,7 +140,7 @@
   <label>
    <rect>
     <x>690</x>
-    <y>122.5</y>
+    <y>100</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -96,7 +156,7 @@
   <label>
    <rect>
     <x>180</x>
-    <y>122.5</y>
+    <y>100</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -112,7 +172,7 @@
   <label>
    <rect>
     <x>320</x>
-    <y>122.5</y>
+    <y>100</y>
     <width>230</width>
     <height>15</height>
    </rect>
@@ -127,8 +187,43 @@
   </label>
   <label>
    <rect>
+    <x>7</x>
+    <y>60</y>
+    <width>145</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Create Date between:</string>
+  </label>
+  <field>
+   <rect>
+    <x>157</x>
+    <y>61</y>
+    <width>100</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>9</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Parameter Query</query>
+    <column>startDate</column>
+   </data>
+  </field>
+  <label>
+   <rect>
     <x>240</x>
-    <y>122.5</y>
+    <y>100</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -144,9 +239,9 @@
   <label>
    <rect>
     <x>65</x>
-    <y>122.5</y>
+    <y>101</y>
     <width>110</width>
-    <height>15</height>
+    <height>11</height>
    </rect>
    <font>
     <face>Arial</face>
@@ -159,8 +254,24 @@
   </label>
   <label>
    <rect>
+    <x>260.406</x>
+    <y>60</y>
+    <width>31.5906</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>and</string>
+  </label>
+  <label>
+   <rect>
     <x>640</x>
-    <y>122.5</y>
+    <y>100</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -173,26 +284,6 @@
    <vcenter/>
    <string>Severity</string>
   </label>
-  <text>
-   <rect>
-    <x>10</x>
-    <y>39</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>

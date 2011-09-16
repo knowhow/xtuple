@@ -11,17 +11,8 @@
  <leftmargin>50</leftmargin>
  <querysource>
   <name>head</name>
-  <sql>SELECT
-&lt;? if exists("vend_id") ?>
-       (SELECT ('Vendor = ' || vend_name) FROM vendinfo WHERE vend_id=&lt;? value("vend_id") ?>)
-&lt;? elseif exists("vendtype_id") ?>
-       (SELECT ('Vendor Type = ' || vendtype_code) FROM vendtype WHERE vendtype_id=&lt;? value("vendtype_id") ?>)
-&lt;? elseif exists("vendtype_pattern") ?>
-       ('Vendor Type pattern = ' || &lt;? value("vendtype_pattern") ?>)
-&lt;? else ?>
-       'All Vendors'
-&lt;? endif ?>
-       AS selection,
+  <sql>SELECT vend_number,
+       vend_name,
        &lt;? if exists("warehous_id") ?>
          ( SELECT warehous_code FROM warehous WHERE warehous_id=&lt;? value("warehous_id") ?>)
        &lt;? else ?>
@@ -42,7 +33,9 @@
          text('All Items')
        &lt;? endif ?>
        AS f_whichitems
-;</sql>
+  FROM vend
+ WHERE (vend_id=&lt;? value("vend_id") ?>);
+</sql>
  </querysource>
  <querysource loadFromDb="true">
   <name>detail</name>
@@ -83,6 +76,25 @@
    <vcenter/>
    <string>UOM</string>
   </label>
+  <field>
+   <rect>
+    <x>150</x>
+    <y>95</y>
+    <width>200</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>vend_name</column>
+   </data>
+  </field>
   <field>
    <rect>
     <x>535</x>
@@ -152,6 +164,22 @@
    <hcenter/>
    <vcenter/>
    <string>Due Date</string>
+  </label>
+  <label>
+   <rect>
+    <x>20</x>
+    <y>95</y>
+    <width>125</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Vendor Name:</string>
   </label>
   <label>
    <rect>
@@ -231,7 +259,7 @@
    </font>
    <right/>
    <vcenter/>
-   <string>Selection:</string>
+   <string>Vendor Number:</string>
   </label>
   <field>
    <rect>
@@ -268,7 +296,7 @@
    <vcenter/>
    <data>
     <query>head</query>
-    <column>selection</column>
+    <column>vend_number</column>
    </data>
   </field>
   <label>

@@ -1,0 +1,13 @@
+-- Group: simplesalesorder
+-- Name: removecheck
+-- Notes:
+
+SELECT (COUNT(coitem_id) = 0) AS result
+FROM cohead
+  JOIN coitem ON (coitem_cohead_id=cohead_id)
+  JOIN shiphead ON ((shiphead_order_type='SO')
+                AND (shiphead_order_id=cohead_id))
+  JOIN shipitem ON ((shipitem_orderitem_id=coitem_id)
+                AND (shipitem_shiphead_id=shiphead_id))
+WHERE ((cohead_number=<? value("number") ?>)
+AND (coitem_linenumber=<? value("line_number") ?>));

@@ -12,8 +12,7 @@
  <querysource>
   <name>head</name>
   <sql>SELECT 
-CASE WHEN (&lt;? value("asofDate") ?> = endOfTime()) THEN 'Latest'
-     ELSE formatDate(&lt;? value("asofDate") ?>) END AS asOfDate,
+formatDate(&lt;? value("asofDate") ?>) AS asOfDate,
 &lt;? if exists("creditsOnly") ?>
   'Credits Only' AS type,
 &lt;? elseif exists("debitsOnly") ?>

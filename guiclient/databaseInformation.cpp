@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,7 +13,6 @@
 #include <QVariant>
 
 #include <dbtools.h>
-#include "xtupleproductkey.h"
 
 databaseInformation::databaseInformation(QWidget* parent, const char* name, bool /*modal*/, Qt::WFlags fl)
     : XAbstractConfigure(parent, fl)
@@ -27,22 +26,6 @@ databaseInformation::databaseInformation(QWidget* parent, const char* name, bool
   QString database;
   QString port;
 
-  if(_metrics->value("Application") != "PostBooks")
-  {
-    XTupleProductKey pk(_metrics->value("RegistrationKey"));
-    if(pk.valid())
-    {
-      if(pk.users() == 0)
-        _numOfServerLicencesLit->setText(tr("Open"));
-      else
-        _numOfServerLicencesLit->setText(QString("%1").arg(pk.users()));
-    }
-    else
-      _numOfServerLicencesLit->setText(tr("Unknown"));
-  }
-  else
-    _forceLicense->hide(); // doesn't apply to postbooks
-
   _description->setFocus();
 
   _description->setText(_metrics->value("DatabaseName"));
@@ -50,7 +33,6 @@ databaseInformation::databaseInformation(QWidget* parent, const char* name, bool
   _version->setText(_metrics->value("ServerVersion"));
   _patch->setText(_metrics->value("ServerPatchVersion"));
   _disallowMismatchClient->setChecked(_metrics->boolean("DisallowMismatchClientVersion"));
-  _forceLicense->setChecked(_metrics->boolean("ForceLicenseLimit"));
 
   QString access = _metrics->value("AllowedUserLogins");
   if("AdminOnly" == access)
@@ -71,6 +53,7 @@ databaseInformation::databaseInformation(QWidget* parent, const char* name, bool
   _name->setText(database);
 
   _disableAutoComplete->setChecked(_metrics->boolean("DisableAutoComplete"));
+  _useToolbars->setChecked(_metrics->boolean("DisplaysUseToolbar"));
   
   q.exec( "SELECT numOfDatabaseUsers() AS databaseusers,"
           "       numOfServerUsers() AS serverusers;" );
@@ -105,7 +88,7 @@ bool databaseInformation::sSave()
   _metrics->set("DatabaseName", _description->text().trimmed());
   _metrics->set("DatabaseComments", _comments->toPlainText().trimmed());
   _metrics->set("DisallowMismatchClientVersion", _disallowMismatchClient->isChecked());
-  _metrics->set("ForceLicenseLimit", _forceLicense->isChecked());
+  _metrics->set("DisplaysUseToolbar", _useToolbars->isChecked());
 
   _metrics->set("updateTickInterval", _interval->value());
 

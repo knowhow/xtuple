@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -165,7 +165,7 @@ void customerType::sFillList()
              "WHERE ( (charass_target_type='CT')"
              " AND (charass_char_id=char_id)"
              " AND (charass_target_id=:custtype_id) ) "
-             "ORDER BY char_order, char_name;" );
+             "ORDER BY char_name;" );
   q.bindValue(":custtype_id", _custtypeid);
   q.exec();
   _charass->populate(q);

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -16,8 +16,6 @@
 
 #include <metasql.h>
 #include <openreports.h>
-
-#include "mqlutil.h"
 
 #define DEBUG false
 
@@ -63,7 +61,33 @@ enum SetResponse printStatementsByCustomerType::set(const ParameterList &pParams
 
 void printStatementsByCustomerType::sPrint()
 {
-  MetaSQLQuery custm = mqlLoad("customers", "statement");
+  MetaSQLQuery custm("SELECT cust_id, (cust_number || '-' || cust_name) AS customer,"
+                     "       findCustomerForm(cust_id, 'S') AS reportname "
+                     "FROM "
+					 "<? if exists(\"asofDate\") ?>"
+                     "(SELECT araging_cust_id FROM araging(<? value (\"asofDate\") ?>, true))AS data, "
+                     "<? endif ?> "
+					 "custinfo, custtype, aropen "
+                     "WHERE ( (cust_custtype_id=custtype_id)"
+                     " AND (aropen_cust_id=cust_id)"
+                     " AND (aropen_open)"
+                     "<? if exists(\"graceDays\") ?>"
+                     " AND (aropen_duedate < (CURRENT_DATE - <? value (\"graceDays\") ?>))"
+                     "<? endif ?>"
+                     "<? if exists(\"custtype_id\") ?>"
+                     " AND (custtype_id=<? value (\"custtype_id\") ?>)"
+                     "<? elseif exists(\"custtype_pattern\") ?>"
+                     " AND (custtype_code ~ <? value (\"custtype_pattern\") ?>)"
+                     "<? endif ?>"
+                     "<? if exists(\"asofDate\") ?>"
+                     " AND (cust_id = araging_cust_id)"
+                     "<? endif ?>"
+                     ") "
+                     "GROUP BY cust_id, cust_number, cust_name "
+                     "HAVING (SUM((aropen_amount - aropen_paid) *"
+                     "             CASE WHEN (aropen_doctype IN ('C', 'R')) THEN -1"
+                     "                  ELSE 1 END) > 0) "
+                     "ORDER BY cust_number;" );
 
   ParameterList custp;
   _customerTypes->appendValue(custp);

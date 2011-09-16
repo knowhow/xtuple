@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,7 +28,7 @@ submitReport::submitReport(QWidget* parent, const char* name, bool modal, Qt::WF
 
   q.exec( "SELECT usr_email "
           "FROM usr "
-          "WHERE (usr_username=getEffectiveXtUser());" );
+          "WHERE (usr_username=CURRENT_USER);" );
   if (q.first())
     _fromEmail->setText(q.value("usr_email"));
 }
@@ -92,7 +92,7 @@ enum SetResponse submitReport::set(const ParameterList &pParams)
   {
     q.prepare( "SELECT usr_email "
                "FROM report, usr "
-               "WHERE (usr_username=getEffectiveXtUser());" );
+               "WHERE (usr_username=CURRENT_USER);" );
     q.exec();
     if (q.first())
       _email->setText(q.value("usr_email").toString());

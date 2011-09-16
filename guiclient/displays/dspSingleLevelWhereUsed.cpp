@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -16,7 +16,7 @@
 #include <QVariant>
 
 #include "bom.h"
-#include "dspInventoryHistory.h"
+#include "dspInventoryHistoryByItem.h"
 #include "item.h"
 
 dspSingleLevelWhereUsed::dspSingleLevelWhereUsed(QWidget* parent, const char*, Qt::WFlags fl)
@@ -135,7 +135,7 @@ void dspSingleLevelWhereUsed::sViewInventoryHistory()
   params.append("warehous_id", -1);
   params.append("run");
 
-  dspInventoryHistory *newdlg = new dspInventoryHistory();
+  dspInventoryHistoryByItem *newdlg = new dspInventoryHistoryByItem();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }
@@ -156,13 +156,6 @@ bool dspSingleLevelWhereUsed::setParams(ParameterList &params)
     params.append("notEffective");
   else
     params.append("effective", _effective->date());
-
-  params.append("Always", tr("Always"));
-  params.append("Never", tr("Never"));
-  params.append("Push", tr("Push"));
-  params.append("Pull", tr("Pull"));
-  params.append("Mixed", tr("Mixed"));
-  params.append("Special", tr("Special"));
 
   return true;
 }

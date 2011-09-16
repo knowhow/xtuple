@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -86,8 +86,8 @@ class XTUPLEWIDGETS_EXPORT XComboBox : public QComboBox
       SalesOrderCommentTypes, SalesOrderItemCommentTypes,               
       SalesCategories, SalesCategoriesActive,
       SalesReps, SalesRepsActive,
-      ShipVias, ShippingCharges,	ShippingForms, ShippingZones,
-      SiteTypes, SoProjects, Subaccounts,
+      ShipVias,		ShippingCharges,	ShippingForms,
+      SiteTypes, SoProjects,	Subaccounts,
       TaxAuths, TaxClasses, TaxCodes, TaxZones,
       TaxTypes, Terms, TaskCommentTypes, TodoItemCommentTypes,
       TransferOrderCommentTypes, TransferOrderItemCommentTypes,

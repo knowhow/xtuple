@@ -6,12 +6,6 @@
  <parameter default="3349" active="true" listtype="static" type="string" name="sohead_id">
   <description></description>
  </parameter>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>25</topmargin>
@@ -84,15 +78,12 @@
        item_descrip1,
        item_descrip2,
        formatQty(coitem_qtyord) AS ordered,
-       CASE WHEN ((coitem_qtyshipped - coitem_qtyreturned) > 0.0) THEN formatQty(coitem_qtyshipped - coitem_qtyreturned)
-            ELSE NULL
-       END AS shipped,
-       CASE WHEN ((coitem_qtyshipped - coitem_qtyreturned) > 0.0) THEN formatQty(noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned))
-            ELSE NULL
-       END AS balance,
-       CASE WHEN (qtyAtShipping('SO', coitem_id) > 0.0) THEN formatQty(qtyAtShipping('SO', coitem_id))
-            ELSE NULL
-       END AS atShipping,
+       formatQty(coitem_qtyshipped - coitem_qtyreturned) AS shipped,
+       formatQty(noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned)) AS balance,
+       formatQty( ( SELECT COALESCE(SUM(shipitem_qty), 0)
+                    FROM shipitem
+                    WHERE ( (shipitem_orderitem_id=coitem_id)
+                      AND   (NOT shipitem_shipped) ) ) ) AS atshipping,
        formatQty(roundUp((coitem_qtyord * coitem_qty_invuomratio))) AS shipordered,
        formatQty(roundUp(((coitem_qtyshipped - coitem_qtyreturned) * coitem_qty_invuomratio))) AS shipshipped,
        formatQty(roundUp((noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned) * coitem_qty_invuomratio))) AS shipbalance,

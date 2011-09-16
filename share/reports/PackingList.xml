@@ -66,7 +66,7 @@ SELECT COALESCE(shiphead_number::TEXT, 'Not Issued To Shipping') AS shiphead_num
        formattobarcode(tohead_id) AS order_barcode,
        COALESCE(shiphead_shipvia, tohead_shipvia) AS shipvia,
        tohead_destphone AS shiptophone,
-       TEXT(' ') AS cohead_custponumber,
+       TEXT(tohead_number) AS cohead_custponumber,
        formatDate(tohead_orderdate) AS orderdate,
        tohead_shipcomments AS shipcomments,
        tohead_srcname AS billtoname,
@@ -933,7 +933,7 @@ ORDER BY ordernumber;</sql>
   </group>
   <group>
    <name>lineitem</name>
-   <column>linenumber</column>
+   <column>coitem_linenumber</column>
    <foot>
     <height>21</height>
     <line>
@@ -1319,7 +1319,7 @@ ORDER BY ordernumber;</sql>
   <label>
    <rect>
     <x>25</x>
-    <y>8</y>
+    <y>5</y>
     <width>61</width>
     <height>17</height>
    </rect>
@@ -1335,7 +1335,7 @@ ORDER BY ordernumber;</sql>
   <field>
    <rect>
     <x>90</x>
-    <y>8</y>
+    <y>5</y>
     <width>95</width>
     <height>17</height>
    </rect>
@@ -1354,7 +1354,7 @@ ORDER BY ordernumber;</sql>
   <field>
    <rect>
     <x>735</x>
-    <y>8</y>
+    <y>5</y>
     <width>45</width>
     <height>17</height>
    </rect>
@@ -1372,8 +1372,24 @@ ORDER BY ordernumber;</sql>
   </field>
   <label>
    <rect>
+    <x>360</x>
+    <y>5</y>
+    <width>90</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <top/>
+   <string>Sales Order #:</string>
+  </label>
+  <label>
+   <rect>
     <x>695</x>
-    <y>8</y>
+    <y>5</y>
     <width>37</width>
     <height>17</height>
    </rect>
@@ -1389,7 +1405,7 @@ ORDER BY ordernumber;</sql>
   <field>
    <rect>
     <x>455</x>
-    <y>8</y>
+    <y>5</y>
     <width>80</width>
     <height>17</height>
    </rect>
@@ -1402,26 +1418,7 @@ ORDER BY ordernumber;</sql>
    <top/>
    <data>
     <query>head</query>
-    <column>ordernumber</column>
-   </data>
-  </field>
-  <field>
-   <rect>
-    <x>365</x>
-    <y>8</y>
-    <width>80</width>
-    <height>17</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>head</query>
-    <column>ordertype</column>
+    <column>cohead_number</column>
    </data>
   </field>
  </pgfoot>

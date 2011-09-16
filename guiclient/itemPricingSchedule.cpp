@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -14,9 +14,6 @@
 #include <QMessageBox>
 #include <QSqlError>
 #include "itemPricingScheduleItem.h"
-
-#include <metasql.h>
-#include "mqlutil.h"
 
 /*
  *  Constructs a itemPricingSchedule as a child of 'parent', with the
@@ -52,8 +49,6 @@ itemPricingSchedule::itemPricingSchedule(QWidget* parent, const char* name, bool
   _ipsitem->addColumn(tr("UOM"),             _uomColumn,   Qt::AlignCenter, true,  "priceuom");
   _ipsitem->addColumn(tr("Price/Discount"),  _priceColumn, Qt::AlignRight,  true,  "price" );
   _ipsitem->addColumn(tr("Fixed Discount"),  _priceColumn, Qt::AlignRight,  true,  "fixedAmtDiscount" );
-  _ipsitem->addColumn(tr("Discounted Price"),_priceColumn, Qt::AlignRight,  true,  "discounted_prc" );
-  _ipsitem->addColumn(tr("Method"),          -1,           Qt::AlignLeft,   true,  "method" );
 
   _currency->setType(XComboBox::Currencies);
   _currency->setLabel(_currencyLit);
@@ -338,16 +333,59 @@ void itemPricingSchedule::sFillList()
 
 void itemPricingSchedule::sFillList(int pIpsitemid)
 {
-  MetaSQLQuery mql = mqlLoad("itemPricingSchedule", "detail");
-  ParameterList params;
-  params.append("ipshead_id", _ipsheadid);
-  params.append("item",tr("Item"));
-  params.append("prodcat", tr("Prod. Cat."));
-  params.append("freight", tr("Freight"));
-  params.append("flatrate", tr("Flat Rate"));
-  params.append("peruom", tr("Price Per UOM"));
-
-  q = mql.toQuery(params);
+  q.prepare( "SELECT ipsitem_id AS id, 1 AS altid, :item AS type, item_number AS number,"
+             "       (item_descrip1 || ' ' || item_descrip2) AS descrip,"
+             "       qty.uom_name AS qtyuom, ipsitem_qtybreak AS qtybreak,"
+             "       price.uom_name AS priceuom, ipsitem_price AS price,"
+			 "       0.00 AS fixedAmtDiscount,"
+             "       'qty' AS qtybreak_xtnumericrole,"
+             "       'salesprice' AS price_xtnumericrole "
+             "  FROM ipsitem, item, uom AS qty, uom AS price "
+             " WHERE ( (ipsitem_item_id=item_id)"
+             "   AND   (ipsitem_qty_uom_id=qty.uom_id)"
+             "   AND   (ipsitem_price_uom_id=price.uom_id)"
+             "   AND   (ipsitem_ipshead_id=:ipshead_id) )"
+             " UNION "
+             "SELECT ipsprodcat_id AS id, 2 AS altid, :prodcat AS type, prodcat_code AS number,"
+             "       prodcat_descrip AS descrip,"
+             "       '' AS qtyuom, ipsprodcat_qtybreak AS qtybreak,"
+             "       '' AS priceuom, ipsprodcat_discntprcnt AS price,"
+			 "       ipsprodcat_fixedamtdiscount AS fixedAmtDiscount,"
+             "       'qty' AS qtybreak_xtnumericrole,"
+             "       'percent' AS price_xtnumericrole "
+             "  FROM ipsprodcat, prodcat"
+             " WHERE ( (ipsprodcat_prodcat_id=prodcat_id)"
+             "   AND   (ipsprodcat_ipshead_id=:ipshead_id) )"
+             " UNION "
+             "SELECT ipsfreight_id AS id, 3 AS altid, :freight AS type,"
+             "       CASE WHEN (ipsfreight_type='F') THEN :flatrate"
+             "            ELSE :peruom"
+             "       END AS number,"
+             "       ('From ' || COALESCE(warehous_code, 'All Sites') || ' To ' || COALESCE(shipzone_name, 'All Shipping Zones')) AS descrip,"
+             "       CASE WHEN (ipsfreight_type='P') THEN uom_name END AS qtyuom,"
+             "       CASE WHEN (ipsfreight_type='P') THEN ipsfreight_qtybreak END AS qtybreak,"
+             "       uom_name AS priceuom, ipsfreight_price AS price,"
+			 "       0.00 AS fixedAmtDiscount,"
+             "       'qty' AS qtybreak_xtnumericrole,"
+             "       'curr' AS price_xtnumericrole "
+             "  FROM ipsfreight LEFT OUTER JOIN uom ON (uom_item_weight)"
+             "                  LEFT OUTER JOIN whsinfo ON (warehous_id=ipsfreight_warehous_id)"
+             "                  LEFT OUTER JOIN shipzone ON (shipzone_id=ipsfreight_shipzone_id)"
+             " WHERE ( (ipsfreight_ipshead_id=:ipshead_id) )"
+             " ORDER BY altid, number, qtybreak;" );
+  q.bindValue(":ipshead_id", _ipsheadid);
+  q.bindValue(":item", tr("Item"));
+  q.bindValue(":prodcat", tr("Prod. Cat."));
+  q.bindValue(":freight", tr("Freight"));
+  q.bindValue(":flatrate", tr("Flat Rate"));
+  q.bindValue(":peruom", tr("Price Per UOM"));
+  q.exec();
+  if (q.lastError().type() != QSqlError::NoError)
+  {
+	systemError(this, _rejectedMsg.arg(q.lastError().databaseText()),
+                  __FILE__, __LINE__);
+        reject();
+  }
 
   if (pIpsitemid == -1)
     _ipsitem->populate(q, true);

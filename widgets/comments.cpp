@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -110,10 +110,8 @@ Comments::Comments(QWidget *pParent, const char *name) :
   _comment->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   _comment->addColumn(tr("Date/Time"), _timeDateColumn, Qt::AlignCenter,true, "comment_date");
   _comment->addColumn(tr("Type"),    _itemColumn, Qt::AlignCenter,true, "type");
-  _comment->addColumn(tr("Source"),  _itemColumn, Qt::AlignCenter,true, "comment_source");
   _comment->addColumn(tr("User"),    _userColumn, Qt::AlignCenter,true, "comment_user");
   _comment->addColumn(tr("Comment"), -1,          Qt::AlignLeft,  true, "first");
-  _comment->addColumn(tr("Public"),    _ynColumn, Qt::AlignLeft, false, "comment_public");
   hbox->addWidget(_comment);
 
   _browser = new QTextBrowser(this);
@@ -238,8 +236,7 @@ void Comments::refresh()
   XSqlQuery comment;
   if(_source != CRMAccount)
   {
-    _comment->hideColumn(2);
-    comment.prepare( "SELECT comment_id, comment_date, comment_source,"
+    comment.prepare( "SELECT comment_id, comment_date,"
                      "       CASE WHEN (cmnttype_name IS NOT NULL) THEN cmnttype_name"
                      "            ELSE :none"
                      "       END AS type,"
@@ -247,8 +244,7 @@ void Comments::refresh()
                      "       firstLine(detag(comment_text)) AS first,"
                      "       comment_text, "
                      "       COALESCE(cmnttype_editable,false) AS editable, "
-                     "       comment_public, "
-                     "       comment_user=getEffectiveXtUser() AS self "
+                     "       comment_user=CURRENT_USER AS self "
                      "FROM comment LEFT OUTER JOIN cmnttype ON (comment_cmnttype_id=cmnttype_id) "
                      "WHERE ( (comment_source=:source)"
                      " AND (comment_source_id=:sourceid) ) "
@@ -257,8 +253,7 @@ void Comments::refresh()
   else
   {
     // If it's CRMAccount we want to do some extra joining in our SQL
-    _comment->showColumn(2);
-    comment.prepare( "SELECT comment_id, comment_date, comment_source,"
+    comment.prepare( "SELECT comment_id, comment_date,"
                      "       CASE WHEN (cmnttype_name IS NOT NULL) THEN cmnttype_name"
                      "            ELSE :none"
                      "       END AS type,"
@@ -266,49 +261,45 @@ void Comments::refresh()
                      "       firstLine(detag(comment_text)) AS first,"
                      "       comment_text, "
                      "       COALESCE(cmnttype_editable,false) AS editable, "
-                     "       comment_public, "
-                     "       comment_user=getEffectiveXtUser() AS self "
+                     "       comment_user=CURRENT_USER AS self "
                      "  FROM comment LEFT OUTER JOIN cmnttype ON (comment_cmnttype_id=cmnttype_id) "
                      " WHERE((comment_source=:source)"
                      "   AND (comment_source_id=:sourceid) ) "
                      " UNION "
-                     "SELECT comment_id, comment_date, comment_source,"
+                     "SELECT comment_id, comment_date,"
                      "       CASE WHEN (cmnttype_name IS NOT NULL) THEN cmnttype_name"
                      "            ELSE :none"
                      "       END,"
                      "       comment_user, firstLine(detag(comment_text)),"
                      "       comment_text, "
                      "       COALESCE(cmnttype_editable,false) AS editable, "
-                     "       comment_public, "
-                     "       comment_user=getEffectiveXtUser() AS self "
+                     "       comment_user=CURRENT_USER AS self "
                      "  FROM crmacct, comment LEFT OUTER JOIN cmnttype ON (comment_cmnttype_id=cmnttype_id) "
                      " WHERE((comment_source=:sourceCust)"
                      "   AND (crmacct_id=:sourceid)"
                      "   AND (comment_source_id=crmacct_cust_id) ) "
                      " UNION "
-                     "SELECT comment_id, comment_date, comment_source,"
+                     "SELECT comment_id, comment_date,"
                      "       CASE WHEN (cmnttype_name IS NOT NULL) THEN cmnttype_name"
                      "            ELSE :none"
                      "       END,"
                      "       comment_user, firstLine(detag(comment_text)),"
                      "       comment_text, "
                      "       COALESCE(cmnttype_editable,false) AS editable, "
-                     "       comment_public, "
-                     "       comment_user=getEffectiveXtUser() AS self "
+                     "       comment_user=CURRENT_USER AS self "
                      "  FROM crmacct, comment LEFT OUTER JOIN cmnttype ON (comment_cmnttype_id=cmnttype_id) "
                      " WHERE((comment_source=:sourceVend)"
                      "   AND (crmacct_id=:sourceid)"
                      "   AND (comment_source_id=crmacct_vend_id) ) "
                      " UNION "
-                     "SELECT comment_id, comment_date, comment_source,"
+                     "SELECT comment_id, comment_date,"
                      "       CASE WHEN (cmnttype_name IS NOT NULL) THEN cmnttype_name"
                      "            ELSE :none"
                      "       END,"
                      "       comment_user, firstLine(detag(comment_text)),"
                      "       comment_text, "
                      "       COALESCE(cmnttype_editable,false) AS editable, "
-                     "       comment_public, "
-                     "       comment_user=getEffectiveXtUser() AS self "
+                     "       comment_user=CURRENT_USER AS self "
                      "  FROM cntct, comment LEFT OUTER JOIN cmnttype ON (comment_cmnttype_id=cmnttype_id) "
                      " WHERE((comment_source=:sourceContact)"
                      "   AND (cntct_crmacct_id=:sourceid)"
@@ -338,15 +329,6 @@ void Comments::refresh()
     lclHtml += comment.value("type").toString();
     lclHtml += " ";
     lclHtml += comment.value("comment_user").toString();
-    if(_x_metrics && _x_metrics->boolean("CommentPublicPrivate"))
-    {
-      lclHtml += " (";
-      if(comment.value("comment_public").toBool())
-        lclHtml += "Public";
-      else
-        lclHtml += "Private";
-      lclHtml += ")";
-    }
     if(userCanEdit(cid))
     {
       lclHtml += " <a href=\"edit?id=";

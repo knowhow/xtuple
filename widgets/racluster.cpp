@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -85,7 +85,7 @@ void RaLineEdit::setId(const int pId)
                 "  AND (itemsite_warehous_id NOT IN ("
                 "       SELECT usrsite_warehous_id "
                 "       FROM usrsite "
-                "       WHERE (usrsite_username=getEffectiveXtUser())))) "
+                "       WHERE (usrsite_username=current_user)))) "
                 "UNION "
                 "SELECT raitem_id "
                 "FROM raitem, itemsite "
@@ -94,7 +94,7 @@ void RaLineEdit::setId(const int pId)
                 "  AND (itemsite_warehous_id NOT IN ("
                 "       SELECT usrsite_warehous_id "
                 "       FROM usrsite "
-                "       WHERE (usrsite_username=getEffectiveXtUser()))));");
+                "       WHERE (usrsite_username=current_user))));");
       MetaSQLQuery mql(msql);
       ParameterList params;
       params.append("rahead_id", pId);
@@ -117,7 +117,7 @@ void RaLineEdit::setId(const int pId)
 }
 
 
-void RaLineEdit::setAllowedStatuses(const RaStatuses p)
+void RaLineEdit::setAllowedStatuses(const RaLineEdit::RaStatuses p)
 {
   if (p & (Open | Closed) || p == 0)
     clearExtraClause();

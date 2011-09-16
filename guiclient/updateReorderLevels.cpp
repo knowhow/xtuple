@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -152,8 +152,6 @@ void updateReorderLevels::sUpdate()
     else
       accept();
   }
-  else
-    QMessageBox::information(this, windowTitle(), tr("No Calendar Periods selected."));
 }
 
 void updateReorderLevels::sSubmit()
@@ -164,10 +162,7 @@ void updateReorderLevels::sSubmit()
     params.append("action_name", "UpdateReorderLevel");
     params.append("period_id_list", _periods->periodString());
     _warehouse->appendValue(params);
-    if (_item->id() != -1)
-      params.append("item_id", _item->id());
-    else
-      _parameter->appendValue(params);
+    _parameter->appendValue(params);
 
     if (_leadTime->isChecked())
       params.append("leadtimepad", _leadTimePad->value());
@@ -180,8 +175,6 @@ void updateReorderLevels::sSubmit()
     if (newdlg.exec() == XDialog::Accepted)
       accept();
   }
-  else
-    QMessageBox::information(this, windowTitle(), tr("No Calendar Periods selected."));
 }
 
 void updateReorderLevels::sHandleButtons()
@@ -200,11 +193,9 @@ void updateReorderLevels::sPost()
 
   for (int i = 0; i < selected.size(); i++)
   {
-    // Make sure editor is closed
-    sCloseEdit(selected[i], selected[i]);
     params.clear();
     params.append("itemsite_id",           selected[i]->id());
-    params.append("itemsite_reorderlevel", selected[i]->data(7,Qt::EditRole).toDouble());
+    params.append("itemsite_reorderlevel", selected[i]->text(7)); //TODO: should be selected[i]->rawValue("reordlvl_calc_level"));
     q = mql.toQuery(params);
     if (q.lastError().type() != QSqlError::NoError)
     {

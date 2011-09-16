@@ -1,14 +1,13 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
  * to be bound by its terms.
  */
 
-#include "characteristic.h"
 #include "display.h"
 #include "xlineedit.h"
 #include "ui_display.h"
@@ -19,7 +18,6 @@
 #include <QPrintDialog>
 #include <QShortcut>
 #include <QToolButton>
-#include <QDebug>
 
 #include <metasql.h>
 #include <mqlutil.h>
@@ -29,23 +27,26 @@
 #include <parameter.h>
 #include <previewdialog.h>
 
-#include "../scriptapi/parameterlistsetup.h"
-
 class displayPrivate : public Ui::display
 {
 public:
   displayPrivate(::display * parent) : _parent(parent)
   {
     setupUi(_parent);
-    _parameterWidget->setVisible(false);
+    _print->hide();
+    _preview->hide();
+    _new->hide();
     _queryonstart->hide(); // hide until query on start enabled
     _autoupdate->hide(); // hide until auto update is enabled
+    _parameterWidget->hide(); // hide until user shows manually
     _search->hide();
     _searchLit->hide();
     _listLabelFrame->setVisible(false);
     _useAltId = false;
     _queryOnStartEnabled = false;
     _autoUpdateEnabled = false;
+
+    bool useToolbar = _metrics->boolean("DisplaysUseToolbar");
 
     // Build Toolbar even if we hide it so we get actions
     _newBtn = new QToolButton(_toolBar);
@@ -69,15 +70,18 @@ public:
     _moreAct = _toolBar->addWidget(_moreBtn);
     _moreAct->setVisible(false);
 
-    QLabel* filterListLit = _parent->findChild<QLabel*>("_filterListLit");
-    filterListLit->setContentsMargins(3,0,3,0);
-    XComboBox* filterList = _parent->findChild<XComboBox*>("_filterList");
+    if (useToolbar)
+    {
+      QLabel* filterListLit = _parent->findChild<QLabel*>("_filterListLit");
+      filterListLit->setContentsMargins(3,0,3,0);
+      XComboBox* filterList = _parent->findChild<XComboBox*>("_filterList");
 
-    _filterLitAct = _toolBar->insertWidget(_moreAct, filterListLit);
-    _filterLitAct->setVisible(false);
+      _filterLitAct = _toolBar->insertWidget(_moreAct, filterListLit);
+      _filterLitAct->setVisible(false);
 
-    _filterAct = _toolBar->insertWidget(_moreAct, filterList);
-    _filterAct->setVisible(false);
+      _filterAct = _toolBar->insertWidget(_moreAct, filterList);
+      _filterAct->setVisible(false);
+    }
 
     _sep2 = _toolBar->addSeparator();
     _sep2->setVisible(false);
@@ -97,10 +101,18 @@ public:
     _sep3 = _toolBar->addSeparator();
     _sep3->setVisible(false);
 
-    // Optional search widget in toolbar
-    _search->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    _searchAct = _toolBar->addWidget(_search);
-    _searchAct->setVisible(false);
+    if (useToolbar)
+    {
+      // Optional search widget in toolbar
+      _search->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+      _searchAct = _toolBar->addWidget(_search);
+      _searchAct->setVisible(false);
+    }
+    else
+    {
+      _searchAct = new QAction(_search);
+      _search->addAction(_searchAct);
+    }
 
     // Remaining buttons in toolbar
     _queryBtn = new QToolButton(_toolBar);
@@ -120,13 +132,20 @@ public:
     _autoUpdateAct->setVisible(false);
     _queryMenu->addAction(_autoUpdateAct);
 
-    _parent->layout()->setContentsMargins(0,0,0,0);
-    _parent->layout()->setSpacing(0);
+    // Determine whether to show toolbar or buttons
+    _toolBar->setVisible(useToolbar);
+
+    _close->setHidden(useToolbar);
+    _query->setHidden(useToolbar);
+
+    if (useToolbar)
+    {
+      _parent->layout()->setContentsMargins(0,0,0,0);
+      _parent->layout()->setSpacing(0);
+    }
   }
 
-  bool setParams(ParameterList &);
-  void setupCharacteristics(unsigned int use);
-  void print(ParameterList, bool, bool);
+  void print(ParameterList, bool);
 
   QString reportName;
   QString metasqlName;
@@ -160,20 +179,15 @@ public:
   QToolButton * _previewBtn;
   QToolButton * _printBtn;
 
-  QList<QVariant> _charidstext;
-  QList<QVariant> _charidslist;
-  QList<QVariant> _charidsdate;
-
 private:
   ::display * _parent;
 };
 
-void displayPrivate::print(ParameterList pParams, bool showPreview, bool forceSetParams)
+void displayPrivate::print(ParameterList pParams, bool showPreview)
 {
   int numCopies = 1;
   ParameterList params = pParams;
-
-  if (forceSetParams || !params.count())
+  if (!params.count())
   {
     if(!_parent->setParams(params))
       return;
@@ -245,132 +259,6 @@ void displayPrivate::print(ParameterList pParams, bool showPreview, bool forceSe
   }
 }
 
-void displayPrivate::setupCharacteristics(unsigned int use)
-{
-  QStringList uses;
-  if (use & characteristic::Addresses)
-    uses << "char_addresses";
-  if (use & characteristic::Contacts)
-    uses << "char_contacts";
-  if (use & characteristic::CRMAccounts)
-    uses << "char_crmaccounts";
-  if (use & characteristic::Customers)
-    uses << "char_customers";
-  if (use & characteristic::Employees)
-    uses << "char_employees";
-  if (use & characteristic::Incidents)
-    uses << "char_incidents";
-  if (use & characteristic::Items)
-    uses << "char_items";
-  if (use & characteristic::LotSerial)
-    uses << "char_lotserial";
-  if (use & characteristic::Opportunities)
-    uses << "char_opportunity";
-
-  // Add columns and parameters for characteristics
-  QString column;
-  QString name;
-  QString sql = QString("SELECT char_id, char_name, char_type "
-                        "FROM char "
-                        "WHERE (%1) "
-                        " AND (char_search) "
-                        "ORDER BY char_name;").arg(uses.join(" AND "));
-  XSqlQuery chars;
-  chars.exec(sql);
-  while (chars.next())
-  {
-    characteristic::Type chartype = (characteristic::Type)chars.value("char_type").toInt();
-    column = QString("char%1").arg(chars.value("char_id").toString());
-    name = chars.value("char_name").toString();
-    _list->addColumn(name, -1, Qt::AlignLeft , false, column );
-    if (chartype == characteristic::Text)
-    {
-      _charidstext.append(chars.value("char_id").toInt());
-      _parameterWidget->append(name, column, ParameterWidget::Text);
-    }
-    else if (chartype == characteristic::List)
-    {
-      _charidslist.append(chars.value("char_id").toInt());
-      QString sql =   QString("SELECT charopt_value, charopt_value "
-                              "FROM charopt "
-                              "WHERE (charopt_char_id=%1);")
-          .arg(chars.value("char_id").toInt());
-      _parameterWidget->append(name, column, ParameterWidget::Multiselect, QVariant(), false, sql);
-    }
-    else if (chartype == characteristic::Date)
-    {
-      _charidsdate.append(chars.value("char_id").toInt());
-      QString start = QApplication::translate("display", "Start Date", 0, QApplication::UnicodeUTF8);
-      QString end = QApplication::translate("display", "End Date", 0, QApplication::UnicodeUTF8);
-      _parameterWidget->append(name + " " + start, column + "startDate", ParameterWidget::Date);
-      _parameterWidget->append(name + " " + end, column + "endDate", ParameterWidget::Date);
-    }
-  }
-}
-
-bool displayPrivate::setParams(ParameterList &params)
-{
-  QString filter = _parameterWidget->filter();
-  _parameterWidget->appendValue(params);
-  if (!_search->isNull())
-  {
-    params.append("search_pattern", _search->text());
-    QString searchon =  QApplication::translate("display", "Search On:", 0, QApplication::UnicodeUTF8);
-    filter.prepend(searchon + " " + _search->text() + "\n");
-  }
-  params.append("filter", filter);
-
-  // Handle characteristics
-  QVariant param;
-  bool valid;
-  QString column;
-  QStringList clauses;
-
-  // Put together the list of text and date based charids used to build joins
-  params.append("char_id_text_list", _charidstext);
-  params.append("char_id_list_list", _charidslist);
-  params.append("char_id_date_list", _charidsdate);
-
-  // Handle text based sections of clause
-  for (int i = 0; i < _charidstext.count(); i++)
-  {
-    column = QString("char%1").arg(_charidstext.at(i).toString());
-    param = params.value(column, &valid);
-    if (valid)
-      clauses.append(QString("charass_alias%1.charass_value ~* '%2'").arg(_charidstext.at(i).toString()).arg(param.toString()));
-  }
-  // Handle text based sections of clause
-  for (int i = 0; i < _charidslist.count(); i++)
-  {
-    column = QString("char%1").arg(_charidslist.at(i).toString());
-    param = params.value(column, &valid);
-    if (valid)
-    {
-      QStringList list = param.toStringList();
-      clauses.append(QString("charass_alias%1.charass_value IN ('%2') ").arg(_charidslist.at(i).toString()).arg(list.join("','")));
-    }
-  }
-  // Handle date based sections of clause
-  for (int i = 0; i < _charidsdate.count(); i++)
-  {
-    // Look for start date
-    column = QString("char%1startDate").arg(_charidsdate.at(i).toString());
-    param = params.value(column, &valid);
-    if (valid)
-      clauses.append(QString("charass_alias%1.charass_value::date >= '%2'").arg(_charidsdate.at(i).toString()).arg(param.toString()));
-
-    // Look for end date
-    column = QString("char%1endDate").arg(_charidsdate.at(i).toString());
-    param = params.value(column, &valid);
-    if (valid)
-      clauses.append(QString("charass_alias%1.charass_value::date <= '%2'").arg(_charidsdate.at(i).toString()).arg(param.toString()));
-  }
-  if (clauses.count())
-    params.append("charClause", clauses.join(" AND ").prepend(" AND "));
-
-  return true;
-}
-
 display::display(QWidget* parent, const char* name, Qt::WindowFlags flags)
     : XWidget(parent, name, flags)
 {
@@ -394,9 +282,14 @@ display::display(QWidget* parent, const char* name, Qt::WindowFlags flags)
   _data->_queryAct->setShortcut(QKeySequence::Refresh);
   _data->_printAct->setShortcut(QKeySequence::Print);
 
-  _data->_search->setNullStr(tr("search"));
-  _data->_searchAct->setShortcut(QKeySequence::InsertParagraphSeparator);
-  _data->_searchAct->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+  if (_metrics->boolean("DisplaysUseToolbar"))
+  {
+    _data->_search->setNullStr(tr("search"));
+    _data->_searchAct->setShortcut(QKeySequence::InsertParagraphSeparator);
+    _data->_searchAct->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+  }
+  else
+    connect(_data->_search, SIGNAL(editingFinished()), this, SLOT(sFillList()));
 
   // Set tooltips
   _data->_newBtn->setToolTip(_data->_newBtn->text() + " " + _data->_newAct->shortcut().toString(QKeySequence::NativeText));
@@ -406,6 +299,7 @@ display::display(QWidget* parent, const char* name, Qt::WindowFlags flags)
 
   connect(_data->_newBtn, SIGNAL(clicked()), _data->_newAct, SLOT(trigger()));
   connect(_data->_closeBtn, SIGNAL(clicked()), _data->_closeAct, SLOT(trigger()));
+  connect(_data->_moreBtn, SIGNAL(clicked(bool)), _data->_parameterWidget, SLOT(setVisible(bool)));
   connect(_data->_moreBtn, SIGNAL(clicked(bool)), filterButton, SLOT(setChecked(bool)));
   connect(_data->_printBtn, SIGNAL(clicked()), _data->_printAct, SLOT(trigger()));
   connect(_data->_previewBtn, SIGNAL(clicked()), _data->_previewAct, SLOT(trigger()));
@@ -423,10 +317,17 @@ display::display(QWidget* parent, const char* name, Qt::WindowFlags flags)
   connect(_data->_printAct, SIGNAL(triggered()), this, SLOT(sPrint()));
   connect(_data->_previewAct, SIGNAL(triggered()), this, SLOT(sPreview()));
   connect(_data->_searchAct, SIGNAL(triggered()), this, SLOT(sFillList()));
-  connect(this, SIGNAL(fillList()), this, SLOT(sFillList()));
   connect(_data->_list, SIGNAL(populateMenu(QMenu*,QTreeWidgetItem*,int)), this, SLOT(sPopulateMenu(QMenu*,QTreeWidgetItem*,int)));
   connect(_data->_autoupdate, SIGNAL(toggled(bool)), this, SLOT(sAutoUpdateToggled()));
   connect(filterButton, SIGNAL(toggled(bool)), _data->_moreBtn, SLOT(setChecked(bool)));
+
+  // Connect push buttons
+  connect(_data->_new, SIGNAL(clicked()), _data->_newAct, SLOT(trigger()));
+  connect(_data->_close, SIGNAL(clicked()), _data->_closeAct, SLOT(trigger()));
+  connect(_data->_print, SIGNAL(clicked()), _data->_printAct, SLOT(trigger()));
+  connect(_data->_preview, SIGNAL(clicked()), _data->_previewAct, SLOT(trigger()));
+  connect(_data->_query, SIGNAL(clicked()), _data->_queryAct, SLOT(trigger()));
+
 }
 
 display::~display()
@@ -446,7 +347,7 @@ void display::showEvent(QShowEvent * e)
 
   if (_data->_queryOnStartEnabled &&
       _data->_queryonstart->isChecked())
-    emit fillList();
+    sFillList();
 }
 
 QWidget * display::optionsWidget()
@@ -523,30 +424,27 @@ QString display::searchText()
 
 bool display::setParams(ParameterList & params)
 {
-  bool ret = _data->setParams(params);
-  if(engine() && engine()->globalObject().property("setParams").isFunction())
-  {
-    QScriptValue paramArg = ParameterListtoScriptValue(engine(), params);
-    QScriptValue tmp = engine()->globalObject().property("setParams").call(QScriptValue(), QScriptValueList() << paramArg);
-    ret = ret && tmp.toBool();
-    params.clear();
-    ParameterListfromScriptValue(paramArg, params);
-  }
-  return ret;
-}
+  parameterWidget()->appendValue(params);
+  if (!_data->_search->isNull())
+    params.append("search_pattern", _data->_search->text());
 
-void display::setupCharacteristics(unsigned int uses)
-{
-  _data->setupCharacteristics(uses);
+  return true;
 }
 
 void display::setReportName(const QString & reportName)
 {
   _data->reportName = reportName;
-
-  _data->_printAct->setVisible(!reportName.isEmpty());
-  _data->_previewAct->setVisible(!reportName.isEmpty());
-  _data->_sep3->setVisible(!reportName.isEmpty());
+  if (_metrics->boolean("DisplaysUseToolbar"))
+  {
+    _data->_printAct->setVisible(!reportName.isEmpty());
+    _data->_previewAct->setVisible(!reportName.isEmpty());
+    _data->_sep3->setVisible(!reportName.isEmpty());
+  }
+  else
+  {
+    _data->_print->setVisible(!reportName.isEmpty());
+    _data->_preview->setVisible(!reportName.isEmpty());
+  }
 }
 
 QString display::reportName() const
@@ -578,8 +476,13 @@ bool display::useAltId() const
 
 void display::setNewVisible(bool show)
 {
-  _data->_newAct->setVisible(show);
-  _data->_sep1->setVisible(show || _data->_closeAct->isVisible());
+  if (_metrics->boolean("DisplaysUseToolbar"))
+  {
+    _data->_newAct->setVisible(show);
+    _data->_sep1->setVisible(show || _data->_closeAct->isVisible());
+  }
+  else
+    _data->_new->setVisible(show);
 }
 
 bool display::newVisible() const
@@ -589,8 +492,13 @@ bool display::newVisible() const
 
 void display::setCloseVisible(bool show)
 {
-  _data->_closeAct->setVisible(show);
-  _data->_sep1->setVisible(show || _data->_newAct->isVisible());
+  if (_metrics->boolean("DisplaysUseToolbar"))
+  {
+    _data->_closeAct->setVisible(show);
+    _data->_sep1->setVisible(show || _data->_newAct->isVisible());
+  }
+  else
+    _data->_close->setVisible(show);
 }
 
 bool display::closeVisible() const
@@ -600,17 +508,21 @@ bool display::closeVisible() const
 
 void display::setParameterWidgetVisible(bool show)
 {
-  _data->_parameterWidget->setVisible(show);
-  _data->_parameterWidget->_filterButton->hide(); // _moreBtn is what you see here
-  _data->_moreAct->setVisible(show);
-  _data->_filterLitAct->setVisible(show);
-  _data->_filterAct->setVisible(show);
-  _data->_sep2->setVisible(show);
+  if (_metrics->boolean("DisplaysUseToolbar"))
+  {
+    _data->_parameterWidget->_filterButton->hide(); // _moreBtn is what you see here
+    _data->_moreAct->setVisible(show);
+    _data->_filterLitAct->setVisible(show);
+    _data->_filterAct->setVisible(show);
+    _data->_sep2->setVisible(show);
+  }
+  else
+    _data->_parameterWidget->setVisible(show);
 }
 
 bool display::parameterWidgetVisible() const
 {
-  return _data->_parameterWidget->_filterGroup->isVisible();
+  return _data->_parameterWidget->isVisible();
 }
 
 bool display::searchVisible() const
@@ -621,25 +533,31 @@ bool display::searchVisible() const
 void display::setSearchVisible(bool show)
 {
   _data->_search->setVisible(show);
-  _data->_searchAct->setVisible(show);
+  _data->_searchAct->setVisible(show && _metrics->boolean("DisplaysUseToolbar"));
+  _data->_searchLit->setVisible(show && !_metrics->boolean("DisplaysUseToolbar"));
 }
 
 void display::setQueryOnStartEnabled(bool on)
 {
   _data->_queryOnStartEnabled = on;
-  _data->_queryOnStartAct->setVisible(on);
-
-  if (_data->_queryOnStartEnabled ||
-      _data->_autoUpdateEnabled)
+  if (_metrics->boolean("DisplaysUseToolbar"))
   {
-    _data->_queryBtn->setPopupMode(QToolButton::MenuButtonPopup);
-    _data->_queryBtn->setMenu(_data->_queryMenu);
+    _data->_queryOnStartAct->setVisible(on);
+
+    if (_data->_queryOnStartEnabled ||
+        _data->_autoUpdateEnabled)
+    {
+      _data->_queryBtn->setPopupMode(QToolButton::MenuButtonPopup);
+      _data->_queryBtn->setMenu(_data->_queryMenu);
+    }
+    else
+    {
+      _data->_queryBtn->setPopupMode(QToolButton::DelayedPopup);
+      _data->_queryBtn->setMenu(0);
+    }
   }
   else
-  {
-    _data->_queryBtn->setPopupMode(QToolButton::DelayedPopup);
-    _data->_queryBtn->setMenu(0);
-  }
+    _data->_queryonstart->setVisible(on);
 
   _data->_queryonstart->setForgetful(!on);
 
@@ -651,7 +569,7 @@ void display::setQueryOnStartEnabled(bool on)
     XSqlQuery qry;
     qry.prepare("SELECT usrpref_id "
                 "FROM usrpref "
-                "WHERE ((usrpref_username=getEffectiveXtUser()) "
+                "WHERE ((usrpref_username=current_user) "
                 " AND (usrpref_name=:prefname));");
     qry.bindValue(":prefname", prefname);
     qry.exec();
@@ -668,19 +586,25 @@ bool display::queryOnStartEnabled() const
 void display::setAutoUpdateEnabled(bool on)
 {
   _data->_autoUpdateEnabled = on;
-  _data->_autoUpdateAct->setVisible(on);
 
-  if (_data->_queryOnStartEnabled ||
-      _data->_autoUpdateEnabled)
+  if (_metrics->boolean("DisplaysUseToolbar"))
   {
-    _data->_queryBtn->setPopupMode(QToolButton::MenuButtonPopup);
-    _data->_queryBtn->setMenu(_data->_queryMenu);
+    _data->_autoUpdateAct->setVisible(on);
+
+    if (_data->_queryOnStartEnabled ||
+        _data->_autoUpdateEnabled)
+    {
+      _data->_queryBtn->setPopupMode(QToolButton::MenuButtonPopup);
+      _data->_queryBtn->setMenu(_data->_queryMenu);
+    }
+    else
+    {
+      _data->_queryBtn->setPopupMode(QToolButton::DelayedPopup);
+      _data->_queryBtn->setMenu(0);
+    }
   }
   else
-  {
-    _data->_queryBtn->setPopupMode(QToolButton::DelayedPopup);
-    _data->_queryBtn->setMenu(0);
-  }
+    _data->_autoupdate->setVisible(on);
 
   sAutoUpdateToggled(); 
 }
@@ -699,9 +623,9 @@ void display::sPrint()
   sPrint(ParameterList());
 }
 
-void display::sPrint(ParameterList pParams, bool forceSetParams)
+void display::sPrint(ParameterList pParams)
 {
-  _data->print(pParams, false, forceSetParams);
+  _data->print(pParams, false);
 }
 
 void display::sPreview()
@@ -709,24 +633,16 @@ void display::sPreview()
   sPreview(ParameterList());
 }
 
-void display::sPreview(ParameterList pParams, bool forceSetParams)
+void display::sPreview(ParameterList pParams)
 {
-  _data->print(pParams, true, forceSetParams);
+  _data->print(pParams, true);
 }
 
 void display::sFillList()
 {
-  sFillList(ParameterList());
-}
-
-void display::sFillList(ParameterList pParams, bool forceSetParams)
-{
-  emit fillListBefore();
-  if (forceSetParams || !pParams.count())
-  {
-    if (!setParams(pParams))
-      return;
-  }
+  ParameterList params;
+  if (!setParams(params))
+    return;
   int itemid = _data->_list->id();
   bool ok = true;
   QString errorString;
@@ -736,14 +652,13 @@ void display::sFillList(ParameterList pParams, bool forceSetParams)
     systemError(this, errorString, __FILE__, __LINE__);
     return;
   }
-  XSqlQuery xq = mql.toQuery(pParams);
+  XSqlQuery xq = mql.toQuery(params);
   _data->_list->populate(xq, itemid, _data->_useAltId);
   if (xq.lastError().type() != QSqlError::NoError)
   {
     systemError(this, xq.lastError().databaseText(), __FILE__, __LINE__);
     return;
   }
-  emit fillListAfter();
 }
 
 void display::sPopulateMenu(QMenu *, QTreeWidgetItem *, int)

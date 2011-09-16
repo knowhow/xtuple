@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -49,7 +49,7 @@ to be bound by its terms.</comment>
             <bool>false</bool>
            </property>
            <property name="canEdit">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -83,16 +83,6 @@ to be bound by its terms.</comment>
            </property>
            <property name="type">
             <enum>XComboBox::CustomerTypes</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="_crmacct">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>CRM Account...</string>
            </property>
           </widget>
          </item>
@@ -1745,12 +1735,19 @@ to be bound by its terms.</comment>
          <item>
           <widget class="QRadioButton" name="_todoListButton">
            <property name="text">
-            <string>Activities</string>
+            <string>To-Do List</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="crmButtonsSpacer">
+          <widget class="QRadioButton" name="_opportunitiesButton">
+           <property name="text">
+            <string>Opportunties</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -1777,6 +1774,9 @@ to be bound by its terms.</comment>
          </widget>
          <widget class="QWidget" name="_todoListPage">
           <layout class="QGridLayout" name="gridLayout_9"/>
+         </widget>
+         <widget class="QWidget" name="_opportunitiesPage">
+          <layout class="QGridLayout" name="gridLayout_11"/>
          </widget>
         </widget>
        </item>
@@ -2074,9 +2074,6 @@ to be bound by its terms.</comment>
            <property name="checked">
             <bool>true</bool>
            </property>
-           <attribute name="buttonGroup">
-            <string>accountingButtonGroup</string>
-           </attribute>
           </widget>
          </item>
          <item>
@@ -2084,9 +2081,6 @@ to be bound by its terms.</comment>
            <property name="text">
             <string>Cash Receipts</string>
            </property>
-           <attribute name="buttonGroup">
-            <string>accountingButtonGroup</string>
-           </attribute>
           </widget>
          </item>
          <item>
@@ -2094,13 +2088,10 @@ to be bound by its terms.</comment>
            <property name="text">
             <string>Credit Cards</string>
            </property>
-           <attribute name="buttonGroup">
-            <string>accountingButtonGroup</string>
-           </attribute>
           </widget>
          </item>
          <item>
-          <spacer name="accountingButtonsSpacer">
+          <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -2150,7 +2141,7 @@ to be bound by its terms.</comment>
       <attribute name="title">
        <string>Remarks</string>
       </attribute>
-      <layout class="QGridLayout" name="remarksLayout">
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <property name="spacing">
@@ -2196,7 +2187,7 @@ to be bound by its terms.</comment>
          <widget class="QWidget" name="_notesPage">
           <layout class="QGridLayout" name="gridLayout_15">
            <item row="0" column="0">
-            <widget class="XTextEdit" name="_notes"/>
+            <widget class="QTextEdit" name="_notes"/>
            </item>
           </layout>
          </widget>
@@ -2208,7 +2199,7 @@ to be bound by its terms.</comment>
               <bool>false</bool>
              </property>
              <property name="type">
-              <enum>Comments::CRMAccount</enum>
+              <enum>Comments::Customer</enum>
              </property>
             </widget>
            </item>
@@ -2288,11 +2279,6 @@ to be bound by its terms.</comment>
    <header>xtreewidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_number</tabstop>
@@ -2362,6 +2348,7 @@ to be bound by its terms.</comment>
   <tabstop>_commentsButton</tabstop>
   <tabstop>_contactsButton</tabstop>
   <tabstop>_todoListButton</tabstop>
+  <tabstop>_opportunitiesButton</tabstop>
   <tabstop>_summaryButton</tabstop>
   <tabstop>_quotesButton</tabstop>
   <tabstop>_ordersButton</tabstop>
@@ -2504,7 +2491,4 @@ to be bound by its terms.</comment>
    </hints>
   </connection>
  </connections>
- <buttongroups>
-  <buttongroup name="accountingButtonGroup"/>
- </buttongroups>
 </ui>

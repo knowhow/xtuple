@@ -1,0 +1,27 @@
+-- Group: salesorderscustom
+-- Name: detail
+-- Notes: 
+
+SELECT DISTINCT cohead_number::integer, cohead_custponumber,
+  cohead_billtoname, cust_number,
+  MIN(coitem_scheddate) AS scheddate,
+  formatDate(MIN(coitem_scheddate)) AS f_scheddate,
+  CASE 
+    WHEN (MIN(coitem_scheddate) < current_date) THEN
+      'error'
+    WHEN (MIN(coitem_scheddate) > current_date) THEN
+      'emphasis'
+  END AS scheddate_qtforegroundrole
+FROM cohead 
+  JOIN custinfo ON (cohead_cust_id=cust_id)
+  JOIN coitem ON (coitem_cohead_id=cohead_id) 
+  JOIN itemsite ON (coitem_itemsite_id=itemsite_id) 
+  JOIN site() ON (itemsite_warehous_id=warehous_id) 
+WHERE(((coitem_status = 'O') OR (coitem_status IS NULL)) 
+<? if  exists("salesrep_id") ?>
+ AND (cohead_salesrep_id=<? value("salesrep_id") ?>)
+<? endif ?> 
+) 
+GROUP BY cohead_id, cohead_number, cohead_custponumber,
+  cohead_billtoname, cust_number
+ORDER BY cohead_number;

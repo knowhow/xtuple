@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -29,12 +29,11 @@ cashReceiptItem::cashReceiptItem(QWidget* parent, const char* name, bool modal, 
 
 
   // signals and slots connections
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSave()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
   connect(_discount, SIGNAL(clicked()),      this, SLOT(sDiscount()));
 
   _cust->setReadOnly(TRUE);
-  adjustSize();
 }
 
 /*
@@ -70,6 +69,8 @@ enum SetResponse cashReceiptItem::set(const ParameterList &pParams)
     else if (param.toString() == "edit")
     {
       _mode = cEdit;
+
+      _save->setFocus();
     }
   }
 
@@ -242,8 +243,5 @@ void cashReceiptItem::sDiscount()
   newdlg.set(params);
 
   if(newdlg.exec() != XDialog::Rejected)
-  {
     _discountAmount->setLocalValue(newdlg._amount->localValue());
-    _amountToApply->setLocalValue(_openAmount->localValue() - _discountAmount->localValue());
-  }
 }

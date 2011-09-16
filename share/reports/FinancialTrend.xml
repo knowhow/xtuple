@@ -26,12 +26,6 @@ ORDER BY period_end DESC</query>
  <parameter default="true" active="false" listtype="static" type="bool" name="shownumbers">
   <description>Display account numbers with description</description>
  </parameter>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <landscape/>
  <topmargin>50</topmargin>
@@ -125,32 +119,6 @@ FROM
 	OR (fltrenditem_fld12 &lt;> formatMoney(0) AND fltrenditem_fld12 IS NOT NULL)
 	OR (fltrenditem_type &lt;> 'I'))
 &lt;? endif ?></sql>
- </querysource>
- <querysource>
-  <name>notes</name>
-  <sql>SELECT * FROM (
-SELECT 1 AS seq, text('Notes') AS label, flhead_notes AS notes, 
-  startOfTime() AS period_end
-FROM flhead
-WHERE ((flhead_id=&lt;? value("flhead_id") ?>)
-  AND (length(flhead_notes) > 0))
-UNION ALL
-SELECT 2 AS seq, period_name AS label, flnotes_notes AS notes, 
-  period_end
-FROM flnotes
-  JOIN period ON (flnotes_period_id=period_id)
-WHERE ((flnotes_flhead_id=&lt;? value("flhead_id") ?>)
-  AND (
-   &lt;? foreach("period_id_list") ?>
-     &lt;? if not isfirst("period_id_list") ?>
-      OR 
-     &lt;? endif ?>
-    (flnotes_period_id=&lt;? value("period_id_list") ?>)
-   &lt;? endforeach ?>
-  )
-  AND (length(flnotes_notes) > 0))) data
-ORDER BY seq, period_end;
-</sql>
  </querysource>
  <rpthead>
   <height>149</height>
@@ -1111,54 +1079,6 @@ ORDER BY seq, period_end;
     <data>
      <query>detail</query>
      <column>fltrenditem_fld2</column>
-    </data>
-   </field>
-  </detail>
- </section>
- <section>
-  <name>notes</name>
-  <detail>
-   <key>
-    <query>notes</query>
-   </key>
-   <height>32</height>
-   <text>
-    <rect>
-     <x>10</x>
-     <y>17</y>
-     <width>1025</width>
-     <height>15</height>
-    </rect>
-    <bottompad>0</bottompad>
-    <font>
-     <face>Arial</face>
-     <size>9</size>
-     <weight>normal</weight>
-    </font>
-    <left/>
-    <top/>
-    <data>
-     <query>notes</query>
-     <column>notes</column>
-    </data>
-   </text>
-   <field>
-    <rect>
-     <x>5</x>
-     <y>2</y>
-     <width>500</width>
-     <height>15</height>
-    </rect>
-    <font>
-     <face>Arial</face>
-     <size>9</size>
-     <weight>bold</weight>
-    </font>
-    <left/>
-    <vcenter/>
-    <data>
-     <query>notes</query>
-     <column>label</column>
     </data>
    </field>
   </detail>

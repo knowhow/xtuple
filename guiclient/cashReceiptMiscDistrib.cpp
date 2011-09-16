@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -21,13 +21,11 @@ cashReceiptMiscDistrib::cashReceiptMiscDistrib(QWidget* parent, const char* name
 
 
   // signals and slots connections
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSave()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
 
   _account->setType(GLCluster::cRevenue | GLCluster::cExpense |
                     GLCluster::cAsset | GLCluster::cLiability);
-
-  adjustSize();
 }
 
 cashReceiptMiscDistrib::~cashReceiptMiscDistrib()
@@ -73,6 +71,8 @@ enum SetResponse cashReceiptMiscDistrib::set(const ParameterList &pParams)
     else if (param.toString() == "edit")
     {
       _mode = cEdit;
+
+      _save->setFocus();
     }
   }
 

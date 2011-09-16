@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
-    <height>393</height>
+    <width>650</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,8 +23,101 @@ to be bound by its terms.</comment>
   <layout class="QGridLayout" name="gridLayout_5">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="7" rowspan="3">
+     <property name="verticalSpacing">
+      <number>12</number>
+     </property>
+     <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="_codeLit">
+           <property name="text">
+            <string>Employee:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="buddy">
+            <cstring>_code</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="XLineEdit" name="_code">
+           <property name="fieldName">
+            <string notr="true">code</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="_numberLit">
+           <property name="text">
+            <string>Employee Number:</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="XLineEdit" name="_number">
+           <property name="fieldName">
+            <string notr="true">number</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="XCheckBox" name="_active">
+           <property name="text">
+            <string>Active</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="fieldName">
+            <string notr="true">active</string>
+           </property>
+           <property name="forgetful">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>13</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="1">
       <layout class="QVBoxLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QPushButton" name="_save">
          <property name="text">
@@ -57,287 +150,407 @@ to be bound by its terms.</comment>
        </item>
       </layout>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="_codeLit">
-       <property name="text">
-        <string>Employee:</string>
+     <item row="1" column="0" colspan="2">
+      <widget class="QTabWidget" name="_tabWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <property name="buddy">
-        <cstring>_code</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="XLineEdit" name="_code">
-       <property name="fieldName">
-        <string notr="true">code</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="_numberLit">
-       <property name="text">
-        <string>Employee Number:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="XLineEdit" name="_number">
-       <property name="fieldName">
-        <string notr="true">number</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Employee Name:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="3">
-      <widget class="XLineEdit" name="_name"/>
-     </item>
-     <item row="2" column="1">
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="5" colspan="2">
-      <widget class="QPushButton" name="_crmacct">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>CRM Account...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="6">
-      <widget class="XCheckBox" name="_active">
-       <property name="text">
-        <string>Active</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <property name="fieldName">
-        <string notr="true">active</string>
-       </property>
-       <property name="forgetful">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4" colspan="2">
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>13</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QTabWidget" name="_tabWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>1</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="_contactTab">
-      <attribute name="title">
-       <string>&amp;Contact</string>
-      </attribute>
-      <layout class="QGridLayout" name="contactTabLayout">
-       <item row="0" column="0">
-        <widget class="ContactWidget" name="_contact">
-         <property name="accountVisible">
-          <bool>false</bool>
-         </property>
-         <property name="activeVisible">
-          <bool>false</bool>
-         </property>
-         <property name="initialsVisible">
-          <bool>false</bool>
-         </property>
-         <property name="fieldNameChange">
-          <string notr="true">contact_change</string>
-         </property>
-         <property name="fieldNameNumber">
-          <string notr="true">contact_number</string>
-         </property>
-         <property name="fieldNameActive">
-          <string/>
-         </property>
-         <property name="fieldNameHonorific">
-          <string notr="true">honorific</string>
-         </property>
-         <property name="fieldNameFirst">
-          <string notr="true">first</string>
-         </property>
-         <property name="fieldNameLast">
-          <string notr="true">last</string>
-         </property>
-         <property name="fieldNameTitle">
-          <string notr="true">job_title</string>
-         </property>
-         <property name="fieldNamePhone">
-          <string notr="true">voice</string>
-         </property>
-         <property name="fieldNamePhone2">
-          <string notr="true">alternate</string>
-         </property>
-         <property name="fieldNameFax">
-          <string notr="true">fax</string>
-         </property>
-         <property name="fieldNameEmailAddress">
-          <string notr="true">email</string>
-         </property>
-         <property name="fieldNameWebAddress">
-          <string notr="true">web</string>
-         </property>
-         <property name="fieldNameAddressChange" stdset="0">
-          <string notr="true">address_change</string>
-         </property>
-         <property name="fieldNameAddressNumber" stdset="0">
-          <string notr="true">address_number</string>
-         </property>
-         <property name="fieldNameLine1">
-          <string notr="true">address1</string>
-         </property>
-         <property name="fieldNameLine2">
-          <string notr="true">address2</string>
-         </property>
-         <property name="fieldNameLine3">
-          <string notr="true">address3</string>
-         </property>
-         <property name="fieldNameCity">
-          <string notr="true">city</string>
-         </property>
-         <property name="fieldNameState">
-          <string notr="true">state</string>
-         </property>
-         <property name="fieldNamePostalCode">
-          <string notr="true">postalcode</string>
-         </property>
-         <property name="fieldNameCountry">
-          <string notr="true">country</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="_imageTab">
-      <attribute name="title">
-       <string>Image</string>
-      </attribute>
-      <layout class="QGridLayout" name="imageTabLayout">
-       <item row="0" column="0">
-        <widget class="ImageCluster" name="_image">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-           <horstretch>2</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
-         </property>
-         <property name="label">
-          <string>Picture:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="_detailTab">
-      <attribute name="title">
-       <string>&amp;Detail</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="_memberGroup">
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QGridLayout" name="_memberGroupLayout">
-          <item row="0" column="0">
-           <widget class="QLabel" name="_siteLit">
-            <property name="text">
-             <string>        Site:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <layout class="QHBoxLayout">
-            <item>
-             <widget class="WComboBox" name="_site">
-              <property name="allowNull">
-               <bool>true</bool>
+       <widget class="QWidget" name="_contactTab">
+        <attribute name="title">
+         <string>&amp;Contact</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <widget class="ContactWidget" name="_contact">
+           <property name="accountVisible">
+            <bool>false</bool>
+           </property>
+           <property name="activeVisible">
+            <bool>false</bool>
+           </property>
+           <property name="initialsVisible">
+            <bool>false</bool>
+           </property>
+           <property name="fieldNameChange">
+            <string notr="true">contact_change</string>
+           </property>
+           <property name="fieldNameNumber">
+            <string notr="true">contact_number</string>
+           </property>
+           <property name="fieldNameActive">
+            <string/>
+           </property>
+           <property name="fieldNameHonorific">
+            <string notr="true">honorific</string>
+           </property>
+           <property name="fieldNameFirst">
+            <string notr="true">first</string>
+           </property>
+           <property name="fieldNameLast">
+            <string notr="true">last</string>
+           </property>
+           <property name="fieldNameTitle">
+            <string notr="true">job_title</string>
+           </property>
+           <property name="fieldNamePhone">
+            <string notr="true">voice</string>
+           </property>
+           <property name="fieldNamePhone2">
+            <string notr="true">alternate</string>
+           </property>
+           <property name="fieldNameFax">
+            <string notr="true">fax</string>
+           </property>
+           <property name="fieldNameEmailAddress">
+            <string notr="true">email</string>
+           </property>
+           <property name="fieldNameWebAddress">
+            <string notr="true">web</string>
+           </property>
+           <property name="fieldNameAddressChange" stdset="0">
+            <string notr="true">address_change</string>
+           </property>
+           <property name="fieldNameAddressNumber" stdset="0">
+            <string notr="true">address_number</string>
+           </property>
+           <property name="fieldNameLine1">
+            <string notr="true">address1</string>
+           </property>
+           <property name="fieldNameLine2">
+            <string notr="true">address2</string>
+           </property>
+           <property name="fieldNameLine3">
+            <string notr="true">address3</string>
+           </property>
+           <property name="fieldNameCity">
+            <string notr="true">city</string>
+           </property>
+           <property name="fieldNameState">
+            <string notr="true">state</string>
+           </property>
+           <property name="fieldNamePostalCode">
+            <string notr="true">postalcode</string>
+           </property>
+           <property name="fieldNameCountry">
+            <string notr="true">country</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="_imageTab">
+        <attribute name="title">
+         <string>Image</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <item row="0" column="0">
+          <widget class="ImageCluster" name="_image">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>2</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
+           </property>
+           <property name="label">
+            <string>Picture:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="_detailTab">
+        <attribute name="title">
+         <string>&amp;Detail</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="_memberGroup">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QGridLayout">
+            <item row="0" column="0">
+             <widget class="QLabel" name="_siteLit">
+              <property name="text">
+               <string>        Site:</string>
               </property>
-              <property name="fieldName">
-               <string notr="true">site</string>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
-            <item>
+            <item row="0" column="1">
+             <layout class="QHBoxLayout">
+              <item>
+               <widget class="WComboBox" name="_site">
+                <property name="allowNull">
+                 <bool>true</bool>
+                </property>
+                <property name="fieldName">
+                 <string notr="true">site</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0" colspan="2">
+             <widget class="EmpCluster" name="_mgr">
+              <property name="focusPolicy">
+               <enum>Qt::StrongFocus</enum>
+              </property>
+              <property name="label">
+               <string>Manager:</string>
+              </property>
+              <property name="fieldName">
+               <string notr="true">manager_code</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QGroupBox" name="_rateGroup">
+           <property name="title">
+            <string/>
+           </property>
+           <widget class="QWidget" name="layoutWidget">
+            <property name="geometry">
+             <rect>
+              <x>20</x>
+              <y>10</y>
+              <width>170</width>
+              <height>26</height>
+             </rect>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="_startDateLit">
+               <property name="text">
+                <string>Start Date:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="DLineEdit" name="_startDate"/>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QGroupBox" name="_timeclockGroup">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <item row="0" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_3">
+                <item row="0" column="0">
+                 <layout class="QVBoxLayout">
+                  <property name="topMargin">
+                   <number>5</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="_deptLit">
+                    <property name="text">
+                     <string>Dept.:</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer>
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </item>
+                <item row="0" column="1">
+                 <widget class="DeptCluster" name="_dept">
+                  <property name="focusPolicy">
+                   <enum>Qt::StrongFocus</enum>
+                  </property>
+                  <property name="fieldName">
+                   <string notr="true">department</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="shiftLit">
+                  <property name="text">
+                   <string>Shift:</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="ShiftCluster" name="_shift">
+                  <property name="focusPolicy">
+                   <enum>Qt::StrongFocus</enum>
+                  </property>
+                  <property name="fieldName">
+                   <string notr="true">shift</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Preferred</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>13</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QGroupBox" name="_relationshipsGroup">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QGridLayout">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="XCheckBox" name="_user">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="fieldName">
+               <string notr="true">is_user</string>
+              </property>
+              <property name="forgetful">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QPushButton" name="_userButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>&amp;User...</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <spacer>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>91</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="0">
+             <widget class="XCheckBox" name="_salesrep">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="fieldName">
+               <string notr="true">is_salesrep</string>
+              </property>
+              <property name="forgetful">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QPushButton" name="_salesrepButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>&amp;Sales Rep...</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
              <spacer>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -350,457 +563,381 @@ to be bound by its terms.</comment>
               </property>
              </spacer>
             </item>
-           </layout>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="EmpCluster" name="_mgr">
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="label">
-             <string>Manager:</string>
-            </property>
-            <property name="fieldName">
-             <string notr="true">manager_code</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QGroupBox" name="_rateGroup">
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="_startDateLit">
-              <property name="text">
-               <string>Start Date:</string>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="_vendorButton">
+              <property name="enabled">
+               <bool>false</bool>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              <property name="text">
+               <string>&amp;Vendor...</string>
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="DLineEdit" name="_startDate"/>
+            <item row="2" column="0">
+             <widget class="XCheckBox" name="_vendor">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="fieldName">
+               <string notr="true">is_vendor</string>
+              </property>
+              <property name="forgetful">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <spacer name="spacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <spacer>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="_timeclockGroup">
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_6">
-          <item row="4" column="0">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>13</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="shiftLit">
-            <property name="text">
-             <string>Shift:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="ShiftCluster" name="_shift">
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="fieldName">
-             <string notr="true">shift</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" rowspan="2">
-           <widget class="DeptCluster" name="_dept">
-            <property name="focusPolicy">
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="fieldName">
-             <string notr="true">department</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="_deptLit">
-            <property name="text">
-             <string>Dept.:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QGroupBox" name="_relationshipsGroup">
-         <property name="title">
-          <string/>
-         </property>
-         <layout class="QGridLayout" name="_relationshipsGroupLayout"/>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Financial</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <layout class="QGridLayout" name="_wageInfoLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="_wageTypeLit">
-             <property name="text">
-              <string>Type:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="_rateLit">
-             <property name="text">
-              <string>Compensation:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="CurrCluster" name="_rate">
-             <property name="fieldNameValue">
-              <string notr="true">wage</string>
-             </property>
-             <property name="currencyEditable" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="fieldNameCurr">
-              <string notr="true">wage_currency</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="_perLit">
-             <property name="text">
-              <string>Per:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="3">
-            <widget class="XComboBox" name="_per">
-             <property name="fieldName">
-              <string notr="true">wage_period</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="_rateLit_2">
-             <property name="text">
-              <string>Billing Rate:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="CurrCluster" name="_externalRate">
-             <property name="fieldNameValue">
-              <string notr="true">wage</string>
-             </property>
-             <property name="currencyEditable" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="fieldNameCurr">
-              <string notr="true">wage_currency</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="QLabel" name="_perLit_2">
-             <property name="text">
-              <string>Per:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="3">
-            <widget class="XComboBox" name="_perExt">
-             <property name="fieldName">
-              <string notr="true">billing_period</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="4">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="XComboBox" name="_wagetype">
-               <property name="fieldName">
-                <string notr="true">wage_type</string>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Financial</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="_wageTypeLit">
+               <property name="text">
+                <string>Type:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
-             <item>
-              <spacer name="horizontalSpacer_2">
+             <item row="1" column="0">
+              <widget class="QLabel" name="_rateLit">
+               <property name="text">
+                <string>Compensation:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="CurrCluster" name="_rate">
+               <property name="fieldNameValue">
+                <string notr="true">wage</string>
+               </property>
+               <property name="currencyEditable" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="fieldNameCurr">
+                <string notr="true">wage_currency</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="_perLit">
+               <property name="text">
+                <string>Per:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="XComboBox" name="_per">
+               <property name="fieldName">
+                <string notr="true">wage_period</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="_rateLit_2">
+               <property name="text">
+                <string>Billing Rate:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="CurrCluster" name="_externalRate">
+               <property name="fieldNameValue">
+                <string notr="true">wage</string>
+               </property>
+               <property name="currencyEditable" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="fieldNameCurr">
+                <string notr="true">wage_currency</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="_perLit_2">
+               <property name="text">
+                <string>Per:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="XComboBox" name="_perExt">
+               <property name="fieldName">
+                <string notr="true">billing_period</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="4">
+              <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>0</width>
+                 <width>40</width>
                  <height>20</height>
                 </size>
                </property>
               </spacer>
              </item>
+             <item row="0" column="1">
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="XComboBox" name="_wagetype">
+                 <property name="fieldName">
+                  <string notr="true">wage_type</string>
+                 </property>
+                 <item>
+                  <property name="text">
+                   <string>Hourly</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Salaried</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>0</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
             </layout>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>154</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="_notesTab">
+        <attribute name="title">
+         <string>Notes</string>
+        </attribute>
+        <layout class="QHBoxLayout">
          <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
+          <widget class="XTextEdit" name="_notes">
+           <property name="fieldName">
+            <string notr="true">notes</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>154</height>
-            </size>
-           </property>
-          </spacer>
+          </widget>
          </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="_notesTab">
-      <attribute name="title">
-       <string>Notes</string>
-      </attribute>
-      <layout class="QHBoxLayout">
-       <item>
-        <widget class="XTextEdit" name="_notes">
-         <property name="fieldName">
-          <string notr="true">notes</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="_commentsTab">
-      <attribute name="title">
-       <string>Comments</string>
-      </attribute>
-      <layout class="QHBoxLayout">
-       <item>
-        <widget class="Comments" name="_comments">
-         <property name="type">
-          <enum>Comments::Employee</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="_charactersticsTab">
-      <attribute name="title">
-       <string>Characteristics</string>
-      </attribute>
-      <layout class="QHBoxLayout">
-       <item>
-        <widget class="XTreeWidget" name="_charass">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QVBoxLayout">
+       </widget>
+       <widget class="QWidget" name="_commentsTab">
+        <attribute name="title">
+         <string>Comments</string>
+        </attribute>
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QPushButton" name="_newCharass">
-           <property name="text">
-            <string>New</string>
+          <widget class="Comments" name="_comments">
+           <property name="type">
+            <enum>Comments::Employee</enum>
            </property>
           </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="_editCharass">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Edit</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="_deleteCharass">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Delete</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
          </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="_groupTab">
-      <attribute name="title">
-       <string>Groups</string>
-      </attribute>
-      <layout class="QHBoxLayout">
-       <item>
-        <widget class="XTreeWidget" name="_groups"/>
-       </item>
-       <item>
-        <layout class="QVBoxLayout">
+       </widget>
+       <widget class="QWidget" name="_charactersticsTab">
+        <attribute name="title">
+         <string>Characteristics</string>
+        </attribute>
+        <layout class="QHBoxLayout">
          <item>
-          <widget class="QPushButton" name="_editGroup">
+          <widget class="XTreeWidget" name="_charass">
            <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Edit</string>
+            <bool>true</bool>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="_viewGroup">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>View</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="_detachGroup">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Detach</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="_attachGroup">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Attach</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
-           </property>
-          </spacer>
+          <layout class="QVBoxLayout">
+           <item>
+            <widget class="QPushButton" name="_newCharass">
+             <property name="text">
+              <string>New</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_editCharass">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Edit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_deleteCharass">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Delete</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+       </widget>
+       <widget class="QWidget" name="_groupTab">
+        <attribute name="title">
+         <string>Groups</string>
+        </attribute>
+        <layout class="QHBoxLayout">
+         <item>
+          <widget class="XTreeWidget" name="_groups"/>
+         </item>
+         <item>
+          <layout class="QVBoxLayout">
+           <item>
+            <widget class="QPushButton" name="_editGroup">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Edit</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_viewGroup">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>View</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_detachGroup">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Detach</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="_attachGroup">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Attach</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -888,16 +1025,21 @@ to be bound by its terms.</comment>
  <tabstops>
   <tabstop>_code</tabstop>
   <tabstop>_number</tabstop>
-  <tabstop>_name</tabstop>
+  <tabstop>_active</tabstop>
   <tabstop>_tabWidget</tabstop>
   <tabstop>_contact</tabstop>
   <tabstop>_image</tabstop>
   <tabstop>_site</tabstop>
   <tabstop>_mgr</tabstop>
-  <tabstop>_startDate</tabstop>
   <tabstop>_dept</tabstop>
   <tabstop>_shift</tabstop>
-  <tabstop>_wagetype</tabstop>
+  <tabstop>_startDate</tabstop>
+  <tabstop>_user</tabstop>
+  <tabstop>_userButton</tabstop>
+  <tabstop>_salesrep</tabstop>
+  <tabstop>_salesrepButton</tabstop>
+  <tabstop>_vendor</tabstop>
+  <tabstop>_vendorButton</tabstop>
   <tabstop>_rate</tabstop>
   <tabstop>_per</tabstop>
   <tabstop>_externalRate</tabstop>
@@ -912,7 +1054,6 @@ to be bound by its terms.</comment>
   <tabstop>_viewGroup</tabstop>
   <tabstop>_detachGroup</tabstop>
   <tabstop>_attachGroup</tabstop>
-  <tabstop>_save</tabstop>
   <tabstop>_close</tabstop>
  </tabstops>
  <resources/>

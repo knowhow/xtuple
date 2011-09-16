@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -31,7 +31,6 @@ creditMemoItem::creditMemoItem(QWidget* parent, const char* name, bool modal, Qt
   connect(_discountFromSale, SIGNAL(lostFocus()), this, SLOT(sCalculateFromDiscount()));
   connect(_extendedPrice, SIGNAL(valueChanged()), this, SLOT(sCalculateTax()));
   connect(_item,	  SIGNAL(newId(int)),     this, SLOT(sPopulateItemInfo()));
-  connect(_warehouse,	  SIGNAL(newID(int)),     this, SLOT(sPopulateItemsiteInfo()));
   connect(_listPrices,	  SIGNAL(clicked()),      this, SLOT(sListPrices()));
   connect(_netUnitPrice,  SIGNAL(valueChanged()), this, SLOT(sCalculateDiscountPrcnt()));
   connect(_netUnitPrice,  SIGNAL(valueChanged()), this, SLOT(sCalculateExtendedPrice()));
@@ -250,13 +249,13 @@ void creditMemoItem::sSave()
 
     q.prepare( "INSERT INTO cmitem "
                "( cmitem_id, cmitem_cmhead_id, cmitem_linenumber, cmitem_itemsite_id,"
-               "  cmitem_qtyreturned, cmitem_qtycredit, cmitem_updateinv,"
+               "  cmitem_qtyreturned, cmitem_qtycredit,"
                "  cmitem_qty_uom_id, cmitem_qty_invuomratio,"
                "  cmitem_price_uom_id, cmitem_price_invuomratio,"
                "  cmitem_unitprice, cmitem_taxtype_id,"
                "  cmitem_comments, cmitem_rsncode_id ) "
                "SELECT :cmitem_id, :cmhead_id, :cmitem_linenumber, itemsite_id,"
-               "       :cmitem_qtyreturned, :cmitem_qtycredit, :cmitem_updateinv,"
+               "       :cmitem_qtyreturned, :cmitem_qtycredit,"
                "       :qty_uom_id, :qty_invuomratio,"
                "       :price_uom_id, :price_invuomratio,"
                "       :cmitem_unitprice, :cmitem_taxtype_id,"
@@ -267,16 +266,14 @@ void creditMemoItem::sSave()
   }
   else
     q.prepare( "UPDATE cmitem "
-               "SET cmitem_qtyreturned=:cmitem_qtyreturned,"
-               "    cmitem_qtycredit=:cmitem_qtycredit,"
-               "    cmitem_updateinv=:cmitem_updateinv,"
+               "SET cmitem_qtyreturned=:cmitem_qtyreturned, cmitem_qtycredit=:cmitem_qtycredit,"
                "    cmitem_qty_uom_id=:qty_uom_id,"
                "    cmitem_qty_invuomratio=:qty_invuomratio,"
                "    cmitem_price_uom_id=:price_uom_id,"
                "    cmitem_price_invuomratio=:price_invuomratio,"
                "    cmitem_unitprice=:cmitem_unitprice,"
-               "    cmitem_taxtype_id=:cmitem_taxtype_id,"
-               "    cmitem_comments=:cmitem_comments,"
+	             "    cmitem_taxtype_id=:cmitem_taxtype_id,"
+	             "    cmitem_comments=:cmitem_comments,"
                "    cmitem_rsncode_id=:cmitem_rsncode_id "
                "WHERE (cmitem_id=:cmitem_id);" );
 
@@ -285,7 +282,6 @@ void creditMemoItem::sSave()
   q.bindValue(":cmitem_linenumber", _lineNumber->text().toInt());
   q.bindValue(":cmitem_qtyreturned", _qtyReturned->toDouble());
   q.bindValue(":cmitem_qtycredit", _qtyToCredit->toDouble());
-  q.bindValue(":cmitem_updateinv", QVariant(_updateInv->isChecked()));
   q.bindValue(":qty_uom_id", _qtyUOM->id());
   q.bindValue(":qty_invuomratio", _qtyinvuomratio);
   q.bindValue(":price_uom_id", _pricingUOM->id());
@@ -407,40 +403,6 @@ void creditMemoItem::sPopulateItemInfo()
   }
 }
 
-void creditMemoItem::sPopulateItemsiteInfo()
-{
-  XSqlQuery itemsite;
-  itemsite.prepare( "SELECT itemsite_controlmethod"
-                "  FROM itemsite"
-                " WHERE ( (itemsite_item_id=:item_id)"
-                "   AND   (itemsite_warehous_id=:warehous_id) );" );
-  itemsite.bindValue(":item_id", _item->id());
-  itemsite.bindValue(":warehous_id", _warehouse->id());
-  itemsite.exec();
-  if (itemsite.first())
-  {
-    if (itemsite.value("itemsite_controlmethod").toString() == "N")
-    {
-      _qtyReturned->setDouble(0.0);
-      _qtyReturned->setEnabled(false);
-      _updateInv->setChecked(false);
-      _updateInv->setEnabled(false);
-    }
-    else
-    {
-      _qtyReturned->clear();
-      _qtyReturned->setEnabled(true);
-      _updateInv->setChecked(true);
-      _updateInv->setEnabled(true);
-    }
-  }
-  else if (itemsite.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, itemsite.lastError().databaseText(), __FILE__, __LINE__);
-    return;
-  }
-}
-
 void creditMemoItem::populate()
 {
   XSqlQuery cmitem;
@@ -463,16 +425,6 @@ void creditMemoItem::populate()
     _netUnitPrice->setLocalValue(cmitem.value("cmitem_unitprice").toDouble());
     _qtyToCredit->setDouble(cmitem.value("cmitem_qtycredit").toDouble());
     _qtyReturned->setDouble(cmitem.value("cmitem_qtyreturned").toDouble());
-    if (cmitem.value("cmitem_raitem_id").toInt() > 0)
-    {
-      _updateInv->setChecked(false);
-      _updateInv->setEnabled(false);
-    }
-    else
-    {
-      _updateInv->setChecked(cmitem.value("cmitem_updateinv").toBool());
-      _updateInv->setEnabled(true);
-    }
     _qtyUOM->setId(cmitem.value("cmitem_qty_uom_id").toInt());
     _ratio=cmitem.value("cmitem_qty_invuomratio").toDouble();
     _pricingUOM->setId(cmitem.value("cmitem_price_uom_id").toInt());

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -140,11 +140,10 @@ int creditCard::saveCreditCard(QWidget *parent,
     }
   }
 
-  int cceditreturn = 0;
-
-  if (mode == cEdit && ! hasBeenFormatted)
+  if (mode == cNew)
   {
-    // editccnumber validates but does not modify db
+    int cceditreturn = 0;
+
     q.prepare("SELECT editccnumber(text(:ccnum), text(:cctype)) AS cc_back;");
     q.bindValue(":ccnum", ccNumber);
     q.bindValue(":cctype", ccType);
@@ -156,26 +155,23 @@ int creditCard::saveCreditCard(QWidget *parent,
       systemError(parent, q.lastError().databaseText(), __FILE__, __LINE__);
       return -2;
     }
-  }
 
-  if (cceditreturn == -10)
-  { // don't combine into (-10 && !CCtest): continue on -10 if not strict
-    if (!_metrics->boolean("CCTest"))
-    {
-     QMessageBox::warning( parent, tr("Invalid Credit Card Number"),
-      		   storedProcErrorLookup("editccnumber", cceditreturn));
-     return -1;
+    if (cceditreturn == -10)
+    { // don't combine into (-10 && !CCtest): continue on -10 if not strict
+      if (!_metrics->boolean("CCTest"))
+      {
+       QMessageBox::warning( parent, tr("Invalid Credit Card Number"),
+			   storedProcErrorLookup("editccnumber", cceditreturn));
+       return -1;
+      }
     }
-  }
-  else if (cceditreturn < 0)
-  {
-    QMessageBox::warning(parent, tr("Invalid Credit Card Information"),
-      		   storedProcErrorLookup("editccnumber", cceditreturn));
-    return -1;
-  }
+    else if (cceditreturn < 0)
+    {
+      QMessageBox::warning(parent, tr("Invalid Credit Card Information"),
+			   storedProcErrorLookup("editccnumber", cceditreturn));
+      return -1;
+    }
 
-  if (mode == cNew)
-  {
     q.exec("SELECT NEXTVAL('ccard_ccard_id_seq') AS ccard_id;");
     if (q.first())
       ccId = q.value("ccard_id").toInt();

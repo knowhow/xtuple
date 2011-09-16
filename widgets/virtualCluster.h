@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -228,8 +228,6 @@ class XTUPLEWIDGETS_EXPORT VirtualClusterLineEdit : public XLineEdit
         void setStrict(bool);
         bool isStrict() const { return _strict; }
 
-        virtual void completerActivated(const QModelIndex &);
-
     signals:
         void newId(int);
         void parsed();
@@ -269,16 +267,15 @@ class XTUPLEWIDGETS_EXPORT VirtualClusterLineEdit : public XLineEdit
         bool _hasActive;
         bool _strict;
         bool _showInactive;
-        bool _useCompleterId;
 
         virtual void silentSetId(const int);
-
-        QSqlQueryModel* _model;
 
     private:
         void positionMenuLabel();
 
         QString _cText;
+
+        QSqlQueryModel* _model;
 };
 
 /*

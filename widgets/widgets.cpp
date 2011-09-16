@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -182,13 +182,11 @@ Preferences *_x_preferences = 0;
 Metrics     *_x_metrics = 0;
 QWorkspace  *_x_workspace = 0;
 Privileges  *_x_privileges = 0;
-QString     _x_username;
 
-void initializePlugin(Preferences *pPreferences, Metrics *pMetrics, Privileges *pPrivileges, QString pUsername, QWorkspace *pWorkspace)
+void initializePlugin(Preferences *pPreferences, Metrics *pMetrics, Privileges *pPrivileges, QWorkspace *pWorkspace)
 {
   _x_preferences = pPreferences;
   _x_metrics = pMetrics;
   _x_workspace = pWorkspace;
   _x_privileges = pPrivileges;
-  _x_username = pUsername;
 }

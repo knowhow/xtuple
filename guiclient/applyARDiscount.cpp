@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -18,13 +18,11 @@ applyARDiscount::applyARDiscount(QWidget* parent, const char* name, bool modal, 
 {
   setupUi(this);
 
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sApply()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_apply, SIGNAL(clicked()), this, SLOT(sApply()));
 
   _discprcnt->setPrecision(omfgThis->percentVal());
 
   _aropenid = -1;
-  adjustSize();
 }
 
 applyARDiscount::~applyARDiscount()

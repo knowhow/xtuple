@@ -3,18 +3,81 @@
  <title>Inventory History</title>
  <name>InventoryHistory</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
  <bottommargin>50</bottommargin>
  <rightmargin>50</rightmargin>
  <leftmargin>50</leftmargin>
+ <querysource>
+  <name>head</name>
+  <sql>SELECT formatDate(&lt;? value("startDate") ?>) AS startdate,
+       formatDate(&lt;? value("endDate") ?>) AS enddate,
+       &lt;? if exists("warehous_id") ?>
+         ( SELECT warehous_code
+             FROM warehous
+            WHERE (warehous_id=&lt;? value("warehous_id") ?>) )
+       &lt;? else ?>
+         text('All Sites')
+       &lt;? endif ?>
+       AS warehouse,
+       &lt;? if exists("itemgrp_id") ?>
+         ( SELECT (itemgrp_name||'-'||itemgrp_descrip)
+             FROM itemgrp
+            WHERE (itemgrp_id=&lt;? value("itemgrp_id") ?>) )
+       &lt;? elseif exists("itemgrp_pattern") ?>
+         text(&lt;? value("itemgrp_pattern") ?>)
+       &lt;? elseif exists("classcode_id") ?>
+         ( SELECT (classcode_code||'-'||classcode_descrip)
+             FROM classcode
+            WHERE (classcode_id=&lt;? value("classcode_id") ?>) )
+       &lt;? elseif exists("classcode_pattern") ?>
+         text(&lt;? value("classcode_pattern") ?>)
+       &lt;? elseif exists("plancode_id") ?>
+         ( SELECT (plancode_code||'-'||plancode_name)
+             FROM plancode
+            WHERE (plancode_id=&lt;? value("plancode_id") ?>) )
+       &lt;? elseif exists("plancode_pattern") ?>
+         text(&lt;? value("plancode_pattern") ?>)
+       &lt;? elseif exists("item_id") ?>
+         ( SELECT (item_number)
+             FROM item
+            WHERE (item_id=&lt;? value("item_id") ?>) )
+       &lt;? elseif exists("orderNumber") ?>
+         text(&lt;? value("orderNumber") ?>)
+       &lt;? else ?>
+         text('All')
+       &lt;? endif ?>
+       AS lbl_value,
+       &lt;? if reExists("itemgrp.*") ?>
+         text('Item Group:')
+       &lt;? elseif reExists("classcode.*") ?>
+         text('Class Code:')
+       &lt;? elseif reExists("plancode.*") ?>
+         text('Planner Code:')
+       &lt;? elseif exists("item_id") ?>
+         text('Item Number:')
+       &lt;? elseif exists("orderNumber") ?>
+         text('Order Number:')
+       &lt;? else ?>
+         text('Unknown Class:')
+       &lt;? endif ?>
+       AS lbl_bytype,
+       &lt;? if reExists("itemgrp.*") ?>
+         text('Inventory History by Item Group')
+       &lt;? elseif reExists("classcode.*") ?>
+         text('Inventory History by Class Code')
+       &lt;? elseif reExists("plancode.*") ?>
+         text('Inventory History by Planner Code')
+       &lt;? elseif exists("item_id") ?>
+         text('Inventory History by Item')
+       &lt;? elseif exists("orderNumber") ?>
+         text('Inventory History by Order')
+       &lt;? else ?>
+         text('Inventory History')
+       &lt;? endif ?>
+       AS lbl_title;</sql>
+ </querysource>
  <querysource>
   <name>detail</name>
   <sql>SELECT invhist_id,
@@ -97,67 +160,35 @@
 &lt;? endif ?>
 &lt;? if exists("orderNumber") ?>
   AND  (invhist_ordnumber ~ &lt;? value("orderNumber") ?>)
-&lt;? endif ?>
-&lt;? if exists("cohead_id") ?>
-  AND  (invhist_ordtype='SO')
-  AND  (invhist_ordnumber ~ (
-    SELECT cohead_number 
-    FROM cohead 
-    WHERE cohead_id=&lt;? value("cohead_id") ?>))
-&lt;? endif ?>
-&lt;? if exists("pohead_id") ?>
-  AND  (invhist_ordtype='PO')
-  AND  (invhist_ordnumber ~ (
-    SELECT pohead_number 
-    FROM pohead 
-    WHERE pohead_id=&lt;? value("pohead_id") ?>))
-&lt;? endif ?>
-&lt;? if exists("tohead_id") ?>
-  AND  (invhist_ordtype='TO')
-  AND  (invhist_ordnumber ~ (
-    SELECT tohead_number 
-    FROM tohead 
-    WHERE tohead_id=&lt;? value("tohead_id") ?>))
-&lt;? endif ?>
-&lt;? if exists("wo_id") ?>
-  AND  (invhist_ordtype='WO')
-  AND  (invhist_ordnumber ~ formatWoNumber(&lt;? value("wo_id") ?>))
+  AND  (invhist_ordtype = 'SO')
 &lt;? endif ?>
 &lt;? if exists("warehous_id") ?>
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
+   AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
 &lt;? endif ?>
 &lt;? if exists("item_id") ?>
   AND  (itemsite_item_id=&lt;? value("item_id") ?>)
 &lt;? endif ?>
-&lt;? if exists("classcode_id") ?>
-  AND  (item_classcode_id=&lt;? value("classcode_id") ?>)
-&lt;? endif ?>
 &lt;? if exists("itemgrp_id") ?>
-  AND (item_id IN (SELECT itemgrpitem_item_id
-		   FROM itemgrpitem
-		   WHERE (itemgrpitem_itemgrp_id=&lt;? value("itemgrp_id") ?>)))
-&lt;? endif ?>
-&lt;? if exists("plancode_id") ?>
-  AND  (itemsite_plancode_id=&lt;? value("plancode_id") ?>)
-&lt;? endif ?>
-&lt;? if exists("classcode_pattern") ?>
-  AND  (item_classcode_id IN (SELECT classcode_id
-			      FROM classcode
-			      WHERE (classcode_code ~ &lt;? value ("classcode_pattern") ?>)))
-&lt;? endif ?>
-&lt;? if exists("itemgrp_pattern") ?>
-  AND (item_id IN (SELECT itemgrpitem_item_id
-		   FROM itemgrpitem, itemgrp
-		   WHERE ( (itemgrpitem_itemgrp_id=itemgrp_id)
-		     AND  (itemgrp_name ~ &lt;? value ("itemgrp_pattern") ?>))))
-&lt;? endif ?>
-&lt;? if exists("plancode_pattern") ?>
-  AND (itemsite_plancode_id IN (SELECT plancode_id
-				FROM plancode
-				WHERE (plancode_code ~ &lt;? value("plancode_pattern") ?>)))
-&lt;? endif ?>
-&lt;? if exists("itemgrp") ?>
-  AND (item_id IN (SELECT DISTINCT itemgrpitem_item_id FROM itemgrpitem))
+   AND (item_id IN (SELECT itemgrpitem_item_id
+                      FROM itemgrpitem
+                     WHERE (itemgrpitem_itemgrp_id=&lt;? value("itemgrp_id") ?>)))
+&lt;? elseif exists("itemgrp_pattern") ?>
+   AND (item_id IN (SELECT itemgrpitem_item_id
+                      FROM itemgrpitem, itemgrp
+                     WHERE ( (itemgrpitem_itemgrp_id=itemgrp_id)
+                       AND (itemgrp_name ~ &lt;? value("itemgrp_pattern") ?>) ) ))
+&lt;? elseif exists("classcode_id") ?>
+   AND (item_classcode_id=&lt;? value("classcode_id") ?>)
+&lt;? elseif exists("classcode_pattern") ?>
+   AND (item_classcode_id IN (SELECT classcode_id
+                                FROM classcode
+                               WHERE (classcode_code ~ &lt;? value("classcode_pattern") ?>)))
+&lt;? elseif exists("plancode_id") ?>
+   AND (itemsite_plancode_id=&lt;? value("plancode_id") ?>)
+&lt;? elseif exists("plancode_pattern") ?>
+   AND (itemsite_plancode_id IN (SELECT plancode_id FROM plancode WHERE (plancode_code ~ &lt;? value("plancode_pattern") ?>)))
+&lt;? elseif exists("itemgrp") ?>
+   AND (item_id IN (SELECT DISTINCT itemgrpitem_item_id FROM itemgrpitem))
 &lt;? endif ?>
 )
 UNION
@@ -245,67 +276,37 @@ SELECT invhist_id,
 &lt;? endif ?>
 &lt;? if exists("orderNumber") ?>
   AND  (invhist_ordnumber ~ &lt;? value("orderNumber") ?>)
-&lt;? endif ?>
-&lt;? if exists("cohead_id") ?>
-  AND  (invhist_ordtype='SO')
-  AND  (invhist_ordnumber ~ (
-    SELECT cohead_number 
-    FROM cohead 
-    WHERE cohead_id=&lt;? value("cohead_id") ?>))
-&lt;? endif ?>
-&lt;? if exists("pohead_id") ?>
-  AND  (invhist_ordtype='PO')
-  AND  (invhist_ordnumber ~ (
-    SELECT pohead_number 
-    FROM pohead 
-    WHERE pohead_id=&lt;? value("pohead_id") ?>))
-&lt;? endif ?>
-&lt;? if exists("tohead_id") ?>
-  AND  (invhist_ordtype='TO')
-  AND  (invhist_ordnumber ~ (
-    SELECT tohead_number 
-    FROM tohead 
-    WHERE tohead_id=&lt;? value("tohead_id") ?>))
-&lt;? endif ?>
-&lt;? if exists("wo_id") ?>
-  AND  (invhist_ordtype='WO')
-  AND  (invhist_ordnumber ~ formatWoNumber(&lt;? value("wo_id") ?>))
+  AND  (invhist_ordtype = 'SO')
 &lt;? endif ?>
 &lt;? if exists("warehous_id") ?>
-  AND  (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
+   AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
 &lt;? endif ?>
 &lt;? if exists("item_id") ?>
   AND  (itemsite_item_id=&lt;? value("item_id") ?>)
 &lt;? endif ?>
-&lt;? if exists("classcode_id") ?>
-  AND  (item_classcode_id=&lt;? value("classcode_id") ?>)
-&lt;? endif ?>
 &lt;? if exists("itemgrp_id") ?>
-  AND (item_id IN (SELECT itemgrpitem_item_id
-		   FROM itemgrpitem
-		   WHERE (itemgrpitem_itemgrp_id=&lt;? value("itemgrp_id") ?>)))
-&lt;? endif ?>
-&lt;? if exists("plancode_id") ?>
-  AND  (itemsite_plancode_id=&lt;? value("plancode_id") ?>)
-&lt;? endif ?>
-&lt;? if exists("classcode_pattern") ?>
-  AND  (item_classcode_id IN (SELECT classcode_id
-			      FROM classcode
-			      WHERE (classcode_code ~ &lt;? value ("classcode_pattern") ?>)))
-&lt;? endif ?>
-&lt;? if exists("itemgrp_pattern") ?>
-  AND (item_id IN (SELECT itemgrpitem_item_id
-		   FROM itemgrpitem, itemgrp
-		   WHERE ( (itemgrpitem_itemgrp_id=itemgrp_id)
-		     AND  (itemgrp_name ~ &lt;? value ("itemgrp_pattern") ?>))))
-&lt;? endif ?>
-&lt;? if exists("plancode_pattern") ?>
-  AND (itemsite_plancode_id IN (SELECT plancode_id
-				FROM plancode
-				WHERE (plancode_code ~ &lt;? value("plancode_pattern") ?>)))
-&lt;? endif ?>
-&lt;? if exists("itemgrp") ?>
-  AND (item_id IN (SELECT DISTINCT itemgrpitem_item_id FROM itemgrpitem))
+   AND (item_id IN (SELECT itemgrpitem_item_id
+                      FROM itemgrpitem
+                     WHERE (itemgrpitem_itemgrp_id=&lt;? value("itemgrp_id") ?>)))
+&lt;? elseif exists("itemgrp_pattern") ?>
+   AND (item_id IN (SELECT itemgrpitem_item_id
+                      FROM itemgrpitem, itemgrp
+                     WHERE ( (itemgrpitem_itemgrp_id=itemgrp_id)
+                       AND (itemgrp_name ~ &lt;? value("itemgrp_pattern") ?>) ) ))
+&lt;? elseif exists("classcode_id") ?>
+   AND (item_classcode_id=&lt;? value("classcode_id") ?>)
+&lt;? elseif exists("classcode_pattern") ?>
+   AND (item_classcode_id IN (SELECT classcode_id
+                                FROM classcode
+                               WHERE (classcode_code ~ &lt;? value("classcode_pattern") ?>)))
+&lt;? elseif exists("plancode_id") ?>
+   AND (itemsite_plancode_id=&lt;? value("plancode_id") ?>)
+&lt;? elseif exists("plancode_pattern") ?>
+   AND (itemsite_plancode_id IN (SELECT plancode_id
+                                   FROM plancode
+                                  WHERE (plancode_code ~ &lt;? value("plancode_pattern") ?>)))
+&lt;? elseif exists("itemgrp") ?>
+   AND (item_id IN (SELECT DISTINCT itemgrpitem_item_id FROM itemgrpitem))
 &lt;? endif ?>
 );</sql>
  </querysource>
@@ -360,6 +361,25 @@ WHERE ( (invhist_itemsite_id=itemsite_id)
  </querysource>
  <rpthead>
   <height>242</height>
+  <field>
+   <rect>
+    <x>585</x>
+    <y>140</y>
+    <width>150</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>enddate</column>
+   </data>
+  </field>
   <label>
    <rect>
     <x>5</x>
@@ -408,6 +428,60 @@ WHERE ( (invhist_itemsite_id=itemsite_id)
    <vcenter/>
    <string>Val. After</string>
   </label>
+  <field>
+   <rect>
+    <x>145</x>
+    <y>120</y>
+    <width>300</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_value</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>145</x>
+    <y>140</y>
+    <width>200</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>warehouse</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>471</x>
+    <y>120</y>
+    <width>104</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Start Date:</string>
+  </label>
   <label>
    <rect>
     <x>660</x>
@@ -424,6 +498,25 @@ WHERE ( (invhist_itemsite_id=itemsite_id)
    <vcenter/>
    <string>QOH After</string>
   </label>
+  <field>
+   <rect>
+    <x>272</x>
+    <y>10</y>
+    <width>450</width>
+    <height>40</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>18</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_title</column>
+   </data>
+  </field>
   <label>
    <rect>
     <x>200</x>
@@ -481,6 +574,22 @@ WHERE ( (invhist_itemsite_id=itemsite_id)
   </line>
   <label>
    <rect>
+    <x>32</x>
+    <y>140</y>
+    <width>104</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Site:</string>
+  </label>
+  <label>
+   <rect>
     <x>5.68571</x>
     <y>211</y>
     <width>50</width>
@@ -526,6 +635,60 @@ WHERE ( (invhist_itemsite_id=itemsite_id)
    <hcenter/>
    <vcenter/>
    <string>QOH Before</string>
+  </label>
+  <field>
+   <rect>
+    <x>585</x>
+    <y>120</y>
+    <width>150</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>startdate</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>10</x>
+    <y>120</y>
+    <width>130</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_bytype</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>471</x>
+    <y>140</y>
+    <width>104</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>End Date:</string>
   </label>
   <label>
    <rect>
@@ -639,42 +802,6 @@ WHERE ( (invhist_itemsite_id=itemsite_id)
    <vcenter/>
    <string>Value</string>
   </label>
-  <label>
-   <rect>
-    <x>430</x>
-    <y>7</y>
-    <width>310</width>
-    <height>30</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>18</size>
-    <weight>bold</weight>
-   </font>
-   <right/>
-   <vcenter/>
-   <string>Inventory History</string>
-  </label>
-  <text>
-   <rect>
-    <x>10</x>
-    <y>37</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -31,7 +31,6 @@ quoteList::quoteList( QWidget* parent, const char* name, bool modal, Qt::WFlags 
 
   _quheadid = -1;
   _custid = -1;
-  _openOnly = false;
 
   setWindowTitle(tr("Quotes"));
 
@@ -107,7 +106,7 @@ quoteList::quoteList( QWidget* parent, const char* name, bool modal, Qt::WFlags 
   _warehouse->setFocus();
 }
 
-void quoteList::set(const ParameterList &pParams)
+void quoteList::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;
@@ -120,10 +119,6 @@ void quoteList::set(const ParameterList &pParams)
   if (valid)
     _type = param.toInt();
     
-  param = pParams.value("openOnly", &valid);
-  if (valid)
-    _openOnly = param.toBool();
-
   param = pParams.value("cust_id", &valid);
   if (valid)
     _custid = param.toInt();
@@ -152,9 +147,6 @@ void quoteList::sFillList()
 
   if (_custid != -1)
     sql += " AND (quhead_cust_id=:cust_id)";
-
-  if (_openOnly)
-    sql += " AND (quhead_status='O')";
 
   sql += ") "
          "GROUP BY quhead_id, quhead_number, cust_name, quhead_quotedate "

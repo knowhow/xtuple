@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -571,7 +571,6 @@ void transferOrderItem::sPopulateItemInfo(int pItemid)
       _itemchar->setData(idx, q.value("char_id"), Qt::UserRole);
       idx = _itemchar->index(row, 1);
       _itemchar->setData(idx, q.value("charass_value"), Qt::DisplayRole);
-      _itemchar->setData(idx, pItemid, Xt::IdRole);
       _itemchar->setData(idx, pItemid, Qt::UserRole);
       row++;
     }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -55,10 +55,7 @@ enum SetResponse transactionInformation::set(const ParameterList &pParams)
   {
     _invhistid = param.toInt();
 
-    q.prepare( "SELECT *, "
-               "       CASE WHEN (invhist_transtype IN ('EX', 'IM', 'SH', 'SI')) THEN (invhist_invqty * -1.0)"
-               "            ELSE invhist_invqty"
-               "       END AS adjinvqty "
+    q.prepare( "SELECT * "
                "FROM invhist "
                "WHERE (invhist_id=:invhist_id);" );
     q.bindValue(":invhist_id", _invhistid);
@@ -71,7 +68,7 @@ enum SetResponse transactionInformation::set(const ParameterList &pParams)
       _createdDate->setDate(q.value("invhist_created").toDate());
       _username->setText(q.value("invhist_user").toString());
       _item->setItemsiteid(q.value("invhist_itemsite_id").toInt());
-      _transactionQty->setText(formatQty(q.value("adjinvqty").toDouble()));
+      _transactionQty->setText(formatQty(q.value("invhist_invqty").toDouble()));
       _qohBefore->setText(formatQty(q.value("invhist_qoh_before").toDouble()));
       _qohAfter->setText(formatQty(q.value("invhist_qoh_after").toDouble()));
       _notes->setText(q.value("invhist_comments").toString());

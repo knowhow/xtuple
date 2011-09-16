@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -12,10 +12,6 @@
    support Visa ECI, MasterCard UCAF for x_authentication_indicator?
    support Visa CAVV or MasterCard UCAF for x_cardholder_authentication_value?
 */
-/** \ingroup creditcards
-    \class   AuthorizeDotNetProcessor
-    \brief   The implementation of Authorize.Net-specific credit card handling
- */
 
 #include <QSqlError>
 
@@ -59,10 +55,6 @@ AuthorizeDotNetProcessor::AuthorizeDotNetProcessor() : CreditCardProcessor()
   _msgHash.insert(-209, tr("The Delimiting Character and the Encapsulating "
 			   "Character cannot be the same. Please change one or "
 			   "the other."));
-
-  _ignoreSslErrors = _metrics->boolean("CCIgnoreSSLErrors") ||
-                     _metrics->boolean("CCANIgnoreSSLErrors");
-
 }
 
 int AuthorizeDotNetProcessor::buildCommon(const int pccardid, const int pcvv, const double pamount, const int pcurrid, QString &prequest, QString pordertype)

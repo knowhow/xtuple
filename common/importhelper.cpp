@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -116,7 +116,7 @@ CSVImpPluginInterface *ImportHelper::getCSVImpPlugin(QObject *parent)
                           be handled using the configuration for successful
                           imports or failed imports.
     \param[out] errmsg    Any error message generated during file handling.
-    \param[in]  saveToErrorFile If this is not an empty string, the string is
+    \param[in]  savetoErrorFile If this is not an empty string, the string is
                           saved to an error file using the configuration for
                           handling error files.
     \return true if the file was handled successfully, false if there was an
@@ -227,7 +227,7 @@ bool ImportHelper::handleFilePostImport(const QString &pfilename, bool success, 
 
     QFile *errorfile = new QFile(errname);
     if (! errorfile->open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text) ||
-        ! (errorfile->write(saveToErrorFile.toUtf8()) >= saveToErrorFile.length()))
+        ! errorfile->write(saveToErrorFile.toUtf8()) >= saveToErrorFile.length())
     {
       // don't delete the original import file if we couldn't save the error file
       errmsg += (errmsg.isEmpty() ? "" : "\n") + 

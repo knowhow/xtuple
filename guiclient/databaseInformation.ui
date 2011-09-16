@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,7 +13,7 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>593</width>
+    <width>583</width>
     <height>521</height>
    </rect>
   </property>
@@ -309,7 +309,7 @@ to be bound by its terms.</comment>
        </widget>
       </item>
       <item>
-       <widget class="XTextEdit" name="_comments"/>
+       <widget class="QTextEdit" name="_comments"/>
       </item>
      </layout>
     </widget>
@@ -481,9 +481,9 @@ to be bound by its terms.</comment>
     </widget>
    </item>
    <item row="5" column="1">
-    <widget class="QCheckBox" name="_forceLicense">
+    <widget class="QCheckBox" name="_useToolbars">
      <property name="text">
-      <string>Do not allow user logins that exceed licensed user count.</string>
+      <string>Use toolbars on displays when available</string>
      </property>
     </widget>
    </item>
@@ -498,18 +498,11 @@ to be bound by its terms.</comment>
    <header>xlineedit.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_description</tabstop>
-  <tabstop>_interval</tabstop>
   <tabstop>_disallowMismatchClient</tabstop>
-  <tabstop>_disableAutoComplete</tabstop>
-  <tabstop>_forceLicense</tabstop>
+  <tabstop>_interval</tabstop>
   <tabstop>_access</tabstop>
   <tabstop>_comments</tabstop>
  </tabstops>

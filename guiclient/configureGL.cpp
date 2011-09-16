@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -93,8 +93,7 @@ configureGL::configureGL(QWidget* parent, const char* name, bool /*modal*/, Qt::
   }
   _reqInvoiceReg->setChecked(_metrics->boolean("ReqInvRegVoucher"));
   _reqInvoiceMisc->setChecked(_metrics->boolean("ReqInvMiscVoucher"));
-  _recurringVoucherBuffer->setValue(_metrics->value("RecurringVoucherBuffer").toInt());
-
+    
   // AR
   _nextARMemoNumber->setValidator(omfgThis->orderVal());
   _nextCashRcptNumber->setValidator(omfgThis->orderVal());
@@ -129,8 +128,7 @@ configureGL::configureGL(QWidget* parent, const char* name, bool /*modal*/, Qt::
     _graceDays->setValue(_metrics->value("DefaultAutoCreditWarnGraceDays").toInt());
   _incdtCategory->setId(_metrics->value("DefaultARIncidentStatus").toInt());
   _closeARIncdt->setChecked(_metrics->boolean("AutoCloseARIncident"));
-  _recurringBuffer->setValue(_metrics->value("RecurringInvoiceBuffer").toInt());
-
+  
   // GL
   _mainSize->setValue(_metrics->value("GLMainSize").toInt());
 
@@ -140,9 +138,6 @@ configureGL::configureGL(QWidget* parent, const char* name, bool /*modal*/, Qt::
   {
     _useCompanySegment->setChecked(FALSE);
     _externalConsolidation->setChecked(FALSE);
-    _yearend->setId(_metrics->value("YearEndEquityAccount").toInt());
-    _gainLoss->setId(_metrics->value("CurrencyGainLossAccount").toInt());
-    _discrepancy->setId(_metrics->value("GLSeriesDiscrepancyAccount").toInt());
   }
   else
   {
@@ -171,6 +166,9 @@ configureGL::configureGL(QWidget* parent, const char* name, bool /*modal*/, Qt::
     _ffSubaccounts->setChecked(_metrics->boolean("GLFFSubaccounts"));
   }
 
+  _yearend->setId(_metrics->value("YearEndEquityAccount").toInt());
+
+  _gainLoss->setId(_metrics->value("CurrencyGainLossAccount").toInt());
   switch(_metrics->value("CurrencyExchangeSense").toInt())
   {
     case 1:
@@ -181,14 +179,15 @@ configureGL::configureGL(QWidget* parent, const char* name, bool /*modal*/, Qt::
       _baseToLocal->setChecked(TRUE);
   }
 
+  _discrepancy->setId(_metrics->value("GLSeriesDiscrepancyAccount").toInt());
+
   _mandatoryNotes->setChecked(_metrics->boolean("MandatoryGLEntryNotes"));
   _manualFwdUpdate->setChecked(_metrics->boolean("ManualForwardUpdate"));
   _taxauth->setId(_metrics->value("DefaultTaxAuthority").toInt());
   // TODO hide default tax authority, not used?
   _taxGroup->setVisible(FALSE);
 
-  _int2gl->setChecked(_metrics->boolean("InterfaceToGL"));
-  _cacheint2gl = _int2gl->isChecked();
+  _recurringBuffer->setValue(_metrics->value("RecurringInvoiceBuffer").toInt());
 
   if (_metrics->boolean("UseJournals"))
   {
@@ -218,194 +217,6 @@ void configureGL::languageChange()
 bool configureGL::sSave()
 {
   emit saving();
-
-  if (!_cacheint2gl && _int2gl->isChecked())
-  {
-    q.exec("SELECT costcat_id "
-           "FROM costcat "
-           "WHERE (costcat_asset_accnt_id IS NULL) "
-           "   OR (costcat_liability_accnt_id IS NULL) "
-           "   OR (costcat_adjustment_accnt_id IS NULL) "
-           "   OR (costcat_purchprice_accnt_id IS NULL) "
-           "   OR (costcat_scrap_accnt_id IS NULL) "
-           "   OR (costcat_invcost_accnt_id IS NULL) "
-           "   OR (costcat_wip_accnt_id IS NULL) "
-           "   OR (costcat_shipasset_accnt_id IS NULL) "
-           "   OR (costcat_mfgscrap_accnt_id IS NULL) "
-           "   OR (costcat_freight_accnt_id IS NULL) "
-           "   OR (costcat_exp_accnt_id IS NULL) "
-           "   OR (costcat_asset_accnt_id = -1) "
-           "   OR (costcat_liability_accnt_id = -1) "
-           "   OR (costcat_adjustment_accnt_id = -1) "
-           "   OR (costcat_purchprice_accnt_id = -1) "
-           "   OR (costcat_scrap_accnt_id = -1) "
-           "   OR (costcat_invcost_accnt_id = -1) "
-           "   OR (costcat_wip_accnt_id = -1) "
-           "   OR (costcat_shipasset_accnt_id = -1) "
-           "   OR (costcat_mfgscrap_accnt_id = -1) "
-           "   OR (costcat_freight_accnt_id = -1) "
-           "   OR (costcat_exp_accnt_id = -1) "
-           "LIMIT 1;");
-    if (q.first())
-    {
-      QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                            "You must assign G/L Accounts to all Cost Categories");
-      return false;
-    }
-    if (_metrics->boolean("MultiWhs") && _metrics->boolean("Transforms"))
-    {
-      q.exec("SELECT costcat_id "
-             "FROM costcat "
-             "WHERE (costcat_transform_accnt_id IS NULL) "
-             "   OR (costcat_transform_accnt_id = -1) "
-             "LIMIT 1;");
-      if (q.first())
-      {
-        QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                              "You must assign a Transform Clearing G/L Account to all Cost Categories");
-        return false;
-      }
-    }
-    if (_metrics->boolean("MultiWhs"))
-    {
-      q.exec("SELECT costcat_id "
-             "FROM costcat "
-             "WHERE (costcat_toliability_accnt_id IS NULL) "
-             "   OR (costcat_toliability_accnt_id = -1) "
-             "LIMIT 1;");
-      if (q.first())
-      {
-        QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                              "You must assign a Transfer Order Liability Clearing G/L Account to all Cost Categories");
-        return false;
-      }
-    }
-    if (_metrics->boolean("Routings"))
-    {
-      q.exec("SELECT costcat_id "
-             "FROM costcat "
-             "WHERE (costcat_laboroverhead_accnt_id IS NULL) "
-             "   OR (costcat_laboroverhead_accnt_id = -1) "
-             "LIMIT 1;");
-      if (q.first())
-      {
-        QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                              "You must assign a Labor and Overhead Costs G/L Account to all Cost Categories");
-        return false;
-      }
-    }
-    q.exec("SELECT expcat_id "
-           "FROM expcat "
-           "WHERE (expcat_exp_accnt_id IS NULL) "
-           "   OR (expcat_liability_accnt_id IS NULL) "
-           "   OR (expcat_freight_accnt_id IS NULL) "
-           "   OR (expcat_purchprice_accnt_id IS NULL) "
-           "   OR (expcat_exp_accnt_id = -1) "
-           "   OR (expcat_liability_accnt_id = -1) "
-           "   OR (expcat_freight_accnt_id = -1) "
-           "   OR (expcat_purchprice_accnt_id = -1) "
-           "LIMIT 1;");
-    if (q.first())
-    {
-      QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                            "You must assign G/L Accounts to all Expense Categories");
-      return false;
-    }
-    q.exec("SELECT apaccnt_id "
-           "FROM apaccnt "
-           "WHERE (apaccnt_ap_accnt_id IS NULL) "
-           "   OR (apaccnt_prepaid_accnt_id IS NULL) "
-           "   OR (apaccnt_discount_accnt_id IS NULL) "
-           "   OR (apaccnt_ap_accnt_id = -1) "
-           "   OR (apaccnt_prepaid_accnt_id = -1) "
-           "   OR (apaccnt_discount_accnt_id = -1) "
-           "LIMIT 1;");
-    if (q.first())
-    {
-      QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                            "You must assign G/L Accounts to all Payables Assignments");
-      return false;
-    }
-    q.exec("SELECT araccnt_id "
-           "FROM araccnt "
-           "WHERE (araccnt_ar_accnt_id IS NULL) "
-           "   OR (araccnt_prepaid_accnt_id IS NULL) "
-           "   OR (araccnt_discount_accnt_id IS NULL) "
-           "   OR (araccnt_freight_accnt_id IS NULL) "
-           "   OR (araccnt_ar_accnt_id = -1) "
-           "   OR (araccnt_prepaid_accnt_id = -1) "
-           "   OR (araccnt_discount_accnt_id = -1) "
-           "   OR (araccnt_freight_accnt_id = -1) "
-           "LIMIT 1;");
-    if (q.first())
-    {
-      QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                            "You must assign G/L Accounts to all Receivables Assignments");
-      return false;
-    }
-    if (_metrics->boolean("EnableCustomerDeposits"))
-    {
-      q.exec("SELECT araccnt_id "
-             "FROM araccnt "
-             "WHERE (araccnt_deferred_accnt_id IS NULL) "
-             "   OR (araccnt_deferred_accnt_id = -1) "
-             "LIMIT 1;");
-      if (q.first())
-      {
-        QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                              "You must assign a Deferred Revenue G/L Account to all Receivables Assignments");
-        return false;
-      }
-    }
-    q.exec("SELECT salesaccnt_id "
-           "FROM salesaccnt "
-           "WHERE (salesaccnt_sales_accnt_id IS NULL) "
-           "   OR (salesaccnt_credit_accnt_id IS NULL) "
-           "   OR (salesaccnt_cos_accnt_id IS NULL) "
-           "   OR (salesaccnt_cor_accnt_id IS NULL) "
-           "   OR (salesaccnt_cow_accnt_id IS NULL) "
-           "   OR (salesaccnt_sales_accnt_id = -1) "
-           "   OR (salesaccnt_credit_accnt_id = -1) "
-           "   OR (salesaccnt_cos_accnt_id = -1) "
-           "   OR (salesaccnt_cor_accnt_id = -1) "
-           "   OR (salesaccnt_cow_accnt_id = -1) "
-           "LIMIT 1;");
-    if (q.first())
-    {
-      QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                            "You must assign G/L Accounts to all Sales Assignments");
-      return false;
-    }
-    if (_metrics->boolean("EnableReturnAuth"))
-    {
-      q.exec("SELECT salesaccnt_id "
-             "FROM salesaccnt "
-             "WHERE (salesaccnt_returns_accnt_id IS NULL) "
-             "   OR (salesaccnt_returns_accnt_id = -1) "
-             "LIMIT 1;");
-      if (q.first())
-      {
-        QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                              "You must assign a Returns G/L Account to all Sales Assignments");
-        return false;
-      }
-    }
-    q.exec("SELECT salescat_id "
-           "FROM salescat "
-           "WHERE (salescat_sales_accnt_id IS NULL) "
-           "   OR (salescat_prepaid_accnt_id IS NULL) "
-           "   OR (salescat_ar_accnt_id IS NULL) "
-           "   OR (salescat_sales_accnt_id = -1) "
-           "   OR (salescat_prepaid_accnt_id = -1) "
-           "   OR (salescat_ar_accnt_id = -1) "
-           "LIMIT 1;");
-    if (q.first())
-    {
-      QMessageBox::critical(this, tr("Cannot Save Accounting Configuration"),
-                            "You must assign G/L Accounts to all Sales Categories");
-      return false;
-    }
-  }
 
   if (_metrics->boolean("ACHSupported"))
   {
@@ -498,8 +309,7 @@ bool configureGL::sSave()
   }
   _metrics->set("ReqInvRegVoucher", _reqInvoiceReg->isChecked());
   _metrics->set("ReqInvMiscVoucher", _reqInvoiceMisc->isChecked());
-  _metrics->set("RecurringVoucherBuffer", _recurringVoucherBuffer->value());
-
+  
   // AR
   q.prepare("SELECT setNextARMemoNumber(:armemo_number) AS result;");
   q.bindValue(":armemo_number", _nextARMemoNumber->text().toInt());
@@ -533,7 +343,6 @@ bool configureGL::sSave()
   _metrics->set("remitto_zipcode",	_address->postalCode().trimmed());
   _metrics->set("remitto_country",	_address->country().trimmed());
   _metrics->set("remitto_phone",	_phone->text().trimmed());
-  _address->save(AddressCluster::CHANGEONE);
   
   _metrics->set("AutoCreditWarnLateCustomers", _warnLate->isChecked());
   if(_warnLate->isChecked())
@@ -559,9 +368,6 @@ bool configureGL::sSave()
   {
     _metrics->set("GLCompanySize", 0);
     _metrics->set("MultiCompanyFinancialConsolidation", 0);
-    _metrics->set("YearEndEquityAccount", _yearend->id());
-    _metrics->set("CurrencyGainLossAccount", _gainLoss->id());
-    _metrics->set("GLSeriesDiscrepancyAccount", _discrepancy->id());
   }
   if(companyseg)
     companyseg->setEnabled(_useCompanySegment->isChecked());
@@ -598,17 +404,21 @@ bool configureGL::sSave()
   }
 
   _metrics->set("UseJournals", _journal->isChecked());
+  _metrics->set("YearEndEquityAccount", _yearend->id());
 
-  if(_localToBase->isChecked())
-    _metrics->set("CurrencyExchangeSense", 1);
-  else // if(_baseToLocal->isChecked())
-    _metrics->set("CurrencyExchangeSense", 0);
+  //if (! omfgThis->singleCurrency())
+  //{
+      _metrics->set("CurrencyGainLossAccount", _gainLoss->id());
+      if(_localToBase->isChecked())
+        _metrics->set("CurrencyExchangeSense", 1);
+      else // if(_baseToLocal->isChecked())
+        _metrics->set("CurrencyExchangeSense", 0);
+  //}
 
+  _metrics->set("GLSeriesDiscrepancyAccount", _discrepancy->id());
   _metrics->set("MandatoryGLEntryNotes", _mandatoryNotes->isChecked());
   _metrics->set("ManualForwardUpdate", _manualFwdUpdate->isChecked());
   _metrics->set("DefaultTaxAuthority", _taxauth->id());
-
-  _metrics->set("InterfaceToGL", _int2gl->isChecked());
 
   omfgThis->sConfigureGLUpdated();
 

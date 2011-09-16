@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -11,30 +11,51 @@
 #include "reassignProductCategoryByProductCategory.h"
 
 #include <QMessageBox>
+#include <qvariant.h>
 
+/*
+ *  Constructs a reassignProductCategoryByProductCategory as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
 reassignProductCategoryByProductCategory::reassignProductCategoryByProductCategory(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-  : XDialog(parent, name, modal, fl)
+    : XDialog(parent, name, modal, fl)
 {
-  setupUi(this);
+    setupUi(this);
 
-  // signals and slots connections
-  connect(_productCategoryPattern, SIGNAL(toggled(bool)), _productCategory, SLOT(setEnabled(bool)));
-  connect(_selectedProductCategory, SIGNAL(toggled(bool)), _productCategories, SLOT(setEnabled(bool)));
-  connect(_reassign, SIGNAL(clicked()), this, SLOT(sReassign()));
-  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
 
-  _productCategories->setType(XComboBox::ProductCategories);
-  _newProductCategory->setType(XComboBox::ProductCategories);
+    // signals and slots connections
+    connect(_productCategoryPattern, SIGNAL(toggled(bool)), _productCategory, SLOT(setEnabled(bool)));
+    connect(_selectedProductCategory, SIGNAL(toggled(bool)), _productCategories, SLOT(setEnabled(bool)));
+    connect(_reassign, SIGNAL(clicked()), this, SLOT(sReassign()));
+    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+    init();
 }
 
+/*
+ *  Destroys the object and frees any allocated resources
+ */
 reassignProductCategoryByProductCategory::~reassignProductCategoryByProductCategory()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
 void reassignProductCategoryByProductCategory::languageChange()
 {
-  retranslateUi(this);
+    retranslateUi(this);
+}
+
+
+void reassignProductCategoryByProductCategory::init()
+{
+  _productCategories->setType(XComboBox::ProductCategories);
+  _newProductCategory->setType(XComboBox::ProductCategories);
 }
 
 void reassignProductCategoryByProductCategory::sReassign()

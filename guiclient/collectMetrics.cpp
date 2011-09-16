@@ -96,7 +96,7 @@ void collectMetrics()
   qry.exec("SELECT usrpref_value "
            "  FROM usrpref "
            " WHERE ( (usrpref_name = 'UseEnhancedAuthentication') "
-           "   AND (usrpref_username=getEffectiveXtUser()) ); ");
+           "   AND (usrpref_username=CURRENT_USER) ); ");
   if(qry.first())
     result = qry.value(0).toString();
   values.insert("enhanced_auth", result);

@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -34,7 +34,7 @@ to be bound by its terms.</comment>
      </property>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
+   <item row="0" column="1">
     <layout class="QHBoxLayout">
      <item>
       <widget class="XLineEdit" name="_number">
@@ -57,18 +57,18 @@ to be bound by its terms.</comment>
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="_crmacct">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QCheckBox" name="_active">
        <property name="text">
-        <string>CRM Account...</string>
+        <string>Active</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="0" column="3" rowspan="4">
+   <item row="0" column="2" rowspan="4">
     <layout class="QVBoxLayout">
      <property name="spacing">
       <number>0</number>
@@ -115,13 +115,23 @@ to be bound by its terms.</comment>
    <item row="1" column="1">
     <widget class="QLineEdit" name="_name"/>
    </item>
-   <item row="2" column="0" colspan="3">
+   <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
+       <widget class="CRMAcctCluster" name="_crmacct">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="label">
+         <string>CRM Account:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -159,7 +169,7 @@ to be bound by its terms.</comment>
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
+      <item row="0" column="2">
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -175,7 +185,7 @@ to be bound by its terms.</comment>
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3">
+   <item row="3" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string/>
@@ -240,7 +250,7 @@ to be bound by its terms.</comment>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="4">
+   <item row="4" column="0" colspan="3">
     <widget class="QTabWidget" name="_tabs">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -311,7 +321,7 @@ to be bound by its terms.</comment>
       </attribute>
       <layout class="QVBoxLayout">
        <item>
-        <widget class="XTextEdit" name="_notes"/>
+        <widget class="QTextEdit" name="_notes"/>
        </item>
       </layout>
      </widget>
@@ -394,16 +404,6 @@ to be bound by its terms.</comment>
      </widget>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QCheckBox" name="_active">
-     <property name="text">
-      <string>Active</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -411,6 +411,11 @@ to be bound by its terms.</comment>
    <class>ContactCluster</class>
    <extends>QWidget</extends>
    <header>contactcluster.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CRMAcctCluster</class>
+   <extends>QWidget</extends>
+   <header>crmacctcluster.h</header>
   </customwidget>
   <customwidget>
    <class>WComboBox</class>
@@ -434,15 +439,12 @@ to be bound by its terms.</comment>
    <header>xtreewidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>XTextEdit</class>
-   <extends>QTextEdit</extends>
-   <header>xtextedit.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_number</tabstop>
+  <tabstop>_active</tabstop>
   <tabstop>_name</tabstop>
+  <tabstop>_crmacct</tabstop>
   <tabstop>_salesrep</tabstop>
   <tabstop>_taxzone</tabstop>
   <tabstop>_site</tabstop>
@@ -537,6 +539,22 @@ to be bound by its terms.</comment>
     <hint type="destinationlabel">
      <x>674</x>
      <y>452</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_crmacct</sender>
+   <signal>newId(int)</signal>
+   <receiver>_contact</receiver>
+   <slot>setSearchAcct(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>500</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>242</y>
     </hint>
    </hints>
   </connection>

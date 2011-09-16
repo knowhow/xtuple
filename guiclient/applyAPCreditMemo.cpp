@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -26,10 +26,8 @@ applyAPCreditMemo::applyAPCreditMemo(QWidget* parent, const char* name, bool mod
   connect(_applyToBalance, SIGNAL(clicked()), this, SLOT(sApplyBalance()));
   connect(_available, SIGNAL(idChanged(int)), this, SLOT(sPriceGroup()));
   connect(_clear,          SIGNAL(clicked()), this, SLOT(sClear()));
-  connect(_buttonBox,      SIGNAL(accepted()), this, SLOT(sPost()));
-  connect(_buttonBox,      SIGNAL(rejected()), this, SLOT(reject()));
-
-  _buttonBox->button(QDialogButtonBox::Save)->setText(tr("Post"));
+  connect(_close,          SIGNAL(clicked()), this, SLOT(sClose()));
+  connect(_post,           SIGNAL(clicked()), this, SLOT(sPost()));
 
   _captive = FALSE;
 
@@ -49,7 +47,6 @@ applyAPCreditMemo::applyAPCreditMemo(QWidget* parent, const char* name, bool mod
 
   _vend->setReadOnly(TRUE);
   sPriceGroup();
-  adjustSize();
 }
 
 applyAPCreditMemo::~applyAPCreditMemo()

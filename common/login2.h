@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -33,7 +33,7 @@ class login2 : public QDialog, public Ui::login2
     QString _databaseURL;
     QString _user;
 
-    virtual int set(const ParameterList & pParams, QSplashScreen * pSplash);
+    virtual int set( ParameterList & pParams, QSplashScreen * pSplash );
     virtual void populateDatabaseInfo();
     virtual QString username();
     virtual QString password();
@@ -46,7 +46,7 @@ class login2 : public QDialog, public Ui::login2
     QPushButton* _options;
 
   public slots:
-    virtual int set(const ParameterList & pParams);
+    virtual int set( ParameterList & pParams );
     virtual void setLogo( const QImage & );
     virtual void setEnhancedAuth(bool);
     virtual void setRequireSSL(bool);

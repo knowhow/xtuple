@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -16,10 +16,9 @@
 #include <QSqlError>
 #include <QVariant>
 
-#include "errorReporter.h"
-#include "parameterwidget.h"
 #include "prospect.h"
 #include "storedProcErrorLookup.h"
+#include "parameterwidget.h"
 
 prospects::prospects(QWidget* parent, const char*, Qt::WFlags fl)
   : display(parent, "prospects", fl)
@@ -100,20 +99,26 @@ void prospects::sView()
 
 void prospects::sDelete()
 {
-  if (QMessageBox::question(this, tr("Delete?"),
-                            tr("<p>Are you sure you want to delete the "
-                               "selected Prospect?"),
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
+  q.prepare("SELECT deleteProspect(:prospect_id) AS result;");
+  q.bindValue(":prospect_id", list()->id());
+  q.exec();
+  if (q.first())
+  {
+    int returnVal = q.value("result").toInt();
+    if (returnVal < 0)
+    {
+        systemError(this, storedProcErrorLookup("deleteProspect", returnVal),
+		    __FILE__, __LINE__);
+        return;
+    }
+    omfgThis->sProspectsUpdated();
+    omfgThis->sCrmAccountsUpdated(-1);
+  }
+  else if (q.lastError().type() != QSqlError::NoError)
+  {
+    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
     return;
-
-  XSqlQuery delq;
-  delq.prepare("DELETE FROM prospect WHERE (prospect_id=:prospect_id);");
-  delq.bindValue(":prospect_id", list()->id());
-  delq.exec();
-  if (ErrorReporter::error(QtCriticalMsg, this, tr("Error deleting"),
-                           delq, __FILE__, __LINE__))
-    return;
+  }
 }
 
 void prospects::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)

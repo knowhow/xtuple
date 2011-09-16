@@ -1,51 +1,51 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" >
+ <author></author>
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
  <class>returnAuthItemLotSerial</class>
- <widget class="QDialog" name="returnAuthItemLotSerial">
-  <property name="geometry">
+ <widget class="QDialog" name="returnAuthItemLotSerial" >
+  <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>473</width>
-    <height>338</height>
+    <width>411</width>
+    <height>270</height>
    </rect>
   </property>
-  <property name="windowTitle">
+  <property name="windowTitle" >
    <string>Return Authorization Item Lot/Serial</string>
   </property>
-  <layout class="QGridLayout">
-   <item row="0" column="0" rowspan="3">
-    <widget class="QGroupBox" name="_itemGroup">
-     <property name="enabled">
+  <layout class="QGridLayout" >
+   <item rowspan="3" row="0" column="0" >
+    <widget class="QGroupBox" name="_itemGroup" >
+     <property name="enabled" >
       <bool>true</bool>
      </property>
-     <property name="title">
+     <property name="title" >
       <string/>
      </property>
-     <layout class="QGridLayout">
-      <item row="0" column="0">
-       <widget class="ItemCluster" name="_item">
-        <property name="enabled">
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="ItemCluster" name="_item" >
+        <property name="enabled" >
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="LotserialCluster" name="_lotSerial">
-        <property name="focusPolicy">
+      <item row="1" column="0" >
+       <widget class="LotserialCluster" name="_lotSerial" >
+        <property name="focusPolicy" >
          <enum>Qt::StrongFocus</enum>
         </property>
-        <property name="label">
+        <property name="label" >
          <string> Lot/Serial #:</string>
         </property>
-        <property name="strict">
+        <property name="strict" >
          <bool>false</bool>
         </property>
        </widget>
@@ -53,26 +53,26 @@ to be bound by its terms.</comment>
      </layout>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="_cancel">
-     <property name="text">
+   <item row="0" column="1" >
+    <widget class="QPushButton" name="_cancel" >
+     <property name="text" >
       <string>&amp;Cancel</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="_save">
-     <property name="text">
+   <item row="1" column="1" >
+    <widget class="QPushButton" name="_save" >
+     <property name="text" >
       <string>&amp;Save</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="2" column="1" >
     <spacer>
-     <property name="orientation">
+     <property name="orientation" >
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0">
+     <property name="sizeHint" >
       <size>
        <width>20</width>
        <height>71</height>
@@ -80,79 +80,105 @@ to be bound by its terms.</comment>
      </property>
     </spacer>
    </item>
-   <item row="3" column="0">
-    <widget class="QGroupBox" name="_qtyGroup">
-     <property name="title">
+   <item row="3" column="0" >
+    <widget class="QGroupBox" name="_qtyGroup" >
+     <property name="title" >
       <string/>
      </property>
-     <layout class="QGridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="_qtyAuthLit">
-        <property name="text">
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="_qtyAuthLit" >
+        <property name="text" >
          <string>Qty. &amp;Auth.:</string>
         </property>
-        <property name="alignment">
+        <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="buddy">
+        <property name="buddy" >
          <cstring>_qtyAuth</cstring>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="XLineEdit" name="_qtyAuth">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+      <item row="0" column="1" >
+       <widget class="XLineEdit" name="_qtyAuth" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
-        <property name="maximumSize">
+        <property name="maximumSize" >
          <size>
           <width>32767</width>
           <height>20</height>
          </size>
         </property>
-        <property name="text">
+        <property name="text" >
          <string/>
         </property>
-        <property name="alignment">
+        <property name="alignment" >
          <set>Qt::AlignRight</set>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="_qtyRegisteredLit">
-        <property name="text">
+      <item row="1" column="0" >
+       <widget class="QLabel" name="_qtyUOMLit" >
+        <property name="text" >
+         <string>Qty. &amp;UOM:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy" >
+         <cstring>_qtyUOM</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="XComboBox" name="_qtyUOM" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="focusPolicy" >
+         <enum>Qt::WheelFocus</enum>
+        </property>
+        <property name="editable" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="_qtyRegisteredLit" >
+        <property name="text" >
          <string>Qty. Registered:</string>
         </property>
-        <property name="alignment">
+        <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="XLabel" name="_qtyRegistered">
-        <property name="minimumSize">
+      <item row="2" column="1" >
+       <widget class="XLabel" name="_qtyRegistered" >
+        <property name="minimumSize" >
          <size>
           <width>80</width>
           <height>0</height>
          </size>
         </property>
-        <property name="text">
+        <property name="text" >
          <string/>
         </property>
-        <property name="alignment">
+        <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="2" column="2" >
        <spacer>
-        <property name="orientation">
+        <property name="orientation" >
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0">
+        <property name="sizeHint" >
          <size>
           <width>40</width>
           <height>20</height>
@@ -160,45 +186,28 @@ to be bound by its terms.</comment>
         </property>
        </spacer>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="_qtyReceivedLit">
-        <property name="text">
+      <item row="3" column="0" >
+       <widget class="QLabel" name="_qtyReceivedLit" >
+        <property name="text" >
          <string>Qty. Received:</string>
         </property>
-        <property name="alignment">
+        <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="XLabel" name="_qtyReceived">
-        <property name="minimumSize">
+      <item row="3" column="1" >
+       <widget class="XLabel" name="_qtyReceived" >
+        <property name="minimumSize" >
          <size>
           <width>80</width>
           <height>0</height>
          </size>
         </property>
-        <property name="text">
+        <property name="text" >
          <string/>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="_qtyUOM">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="_qtyUOMLit">
-        <property name="text">
-         <string>Qty. UOM:</string>
-        </property>
-        <property name="alignment">
+        <property name="alignment" >
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
@@ -221,20 +230,25 @@ to be bound by its terms.</comment>
    <header>lotserialcluster.h</header>
   </customwidget>
   <customwidget>
-   <class>XLabel</class>
-   <extends>QLabel</extends>
-   <header>xlabel.h</header>
+   <class>XComboBox</class>
+   <extends>QComboBox</extends>
+   <header>xcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>XLineEdit</class>
    <extends>QLineEdit</extends>
    <header>xlineedit.h</header>
-   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>XLabel</class>
+   <extends>QLabel</extends>
+   <header>xlabel.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>_lotSerial</tabstop>
   <tabstop>_qtyAuth</tabstop>
+  <tabstop>_qtyUOM</tabstop>
   <tabstop>_save</tabstop>
   <tabstop>_cancel</tabstop>
  </tabstops>
@@ -246,11 +260,11 @@ to be bound by its terms.</comment>
    <receiver>_lotSerial</receiver>
    <slot>setItemId(int)</slot>
    <hints>
-    <hint type="sourcelabel">
+    <hint type="sourcelabel" >
      <x>125</x>
      <y>40</y>
     </hint>
-    <hint type="destinationlabel">
+    <hint type="destinationlabel" >
      <x>137</x>
      <y>100</y>
     </hint>

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -81,7 +81,7 @@ bool dspItemCostsByClassCode::setParams(ParameterList &params)
   XSqlQuery qq;
   qq.exec("SELECT locale_cost_scale "
          "FROM locale, usr "
-         "WHERE ((usr_locale_id=locale_id) AND (usr_username=getEffectiveXtUser()));");
+         "WHERE ((usr_locale_id=locale_id) AND (usr_username=CURRENT_USER));");
   if (qq.first())
     params.append("costscale", qq.value("locale_cost_scale").toInt());
   else

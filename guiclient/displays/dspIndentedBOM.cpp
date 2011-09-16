@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -30,7 +30,6 @@ dspIndentedBOM::dspIndentedBOM(QWidget* parent, const char*, Qt::WFlags fl)
   list()->addColumn(tr("Notes"),        _itemColumn,  Qt::AlignCenter,false, "bomdata_notes");
   list()->addColumn(tr("Reference"),    _itemColumn,  Qt::AlignCenter,false, "bomdata_ref");
   list()->setIndentation(10);
-  list()->setPopulateLinear();
 }
 
 bool dspIndentedBOM::setParams(ParameterList &params)

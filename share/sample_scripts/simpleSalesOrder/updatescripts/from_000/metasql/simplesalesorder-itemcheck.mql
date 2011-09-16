@@ -1,0 +1,10 @@
+-- Group: simplesalesorder
+-- Name: itemcheck
+-- Notes:
+
+SELECT (COUNT(itemsite_id) > 0) AS result
+FROM itemsite
+WHERE ((itemsite_item_id=<? value("item_id") ?>)
+AND (itemsite_warehous_id=<? value("warehous_id") ?>)
+AND (itemsite_active)
+AND (itemsite_sold));

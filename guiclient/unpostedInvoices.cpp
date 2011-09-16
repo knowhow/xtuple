@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -25,7 +25,6 @@
 #include "mqlutil.h"
 #include "printInvoice.h"
 #include "storedProcErrorLookup.h"
-#include "distributeInventory.h"
 
 unpostedInvoices::unpostedInvoices(QWidget* parent, const char* name, Qt::WFlags fl)
     : XWidget(parent, name, fl)
@@ -229,9 +228,6 @@ void unpostedInvoices::sPost()
   XSqlQuery sum;
   sum.prepare("SELECT invoicetotal(:invchead_id) AS subtotal;");
 
-  XSqlQuery rollback;
-  rollback.prepare("ROLLBACK;");
-
   XSqlQuery post;
   post.prepare("SELECT postInvoice(:invchead_id, :journal) AS result;");
 
@@ -248,9 +244,8 @@ void unpostedInvoices::sPost()
     {
       int id = ((XTreeWidgetItem*)(selected[i]))->id();
 
-      // always change gldistdate.  if using invoice date then will set to null
-      //if (changeDate)
-      //{
+      if (changeDate)
+      {
         setDate.bindValue(":distdate",    newDate);
         setDate.bindValue(":invchead_id", id);
         setDate.exec();
@@ -258,7 +253,7 @@ void unpostedInvoices::sPost()
         {
 	      systemError(this, setDate.lastError().databaseText(), __FILE__, __LINE__);
         }
-      //}
+      }
     }
   }
 
@@ -307,7 +302,6 @@ void unpostedInvoices::sPost()
 	      }
         }
 
-        q.exec("BEGIN;");	// because of possible lot, serial, or location distribution cancelations
         post.bindValue(":invchead_id", id);
         post.bindValue(":journal",     journal);
         post.exec();
@@ -315,37 +309,22 @@ void unpostedInvoices::sPost()
         {
 	      int result = post.value("result").toInt();
 	      if (result < 0)
-              {
-                rollback.exec();
-                systemError(this, storedProcErrorLookup("postInvoice", result),
+	        systemError(this, storedProcErrorLookup("postInvoice", result),
 		            __FILE__, __LINE__);
-              }
-              else if (distributeInventory::SeriesAdjust(result, this) == XDialog::Rejected)
-              {
-                rollback.exec();
-                QMessageBox::information( this, tr("Post Invoices"), tr("Transaction Canceled") );
-                return;
-              }
-
-              q.exec("COMMIT;");
         }
         // contains() string is hard-coded in stored procedure
         else if (post.lastError().databaseText().contains("post to closed period"))
         {
-          rollback.exec();
-            if (changeDate)
-              triedToClosed = selected;
-            else
-              triedToClosed.append(selected[i]);
+	    if (changeDate)
+	      triedToClosed = selected;
+	    else
+	      triedToClosed.append(selected[i]);
       }
       else if (post.lastError().type() != QSqlError::NoError)
-      {
-        rollback.exec();
-        systemError(this, tr("A System Error occurred posting Invoice #%1.\n%2")
-                    .arg(selected[i]->text(0))
-                        .arg(post.lastError().databaseText()),
-                        __FILE__, __LINE__);
-      }
+	    systemError(this, tr("A System Error occurred posting Invoice #%1.\n%2")
+	    	    .arg(selected[i]->text(0))
+	     		.arg(post.lastError().databaseText()),
+		        __FILE__, __LINE__);
     }
 
     if (triedToClosed.size() > 0)

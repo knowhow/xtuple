@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -199,29 +199,9 @@ void cashReceiptsEditList::sPost()
   sFillList();
 }
 
-bool cashReceiptsEditList::setParams(ParameterList &pParams)
-{
-  pParams.append("check", tr("Check"));
-  pParams.append("certifiedCheck", tr("Certified Check"));
-  pParams.append("masterCard", tr("Master Card"));
-  pParams.append("visa", tr("Visa"));
-  pParams.append("americanExpress", tr("American Express"));
-  pParams.append("discoverCard", tr("Discover Card"));
-  pParams.append("otherCreditCard", tr("Other Credit Card"));
-  pParams.append("cash", tr("Cash"));
-  pParams.append("wireTransfer", tr("Wire Transfer"));
-  pParams.append("other", tr("Other"));
-
-  return true;
-}
-
 void cashReceiptsEditList::sPrint()
 {
-  ParameterList params;
-  if (! setParams(params))
-    return;
-
-  orReport report("CashReceiptsEditList", params);
+  orReport report("CashReceiptsEditList");
   if (report.isValid())
     report.print();
   else
@@ -230,11 +210,18 @@ void cashReceiptsEditList::sPrint()
 
 void cashReceiptsEditList::sFillList()
 {
-  ParameterList params;
-  if (! setParams(params))
-    return;
-
   MetaSQLQuery mql = mqlLoad("unpostedCashReceipts", "detail");
+  ParameterList params;
+  params.append("check", tr("Check"));
+  params.append("certifiedCheck", tr("Certified Check"));
+  params.append("masterCard", tr("Master Card"));
+  params.append("visa", tr("Visa"));
+  params.append("americanExpress", tr("American Express"));
+  params.append("discoverCard", tr("Discover Card"));
+  params.append("otherCreditCard", tr("Other Credit Card"));
+  params.append("cash", tr("Cash"));
+  params.append("wireTransfer", tr("Wire Transfer"));
+  params.append("other", tr("Other"));
   q = mql.toQuery(params);
   _cashrcpt->populate(q);
 }

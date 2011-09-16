@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -15,13 +15,9 @@
 #include <QValidator>
 #include <QVariant>
 
-#include <metasql.h>
 #include <openreports.h>
 
-#include "mqlutil.h"
 #include "editICMWatermark.h"
-#include "storedProcErrorLookup.h"
-#include "distributeInventory.h"
 #include "submitAction.h"
 
 printInvoices::printInvoices(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
@@ -37,7 +33,7 @@ printInvoices::printInvoices(QWidget* parent, const char* name, bool modal, Qt::
   _invoiceWatermarks->addColumn(tr("Watermark"),  -1,          Qt::AlignLeft  );
   _invoiceWatermarks->addColumn(tr("Show Prices"),_dateColumn, Qt::AlignCenter);
 
-  _invoiceNumOfCopies->setValue(_metrics->value("InvoiceCopies").toInt() + 1);
+  _invoiceNumOfCopies->setValue(_metrics->value("InvoiceCopies").toInt());
   if (_invoiceNumOfCopies->value())
   {
     for (int i = 0; i < _invoiceWatermarks->topLevelItemCount(); i++)
@@ -46,13 +42,6 @@ printInvoices::printInvoices(QWidget* parent, const char* name, bool modal, Qt::
       _invoiceWatermarks->topLevelItem(i)->setText(2, ((_metrics->value(QString("InvoiceShowPrices%1").arg(i)) == "t") ? tr("Yes") : tr("No")));
     }
   }
-
-  _shipvia->populate( "SELECT MIN(invchead_id), invchead_shipvia "
-                      "  FROM invchead "
-                      " WHERE ( (NOT invchead_printed)"
-                      "   AND   (NOT invchead_posted) )"
-                      " GROUP BY invchead_shipvia"
-                      " ORDER BY invchead_shipvia;" );
 
   if(!_privileges->check("PostMiscInvoices"))
   {
@@ -75,13 +64,14 @@ void printInvoices::languageChange()
 
 void printInvoices::sPrint()
 {
-  MetaSQLQuery mql = mqlLoad("invoices", "print");
-
-  ParameterList params;
-  if (_selectedShipvia->isChecked())
-    params.append("shipvia", _shipvia->currentText());
-
-  XSqlQuery invoices = mql.toQuery(params);
+  XSqlQuery invoices;
+  invoices.prepare( "SELECT invchead_id, invchead_invcnumber, findCustomerForm(invchead_cust_id, 'I') AS reportname "
+                    "FROM ( "
+                    "  SELECT * FROM invchead WHERE (NOT invchead_printed)"
+                    "  AND   (NOT invchead_posted)) AS data  " 
+                    "WHERE (checkInvoiceSitePrivs(invchead_id) ) "
+                    "ORDER BY invchead_ordernumber" );
+  invoices.exec();
   if (invoices.first())
   {
     XSqlQuery local;
@@ -117,17 +107,6 @@ void printInvoices::sPrint()
                             .arg(__FILE__)
                             .arg(__LINE__) );
       }
-
-      XSqlQuery xrate;
-      xrate.prepare("SELECT curr_rate "
-                   "FROM curr_rate, invchead "
-                   "WHERE ((curr_id=invchead_curr_id)"
-                   "  AND  (invchead_id=:invchead_id)"
-                   "  AND  (invchead_invcdate BETWEEN curr_effective AND curr_expires));");
-      // if SUM becomes dependent on curr_id then move XRATE before it in the loop
-
-      XSqlQuery sum;
-      sum.prepare("SELECT invoiceTotal(:invchead_id) AS subtotal;");
 
       message( tr("Printing Invoice #%1...")
                .arg(invoiceNumber) );
@@ -167,118 +146,39 @@ void printInvoices::sPrint()
 	    orReport::endMultiPrint(&printer);
             return;
           }
-        }
-      }
-      emit finishedPrinting(invoices.value("invchead_id").toInt());
 
-      if (_post->isChecked())
-      {
-        int invcheadId = invoices.value("invchead_id").toInt();
-        sum.bindValue(":invchead_id", invcheadId);
-        if (sum.exec() && sum.first() && sum.value("subtotal").toDouble() == 0)
-        {
-          if (QMessageBox::question(this, tr("Invoice Has Value 0"),
-                                        tr("Invoice #%1 has a total value of 0.\n"
-                                           "Would you like to post it anyway?")
-                                          .arg(invoiceNumber),
-                                        QMessageBox::Yes,
-                                        QMessageBox::No | QMessageBox::Default)
-                    == QMessageBox::No)
-            continue;
-        }
-        else if (sum.lastError().type() != QSqlError::NoError)
-        {
-          systemError(this, sum.lastError().databaseText(), __FILE__, __LINE__);
-          continue;
-        }
-        else if (sum.value("subtotal").toDouble() != 0)
-        {
-          xrate.bindValue(":invchead_id", invcheadId);
-          xrate.exec();
-          if (xrate.lastError().type() != QSqlError::NoError)
+          if (_post->isChecked())
           {
-            systemError(this, tr("System Error posting Invoice #%1\n%2")
-                                     .arg(invoiceNumber)
-                                     .arg(xrate.lastError().databaseText()),
-                             __FILE__, __LINE__);
-            continue;
-          }
-          else if (!xrate.first() || xrate.value("curr_rate").isNull())
-          {
-            systemError(this, tr("Could not post Invoice #%1 because of a missing exchange rate.")
-                                     .arg(invoiceNumber));
-            continue;
-          }
-        }
-
-        message( tr("Posting Invoice #%1...")
+            message( tr("Posting Invoice #%1...")
                      .arg(invoiceNumber) );
 
-        local.exec("BEGIN;");
-        //TO DO:  Replace this method with commit that doesn't require transaction
-        //block that can lead to locking issues
-        XSqlQuery rollback;
-        rollback.prepare("ROLLBACK;");
-
-        local.prepare("SELECT postInvoice(:invchead_id) AS result;");
-        local.bindValue(":invchead_id", invoices.value("invchead_id").toInt());
-        local.exec();
-        if (local.first())
-        {
-          int result = local.value("result").toInt();
-          if (result < 0)
-          {
-            rollback.exec();
-            systemError( this, storedProcErrorLookup("postInvoice", result),
-                      __FILE__, __LINE__);
-            return;
-          }
-          else
-          {
-            if (distributeInventory::SeriesAdjust(result, this) == XDialog::Rejected)
-            {
-              rollback.exec();
-              QMessageBox::information( this, tr("Post Invoice"), tr("Transaction Canceled") );
-              return;
-            }
+            local.prepare("SELECT postInvoice(:invchead_id) AS result;");
+            local.bindValue(":invchead_id", invoices.value("invchead_id").toInt());
+            local.exec();
+	    if (local.lastError().type() != QSqlError::NoError)
+		systemError(this, local.lastError().databaseText(), __FILE__, __LINE__);
           }
         }
-        else if (local.lastError().type() != QSqlError::NoError)
-        {
-          systemError(this, local.lastError().databaseText(), __FILE__, __LINE__);
-          rollback.exec();
-          return;
-        }
-
-        local.exec("COMMIT;");
       }
 
+      emit finishedPrinting(invoices.value("invchead_id").toInt());
     }
     while (invoices.next());
     orReport::endMultiPrint(&printer);
 
     resetMessage();
 
-    if ( QMessageBox::information( this, tr("Mark Invoices as Printed?"),
+    if (!_post->isChecked())
+    {
+      if ( QMessageBox::information( this, tr("Mark Invoices as Printed?"),
                                      tr("Did all of the Invoices print correctly?"),
                                      tr("&Yes"), tr("&No"), QString::null, 0, 1) == 0)
-    {
-      XSqlQuery invoices = mql.toQuery(params);
-      if (invoices.first())
-      {
-        do
-        {
-          local.prepare( "UPDATE invchead "
-                         "SET invchead_printed=TRUE "
-                         "WHERE (invchead_id=:invchead_id);");
-          local.bindValue(":invchead_id", invoices.value("invchead_id").toInt());
-          local.exec();
-        }
-        while (invoices.next());
-      }
-    }
+        q.exec( "UPDATE invchead "
+                "SET invchead_printed=TRUE "
+                "WHERE (NOT invchead_printed);");
 
-    omfgThis->sInvoicesUpdated(-1, TRUE);
+        omfgThis->sInvoicesUpdated(-1, TRUE);
+    }
   }
   else if (invoices.lastError().type() != QSqlError::NoError)
     systemError(this, invoices.lastError().databaseText(), __FILE__, __LINE__);

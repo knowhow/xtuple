@@ -1,7 +1,7 @@
 include( ../global.pri )
 
 TARGET   = xtuple
-CONFIG   += qt warn_on uitools designer help
+CONFIG   += qt warn_on assistant uitools designer
 TEMPLATE = app
 
 INCLUDEPATH += ../scriptapi \
@@ -29,8 +29,8 @@ win32-msvc* {
                     ../$${OPENRPT_BLD}/lib/libcommon.a
 }
 
-LIBS        += -L../lib -L../$${OPENRPT_BLD}/lib \
-               -lxtuplecommon -lxtuplewidgets -lwrtembed -lcommon -lrenderer \
+LIBS        += -L../lib -L../$${OPENRPT_BLD}/lib -lxtuplecommon \
+               -lxtuplewidgets -lwrtembed -lcommon -lrenderer \
                -lxtuplescriptapi -lMetaSQL
 
 #not the best way to handle this, but it should do
@@ -48,7 +48,6 @@ win32 {
 
 unix {
   OBJECTS_DIR = unx_obj
-  LIBS += -lz
 }
 
 macx {
@@ -56,7 +55,6 @@ macx {
   #PRECOMPILED_HEADER = stable.h
   OBJECTS_DIR = osx_obj
   QMAKE_INFO_PLIST = Info.plist
-  LIBS += -lz
 }
 
 DESTDIR     = ../bin
@@ -74,8 +72,6 @@ FORMS =   absoluteCalendarItem.ui               \
           address.ui                            \
           addresses.ui                          \
           adjustmentTrans.ui                    \
-          adjustInvValue.ui                     \
-          allocateARCreditMemo.ui               \
           allocateReservations.ui               \
           apAccountAssignment.ui                \
           apAccountAssignments.ui               \
@@ -132,7 +128,6 @@ FORMS =   absoluteCalendarItem.ui               \
           commentTypes.ui                       \
           companies.ui                          \
           company.ui                            \
-          configauthorizedotnetprocessor.ui     \
           configcybersourceprocessor.ui         \
           configureCC.ui                        \
           configureCRM.ui                       \
@@ -148,7 +143,6 @@ FORMS =   absoluteCalendarItem.ui               \
           confirmAchOK.ui                       \
           contact.ui                            \
           contacts.ui                           \
-          contactMerge.ui                       \
           copyBOM.ui                            \
           copyBudget.ui                         \
           copyItem.ui                           \
@@ -179,12 +173,6 @@ FORMS =   absoluteCalendarItem.ui               \
           creditMemoEditList.ui                 \
           creditMemoItem.ui                     \
           crmaccount.ui                         \
-          crmaccountMerge.ui                    \
-          crmaccountMergePickAccountsPage.ui    \
-          crmaccountMergePickDataPage.ui        \
-          crmaccountMergePickTaskPage.ui        \
-          crmaccountMergePurgePage.ui           \
-          crmaccountMergeResultPage.ui          \
           currencies.ui                         \
           currency.ui                           \
           currencyConversion.ui                 \
@@ -206,7 +194,6 @@ FORMS =   absoluteCalendarItem.ui               \
           deletePlannedOrdersByPlannerCode.ui   \
           department.ui                         \
           departments.ui                        \
-          dictionaries.ui                       \
           display.ui                            \
           displayTimePhased.ui                  \
           distributeInventory.ui                \
@@ -223,6 +210,8 @@ FORMS =   absoluteCalendarItem.ui               \
           dspInvoiceInformation.ui                      \
           dspMRPDetail.ui                               \
           dspTaxHistory.ui                              \
+          dspTimePhasedOpenAPItems.ui           \
+          dspTimePhasedOpenARItems.ui           \
           duplicateAccountNumbers.ui            \
           editICMWatermark.ui           \
           editOwners.ui                 \
@@ -252,7 +241,6 @@ FORMS =   absoluteCalendarItem.ui               \
           financialLayoutItem.ui        \
           financialLayoutSpecial.ui     \
           financialLayouts.ui           \
-          financialReportNotes.ui       \
           firmPlannedOrder.ui           \
           firmPlannedOrdersByPlannerCode.ui     \
           fixACL.ui                     \
@@ -271,7 +259,6 @@ FORMS =   absoluteCalendarItem.ui               \
           glTransactionDetail.ui        \
           group.ui                      \
           groups.ui                     \
-          helpDownload.ui               \
           honorific.ui                  \
           honorifics.ui                 \
           hotkey.ui                     \
@@ -388,6 +375,7 @@ FORMS =   absoluteCalendarItem.ui               \
           printCreditMemos.ui                   \
           printInvoice.ui                       \
           printInvoices.ui                      \
+          printInvoicesByShipvia.ui             \
           printItemLabelsByClassCode.ui         \
           printJournal.ui                       \
           printLabelsByInvoice.ui               \
@@ -402,6 +390,7 @@ FORMS =   absoluteCalendarItem.ui               \
           printPurchaseOrdersByAgent.ui         \
           printQuote.ui                         \
           printRaForm.ui                        \
+          printSASpecialCalendarForm.ui         \
           printShippingForm.ui                  \
           printShippingForms.ui                 \
           printSoForm.ui                        \
@@ -426,6 +415,7 @@ FORMS =   absoluteCalendarItem.ui               \
           purgeInvoices.ui                      \
           purgePostedCountSlips.ui              \
           purgePostedCounts.ui                  \
+          purgeShippingRecords.ui               \
           quotes.ui                             \
           reasonCode.ui                         \
           reasonCodes.ui                        \
@@ -548,7 +538,6 @@ FORMS =   absoluteCalendarItem.ui               \
           transferOrders.ui                     \
           transferTrans.ui                      \
           transformTrans.ui                     \
-          translations.ui                       \
           uiform.ui                             \
           uiforms.ui                            \
           unappliedAPCreditMemos.ui             \
@@ -598,7 +587,6 @@ FORMS =   absoluteCalendarItem.ui               \
           warehouse.ui                          \
           warehouseZone.ui                      \
           warehouses.ui                         \
-          welcomeStub.ui                        \
           woMaterialItem.ui                     \
           workOrder.ui                          \
           workOrderMaterials.ui                 \
@@ -619,8 +607,6 @@ HEADERS = ../common/format.h                    \
           address.h                             \
           addresses.h                           \
           adjustmentTrans.h                     \
-          adjustInvValue.h                      \
-          allocateARCreditMemo.h                \
           allocateReservations.h                \
           apAccountAssignment.h                 \
           apAccountAssignments.h                \
@@ -678,7 +664,6 @@ HEADERS = ../common/format.h                    \
           commentTypes.h                \
           companies.h                   \
           company.h                     \
-          configauthorizedotnetprocessor.h \
           configcreditcardprocessor.h   \
           configcybersourceprocessor.h  \
           configureCC.h                 \
@@ -695,7 +680,6 @@ HEADERS = ../common/format.h                    \
           confirmAchOK.h                \
           contact.h                     \
           contacts.h                    \
-          contactMerge.h                \
           copyBOM.h                     \
           copyBudget.h                  \
           copyItem.h                    \
@@ -727,12 +711,6 @@ HEADERS = ../common/format.h                    \
           creditMemoItem.h                      \
           creditcardprocessor.h                 \
           crmaccount.h                          \
-          crmaccountMerge.h                     \
-          crmaccountMergePickAccountsPage.h     \
-          crmaccountMergePickDataPage.h         \
-          crmaccountMergePickTaskPage.h         \
-          crmaccountMergePurgePage.h            \
-          crmaccountMergeResultPage.h           \
           crmaccounts.h                         \
           currencies.h                          \
           currency.h                            \
@@ -758,7 +736,6 @@ HEADERS = ../common/format.h                    \
           deletePlannedOrdersByPlannerCode.h    \
           department.h                          \
           departments.h                         \
-          dictionaries.h                        \
           display.h                             \
           displayTimePhased.h                   \
           distributeInventory.h                 \
@@ -775,6 +752,8 @@ HEADERS = ../common/format.h                    \
           dspInvoiceInformation.h                       \
           dspMRPDetail.h                                \
           dspTaxHistory.h                               \
+          dspTimePhasedOpenAPItems.h            \
+          dspTimePhasedOpenARItems.h            \
           duplicateAccountNumbers.h             \
           editICMWatermark.h                    \
           editOwners.h                          \
@@ -805,7 +784,6 @@ HEADERS = ../common/format.h                    \
           financialLayoutItem.h                 \
           financialLayoutSpecial.h              \
           financialLayouts.h                    \
-          financialReportNotes.h                \
           firmPlannedOrder.h                    \
           firmPlannedOrdersByPlannerCode.h      \
           fixACL.h                      \
@@ -827,11 +805,7 @@ HEADERS = ../common/format.h                    \
           glTransactionDetail.h         \
           group.h                       \
           groups.h                      \
-          guiErrorCheck.h               \
           guiclient.h                   \
-          helpDownload.h                \
-          helpView.h                    \
-          helpViewBrowser.h             \
           honorific.h                   \
           honorifics.h                  \
           hotkey.h                      \
@@ -964,6 +938,7 @@ HEADERS = ../common/format.h                    \
           printCreditMemos.h            \
           printInvoice.h                \
           printInvoices.h               \
+          printInvoicesByShipvia.h      \
           printItemLabelsByClassCode.h  \
           printJournal.h                \
           printLabelsByInvoice.h        \
@@ -978,6 +953,7 @@ HEADERS = ../common/format.h                    \
           printPurchaseOrdersByAgent.h  \
           printQuote.h                  \
           printRaForm.h                 \
+          printSASpecialCalendarForm.h  \
           printShippingForm.h           \
           printShippingForms.h          \
           printSoForm.h                 \
@@ -1003,6 +979,7 @@ HEADERS = ../common/format.h                    \
           purgeInvoices.h               \
           purgePostedCountSlips.h       \
           purgePostedCounts.h           \
+          purgeShippingRecords.h        \
           quotes.h                      \
           reasonCode.h                  \
           reasonCodes.h                 \
@@ -1133,7 +1110,6 @@ HEADERS = ../common/format.h                    \
           transferOrders.h              \
           transferTrans.h               \
           transformTrans.h              \
-          translations.h                \
           uiform.h                      \
           uiforms.h                     \
           unappliedAPCreditMemos.h      \
@@ -1186,11 +1162,9 @@ HEADERS = ../common/format.h                    \
           warehouse.h                   \
           warehouseZone.h               \
           warehouses.h                  \
-          welcomeStub.h                 \
           woMaterialItem.h              \
           workOrder.h                   \
           workOrderMaterials.h          \
-          xtHelp.h                      \
           xTupleDesigner.h              \
           xTupleDesignerActions.h       \
           xabstractconfigure.h          \
@@ -1204,7 +1178,7 @@ HEADERS = ../common/format.h                    \
           xuiloader.h                   \
           xwidget.h                     \
           yourpayprocessor.h            \
-          zeroUncountedCountTagsByWarehouse.h   \
+          zeroUncountedCountTagsByWarehouse.h
 
 SOURCES = absoluteCalendarItem.cpp              \
           accountNumber.cpp                     \
@@ -1217,8 +1191,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           address.cpp                           \
           addresses.cpp                         \
           adjustmentTrans.cpp                   \
-          adjustInvValue.cpp                    \
-          allocateARCreditMemo.cpp              \
           allocateReservations.cpp              \
           apAccountAssignment.cpp               \
           apAccountAssignments.cpp              \
@@ -1277,7 +1249,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           commentTypes.cpp                      \
           companies.cpp                         \
           company.cpp                           \
-          configauthorizedotnetprocessor.cpp    \
           configcreditcardprocessor.cpp         \
           configcybersourceprocessor.cpp        \
           configureCC.cpp                       \
@@ -1294,7 +1265,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           confirmAchOK.cpp                      \
           contact.cpp                           \
           contacts.cpp                          \
-          contactMerge.cpp                      \
           copyBOM.cpp                           \
           copyBudget.cpp                        \
           copyItem.cpp                          \
@@ -1326,12 +1296,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           creditMemoItem.cpp                    \
           creditcardprocessor.cpp               \
           crmaccount.cpp                        \
-          crmaccountMerge.cpp                   \
-          crmaccountMergePickAccountsPage.cpp   \
-          crmaccountMergePickDataPage.cpp       \
-          crmaccountMergePickTaskPage.cpp       \
-          crmaccountMergePurgePage.cpp          \
-          crmaccountMergeResultPage.cpp         \
           crmaccounts.cpp                       \
           currencies.cpp                        \
           currency.cpp                          \
@@ -1357,7 +1321,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           deletePlannedOrdersByPlannerCode.cpp  \
           department.cpp                        \
           departments.cpp                       \
-          dictionaries.cpp                      \
           display.cpp                           \
           displayTimePhased.cpp                 \
           distributeInventory.cpp               \
@@ -1374,6 +1337,8 @@ SOURCES = absoluteCalendarItem.cpp              \
           dspInvoiceInformation.cpp                     \
           dspMRPDetail.cpp                              \
           dspTaxHistory.cpp                             \
+          dspTimePhasedOpenAPItems.cpp                  \
+          dspTimePhasedOpenARItems.cpp                  \
           duplicateAccountNumbers.cpp           \
           editICMWatermark.cpp                  \
           editOwners.cpp                        \
@@ -1406,7 +1371,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           financialLayouts.cpp                  \
           firmPlannedOrder.cpp                  \
           firmPlannedOrdersByPlannerCode.cpp    \
-          financialReportNotes.cpp              \
           fixACL.cpp                    \
           fixSerial.cpp                 \
           form.cpp                      \
@@ -1424,11 +1388,7 @@ SOURCES = absoluteCalendarItem.cpp              \
           glTransactionDetail.cpp       \
           group.cpp                     \
           groups.cpp                    \
-          guiErrorCheck.cpp             \
           guiclient.cpp                 \
-          helpDownload.cpp              \
-          helpView.cpp                  \
-          helpViewBrowser.cpp           \
           honorific.cpp                 \
           honorifics.cpp                \
           hotkey.cpp                    \
@@ -1562,6 +1522,7 @@ SOURCES = absoluteCalendarItem.cpp              \
           printCreditMemos.cpp                  \
           printInvoice.cpp                      \
           printInvoices.cpp                     \
+          printInvoicesByShipvia.cpp            \
           printItemLabelsByClassCode.cpp        \
           printJournal.cpp                      \
           printLabelsByInvoice.cpp              \
@@ -1576,6 +1537,7 @@ SOURCES = absoluteCalendarItem.cpp              \
           printPurchaseOrdersByAgent.cpp        \
           printQuote.cpp                        \
           printRaForm.cpp                       \
+          printSASpecialCalendarForm.cpp        \
           printShippingForm.cpp                 \
           printShippingForms.cpp                \
           printSoForm.cpp                       \
@@ -1601,6 +1563,7 @@ SOURCES = absoluteCalendarItem.cpp              \
           purgeInvoices.cpp                     \
           purgePostedCountSlips.cpp             \
           purgePostedCounts.cpp                 \
+          purgeShippingRecords.cpp              \
           quotes.cpp                            \
           reasonCode.cpp                        \
           reasonCodes.cpp                       \
@@ -1731,7 +1694,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           transferOrders.cpp                    \
           transferTrans.cpp                     \
           transformTrans.cpp                    \
-          translations.cpp                      \
           uiform.cpp                            \
           uiforms.cpp                           \
           unappliedAPCreditMemos.cpp            \
@@ -1784,7 +1746,6 @@ SOURCES = absoluteCalendarItem.cpp              \
           warehouse.cpp                         \
           warehouseZone.cpp                     \
           warehouses.cpp                        \
-          welcomeStub.cpp                       \
           woMaterialItem.cpp                    \
           workOrder.cpp                         \
           workOrderMaterials.cpp                \
@@ -1798,11 +1759,10 @@ SOURCES = absoluteCalendarItem.cpp              \
           xmessagebox.cpp                       \
           xmessageboxmessagehandler.cpp         \
           xsltMap.cpp                           \
-          xtHelp.cpp                            \
           xuiloader.cpp                         \
           xwidget.cpp                           \
           yourpayprocessor.cpp                  \
-          zeroUncountedCountTagsByWarehouse.cpp \
+          zeroUncountedCountTagsByWarehouse.cpp
 
 include( displays/displays.pri )
 include( hunspell.pri )
@@ -1813,4 +1773,3 @@ QT += webkit xmlpatterns
 RESOURCES += guiclient.qrc ../$${OPENRPT_DIR}/OpenRPT/images/OpenRPTMetaSQL.qrc
 
 #CONFIG += debug
-

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -52,6 +52,20 @@ dspCashReceipts::dspCashReceipts(QWidget* parent, const char*, Qt::WFlags fl)
   newAction()->setEnabled(_privileges->check("MaintainCashReceipts"));
 }
 
+void dspCashReceipts::sPrint()
+{
+  ParameterList params;
+  if (! setParams(params))
+    return;
+  params.append("includeFormatted");
+
+  orReport report("CashReceipts", params);
+  if (report.isValid())
+    report.print();
+  else
+    report.reportError(this);
+}
+
 bool dspCashReceipts::setParams(ParameterList &pParams)
 {
   if (!_dates->startDate().isValid())
@@ -97,7 +111,6 @@ bool dspCashReceipts::setParams(ParameterList &pParams)
   }
   else
     list()->showColumn("cashrcpt_number");
-  pParams.append("includeFormatted");
   return true;
 }
 
@@ -126,7 +139,7 @@ void dspCashReceipts::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem *, int)
       }
       else if (!list()->altId())
       {
-        menuItem = pMenu->addAction(tr("Void Posted Cash Receipt"), this, SLOT(sReversePosted()));
+        menuItem = pMenu->addAction(tr("Reverse Posted Cash Receipt"), this, SLOT(sReversePosted()));
         menuItem->setEnabled(_privileges->check("ReversePostedCashReceipt"));
       }
     }

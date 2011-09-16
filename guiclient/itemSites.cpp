@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -10,113 +10,72 @@
 
 #include "itemSites.h"
 
-#include <QVariant>
-#include <QWorkspace>
+#include <QKeyEvent>
 #include <QAction>
 #include <QMenu>
-#include <QSqlError>
 #include <QMessageBox>
+#include <QSqlError>
+#include <QVariant>
 
-#include "createCountTagsByItem.h"
-#include "dspInventoryAvailability.h"
 #include "itemSite.h"
-#include "parameterwidget.h"
 #include "storedProcErrorLookup.h"
 
-itemSites::itemSites(QWidget* parent, const char*, Qt::WFlags fl)
-    : display(parent, "itemSites", fl)
+itemSites::itemSites(QWidget* parent, const char* name, Qt::WFlags fl)
+    : XWidget(parent, name, fl)
 {
-  setWindowTitle(tr("Item Sites"));
-  setReportName("ItemSites");
-  setMetaSQLOptions("itemSites", "detail");
-  setParameterWidgetVisible(true);
-  setSearchVisible(true);
-  setNewVisible(true);
-  setQueryOnStartEnabled(true);
+  setupUi(this);
 
-  parameterWidget()->appendComboBox(tr("Class Code"), "classcode_id", XComboBox::ClassCodes);
-  parameterWidget()->append(tr("Class Code Pattern"), "classcode_pattern", ParameterWidget::Text);
-  parameterWidget()->appendComboBox(tr("Cost Category"), "costcat_id", XComboBox::CostCategories);
-  parameterWidget()->append(tr("Cost Category Pattern"), "costcat_pattern", ParameterWidget::Text);
-  parameterWidget()->append(tr("Item"), "item_id", ParameterWidget::Item);
-  parameterWidget()->appendComboBox(tr("Planner Code"), "plancode_id", XComboBox::PlannerCodes);
-  parameterWidget()->append(tr("Planner Code Pattern"), "plancode_pattern", ParameterWidget::Text);
-  parameterWidget()->append(tr("Show Inactive"), "showInactive", ParameterWidget::Exists);
-  if (_metrics->boolean("MultiWhs"))
-    parameterWidget()->append(tr("Site"), "warehous_id", ParameterWidget::Site);
+  connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
+  connect(_edit, SIGNAL(clicked()), this, SLOT(sEdit()));
+  connect(_itemSite, SIGNAL(populateMenu(QMenu*,QTreeWidgetItem*,int)), this, SLOT(sPopulateMenu(QMenu*)));
+  connect(_showInactive, SIGNAL(toggled(bool)), this, SLOT(sFillList()));
+  connect(_searchFor, SIGNAL(textChanged(const QString&)), this, SLOT(sSearch(const QString&)));
+  connect(_view, SIGNAL(clicked()), this, SLOT(sView()));
+  connect(_warehouse, SIGNAL(updated()), this, SLOT(sFillList()));
+  connect(_copy, SIGNAL(clicked()), this, SLOT(sCopy()));
+  connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
+
+  _itemSite->addColumn(tr("Item Number"),   _itemColumn, Qt::AlignLeft,  true, "item_number"   );
+  _itemSite->addColumn(tr("Active"),        _dateColumn, Qt::AlignCenter,true, "itemsite_active" );
+  _itemSite->addColumn(tr("Description"),   -1,          Qt::AlignLeft,  true, "item_descrip"   );
+  _itemSite->addColumn(tr("Site"),          _whsColumn,  Qt::AlignCenter,true, "warehous_code" );
+  _itemSite->addColumn(tr("Cntrl. Method"), _itemColumn, Qt::AlignCenter,true, "itemsite_controlmethod" );
+  _itemSite->setDragString("itemsiteid=");
+
+  _searchFor->setAcceptDrops(FALSE);
+  
+  connect(omfgThis, SIGNAL(itemsitesUpdated()), SLOT(sFillList()));
 
   if (_privileges->check("MaintainItemSites"))
-    connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sEdit()));
+  {
+    connect(_itemSite, SIGNAL(valid(bool)), _edit, SLOT(setEnabled(bool)));
+    connect(_itemSite, SIGNAL(valid(bool)), _copy, SLOT(setEnabled(bool)));
+    connect(_itemSite, SIGNAL(itemSelected(int)), _edit, SLOT(animateClick()));
+  }
   else
   {
-    newAction()->setEnabled(false);
-    connect(list(), SIGNAL(itemSelected(int)), this, SLOT(sView()));
+    _new->setEnabled(FALSE);
+    connect(_itemSite, SIGNAL(itemSelected(int)), _view, SLOT(animateClick()));
   }
 
-  list()->addColumn(tr("Site"),          _whsColumn,   Qt::AlignCenter, true,  "warehous_code" );
-  list()->addColumn(tr("Item Number"),   _itemColumn,  Qt::AlignLeft,   true,  "item_number"   );
-  list()->addColumn(tr("Description"),   -1,           Qt::AlignLeft,   true,  "description"   );
-  list()->addColumn(tr("UOM"),           _uomColumn,   Qt::AlignCenter, true,  "uom_name" );
-  list()->addColumn(tr("QOH"),           _qtyColumn,   Qt::AlignRight,  true,  "itemsite_qtyonhand"  );
-  list()->addColumn(tr("Active"),        _ynColumn,    Qt::AlignCenter, true,  "itemsite_active" );
-  list()->addColumn(tr("Loc. Cntrl."),   _dateColumn,  Qt::AlignCenter, true,  "itemsite_loccntrl" );
-  list()->addColumn(tr("Cntrl. Method"), _dateColumn,  Qt::AlignCenter, true,  "controlmethod" );
-  list()->addColumn(tr("Sold Ranking"),  _dateColumn,  Qt::AlignCenter, false,  "soldranking" );
-  list()->addColumn(tr("ABC Class"),     _dateColumn,  Qt::AlignCenter, false,  "itemsite_abcclass" );
-  list()->addColumn(tr("Cycle Cnt."),    _dateColumn,  Qt::AlignCenter, false,  "itemsite_cyclecountfreq" );
-  list()->addColumn(tr("Last Cnt'd"),    _dateColumn,  Qt::AlignCenter, false,  "datelastcount" );
-  list()->addColumn(tr("Last Used"),     _dateColumn,  Qt::AlignCenter, false,  "datelastused" );
+  if (_privileges->check("DeleteItemSites"))
+    connect(_itemSite, SIGNAL(valid(bool)), _delete, SLOT(setEnabled(bool)));
+
+  _copy->setVisible(_metrics->boolean("MultiWhs"));
+
+  sFillList();
+
+  _searchFor->setFocus();
 }
 
-enum SetResponse itemSites::set(const ParameterList &pParams)
+itemSites::~itemSites()
 {
-  XWidget::set(pParams);
-  QVariant param;
-  bool     valid;
+    // no need to delete child widgets, Qt does it all for us
+}
 
-  param = pParams.value("warehous_id", &valid);
-  if (valid)
-  {
-    if (param.toInt() > 0)
-      parameterWidget()->setDefault(tr("Site"), param);
-  }
-
-  if (pParams.inList("showInactive"))
-    parameterWidget()->setDefault(tr("Show Inactive"), true);
-
-  param = pParams.value("classcode_id", &valid);
-  if (valid)
-    parameterWidget()->setDefault(tr("Class Code"), param);
-
-  param = pParams.value("classcode_pattern", &valid);
-  if (valid)
-    parameterWidget()->setDefault(tr("Class Code Pattern"), param);
-
-  param = pParams.value("plancode_id", &valid);
-  if (valid)
-    parameterWidget()->setDefault(tr("Planner Code"), param);
-
-  param = pParams.value("plancode_pattern", &valid);
-  if (valid)
-    parameterWidget()->setDefault(tr("Planner Code Pattern"), param);
-
-  param = pParams.value("costcat_id", &valid);
-  if (valid)
-    parameterWidget()->setDefault(tr("Cost Category"), param);
-
-  param = pParams.value("costcat_pattern", &valid);
-  if (valid)
-    parameterWidget()->setDefault(tr("Cost Category Pattern"), param);
-
-  parameterWidget()->applyDefaultFilterSet();;
-
-  if (pParams.inList("run"))
-  {
-    sFillList();
-    return NoError_Run;
-  }
-
-  return NoError;
+void itemSites::languageChange()
+{
+    retranslateUi(this);
 }
 
 void itemSites::sNew()
@@ -124,18 +83,7 @@ void itemSites::sNew()
   ParameterList params;
   params.append("mode", "new");
 
-  itemSite newdlg(this, "", true);
-  newdlg.set(params);
-  newdlg.exec();
-}
-
-void itemSites::sView()
-{
-  ParameterList params;
-  params.append("mode", "view");
-  params.append("itemsite_id", list()->id());
-
-  itemSite newdlg(this, "", true);
+  itemSite newdlg(this, "", TRUE);
   newdlg.set(params);
   newdlg.exec();
 }
@@ -144,9 +92,20 @@ void itemSites::sEdit()
 {
   ParameterList params;
   params.append("mode", "edit");
-  params.append("itemsite_id", list()->id());
+  params.append("itemsite_id", _itemSite->id());
 
-  itemSite newdlg(this, "", true);
+  itemSite newdlg(this, "", TRUE);
+  newdlg.set(params);
+  newdlg.exec();
+}
+
+void itemSites::sView()
+{
+  ParameterList params;
+  params.append("mode", "view");
+  params.append("itemsite_id", _itemSite->id());
+
+  itemSite newdlg(this, "", TRUE);
   newdlg.set(params);
   newdlg.exec();
 }
@@ -154,7 +113,7 @@ void itemSites::sEdit()
 void itemSites::sCopy()
 {
   q.prepare("SELECT copyItemSite(:olditemsiteid, NULL) AS result;");
-  q.bindValue(":olditemsiteid", list()->id());
+  q.bindValue(":olditemsiteid", _itemSite->id());
   q.exec();
   if (q.first())
   {
@@ -177,20 +136,19 @@ void itemSites::sCopy()
       q.exec();
       if (q.first())
       {
-        int result = q.value("result").toInt();
-        if (result < 0)
-        {
-          systemError(this, storedProcErrorLookup("deleteItemSite", result), __FILE__, __LINE__);
-          return;
-        }
+	int result = q.value("result").toInt();
+	if (result < 0)
+	{
+	  systemError(this, storedProcErrorLookup("deleteItemSite", result), __FILE__, __LINE__);
+	  return;
+	}
       }
       else if (q.lastError().type() != QSqlError::NoError)
       {
-        systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-        return;
+	systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+	return;
       }
     }
-    sFillList();
   }
   else if (q.lastError().type() != QSqlError::NoError)
   {
@@ -201,15 +159,8 @@ void itemSites::sCopy()
 
 void itemSites::sDelete()
 {
-  if (QMessageBox::question(this, tr("Delete Selected Line Item?"),
-                            tr("Are you sure that you want to delete the "
-                               "selected Item Site?"),
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Default) == QMessageBox::No)
-    return;
-
   q.prepare("SELECT deleteItemSite(:itemsite_id) AS result;");
-  q.bindValue(":itemsite_id", list()->id());
+  q.bindValue(":itemsite_id", _itemSite->id());
   q.exec();
   if (q.first())
   {
@@ -228,72 +179,80 @@ void itemSites::sDelete()
   }
 }
 
-void itemSites::sInventoryAvailability()
-{
-  ParameterList params;
-  params.append("itemsite_id", list()->id());
-  params.append("run");
-  params.append("byLeadTime");
-
-  dspInventoryAvailability *newdlg = new dspInventoryAvailability();
-  newdlg->set(params);
-  omfgThis->handleNewWindow(newdlg);
-}
-
-void itemSites::sIssueCountTag()
-{
-  ParameterList params;
-  params.append("itemsite_id", list()->id());
-  
-  createCountTagsByItem newdlg(this, "", true);
-  newdlg.set(params);
-  newdlg.exec();
-}
-
-void itemSites::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *, int)
+void itemSites::sPopulateMenu(QMenu *pMenu)
 {
   QAction *menuItem;
 
-  menuItem = pMenu->addAction(tr("View..."), this, SLOT(sView()));;
-  if ((!_privileges->check("MaintainItemSites")) && (!_privileges->check("ViewItemSites")))
-    menuItem->setEnabled(false);
+  menuItem = pMenu->addAction(tr("View Item Site"), this, SLOT(sView()));
 
-  menuItem = pMenu->addAction(tr("Edit..."), this, SLOT(sEdit()));;
-  if (!_privileges->check("MaintainItemSites"))
-    menuItem->setEnabled(false);
-
-  menuItem = pMenu->addAction(tr("Copy..."), this, SLOT(sCopy()));;
-  if (!_privileges->check("MaintainItemSites"))
-    menuItem->setEnabled(false);
-
-  menuItem = pMenu->addAction(tr("Delete..."), this, SLOT(sDelete()));;
-  if (!_privileges->check("MaintainItemSites"))
-    menuItem->setEnabled(false);
-
-  pMenu->addSeparator();
-
-  menuItem = pMenu->addAction(tr("View Inventory Availability..."), this, SLOT(sInventoryAvailability()));;
-  if (!_privileges->check("ViewInventoryAvailability"))
-    menuItem->setEnabled(false);
-
-  pMenu->addSeparator();
-
-  menuItem = pMenu->addAction(tr("Issue Count Tag..."), this, SLOT(sIssueCountTag()));;
-  if (!_privileges->check("IssueCountTags"))
-    menuItem->setEnabled(false);
+  menuItem = pMenu->addAction(tr("Edit Item Site"), this, SLOT(sEdit()));
+  menuItem->setEnabled(_privileges->check("MaintainItemSites"));
 }
 
-bool itemSites::setParams(ParameterList &params)
+void itemSites::sFillList()
 {
-  if (!display::setParams(params))
-    return false;
+  QString sql( "SELECT itemsite_id, item_number, itemsite_active,"
+               "       (item_descrip1 || ' ' || item_descrip2) AS item_descrip, warehous_code,"
+               "       CASE WHEN itemsite_controlmethod='R' THEN :regular"
+               "            WHEN itemsite_controlmethod='N' THEN :none"
+               "            WHEN itemsite_controlmethod='L' THEN :lotNumber"
+               "            WHEN itemsite_controlmethod='S' THEN :serialNumber"
+               "       END AS itemsite_controlmethod "
+               "FROM itemsite, item, warehous "
+               "WHERE ( (itemsite_item_id=item_id)"
+               " AND (itemsite_warehous_id=warehous_id)" );
 
-  params.append("regular", tr("Regular"));
-  params.append("none", tr("None"));
-  params.append("lot", tr("Lot #"));
-  params.append("serial", tr("Serial #"));
-  params.append("na", tr("N/A"));
-  params.append("never", tr("Never"));
+  if (_warehouse->isSelected())
+    sql += " AND (warehous_id=:warehous_id)";
 
-  return true;
+  if (!_showInactive->isChecked())
+    sql += " AND (itemsite_active)";
+
+  sql += ") "
+         "ORDER BY item_number, warehous_code;";
+
+  q.prepare(sql);
+  _warehouse->bindValue(q);
+  q.bindValue(":regular", tr("Regular"));
+  q.bindValue(":none", tr("None"));
+  q.bindValue(":lotNumber", tr("Lot #"));
+  q.bindValue(":serialNumber", tr("Serial #"));
+  q.exec();
+  _itemSite->populate(q);
+  if (q.lastError().type() != QSqlError::NoError)
+  {
+    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    return;
+  }
+}
+
+void itemSites::sSearch(const QString &pTarget)
+{
+  QList<XTreeWidgetItem*> items = _itemSite->findItems(pTarget, Qt::MatchStartsWith, 0);
+
+  if (items.count() > 0)
+  {
+    _itemSite->clearSelection();
+    _itemSite->setItemSelected(items.at(0), true);
+    _itemSite->scrollToItem(items.at(0));
+  }
+}
+
+void itemSites::keyPressEvent( QKeyEvent * e )
+{
+#ifdef Q_WS_MAC
+  if(e->key() == Qt::Key_N && (e->modifiers() & Qt::ControlModifier))
+  {
+    _new->animateClick();
+    e->accept();
+  }
+  else if(e->key() == Qt::Key_E && (e->modifiers() & Qt::ControlModifier))
+  {
+    _edit->animateClick();
+    e->accept();
+  }
+  if(e->isAccepted())
+    return;
+#endif
+  e->ignore();
 }

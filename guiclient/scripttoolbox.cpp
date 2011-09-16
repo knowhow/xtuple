@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -43,13 +43,22 @@
 #include "xdialog.h"
 #include "xmainwindow.h"
 #include "xtreewidget.h"
-#include "display.h"
 #include "xuiloader.h"
 #include "getscreen.h"
 
-/** \ingroup scriptapi
-  
-    \class ScriptToolbox
+/* TODO: according to
+      http://www.stack.nl/~dimitri/doxygen/commands.html#cmdexample
+   a line resembling
+     \example exampleFile.js
+   at the end of a doxygen comment is supposed to insert
+     Examples:
+       hyperlink-to-exampleFile.js
+   into the docs for the method. make it so.
+   i see the entire doxygen comment moved so it winds up documenting the
+   example, leaving nothing documenting the method itself.
+ */
+
+/** \class ScriptToolbox
 
     \brief The ScriptToolbox provides a collection of miscellaneous utility
            methods used when writing xTuple ERP extension %scripts.
@@ -82,6 +91,7 @@
     \see XDialog
     \see XMainWindow
     \see XWidget
+    \todo figure out how to link this class with the scriptapi group
  */
 
 QWidget *ScriptToolbox::_lastWindow = 0;
@@ -422,7 +432,6 @@ QObject * ScriptToolbox::createGridLayout()
   \param w The widget whose layout you want to find
 
   \return A pointer to the layout or 0 if no such layout could be found
-
 */
 QObject * ScriptToolbox::widgetGetLayout(QWidget * w)
 {
@@ -730,6 +739,7 @@ QWidget * ScriptToolbox::createWidget(const QString & className, QWidget * paren
   XUiLoader ui;
   return ui.createWidget(className, parent, name);
 }
+/** \example addButton.js */
 
 /** \brief Create a new layout based on the name of the desired class.
 
@@ -1364,16 +1374,6 @@ QWidget *ScriptToolbox::openWindow(QString pname, QWidget *parent, Qt::WindowMod
   }
 
   return returnVal;
-}
-
-QWidget *ScriptToolbox::newDisplay(QString pname, QWidget *parent, Qt::WindowModality modality, Qt::WindowFlags flags)
-{
-  display *window = new display(parent, pname.toAscii().data(), flags);
-  window->setWindowModality(modality);
-  omfgThis->handleNewWindow(window);
-  _lastWindow = window;
-
-  return window; 
 }
 
 /** \brief Add a column to an existing XTreeWidget

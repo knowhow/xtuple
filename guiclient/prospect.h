@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -39,7 +39,7 @@ public slots:
     virtual void	sViewQuote();
     virtual void	sFillQuotesList();
     virtual void	sPopulateQuotesMenu(QMenu * menuThis);
-    virtual bool	sPopulate();
+    virtual void	populate();
 
 signals:
             void newId(int);
@@ -48,18 +48,15 @@ signals:
 
 protected slots:
     virtual void languageChange();
-    virtual void sCrmAccount();
 
 protected:
     virtual void closeEvent(QCloseEvent*);
 
 private:
-    int _crmacctid;
     int _mode;
     int _prospectid;
     int _NumberGen;
     QString _cachedNumber;
-    QString _crmowner;
 };
 
 #endif // PROSPECT_H

@@ -1,0 +1,1176 @@
+<!DOCTYPE openRPTDef>
+<report>
+ <title>Quantities on Hand by Parameter List</title>
+ <name>QOHByParameterList</name>
+ <description></description>
+ <size>Letter</size>
+ <portrait/>
+ <topmargin>50</topmargin>
+ <bottommargin>50</bottommargin>
+ <rightmargin>50</rightmargin>
+ <leftmargin>50</leftmargin>
+ <querysource>
+  <name>head</name>
+  <sql>SELECT &lt;? if exists("classcode") ?>
+         text('Quantities on Hand by Class Code')
+       &lt;? elseif exists("classcode_id") ?>
+         text('Quantities on Hand by Class Code')
+       &lt;? elseif exists("classcode_pattern") ?>
+         text('Quantities on Hand by Class Code')
+       &lt;? elseif exists("itemgrp") ?>
+         text('Quantities on Hand by Item Group')
+       &lt;? elseif exists("itemgrp_id") ?>
+         text('Quantities on Hand by Item Group')
+       &lt;? elseif exists("itemgrp_pattern") ?>
+         text('Quantities on Hand by Item Group')
+       &lt;? else ?>
+         text('')
+       &lt;? endif ?>
+       AS title,
+       &lt;? if exists("warehous_id") ?>
+         ( SELECT warehous_code
+             FROM warehous
+            WHERE (warehous_id=&lt;? value("warehous_id") ?>) )
+       &lt;? else ?>
+         text('All Sites')
+       &lt;? endif ?>
+       AS warehouse,
+       &lt;? if exists("classcode_id") ?>
+         ( SELECT (classcode_code||'-'||classcode_descrip)
+             FROM classcode
+            WHERE (classcode_id=&lt;? value("classcode_id") ?>) )
+       &lt;? elseif exists("classcode_pattern") ?>
+         text(&lt;? value("classcode_pattern") ?>)
+       &lt;? elseif exists("itemgrp_id") ?>
+         ( SELECT (itemgrp_name|| '-'||itemgrp_descrip)
+             FROM itemgrp
+            WHERE (itemgrp_id=&lt;? value("itemgrp_id") ?>) )
+       &lt;? elseif exists("itemgrp_pattern") ?>
+         text(&lt;? value("itemgrp_pattern") ?>)
+       &lt;? elseif exists("itemgrp") ?>
+         text('All Item Groups')
+       &lt;? else ?>
+         text('All')
+       &lt;? endif ?>
+       AS value,
+       &lt;? if exists("classcode") ?>
+         text('Class Code:')
+       &lt;? elseif exists("classcode_id") ?>
+         text('Class Code:')
+       &lt;? elseif exists("classcode_pattern") ?>
+         text('Class Codes:')
+       &lt;? elseif exists("itemgrp") ?>
+         text('Item Group:')
+       &lt;? elseif exists("itemgrp_id") ?>
+         text('Item Group:')
+       &lt;? elseif exists("itemgrp_pattern") ?>
+         text('Item Groups:')
+       &lt;? else ?>
+         text('')
+       &lt;? endif ?>
+       AS label,
+       &lt;? if exists("onlyShowPositive") ?>
+         text('Only Showing Positive Quantities')
+       &lt;? elseif exists("onlyShowNegative") ?>
+         text('Only Showing Negative Quantities')
+       &lt;? else ?>
+         text('Showing All Quantities')
+       &lt;? endif ?>
+       AS showquantities,
+       &lt;? if exists("showValue") ?>
+         text('Unit Cost') AS lbl_unitcost,
+         text('Value') AS lbl_value,
+         text('NN Value') AS lbl_nnvalue,
+         text('Cost Method') AS lbl_costmethod,
+       &lt;? else ?>
+         text('') AS lbl_unitcost,
+         text('') AS lbl_value,
+         text('') AS lbl_nnvalue,
+         text('') AS lbl_costmethod,
+       &lt;? endif ?>
+       &lt;? if exists("showValue") ?>
+         &lt;? if exists("useActualCosts") ?>
+           text('Showing Actual Costs')
+         &lt;? elseif exists("useStandardCosts") ?>
+           text('Showing Standard Costs')
+         &lt;? else ?>
+           text('Showing Posted Costs')
+         &lt;? endif ?>
+       &lt;? else ?>
+         text('')
+       &lt;? endif ?>
+       AS showvalues;
+</sql>
+ </querysource>
+ <querysource>
+  <name>detail</name>
+  <sql>SELECT itemsite_id,
+       detail,
+       item_number,
+       item_descrip1,
+       item_descrip2,
+       uom_name,
+       warehous_code,
+       formatQty(reorderlevel) AS f_reorderlevel,
+       formatQty(qoh) AS f_qoh,
+       CASE WHEN (NOT useDefaultLocation(itemsite_id)) THEN 'None'
+                 ELSE defaultLocationName(itemsite_id)
+       END AS defaultlocation,
+       formatQty(nonnetable) AS f_nonnetable,
+       &lt;? if exists("showValue") ?>
+         formatCost(standardcost)
+       &lt;? else ?>
+         text('')
+       &lt;? endif ?>
+       AS f_unitcost,
+       &lt;? if exists("showValue") ?>
+         formatExtPrice((standardcost * qoh))
+       &lt;? else ?>
+         text('')
+       &lt;? endif ?>
+       AS f_value,
+       &lt;? if exists("showValue") ?>
+         CASE WHEN (itemsite_loccntrl) THEN formatExtPrice((standardcost * nonnetable))
+              ELSE 'N/A'
+         END
+       &lt;? else ?>
+         text('')
+       &lt;? endif ?>
+       AS f_nonnetvalue,
+       standardcost,
+       qoh,
+       nonnetable,
+       qoh AS r_qoh,
+       nonnetable AS r_nonnetable,
+       &lt;? if exists("showValue") ?>
+         (standardcost * qoh)
+       &lt;? else ?>
+         0
+       &lt;? endif ?>
+       AS r_value,
+       &lt;? if exists("showValue") ?>
+         CASE WHEN (itemsite_loccntrl) THEN (standardcost * nonnetable)
+              ELSE 0
+         END
+       &lt;? else ?>
+         0
+       &lt;? endif ?>
+       AS r_nonnetvalue,
+       &lt;? if exists("showValue") ?>
+         &lt;? if exists("usePostedCosts") ?>
+           CASE WHEN(itemsite_costmethod='A') THEN text('Average')
+                WHEN(itemsite_costmethod='S') THEN text('Standard')
+                WHEN(itemsite_costmethod='J') THEN text('Job')
+                WHEN(itemsite_costmethod='N') THEN text('None')
+                ELSE text('UNKNOWN')
+           END
+         &lt;? else ?>
+           text('')
+         &lt;? endif ?>
+       &lt;? else ?>
+         text('')
+       &lt;? endif ?>
+       AS f_costmethod
+FROM ( SELECT itemsite_id, itemsite_costmethod,
+              item_number,
+              item_descrip1, item_descrip2, itemsite_loccntrl,
+              warehous_code,
+              uom_name,
+              CASE WHEN(itemsite_useparams) THEN itemsite_reorderlevel ELSE 0.0 END AS reorderlevel,
+              itemsite_qtyonhand AS qoh,
+              CASE WHEN ((itemsite_loccntrl) OR (itemsite_controlmethod IN ('L', 'S'))) THEN 1
+                   ELSE 0
+              END AS detail,
+              itemsite_nnqoh AS nonnetable,
+              &lt;? if exists("useActualCosts") ?>
+                actcost(itemsite_item_id)
+              &lt;? elseif exists("useStandardCosts") ?>
+                stdcost(itemsite_item_id)
+              &lt;? else ?>
+                (itemsite_value / CASE WHEN(itemsite_qtyonhand=0) THEN 1 ELSE itemsite_qtyonhand END)
+              &lt;? endif ?>
+              AS standardcost
+         FROM itemsite, item, uom, warehous
+        WHERE ((itemsite_item_id=item_id)
+          AND (item_inv_uom_id=uom_id)
+          AND (itemsite_warehous_id=warehous_id)
+          AND (itemsite_active)
+&lt;? if exists("classcode_id") ?>
+          AND (item_classcode_id=&lt;? value("classcode_id") ?>)
+&lt;? elseif exists("classcode_pattern") ?>
+          AND (item_classcode_id IN (SELECT classcode_id
+                                       FROM classcode
+                                      WHERE (classcode_code ~ &lt;? value("classcode_pattern") ?>) ) )
+&lt;? elseif exists("itemgrp_id") ?>
+          AND (item_id IN (SELECT itemgrpitem_item_id FROM itemgrpitem WHERE (itemgrpitem_itemgrp_id=&lt;? value("itemgrp_id") ?>)))
+&lt;? elseif exists("itemgrp_pattern") ?>
+          AND (item_id IN (SELECT itemgrpitem_item_id
+                             FROM itemgrpitem, itemgrp
+                            WHERE ( (itemgrpitem_itemgrp_id=itemgrp_id)
+                              AND (itemgrp_name ~ &lt;? value("itemgrp_pattern") ?>) ) ))
+&lt;? elseif exists("itemgrp") ?>
+          AND (item_id IN (SELECT DISTINCT itemgrpitem_item_id FROM itemgrpitem))
+&lt;? endif ?>
+&lt;? if exists("onlyShowPositive") ?>
+          AND (itemsite_qtyonhand > 0)
+&lt;? elseif exists("onlyShowNegative") ?>
+          AND (itemsite_qtyonhand &lt; 0)
+&lt;? endif ?>
+&lt;? if exists("warehous_id") ?>
+          AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
+&lt;? endif ?>
+) ) AS data
+ORDER BY warehous_code, item_number;
+</sql>
+ </querysource>
+ <rpthead>
+  <height>234</height>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>200</y>
+    <width>35</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Site</string>
+  </label>
+  <field>
+   <rect>
+    <x>130</x>
+    <y>140</y>
+    <width>200</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>warehouse</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>590</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_value</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>509</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_unitcost</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>360</x>
+    <y>200</y>
+    <width>65</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>QOH</string>
+  </label>
+  <field>
+   <rect>
+    <x>130</x>
+    <y>120</y>
+    <width>300</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>value</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>0</x>
+    <y>120</y>
+    <width>125</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>label</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>440</x>
+    <y>140</y>
+    <width>300</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>showvalues</column>
+   </data>
+  </field>
+  <line>
+   <xstart>10</xstart>
+   <ystart>230</ystart>
+   <xend>750</xend>
+   <yend>230</yend>
+   <weight>2</weight>
+  </line>
+  <label>
+   <rect>
+    <x>430</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Non-Netable</string>
+  </label>
+  <label>
+   <rect>
+    <x>265</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Reorder Lvl.</string>
+  </label>
+  <label>
+   <rect>
+    <x>104</x>
+    <y>200</y>
+    <width>150</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Item Number</string>
+  </label>
+  <field>
+   <rect>
+    <x>670</x>
+    <y>200</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_nnvalue</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>215</y>
+    <width>90</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Default Location</string>
+  </label>
+  <field>
+   <rect>
+    <x>440</x>
+    <y>120</y>
+    <width>300</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>showquantities</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>670</x>
+    <y>215</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_costmethod</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>104</x>
+    <y>215</y>
+    <width>229</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Item Description</string>
+  </label>
+  <label>
+   <rect>
+    <x>45</x>
+    <y>140</y>
+    <width>80</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Site:</string>
+  </label>
+  <field>
+   <rect>
+    <x>135</x>
+    <y>13</y>
+    <width>595</width>
+    <height>40</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>18</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>title</column>
+   </data>
+  </field>
+ </rpthead>
+ <pghead>
+  <firstpage/>
+  <height>6</height>
+ </pghead>
+ <pghead>
+  <height>36</height>
+  <field>
+   <rect>
+    <x>590</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_value</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>360</x>
+    <y>0</y>
+    <width>65</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>QOH</string>
+  </label>
+  <field>
+   <rect>
+    <x>670</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_nnvalue</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>509</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_unitcost</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>104</x>
+    <y>15</y>
+    <width>229</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Item Description</string>
+  </label>
+  <line>
+   <xstart>5</xstart>
+   <ystart>30</ystart>
+   <xend>745</xend>
+   <yend>31</yend>
+   <weight>2</weight>
+  </line>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>0</y>
+    <width>35</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Site</string>
+  </label>
+  <label>
+   <rect>
+    <x>104</x>
+    <y>0</y>
+    <width>150</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Item Number</string>
+  </label>
+  <field>
+   <rect>
+    <x>670</x>
+    <y>15</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>lbl_costmethod</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>265</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Reorder Lvl.</string>
+  </label>
+  <label>
+   <rect>
+    <x>430</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Non-Netable</string>
+  </label>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>15</y>
+    <width>90</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Default Location</string>
+  </label>
+ </pghead>
+ <section>
+  <name>detail</name>
+  <detail>
+   <key>
+    <query>detail</query>
+   </key>
+   <height>51</height>
+   <field>
+    <rect>
+     <x>265</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_reorderlevel</column>
+    </data>
+   </field>
+   <line>
+    <xstart>5</xstart>
+    <ystart>45</ystart>
+    <xend>745</xend>
+    <yend>45</yend>
+    <weight>0</weight>
+   </line>
+   <field>
+    <rect>
+     <x>104</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_number</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>104</x>
+     <y>30</y>
+     <width>300</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_descrip2</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>5</x>
+     <y>0</y>
+     <width>35</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>warehous_code</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>10</x>
+     <y>15</y>
+     <width>90</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>defaultlocation</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>585</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_value</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>345</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_qoh</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>104</x>
+     <y>15</y>
+     <width>300</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_descrip1</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>665</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_nonnetvalue</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>670</x>
+     <y>15</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_costmethod</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>505</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_unitcost</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>425</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_nonnetable</column>
+    </data>
+   </field>
+  </detail>
+ </section>
+ <pgfoot>
+  <height>16</height>
+  <field>
+   <rect>
+    <x>705</x>
+    <y>0</y>
+    <width>40</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>page_number</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>615</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Page:</string>
+  </label>
+  <field>
+   <rect>
+    <x>90</x>
+    <y>0</y>
+    <width>100</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>report_date</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Report Date:</string>
+  </label>
+ </pgfoot>
+ <rptfoot>
+  <height>16</height>
+  <field>
+   <rect>
+    <x>425</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>detail</query>
+    <column>r_nonnetable</column>
+   </data>
+   <format>%.02f</format>
+   <tracktotal/>
+  </field>
+  <field>
+   <rect>
+    <x>585</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>detail</query>
+    <column>r_value</column>
+   </data>
+   <format>%.02f</format>
+   <tracktotal/>
+  </field>
+  <field>
+   <rect>
+    <x>665</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>detail</query>
+    <column>r_nonnetvalue</column>
+   </data>
+   <format>%.02f</format>
+   <tracktotal/>
+  </field>
+  <field>
+   <rect>
+    <x>345</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>detail</query>
+    <column>r_qoh</column>
+   </data>
+   <format>%.02f</format>
+   <tracktotal/>
+  </field>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>0</y>
+    <width>40</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Totals</string>
+  </label>
+ </rptfoot>
+</report>

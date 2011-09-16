@@ -110,7 +110,7 @@ ORDER BY expcat_code;
    </font>
    <left/>
    <vcenter/>
-   <string>Purchase Price Variance Account</string>
+   <string>Purcahse Price Variance Account</string>
   </label>
   <label>
    <rect>
@@ -220,7 +220,7 @@ ORDER BY expcat_code;
    </font>
    <left/>
    <vcenter/>
-   <string>Purchase Price Variance Account</string>
+   <string>Purcahse Price Variance Account</string>
   </label>
   <label>
    <rect>

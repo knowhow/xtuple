@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -67,9 +67,7 @@ itemSite::itemSite(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
     _planningType->append(1, "MRP", "M");
 
   if (!_metrics->boolean("MultiWhs"))
-  {
     _createPlannedTransfers->hide();
-  }
 
   if (_metrics->boolean("EnableDropShipments"))
 	_dropShip->setEnabled(FALSE);
@@ -384,13 +382,13 @@ bool itemSite::sSave()
     {
       QMessageBox::critical( this, tr("Cannot Save Item Site"),
                              tr( "<p>You have indicated that this Item Site "
-                                 "should be Multiple Location Controlled "
-                                 "but there are no non-restrictive Locations "
-                                 "in the selected Site nor restrictive Locations "
-                                 "that will accept the selected Item."
+				"should be multiply located but there are no "
+                                 "non-restrictive Locations in the selected "
+				 "Site nor restrictive Locations that "
+				 "will accept the selected Item."
 				 "<p>You must first create at least one valid "
 				 "Location for this Item Site before it may be "
-                                 "Multiple Location Controlled." ) );
+				 "multiply located." ) );
       return false;
     }
   }
@@ -624,10 +622,8 @@ bool itemSite::sSave()
     {
       QMessageBox::critical( this, tr("Cannot Save Item Site"),
                              tr( "<p>You have indicated that this Item Site "
-                                 "should be Multiple Location Controlled and "
-                                 "there is existing quantity on hand."
-                                 "<p>You must select a default location "
-                                 "for the on hand balance to be relocated to." ) );
+				"should be mutiply located and there is existing quantity on hand."
+				 "<p>You must select a default location for the on hand balance to be relocated to." ) );
       return false;
     }
     
@@ -1079,6 +1075,7 @@ void itemSite::sCacheItemType(char pItemType)
   }
   else
   {
+    _planningType->setCurrentIndex(0);
     _planningType->setEnabled(TRUE);
   }
 
@@ -1610,7 +1607,6 @@ int itemSite::createItemSite(QWidget* pparent, int pitemsiteid, int pwhsid, bool
 	      systemError(pparent, isq.lastError().databaseText(), __FILE__, __LINE__);
 	      return -100;
 	    }
-            return -1; // user cancelled
 	  }
 	}
 	return itemsiteid;

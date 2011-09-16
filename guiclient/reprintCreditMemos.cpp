@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -36,7 +36,7 @@ reprintCreditMemos::reprintCreditMemos(QWidget* parent, const char* name, bool m
   _watermarks->addColumn( tr("Watermark"),   -1,          Qt::AlignLeft   );
   _watermarks->addColumn( tr("Show Prices"), _dateColumn, Qt::AlignCenter );
 
-  _numOfCopies->setValue(_metrics->value("CreditMemoCopies").toInt() + 1);
+  _numOfCopies->setValue(_metrics->value("CreditMemoCopies").toInt());
   if (_numOfCopies->value())
   {
     for (int i = 0; i < _watermarks->topLevelItemCount(); i++)

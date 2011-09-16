@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -356,11 +356,11 @@ void OrderLineEdit::sParse()
           else if (result == 1)
           {
             _valid = true;
+            setId(numQ.value("id").toInt(), numQ.value("name").toString());
             _name = (numQ.value("name").toString());
             _description = numQ.value("description").toString();
             _from = numQ.value("orderhead_from").toString();
             _to	= numQ.value("orderhead_to").toString();
-            setId(numQ.value("id").toInt(), numQ.value("name").toString());
           }
           else
           {
@@ -603,7 +603,7 @@ QString OrderLineEdit::type()
   return _name;
 }
 
-void OrderLineEdit::setAllowedStatuses(const OrderStatuses p)
+void OrderLineEdit::setAllowedStatuses(const OrderLineEdit::OrderStatuses p)
 {
   if (p && (p != Unposted + Open + Closed))
   {

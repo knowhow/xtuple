@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -284,6 +284,90 @@ bool ToitemTableModel::validRow(QSqlRecord& record)
   }
   else if (record.field(index).value().toString().isEmpty())
     record.setValue(index, _toheadcurrid);
+
+  index = record.indexOf("toitem_freight");
+  if (index >= 0)	// this is different than the others!
+  {
+    XSqlQuery calcq;
+    calcq.prepare("SELECT tax_ratea, tax_rateb, tax_ratec, tax_id,"
+		  "       calculateTax(tax_id, COALESCE(:ext, 0.0), 0, 'A') AS tax_a,"
+		  "       calculateTax(tax_id, COALESCE(:ext, 0.0), 0, 'B') AS tax_b,"
+		  "       calculateTax(tax_id, COALESCE(:ext, 0.0), 0, 'C') AS tax_c "
+		  "FROM tohead, tax "
+		  "WHERE ((tohead_id=:tohead_id)"
+		  "  AND  (tax_id=getFreightTaxSelection(tohead_taxauth_id)));");
+
+    calcq.bindValue(":tohead_id", record.value("toitem_tohead_id"));
+    calcq.bindValue(":ext",       record.value("toitem_freight"));
+    calcq.exec();
+    if (calcq.first() && ! calcq.value("tax_id").isNull())
+    {
+      if ((index = record.indexOf("toitem_freighttax_id")) < 0)
+      {
+	QSqlField field("toitem_freighttax_id", QVariant::Int);
+	field.setValue(calcq.value("tax_id"));
+	record.append(field);
+      }
+      else if (record.field(index).value().isNull())
+	record.setValue(index, calcq.value("tax_id"));
+
+      if ((index = record.indexOf("toitem_freighttax_ratea")) < 0)
+      {
+	QSqlField field("toitem_freighttax_ratea", QVariant::Int);
+	field.setValue(calcq.value("tax_a"));
+	record.append(field);
+      }
+      else if (record.field(index).value().isNull())
+	record.setValue(index, calcq.value("tax_a"));
+
+      if ((index = record.indexOf("toitem_freighttax_rateb")) < 0)
+      {
+	QSqlField field("toitem_freighttax_rateb", QVariant::Int);
+	field.setValue(calcq.value("tax_b"));
+	record.append(field);
+      }
+      else if (record.field(index).value().isNull())
+	record.setValue(index, calcq.value("tax_b"));
+
+      if ((index = record.indexOf("toitem_freighttax_ratec")) < 0)
+      {
+	QSqlField field("toitem_freighttax_ratec", QVariant::Int);
+	field.setValue(calcq.value("tax_c"));
+	record.append(field);
+      }
+      else if (record.field(index).value().isNull())
+	record.setValue(index, calcq.value("tax_c"));
+
+      if ((index = record.indexOf("toitem_freighttax_pcta")) < 0)
+      {
+	QSqlField field("toitem_freighttax_pcta", QVariant::Int);
+	field.setValue(calcq.value("tax_ratea"));
+	record.append(field);
+      }
+      else if (record.field(index).value().isNull())
+	record.setValue(index, calcq.value("tax_ratea"));
+
+      if ((index = record.indexOf("toitem_freighttax_pctb")) < 0)
+      {
+	QSqlField field("toitem_freighttax_pctb", QVariant::Int);
+	field.setValue(calcq.value("tax_rateb"));
+	record.append(field);
+      }
+      else if (record.field(index).value().isNull())
+	record.setValue(index, calcq.value("tax_rateb"));
+
+      if ((index = record.indexOf("toitem_freighttax_pctc")) < 0)
+      {
+	QSqlField field("toitem_freighttax_pctc", QVariant::Int);
+	field.setValue(calcq.value("tax_ratec"));
+	record.append(field);
+      }
+      else if (record.field(index).value().isNull())
+	record.setValue(index, calcq.value("tax_ratec"));
+    }
+    else if (calcq.lastError().type() != QSqlError::NoError)
+      errormsg = calcq.lastError().databaseText();
+  }
 
   index = record.indexOf("toitem_status");
   if (index < 0)

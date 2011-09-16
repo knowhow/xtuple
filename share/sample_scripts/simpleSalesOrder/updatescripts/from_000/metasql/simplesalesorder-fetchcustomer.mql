@@ -1,0 +1,22 @@
+-- Group: simplesalesorder
+-- Name: fetchcustomer
+-- Notes:
+
+SELECT COALESCE(salesrep_number,'') AS salesrep, 
+  cust_shipvia AS shipvia, 
+  taxauth_code AS taxauth,
+  cust_ffshipto,
+  COALESCE(sa.addr_number,ba.addr_number,'') AS address_number,
+  COALESCE(cw.warehous_code,pw.warehous_code,'') AS site
+FROM custinfo
+  JOIN salesrep ON (salesrep_id=cust_salesrep_id)
+  LEFT OUTER JOIN shiptoinfo ON ((cust_id=shipto_cust_id)
+                             AND (shipto_default))
+  LEFT OUTER JOIN cntct sc ON (sc.cntct_id=shipto_cntct_id)
+  LEFT OUTER JOIN addr sa ON (sa.addr_id=shipto_addr_id)
+  LEFT OUTER JOIN cntct bc ON (bc.cntct_id=cust_cntct_id)
+  LEFT OUTER JOIN addr ba ON (ba.addr_id=bc.cntct_addr_id)
+  LEFT OUTER JOIN whsinfo cw ON (cust_preferred_warehous_id=cw.warehous_id)
+  LEFT OUTER JOIN whsinfo pw ON (fetchprefwarehousid()=pw.warehous_id)
+  LEFT OUTER JOIN taxauth ON (taxauth_id=cust_taxauth_id)
+WHERE (cust_id=<? value("cust_id") ?>);

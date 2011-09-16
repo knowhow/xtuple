@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -309,13 +309,6 @@ to be bound by its terms.</comment>
             </spacer>
            </item>
           </layout>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="_asOfQOH">
-           <property name="text">
-            <string>Enable As-Of QOH reporting</string>
-           </property>
-          </widget>
          </item>
          <item>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -881,7 +874,6 @@ to be bound by its terms.</comment>
   <tabstop>_transferOrderChangeLog</tabstop>
   <tabstop>_lotSerial</tabstop>
   <tabstop>_setDefLoc</tabstop>
-  <tabstop>_asOfQOH</tabstop>
   <tabstop>_costAvg</tabstop>
   <tabstop>_costStd</tabstop>
   <tabstop>_costJob</tabstop>
@@ -902,10 +894,6 @@ to be bound by its terms.</comment>
   <tabstop>_tolerance</tabstop>
   <tabstop>_shipformNumOfCopies</tabstop>
   <tabstop>_shipformWatermarks</tabstop>
-  <tabstop>_useStdCost</tabstop>
-  <tabstop>_useAvgCost</tabstop>
-  <tabstop>_useActCost</tabstop>
-  <tabstop>_recordPpvOnReceipt</tabstop>
  </tabstops>
  <resources/>
  <connections>

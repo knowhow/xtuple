@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -198,7 +198,7 @@ void ShiptoCluster::setCustid(int pId)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-shipToList::shipToList(QWidget* pParent, Qt::WindowFlags pFlags) :
+shipToList::shipToList(QWidget* pParent, Qt::WFlags pFlags) :
     VirtualList(pParent, pFlags)
 {
   setMinimumWidth(600);
@@ -261,7 +261,7 @@ shipToSearch::shipToSearch(QWidget* pParent, Qt::WindowFlags pFlags)
   _listTab->addColumn(tr("City, State, Zip"),      100, Qt::AlignLeft,  true, "csv");
 }
 
-void shipToSearch::set(const ParameterList &pParams)
+void shipToSearch::set(ParameterList &pParams)
 {
   QVariant param;
   bool     valid;

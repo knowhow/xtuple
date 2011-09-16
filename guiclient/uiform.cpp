@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -314,17 +314,6 @@ void uiform::sImport()
 
 void uiform::sEdit()
 {
-#ifdef Q_WS_MAC
-  if (_preferences->value("InterfaceWindowOption") == "Workspace")
-  {
-    QMessageBox::critical( this, tr("Interface Option is Invalid"),
-                          tr("<p>The embedded Qt Designer utility "
-                             "is only available when user preferences "
-                             "are set to show windows as free-floating.") );
-    return;
-  }
-#endif
-
   static bool xdinit = false;
   QWidget *ui;
   QSize size;

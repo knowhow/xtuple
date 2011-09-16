@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -18,7 +18,7 @@
 
 #include "createCountTagsByItem.h"
 #include "dspAllocations.h"
-#include "dspInventoryHistory.h"
+#include "dspInventoryHistoryByItem.h"
 #include "dspOrders.h"
 #include "dspRunningAvailability.h"
 #include "dspSubstituteAvailabilityByItem.h"
@@ -199,7 +199,7 @@ void dspInventoryAvailabilityByWorkOrder::sViewHistory()
   ParameterList params;
   params.append("itemsite_id", list()->id());
 
-  dspInventoryHistory *newdlg = new dspInventoryHistory();
+  dspInventoryHistoryByItem *newdlg = new dspInventoryHistoryByItem();
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 }

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -26,7 +26,7 @@ class XTUPLEWIDGETS_EXPORT shipToList : public VirtualList
 
 public:
     shipToList(QWidget*, Qt::WindowFlags = 0);
-    void set(const ParameterList & pParams);
+    void set( const ParameterList & pParams );
 
 private:
     QLabel* _custNumber;
@@ -41,7 +41,7 @@ class XTUPLEWIDGETS_EXPORT shipToSearch : public VirtualSearch
 
 public:
     shipToSearch(QWidget*, Qt::WindowFlags = 0);
-    void set(const ParameterList & pParams);
+    void set( ParameterList & pParams );
 
 private:
     int _custid;
@@ -64,7 +64,7 @@ class XTUPLEWIDGETS_EXPORT ShiptoEdit : public VirtualClusterLineEdit
     void disableList(bool);
 
   public slots:
-    void setId(const int);
+    void setId(int);
     void setCustid(int);
     void sNew();
     void sList();

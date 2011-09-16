@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -34,7 +34,7 @@ printPurchaseOrder::printPurchaseOrder(QWidget* parent, const char* name, bool m
   else
   {
     _internalCopy->setChecked(false);
-//    _numOfCopies->setEnabled(false);
+    _numOfCopies->setEnabled(false);
   }
 }
 
@@ -68,21 +68,16 @@ enum SetResponse printPurchaseOrder::set(const ParameterList &pParams)
 
 void printPurchaseOrder::sPrint()
 {
-  bool alreadyPrinted = false;
-  q.prepare("SELECT pohead_saved, pohead_printed FROM pohead WHERE pohead_id=:pohead_id");
+  q.prepare("SELECT pohead_saved FROM pohead WHERE pohead_id=:pohead_id");
   q.bindValue(":pohead_id", _po->id());
   q.exec();
-  if(q.first())
+  if(q.first() && (q.value("pohead_saved").toBool() == false))
   {
-    alreadyPrinted = q.value("pohead_printed").toBool();
-    if (q.value("pohead_saved").toBool() == false)
-    {
-      QMessageBox::warning( this, tr("Cannot Print P/O"),
-                           tr("<p>The Purchase Order you are trying to print has "
-                              "not been completed. Please wait until the "
-                              "Purchase Order has been completely saved.") );
-      return;
-    }
+    QMessageBox::warning( this, tr("Cannot Print P/O"),
+                         tr("<p>The Purchase Order you are trying to print has "
+                            "not been completed. Please wait until the "
+                            "Purchase Order has been completely saved.") );
+    return;
   }
   else if (q.lastError().type() != QSqlError::NoError)
   {
@@ -141,18 +136,15 @@ void printPurchaseOrder::sPrint()
   }
   orReport::endMultiPrint(printer);
 
-  if (!alreadyPrinted)
+  q.prepare( "UPDATE pohead "
+             "SET pohead_printed=TRUE "
+             "WHERE (pohead_id=:pohead_id);" );
+  q.bindValue(":pohead_id", _po->id());
+  q.exec();
+  if (q.lastError().type() != QSqlError::NoError)
   {
-    q.prepare( "UPDATE pohead "
-               "SET pohead_printed=TRUE "
-               "WHERE (pohead_id=:pohead_id);" );
-    q.bindValue(":pohead_id", _po->id());
-    q.exec();
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
-      return;
-    }
+    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+    return;
   }
 
   if (_captive)

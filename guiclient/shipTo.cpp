@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -76,7 +76,7 @@ enum SetResponse shipTo::set(const ParameterList &pParams)
 
       XSqlQuery cust;
       cust.prepare( "SELECT cust_number, cust_name, cust_taxzone_id, "
-                 "       cust_salesrep_id, cust_shipform_id, cust_shipvia, cust_shipchrg_id, "
+                 "       cust_salesrep_id, cust_shipform_id, cust_shipvia, "
                  "       crmacct_id "
                  "FROM custinfo "
                  "  JOIN crmacct ON (cust_id=crmacct_cust_id) "
@@ -92,7 +92,6 @@ enum SetResponse shipTo::set(const ParameterList &pParams)
         _taxzone->setId(cust.value("cust_taxzone_id").toInt());
         _contact->setSearchAcct(cust.value("crmacct_id").toInt());
         _address->setSearchAcct(cust.value("crmacct_id").toInt());
-        _shipchrg->setId(cust.value("cust_shipchrg_id").toInt());
 
 	//  Handle the free-form Ship Via
         _shipVia->setId(-1);

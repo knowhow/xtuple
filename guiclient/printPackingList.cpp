@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -37,7 +37,6 @@ printPackingList::printPackingList(QWidget* parent, const char* name, bool modal
     _shipment->setStatus(ShipmentClusterLineEdit::Unshipped);
 
     _captive	= FALSE;
-    _shipformid = -1;
 
     _orderDate->setEnabled(false);
 
@@ -99,14 +98,13 @@ enum SetResponse printPackingList::set(const ParameterList &pParams)
   if (valid)
   {
     _shipment->setId(param.toInt());
-    q.prepare("SELECT shiphead_order_type, shiphead_order_id, shiphead_shipform_id "
+    q.prepare("SELECT shiphead_order_type, shiphead_order_id "
 	      "FROM shiphead "
 	      "WHERE shiphead_id=:shiphead_id;");
     q.bindValue(":shiphead_id", param);
     q.exec();
     if (q.first())
     {
-      _shipformid = q.value("shiphead_shipform_id").toInt();
       _headtype = q.value("shiphead_order_type").toString();
       if (_headtype == "SO")
         _order->setId(q.value("shiphead_order_id").toInt(), "SO");
@@ -149,20 +147,10 @@ void printPackingList::sPrint()
       return;
     }
 
-    if (_shipformid == -1)
-    {
-      q.prepare( "SELECT findCustomerForm(cohead_cust_id, :form) AS reportname "
-                 "FROM cohead "
-                 "WHERE (cohead_id=:head_id);" );
-      q.bindValue(":head_id", _order->id());
-    }
-    else
-    {
-      q.prepare( "SELECT shipform_report_name AS reportname "
-                 "FROM shipform "
-                 "WHERE (shipform_id=:form_id);" );
-      q.bindValue(":form_id", _shipformid);
-    }
+    q.prepare( "SELECT findCustomerForm(cohead_cust_id, :form) AS reportname "
+	       "FROM cohead "
+	       "WHERE (cohead_id=:head_id);" );
+    q.bindValue(":head_id", _order->id());
   }
   else if (_headtype == "TO")
   {
@@ -173,19 +161,8 @@ void printPackingList::sPrint()
       _shipment->setFocus();
       return;
     }
-
-    if (_shipformid == -1)
-    {
-      q.prepare( "SELECT findTOForm(:head_id, :form) AS reportname;" );
-      q.bindValue(":head_id", _order->id());
-    }
-    else
-    {
-      q.prepare( "SELECT shipform_report_name AS reportname "
-                 "FROM shipform "
-                 "WHERE (shipform_id=:form_id);" );
-      q.bindValue(":form_id", _shipformid);
-    }
+    q.prepare( "SELECT findTOForm(:head_id, :form) AS reportname;" );
+    q.bindValue(":head_id", _order->id());
   }
 
   if (_auto->isChecked())
@@ -299,7 +276,7 @@ void printPackingList::sPopulate()
 		    "<? elseif exists(\"tohead_id\") ?>"
 		    "SELECT tohead_number AS order_number,"
 		    "       tohead_orderdate AS orderdate,"
-                    "       '' AS alternate_number,"
+		    "       <? value(\"to\") ?> AS alternate_number,"
 		    "       tohead_destname AS name, tohead_destphone AS phone "
 		    "FROM tohead "
 		    "WHERE (tohead_id=<? value(\"tohead_id\") ?>);"
@@ -378,7 +355,6 @@ void printPackingList::sHandleShipment()
   q = mql.toQuery(params);
   if (q.first())
   {
-    _shipformid = q.value("shiphead_shipform_id").toInt();
     _headtype = q.value("shiphead_order_type").toString();
     int orderid = q.value("shiphead_order_id").toInt();
     if (_headtype == "SO" && ! _order->isValid())
@@ -389,33 +365,27 @@ void printPackingList::sHandleShipment()
     {
       if (_headtype == "SO")
       {
-        if (QMessageBox::question(this, tr("Shipment for different Order"),
-                                        tr("<p>Shipment %1 is for Sales Order %2. "
-                                           "Are you sure the Shipment Number is correct?")
-                                       .arg(_shipment->number())
-                                       .arg(q.value("number").toString()),
-                                  QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
-          _order->setId(q.value("shiphead_order_id").toInt());
-        else
-        {
-          _shipformid = -1;
-          _shipment->clear();
-        }
+      if (QMessageBox::question(this, tr("Shipment for different Order"),
+				tr("<p>Shipment %1 is for Sales Order %2. "
+				   "Are you sure the Shipment Number is correct?")
+				   .arg(_shipment->number())
+				   .arg(q.value("number").toString()),
+				QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+	_order->setId(q.value("shiphead_order_id").toInt());
+      else
+	_shipment->clear();
       }
       else if (_headtype == "TO")
       {
-        if (QMessageBox::question(this, tr("Shipment for different Order"),
-                                        tr("<p>Shipment %1 is for Transfer Order %2. "
-                                           "Are you sure the Shipment Number is correct?")
-                                       .arg(_shipment->number())
-                                       .arg(q.value("number").toString()),
-                                  QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
-          _order->setId(q.value("shiphead_order_id").toInt());
-        else
-        {
-          _shipformid = -1;
-          _shipment->clear();
-        }
+      if (QMessageBox::question(this, tr("Shipment for different Order"),
+				tr("<p>Shipment %1 is for Transfer Order %2. "
+				   "Are you sure the Shipment Number is correct?")
+				   .arg(_shipment->number())
+				   .arg(q.value("number").toString()),
+				QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+	_order->setId(q.value("shiphead_order_id").toInt());
+      else
+	_shipment->clear();
       }
     }
   }

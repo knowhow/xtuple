@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -21,13 +21,14 @@ applyDiscount::applyDiscount(QWidget* parent, const char* name, bool modal, Qt::
 {
   setupUi(this);
 
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sApply()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_apply, SIGNAL(clicked()), this, SLOT(sApply()));
+// TODO - cannot launch window from modal dialog???
+//  connect(_view, SIGNAL(clicked()), this, SLOT(sViewVoucher()));
+  _view->hide();
 
   _discprcnt->setPrecision(omfgThis->percentVal());
 
   _apopenid = -1;
-  adjustSize();
 }
 
 applyDiscount::~applyDiscount()
@@ -80,7 +81,7 @@ void applyDiscount::populate()
             "       apopen_docnumber,"
             "       apopen_docdate, "
             "       (terms_code|| '-' || terms_descrip) AS f_terms,"
-            "       determineDiscountDate(apopen_terms_id, apopen_docdate) AS discdate,"
+            "       (apopen_docdate + terms_discdays) AS discdate,"
             "       terms_discprcnt,"
             "       apopen_amount, apopen_discountable_amount, apopen_curr_id, applied, "
             "       noNeg(apopen_discountable_amount *"

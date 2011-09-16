@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -24,17 +24,6 @@ glTransaction::glTransaction(QWidget* parent, const char* name, bool modal, Qt::
 
     _buttonBox->button(QDialogButtonBox::Ok)->setText(tr("Post"));
     connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sPost()));
-
-    // This should all be generated as part of the UI but it was the only
-    // way I could get the tab order to work exactly as it was supposed to.
-    QWidget::setTabOrder(_amount, _distDate);
-    QWidget::setTabOrder(_distDate, _docType);
-    QWidget::setTabOrder(_docType, _docNumber);
-    QWidget::setTabOrder(_docNumber, _debit);
-    QWidget::setTabOrder(_debit, _credit);
-    QWidget::setTabOrder(_credit, _notes);
-    QWidget::setTabOrder(_notes, _buttonBox->button(QDialogButtonBox::Ok));
-    QWidget::setTabOrder(_buttonBox->button(QDialogButtonBox::Ok), _buttonBox->button(QDialogButtonBox::Cancel));
 
     _amount->setFocus();
     _captive = FALSE;
@@ -109,9 +98,6 @@ void glTransaction::sPost()
 			    "Transaction before you may Post it." ), _debit },
     { ! _credit->isValid(), tr("<p>You must select a Credit Account for this G/L "
 			     "Transaction before you may Post it." ), _credit },
-    { !_metrics->boolean("IgnoreCompany") &&
-      _credit->companyId() != _debit->companyId(),
-      tr("The Accounts must belong to the same Company to Post this transaciton." ), _credit },
     { _metrics->boolean("MandatoryGLEntryNotes") &&
       _notes->toPlainText().trimmed().isEmpty(),
       tr("<p>You must enter some Notes to describe this transaction."), _notes},

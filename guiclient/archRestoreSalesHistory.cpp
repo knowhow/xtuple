@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -21,8 +21,8 @@ archRestoreSalesHistory::archRestoreSalesHistory(QWidget* parent, const char* na
   setupUi(this);
 
   // signals and slots connections
-  connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSelect()));
-  connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+  connect(_select, SIGNAL(clicked()), this, SLOT(sSelect()));
 
   _customerType->setType(ParameterGroup::CustomerType);
   _productCategory->setType(ParameterGroup::ProductCategory);

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,10 +28,7 @@ public slots:
     virtual enum SetResponse set(const ParameterList&);
     virtual void sPopulateMenu(QMenu *, QTreeWidgetItem *, int);
     virtual void sPrint();
-    virtual void sConvert(int);
-    virtual void sConvertSalesOrder();
-    virtual void sConvertInvoice();
-    virtual void sCopy();
+    virtual void sConvert();
     virtual void sNew();
     virtual void sEdit();
     virtual void sView();

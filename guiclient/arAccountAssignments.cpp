@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -123,16 +123,11 @@ void arAccountAssignments::sFillList()
                       "       CASE WHEN araccnt_custtype_id=-1 THEN araccnt_custtype"
                       "            ELSE (SELECT custtype_code FROM custtype WHERE (custtype_id=araccnt_custtype_id))"
                       "       END AS custtypecode,"
-                      "       CASE WHEN (araccnt_ar_accnt_id = -1) THEN 'N/A' "
-                      "            ELSE formatGLAccount(araccnt_ar_accnt_id) END AS araccnt,"
-                      "       CASE WHEN (araccnt_prepaid_accnt_id = -1) THEN 'N/A' "
-                      "            ELSE formatGLAccount(araccnt_prepaid_accnt_id) END AS prepaidaccnt,"
-                      "       CASE WHEN (araccnt_freight_accnt_id = -1) THEN 'N/A' "
-                      "            ELSE formatGLAccount(araccnt_freight_accnt_id) END AS freightaccnt,"
-                      "       CASE WHEN (araccnt_deferred_accnt_id = -1) THEN 'N/A' "
-                      "            ELSE formatGLAccount(araccnt_deferred_accnt_id) END AS deferredaccnt, "
-                      "       CASE WHEN (araccnt_discount_accnt_id = -1) THEN 'N/A' "
-                      "            ELSE formatGLAccount(araccnt_discount_accnt_id) END AS discountaccnt  "
+                      "       formatGLAccount(araccnt_ar_accnt_id) AS araccnt,"
+                      "       formatGLAccount(araccnt_prepaid_accnt_id) AS prepaidaccnt,"
+                      "       formatGLAccount(araccnt_freight_accnt_id) AS freightaccnt,"
+                      "       formatGLAccount(araccnt_deferred_accnt_id) AS deferredaccnt, "
+					  "       formatGLAccount(araccnt_discount_accnt_id) AS discountaccnt  "
                       "  FROM araccnt "
                       " ORDER BY custtypecode;" );
 }

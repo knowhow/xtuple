@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -10,18 +10,48 @@
 
 #include "voucherItemDistrib.h"
 
-#include <QVariant>
-
+#include <qvariant.h>
+#include <qvalidator.h>
+/*
+ *  Constructs a voucherItemDistrib as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  true to construct a modal dialog.
+ */
 voucherItemDistrib::voucherItemDistrib(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
-  : XDialog(parent, name, modal, fl)
+    : XDialog(parent, name, modal, fl)
 {
-  setupUi(this);
+    setupUi(this);
 
-  // signals and slots connections
-  connect(_costelem, SIGNAL(newID(int)), this, SLOT(sCheck()));
-  connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
-  connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
 
+    // signals and slots connections
+    connect(_costelem, SIGNAL(newID(int)), this, SLOT(sCheck()));
+    connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
+    connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
+    init();
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+voucherItemDistrib::~voucherItemDistrib()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void voucherItemDistrib::languageChange()
+{
+    retranslateUi(this);
+}
+
+
+void voucherItemDistrib::init()
+{
   _costelem->populate( QString( "SELECT costelem_id, costelem_type, 1 AS orderby "
                                 "FROM costelem "
                                 "WHERE (costelem_type='Material') "
@@ -37,17 +67,7 @@ voucherItemDistrib::voucherItemDistrib(QWidget* parent, const char* name, bool m
                        .arg(tr("None")) );
 }
 
-voucherItemDistrib::~voucherItemDistrib()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
-
-void voucherItemDistrib::languageChange()
-{
-  retranslateUi(this);
-}
-
-enum SetResponse voucherItemDistrib::set(const ParameterList &pParams)
+enum SetResponse voucherItemDistrib::set(ParameterList &pParams)
 {
   XDialog::set(pParams);
   QVariant param;

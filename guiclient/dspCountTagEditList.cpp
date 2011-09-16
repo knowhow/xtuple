@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -26,7 +26,7 @@
 
 #include "countSlip.h"
 #include "countTag.h"
-#include "dspInventoryHistory.h"
+#include "dspInventoryHistoryByItem.h"
 #include "dspCountSlipEditList.h"
 #include "storedProcErrorLookup.h"
 
@@ -67,7 +67,6 @@ dspCountTagEditList::dspCountTagEditList(QWidget* parent, const char* name, Qt::
   _cnttag->addColumn(tr("Site"),        _whsColumn, Qt::AlignCenter,true, "warehous_code");
   _cnttag->addColumn(tr("Location"),     _ynColumn, Qt::AlignCenter,true, "loc_specific");
   _cnttag->addColumn(tr("QOH"),         _qtyColumn, Qt::AlignRight, true, "qoh");
-  _cnttag->addColumn(tr("NN QOH"),      _qtyColumn, Qt::AlignRight, true, "nnqoh");
   _cnttag->addColumn(tr("Count Qty."),  _qtyColumn, Qt::AlignRight, true, "qohafter");
   _cnttag->addColumn(tr("Variance"),    _qtyColumn, Qt::AlignRight, true, "variance");
   _cnttag->addColumn(tr("%"),         _prcntColumn, Qt::AlignRight, true, "varianceprcnt");
@@ -152,32 +151,32 @@ void dspCountTagEditList::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pSelected
 
   if (((XTreeWidgetItem *)pSelected)->altId() == -1)
   {
-    menuItem = pMenu->addAction(tr("Enter Count Slip..."), this, SLOT(sEnterCountSlip()));
+    menuItem = pMenu->addAction("Enter Count Slip...", this, SLOT(sEnterCountSlip()));
     if (!_privileges->check("EnterCountSlips"))
       menuItem->setEnabled(false);
 
-    menuItem = pMenu->addAction(tr("Count Slip Edit List..."), this, SLOT(sCountSlipEditList()));
+    menuItem = pMenu->addAction("Count Slip Edit List...", this, SLOT(sCountSlipEditList()));
 
     pMenu->addSeparator();
 
-    menuItem = pMenu->addAction(tr("View Pending Inventory History..."), this, SLOT(sViewInventoryHistory()));
+    menuItem = pMenu->addAction("View Pending Inventory History...", this, SLOT(sViewInventoryHistory()));
     if (!_privileges->check("ViewInventoryHistory"))
       menuItem->setEnabled(false);
 
     pMenu->addSeparator();
 
-    menuItem = pMenu->addAction(tr("Edit Count Tag..."), this, SLOT(sEdit()));
+    menuItem = pMenu->addAction("Edit Count Tag...", this, SLOT(sEdit()));
     if (!_privileges->check("EnterCountTags"))
       menuItem->setEnabled(false);
 
     if (pSelected->text(5) != "")
     {
-      menuItem = pMenu->addAction(tr("Post Count Tag..."), this, SLOT(sPost()));
+      menuItem = pMenu->addAction("Post Count Tag...", this, SLOT(sPost()));
       if (!_privileges->check("PostCountTags"))
         menuItem->setEnabled(false);
     }
 
-    menuItem = pMenu->addAction(tr("Delete Count Tag"), this, SLOT(sDelete()));
+    menuItem = pMenu->addAction("Delete Count Tag", this, SLOT(sDelete()));
     if (!_privileges->check("DeleteCountTags"))
       menuItem->setEnabled(false);
   }
@@ -185,7 +184,7 @@ void dspCountTagEditList::sPopulateMenu(QMenu *pMenu, QTreeWidgetItem *pSelected
   {
     if (pSelected->text(3) == tr("Unposted"))
     {
-      menuItem = pMenu->addAction(tr("Edit Count Slip..."), this, SLOT(sEdit()));
+      menuItem = pMenu->addAction("Edit Count Slip...", this, SLOT(sEdit()));
       if (!_privileges->check("EnterCountSlips"))
         menuItem->setEnabled(false);
     }
@@ -236,7 +235,7 @@ void dspCountTagEditList::sViewInventoryHistory()
     params.append("endDate", omfgThis->dbDate());
     params.append("run");
 
-    dspInventoryHistory *newdlg = new dspInventoryHistory();
+    dspInventoryHistoryByItem *newdlg = new dspInventoryHistoryByItem();
     newdlg->set(params);
     omfgThis->handleNewWindow(newdlg);
   }

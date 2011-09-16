@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -12,7 +12,6 @@
 
 #include <QVariant>
 #include <QMessageBox>
-#include <QSqlError>
 //#include <QStatusBar>
 #include <parameter.h>
 #include <openreports.h>
@@ -88,7 +87,6 @@ void duplicateAccountNumbers::sDuplicate()
   sql +=       "  FROM accnt"
                " WHERE (accnt_id=:accnt_id);";
 
-  q.exec("BEGIN;");
   q.prepare(sql);
 
   QList<XTreeWidgetItem*> selected = _account->selectedItems();
@@ -100,18 +98,8 @@ void duplicateAccountNumbers::sDuplicate()
     q.bindValue(":accnt_id",	((XTreeWidgetItem*)selected[i])->id());
     q.bindValue(":descrip",	_descrip->text());
     q.exec();
-    if (q.lastError().type() != QSqlError::NoError)
-    {
-      systemError(this, tr("A System Error occurred at %1::%2\n\n%3")
-                          .arg(__FILE__)
-                          .arg(__LINE__)
-                          .arg(q.lastError().databaseText()));
-      q.exec("ROLLBACK;");
-      return;
-    }
   }
 
-  q.exec("COMMIT;");
   close();
 }
 

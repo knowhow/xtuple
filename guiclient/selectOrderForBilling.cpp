@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -86,7 +86,6 @@ selectOrderForBilling::selectOrderForBilling(QWidget* parent, const char* name, 
     connect(_soitem, SIGNAL(valid(bool)), _cancel, SLOT(setEnabled(bool)));
   }
 
-  // some customers are creating scripts to show these widgets, probably shouldn't remove
   _paymentLit->hide();
   _payment->hide(); // Issue 10254:  if no objections over time, we should ultimately remove this.
 

@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -15,7 +15,6 @@
 #include <QMessageBox>
 #include <QSqlError>
 #include <QVariant>
-#include <QDebug>
 
 #include <parameter.h>
 
@@ -35,8 +34,7 @@ address::address(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 
     connect(_editAddrUse, SIGNAL(clicked()), this, SLOT(sEdit()));
     connect(_viewAddrUse, SIGNAL(clicked()), this, SLOT(sView()));
-    connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sSave()));
-    connect(_buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
     connect(_uses, SIGNAL(populateMenu(QMenu*,QTreeWidgetItem*)), this, SLOT(sPopulateMenu(QMenu*)));
     connect(_newCharacteristic, SIGNAL(clicked()), this, SLOT(sNewCharacteristic()));
     connect(_editCharacteristic, SIGNAL(clicked()), this, SLOT(sEditCharacteristic()));
@@ -110,11 +108,14 @@ enum SetResponse address::set(const ParameterList &pParams)
       _mode = cEdit;
       connect(_charass, SIGNAL(valid(bool)), _editCharacteristic, SLOT(setEnabled(bool)));
       connect(_charass, SIGNAL(valid(bool)), _deleteCharacteristic, SLOT(setEnabled(bool)));
+      _save->setFocus();
     }
     else if (param.toString() == "view")
     {
       _mode = cView;
 
+      _save->hide();
+      _close->setText(tr("&Close"));
       _editAddrUse->hide();
       disconnect(_uses, SIGNAL(itemSelected(int)), _editAddrUse, SLOT(animateClick()));
       connect(_uses, SIGNAL(itemSelected(int)), _viewAddrUse, SLOT(animateClick()));
@@ -127,7 +128,8 @@ enum SetResponse address::set(const ParameterList &pParams)
       _deleteCharacteristic->setEnabled(FALSE);
       _editAddrUse->setEnabled(FALSE);
       _charass->setEnabled(FALSE);
-      _buttonBox->setStandardButtons(QDialogButtonBox::Close);
+
+      _close->setFocus();
     }
   }
 
@@ -211,17 +213,12 @@ void address::sDeleteCharacteristic()
 
 void address::sGetCharacteristics()
 {
-  q.prepare( "SELECT charass_id, char_name, "
-             " CASE WHEN char_type < 2 THEN "
-             "   charass_value "
-             " ELSE "
-             "   formatDate(charass_value::date) "
-             "END AS charass_value "
+  q.prepare( "SELECT charass_id, char_name, charass_value "
              "FROM charass, char "
              "WHERE ( (charass_target_type='ADDR')"
              " AND (charass_char_id=char_id)"
              " AND (charass_target_id=:addr_id) ) "
-             "ORDER BY char_order, char_name;" );
+             "ORDER BY char_name;" );
   q.bindValue(":addr_id", _addr->id());
   q.exec();
   _charass->populate(q);
@@ -283,10 +280,10 @@ void address::sPopulateMenu(QMenu *pMenu)
   switch (_uses->altId())
   {
     case 1:
-      if (_privileges->check("MaintainAllContacts") &&
+      if (_privileges->check("MaintainContacts") &&
 	  (cNew == _mode || cEdit == _mode))
 	menuItem = pMenu->addAction(editStr, this, SLOT(sEditContact()));
-      else if (_privileges->check("ViewAllContacts"))
+      else if (_privileges->check("ViewContacts"))
 	menuItem = pMenu->addAction(viewStr, this, SLOT(sViewContact()));
 
       break;
@@ -441,22 +438,26 @@ void address::sViewShipto()
 
 void address::sEditVendor()
 {
+  /* comment out until vendor becomes a XDialog or address a XMainWindow
   ParameterList params;
-  vendor * newdlg = new vendor(this);
-  params.append("mode", "edit");
+  vendor newdlg(this, "", TRUE);
+  params.append("mode", "view");
   params.append("vend_id", _uses->id());
-  newdlg->set(params);
-  newdlg->show();
+  newdlg.set(params);
+  newdlg.exec();
+  */
 }
 
 void address::sViewVendor()
 {
+  /* comment out until vendor becomes a XDialog or address a XMainWindow
   ParameterList params;
-  vendor * newdlg = new vendor(this);
+  vendor newdlg(this, "", TRUE);
   params.append("mode", "view");
   params.append("vend_id", _uses->id());
-  newdlg->set(params);
-  newdlg->show();
+  newdlg.set(params);
+  newdlg.exec();
+  */
 }
 
 void address::sEditVendorAddress()

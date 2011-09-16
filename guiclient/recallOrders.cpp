@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -26,7 +26,6 @@ recallOrders::recallOrders(QWidget* parent, const char* name, Qt::WFlags fl)
 
   connect(_recall,	   SIGNAL(clicked()),	  this, SLOT(sRecall()));
   connect(_showInvoiced, SIGNAL(toggled(bool)), this, SLOT(sFillList()));
-  connect(omfgThis, SIGNAL(invoicesUpdated(int, bool)), this, SLOT(sFillList()));
 
   _showInvoiced->setEnabled(_privileges->check("RecallInvoicedShipment"));
   
@@ -120,11 +119,11 @@ void recallOrders::sFillList()
                 "SELECT DISTINCT shiphead_id, -1 AS invchead_id, shiphead_shipdate, "
                 "       tohead_number AS number, shiphead_number, '' AS cohead_billtoname, "
                 "       false AS shipitem_invoiced "
-                "FROM shiphead JOIN tohead ON (tohead_id=shiphead_order_id)"
-                "              JOIN toitem ON (toitem_tohead_id=tohead_id) "
-                "WHERE ((shiphead_shipped)"
-                "  AND  (shiphead_order_type='TO')"
-                "  AND  (tohead_status <> 'C')) "
+                "FROM shiphead, tohead, toitem "
+                "WHERE ((toitem_tohead_id=tohead_id)"
+                "  AND  (shiphead_order_id=tohead_id)"
+                "  AND  (shiphead_shipped)"
+                "  AND  (shiphead_order_type='TO')) "
                 "<? endif ?>"
                 "ORDER BY shiphead_shipdate DESC, number;" ;
   MetaSQLQuery mql(sql);

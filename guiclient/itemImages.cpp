@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -10,20 +10,52 @@
 
 #include "itemImages.h"
 
-#include <QVariant>
-#include <QImage>
+#include <qvariant.h>
 #include <quuencode.h>
+//#include <qstatusbar.h>
+#include <qimage.h>
 
+/*
+ *  Constructs a itemImages as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ */
 itemImages::itemImages(QWidget* parent, const char* name, Qt::WFlags fl)
-  : XWidget(parent, name, fl)
+    : XWidget(parent, name, fl)
 {
-  setupUi(this);
+    setupUi(this);
 
-  // signals and slots connections
-  connect(_close, SIGNAL(clicked()), this, SLOT(close()));
-  connect(_prev, SIGNAL(clicked()), this, SLOT(sPrevious()));
-  connect(_next, SIGNAL(clicked()), this, SLOT(sNext()));
-  connect(_item, SIGNAL(newId(int)), this, SLOT(sFillList()));
+//    (void)statusBar();
+
+    // signals and slots connections
+    connect(_close, SIGNAL(clicked()), this, SLOT(close()));
+    connect(_prev, SIGNAL(clicked()), this, SLOT(sPrevious()));
+    connect(_next, SIGNAL(clicked()), this, SLOT(sNext()));
+    connect(_item, SIGNAL(newId(int)), this, SLOT(sFillList()));
+    init();
+}
+
+/*
+ *  Destroys the object and frees any allocated resources
+ */
+itemImages::~itemImages()
+{
+    // no need to delete child widgets, Qt does it all for us
+}
+
+/*
+ *  Sets the strings of the subwidgets using the current
+ *  language.
+ */
+void itemImages::languageChange()
+{
+    retranslateUi(this);
+}
+
+
+void itemImages::init()
+{
+//  statusBar()->hide();
 
 #ifndef Q_WS_MAC
   _prev->setMaximumWidth(25);
@@ -31,17 +63,7 @@ itemImages::itemImages(QWidget* parent, const char* name, Qt::WFlags fl)
 #endif
 }
 
-itemImages::~itemImages()
-{
-  // no need to delete child widgets, Qt does it all for us
-}
-
-void itemImages::languageChange()
-{
-  retranslateUi(this);
-}
-
-enum SetResponse itemImages::set(const ParameterList &pParams)
+enum SetResponse itemImages::set(ParameterList &pParams)
 {
   XWidget::set(pParams);
   QVariant param;

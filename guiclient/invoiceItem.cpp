@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -28,7 +28,6 @@ invoiceItem::invoiceItem(QWidget* parent, const char * name, Qt::WindowFlags fl)
 
   connect(_billed,  SIGNAL(lostFocus()),    this, SLOT(sCalculateExtendedPrice()));
   connect(_item,    SIGNAL(newId(int)),     this, SLOT(sPopulateItemInfo(int)));
-  connect(_item,    SIGNAL(newId(int)),     this, SLOT(sHandleUpdateInv()));
   connect(_extended,SIGNAL(valueChanged()), this, SLOT(sLookupTax()));
   connect(_listPrices,   SIGNAL(clicked()), this, SLOT(sListPrices()));
   connect(_price,   SIGNAL(idChanged(int)), this, SLOT(sPriceGroup()));
@@ -56,7 +55,6 @@ invoiceItem::invoiceItem(QWidget* parent, const char * name, Qt::WindowFlags fl)
   _qtyinvuomratio = 1.0;
   _priceinvuomratio = 1.0;
   _invuomid = -1;
-  _isMisc = true;
   
   //If not multi-warehouse hide whs control
   if (!_metrics->boolean("MultiWhs"))
@@ -232,7 +230,7 @@ void invoiceItem::sSave()
                "  invcitem_item_id, invcitem_warehous_id,"
                "  invcitem_number, invcitem_descrip, invcitem_salescat_id,"
                "  invcitem_custpn,"
-               "  invcitem_ordered, invcitem_billed, invcitem_updateinv,"
+               "  invcitem_ordered, invcitem_billed,"
                "  invcitem_qty_uom_id, invcitem_qty_invuomratio,"
                "  invcitem_custprice, invcitem_price,"
                "  invcitem_price_uom_id, invcitem_price_invuomratio,"
@@ -243,7 +241,7 @@ void invoiceItem::sSave()
                "  :item_id, :warehous_id,"
                "  :invcitem_number, :invcitem_descrip, :invcitem_salescat_id,"
                "  :invcitem_custpn,"
-               "  :invcitem_ordered, :invcitem_billed, :invcitem_updateinv,"
+               "  :invcitem_ordered, :invcitem_billed,"
                "  :qty_uom_id, :qty_invuomratio,"
                "  :invcitem_custprice, :invcitem_price,"
                "  :price_uom_id, :price_invuomratio,"
@@ -258,7 +256,7 @@ void invoiceItem::sSave()
                "SET invcitem_item_id=:item_id, invcitem_warehous_id=:warehous_id,"
                "    invcitem_number=:invcitem_number, invcitem_descrip=:invcitem_descrip,"
                "    invcitem_salescat_id=:invcitem_salescat_id,"
-               "    invcitem_custpn=:invcitem_custpn, invcitem_updateinv=:invcitem_updateinv,"
+               "    invcitem_custpn=:invcitem_custpn,"
                "    invcitem_ordered=:invcitem_ordered, invcitem_billed=:invcitem_billed,"
                "    invcitem_qty_uom_id=:qty_uom_id, invcitem_qty_invuomratio=:qty_invuomratio,"
                "    invcitem_custprice=:invcitem_custprice, invcitem_price=:invcitem_price,"
@@ -285,7 +283,6 @@ void invoiceItem::sSave()
   q.bindValue(":invcitem_custpn", _custPn->text());
   q.bindValue(":invcitem_ordered", _ordered->toDouble());
   q.bindValue(":invcitem_billed", _billed->toDouble());
-  q.bindValue(":invcitem_updateinv", QVariant(_updateInv->isChecked()));
   if(!_miscSelected->isChecked())
     q.bindValue(":qty_uom_id", _qtyUOM->id());
   q.bindValue(":qty_invuomratio", _qtyinvuomratio);
@@ -312,12 +309,12 @@ void invoiceItem::sSave()
 void invoiceItem::populate()
 {
   XSqlQuery invcitem;
-  invcitem.prepare( "SELECT invcitem.*, invchead_invcnumber,"
+  invcitem.prepare( "SELECT invcitem.*,"
                     "       CASE WHEN (item_id IS NULL) THEN :na"
                     "            ELSE item_listprice"
                     "       END AS f_listprice,"
 					"		taxzone_id,"
-                    "       invchead_curr_id AS taxcurr_id "
+                    "       invchead_curr_id AS taxcurrid "
                     "FROM invcitem JOIN "
                     "     invchead LEFT OUTER JOIN taxzone ON "
 					"       (invchead_taxzone_id = taxzone_id) "
@@ -330,9 +327,7 @@ void invoiceItem::populate()
   if (invcitem.first())
   {
     _invcheadid = invcitem.value("invcitem_invchead_id").toInt();
-    _invoiceNumber->setText(invcitem.value("invchead_invcnumber").toString());
     _lineNumber->setText(invcitem.value("invcitem_linenumber").toString());
-    _isMisc = ((invcitem.value("invcitem_coitem_id").toInt() > 0) ? false : true);
 
     if (invcitem.value("invcitem_item_id").toInt() != -1)
     {
@@ -361,17 +356,6 @@ void invoiceItem::populate()
 
     _ordered->setDouble(invcitem.value("invcitem_ordered").toDouble());
     _billed->setDouble(invcitem.value("invcitem_billed").toDouble());
-    if ( (invcitem.value("invcitem_coitem_id").toInt() > 0) ||
-         (invcitem.value("invcitem_item_id").toInt() == -1) )
-    {
-      _updateInv->setChecked(false);
-      _updateInv->setEnabled(false);
-    }
-    else
-    {
-      _updateInv->setChecked(invcitem.value("invcitem_updateinv").toBool());
-      _updateInv->setEnabled(true);
-    }
     _price->setLocalValue(invcitem.value("invcitem_price").toDouble());
     _custPrice->setLocalValue(invcitem.value("invcitem_custprice").toDouble());
     _listPrice->setBaseValue(invcitem.value("f_listprice").toDouble() * (_priceinvuomratio / _priceRatioCache));
@@ -642,21 +626,6 @@ void invoiceItem::sMiscSelected(bool isMisc)
 {
   if(isMisc)
     _item->setId(-1);
-}
-
-void invoiceItem::sHandleUpdateInv()
-{
-  if( (_item->isValid()) &&
-      (_warehouse->isValid()) &&
-      (_isMisc) )
-  {
-    _updateInv->setEnabled(true);
-  }
-  else
-  {
-    _updateInv->setChecked(false);
-    _updateInv->setEnabled(false);
-  }
 }
 
 void invoiceItem::sListPrices()

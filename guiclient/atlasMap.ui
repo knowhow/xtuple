@@ -2,7 +2,7 @@
 <ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
-Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
 It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
-    <height>217</height>
+    <width>486</width>
+    <height>218</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -128,14 +128,35 @@ to be bound by its terms.</comment>
     </layout>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="_buttonBox">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="_buttonsLayout">
+     <item>
+      <widget class="QPushButton" name="_cancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_save">
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="_buttonsSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -163,7 +184,26 @@ to be bound by its terms.</comment>
   <tabstop>_atlas</tabstop>
   <tabstop>_map</tabstop>
   <tabstop>_firstLine</tabstop>
+  <tabstop>_save</tabstop>
+  <tabstop>_cancel</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>_cancel</sender>
+   <signal>clicked()</signal>
+   <receiver>atlasMap</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>471</x>
+     <y>27</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>261</x>
+     <y>102</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

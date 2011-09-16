@@ -3,12 +3,6 @@
  <title>Tax Authorities Master List</title>
  <name>TaxAuthoritiesMasterList</name>
  <description></description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -21,18 +15,18 @@
   <mqlname>detail</mqlname>
  </querysource>
  <rpthead>
-  <height>128</height>
+  <height>76</height>
   <line>
    <xstart>5</xstart>
-   <ystart>120</ystart>
+   <ystart>70</ystart>
    <xend>745</xend>
-   <yend>120</yend>
+   <yend>70</yend>
    <weight>2</weight>
   </line>
   <label>
    <rect>
     <x>175</x>
-    <y>103</y>
+    <y>55</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -64,7 +58,7 @@
   <label>
    <rect>
     <x>10</x>
-    <y>103</y>
+    <y>55</y>
     <width>95</width>
     <height>15</height>
    </rect>
@@ -77,26 +71,6 @@
    <vcenter/>
    <string>Code</string>
   </label>
-  <text>
-   <rect>
-    <x>10</x>
-    <y>38</y>
-    <width>725</width>
-    <height>15</height>
-   </rect>
-   <bottompad>12</bottompad>
-   <font>
-    <face>Arial</face>
-    <size>10</size>
-    <weight>bold</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>Parameter Query</query>
-    <column>filter</column>
-   </data>
-  </text>
  </rpthead>
  <pghead>
   <firstpage/>

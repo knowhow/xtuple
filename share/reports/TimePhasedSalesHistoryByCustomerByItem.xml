@@ -1,0 +1,1239 @@
+<!DOCTYPE openRPTDef>
+<report>
+ <title>Time Phased Sales History By Customer By Item</title>
+ <name>TimePhasedSalesHistoryByCustomerByItem</name>
+ <description></description>
+ <size>Letter</size>
+ <portrait/>
+ <topmargin>50</topmargin>
+ <bottommargin>50</bottommargin>
+ <rightmargin>50</rightmargin>
+ <leftmargin>50</leftmargin>
+ <querysource>
+  <name>head</name>
+  <sql>SELECT cust_number,
+       cust_name,
+       salesrep_number,
+       salesrep_name,
+       &lt;? if exists("procat_id") ?>
+         (SELECT (prodcat_code||'-'||prodcat_descrip)
+            FROM prodcat
+           WHERE prodcat_id=&lt;? value("prodcat_id") ?>)
+       &lt;? elseif exists("prodcat_pattern") ?>
+         text(&lt;? value("prodcat_pattern") ?>)
+       &lt;? else ?>
+         text('All Product Categories')
+       &lt;? endif ?>
+       AS prodcat
+FROM custinfo JOIN salesrep ON (salesrep_id=cust_salesrep_id)
+WHERE (cust_id=&lt;? value("cust_id") ?>);</sql>
+ </querysource>
+ <querysource>
+  <name>detail</name>
+  <sql>SELECT data.itemsite_id,
+       (formatDate(pstart) || '-' || formatDate(pend)) AS period,
+       data.cust_number,
+       cust_name,
+       salesrep_number,
+       salesrep_name,
+       item_number,
+       itemdescription,
+       warehous_code,
+-- itemsite by period totals
+       qty, formatQty(qty) AS f_qty,
+       formatExtPrice(sales) AS f_sales,
+       formatExtPrice(costs) AS f_costs,
+       formatExtPrice(sales - costs) AS f_margin,
+       formatPrcnt((sales - costs) / CASE WHEN(sales=0) THEN 1 ELSE sales END) AS f_prcnt,
+-- itemsite subtotals
+       formatQty(itemsubqty) AS f_itemsubqty,
+       formatExtPrice(itemsubsales) AS f_itemsubsales,
+       formatExtPrice(itemsubcosts) AS f_itemsubcosts,
+       formatExtPrice(itemsubsales - itemsubcosts) AS f_itemsubmargin,
+       formatPrcnt((itemsubsales - itemsubcosts) / CASE WHEN(itemsubsales=0) THEN 1 ELSE itemsubsales END) AS f_itemsubprcnt,
+-- customer subtotals
+       formatExtPrice(custsubsales) AS f_custsubsales,
+       formatExtPrice(custsubcosts) AS f_custsubcosts,
+       formatExtPrice(custsubsales - custsubcosts) AS f_custsubmargin,
+       formatPrcnt((custsubsales - custsubcosts) / CASE WHEN(custsubsales=0) THEN 1 ELSE custsubsales END) AS f_custsubprcnt
+-- the first query are the values per item in a given period
+FROM ( SELECT itemsite_id, pstart, pend,
+              cust_number, cust_name,
+              salesrep_number, salesrep_name,
+              item_number, (item_descrip1 || ' ' || item_descrip2) AS itemdescription,
+              warehous_code,
+              SUM(cohist_qtyshipped) AS qty,
+              SUM(round(cohist_unitprice * cohist_qtyshipped,2)) AS sales,
+              SUM(cohist_unitcost * cohist_qtyshipped) AS costs
+       FROM cohist, itemsite, item, warehous, cust, salesrep,
+            ( SELECT rcalitem_id AS calitem_id,
+                     findPeriodStart(rcalitem_id) AS pstart,
+                     findPeriodEnd(rcalitem_id) AS pend
+              FROM rcalitem
+              WHERE (rcalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+              UNION SELECT acalitem_id AS calitem_id,
+                           findPeriodStart(acalitem_id) AS pstart,
+                           findPeriodEnd(acalitem_id) AS pend
+              FROM acalitem
+              WHERE (acalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+             ) AS calitem
+       WHERE ( (itemsite_item_id=item_id)
+        AND (itemsite_warehous_id=warehous_id)
+        AND (cohist_itemsite_id=itemsite_id)
+        AND (cohist_cust_id=cust_id)
+        AND (cust_salesrep_id=salesrep_id)
+        AND (cohist_invcdate BETWEEN findPeriodStart(calitem_id) AND findPeriodEnd(calitem_id))
+&lt;? if exists("cust_id") ?>
+        AND (cust_id=&lt;? value("cust_id") ?>)
+&lt;? elseif exists("custtype_id") ?>
+        AND (cust_custtype_id=&lt;? value("custtype_id") ?>)
+&lt;? elseif exists("custtype_pattern") ?>
+        AND (cust_custtype_id IN ( SELECT custtype_id
+                                     FROM custtype
+                                    WHERE (custtype_code ~ &lt;? value("custtype_pattern") ?>) ))
+&lt;? endif ?>
+&lt;? if exists("prodcat_id") ?>
+        AND (item_prodcat_id=&lt;? value("prodcat_id") ?>)
+&lt;? elseif exists("prodcat_pattern") ?>
+        AND (item_prodcat_id IN ( SELECT prodcat_id
+                                    FROM prodcat
+                                   WHERE (prodcat_code ~ &lt;? value("prodcat_pattern") ?>) ))
+&lt;? endif ?>
+)
+       GROUP BY itemsite_id,
+                pstart, pend, cust_number, cust_name,
+                salesrep_number, salesrep_name,
+                item_number, item_descrip1, item_descrip2, warehous_code
+     ) AS data,
+-- Start the itemsites subtotal per customer query here
+     ( SELECT itemsite_id,
+              cust_number,
+              SUM(cohist_qtyshipped) AS itemsubqty,
+              SUM(round(cohist_unitprice * cohist_qtyshipped,2)) AS itemsubsales,
+              SUM(cohist_unitcost * cohist_qtyshipped) AS itemsubcosts
+       FROM cohist, itemsite, item, cust,
+            ( SELECT rcalitem_id AS calitem_id,
+                     findPeriodStart(rcalitem_id) AS pstart,
+                     findPeriodEnd(rcalitem_id) AS pend
+              FROM rcalitem
+              WHERE (rcalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+              UNION SELECT acalitem_id AS calitem_id,
+                           findPeriodStart(acalitem_id) AS pstart,
+                           findPeriodEnd(acalitem_id) AS pend
+              FROM acalitem
+              WHERE (acalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+             ) AS calitem
+       WHERE ( (itemsite_item_id=item_id)
+        AND (cohist_itemsite_id=itemsite_id)
+        AND (cohist_cust_id=cust_id)
+        AND (cohist_invcdate BETWEEN findPeriodStart(calitem_id) AND findPeriodEnd(calitem_id))
+&lt;? if exists("cust_id") ?>
+        AND (cust_id=&lt;? value("cust_id") ?>)
+&lt;? elseif exists("custtype_id") ?>
+        AND (cust_custtype_id=&lt;? value("custtype_id") ?>)
+&lt;? elseif exists("custtype_pattern") ?>
+        AND (cust_custtype_id IN ( SELECT custtype_id
+                                     FROM custtype
+                                    WHERE (custtype_code ~ &lt;? value("custtype_pattern") ?>) ))
+&lt;? endif ?>
+&lt;? if exists("prodcat_id") ?>
+        AND (item_prodcat_id=&lt;? value("prodcat_id") ?>)
+&lt;? elseif exists("prodcat_pattern") ?>
+        AND (item_prodcat_id IN ( SELECT prodcat_id
+                                    FROM prodcat
+                                   WHERE (prodcat_code ~ &lt;? value("prodcat_pattern") ?>) ))
+&lt;? endif ?>
+)
+       GROUP BY itemsite_id, cust_number
+     ) AS data2,
+-- Start customer subtotals query here
+     ( SELECT cust_number,
+              SUM(round(cohist_unitprice * cohist_qtyshipped,2)) AS custsubsales,
+              SUM(cohist_unitcost * cohist_qtyshipped) AS custsubcosts
+       FROM cohist, itemsite, item, cust,
+            ( SELECT rcalitem_id AS calitem_id,
+                     findPeriodStart(rcalitem_id) AS pstart,
+                     findPeriodEnd(rcalitem_id) AS pend
+              FROM rcalitem
+              WHERE (rcalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+              UNION SELECT acalitem_id AS calitem_id,
+                           findPeriodStart(acalitem_id) AS pstart,
+                           findPeriodEnd(acalitem_id) AS pend
+              FROM acalitem
+              WHERE (acalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+             ) AS calitem
+       WHERE ( (itemsite_item_id=item_id)
+        AND (cohist_itemsite_id=itemsite_id)
+        AND (cohist_cust_id=cust_id)
+        AND (cohist_invcdate BETWEEN findPeriodStart(calitem_id) AND findPeriodEnd(calitem_id))
+&lt;? if exists("cust_id") ?>
+        AND (cust_id=&lt;? value("cust_id") ?>)
+&lt;? elseif exists("custtype_id") ?>
+        AND (cust_custtype_id=&lt;? value("custtype_id") ?>)
+&lt;? elseif exists("custtype_pattern") ?>
+        AND (cust_custtype_id IN ( SELECT custtype_id
+                                     FROM custtype
+                                    WHERE (custtype_code ~ &lt;? value("custtype_pattern") ?>) ))
+&lt;? endif ?>
+&lt;? if exists("prodcat_id") ?>
+        AND (item_prodcat_id=&lt;? value("prodcat_id") ?>)
+&lt;? elseif exists("prodcat_pattern") ?>
+        AND (item_prodcat_id IN ( SELECT prodcat_id
+                                    FROM prodcat
+                                   WHERE (prodcat_code ~ &lt;? value("prodcat_pattern") ?>) ))
+&lt;? endif ?>
+)
+       GROUP BY cust_number
+     ) AS data3
+-- join all the queries together now
+ WHERE ((data2.itemsite_id=data.itemsite_id)
+   AND (data2.cust_number=data.cust_number)
+   AND (data3.cust_number=data.cust_number))
+ORDER BY custsubsales DESC, cust_number, itemsubsales DESC, item_number, warehous_code, pstart;</sql>
+ </querysource>
+ <querysource>
+  <name>totals</name>
+  <sql>SELECT formatExtPrice(sales) AS f_sales,
+       formatExtPrice(costs) AS f_costs,
+       formatExtPrice(sales - costs) AS f_margin,
+       formatPrcnt((sales - costs) / CASE WHEN(sales=0) THEN 1 ELSE sales END) AS f_prcnt
+  FROM (SELECT SUM(round(cohist_unitprice * cohist_qtyshipped,2)) AS sales,
+               SUM(cohist_unitcost * cohist_qtyshipped) AS costs
+          FROM cohist, itemsite, item, cust,
+               ( SELECT rcalitem_id AS calitem_id,
+                        findPeriodStart(rcalitem_id) AS pstart,
+                        findPeriodEnd(rcalitem_id) AS pend
+                   FROM rcalitem
+                  WHERE (rcalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+                  UNION
+                 SELECT acalitem_id AS calitem_id,
+                        findPeriodStart(acalitem_id) AS pstart,
+                        findPeriodEnd(acalitem_id) AS pend
+                   FROM acalitem
+                  WHERE (acalitem_id in (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>))
+               ) AS calitem
+         WHERE ( (itemsite_item_id=item_id)
+           AND (cohist_itemsite_id=itemsite_id)
+           AND (cohist_cust_id=cust_id)
+           AND (cohist_invcdate BETWEEN findPeriodStart(calitem_id) AND findPeriodEnd(calitem_id))
+&lt;? if exists("cust_id") ?>
+           AND (cust_id=&lt;? value("cust_id") ?>)
+&lt;? elseif exists("custtype_id") ?>
+           AND (cust_custtype_id=&lt;? value("custtype_id") ?>)
+&lt;? elseif exists("custtype_pattern") ?>
+           AND (cust_custtype_id IN ( SELECT custtype_id
+                                        FROM custtype
+                                       WHERE (custtype_code ~ &lt;? value("custtype_pattern") ?>) ))
+&lt;? endif ?>
+&lt;? if exists("prodcat_id") ?>
+           AND (item_prodcat_id=&lt;? value("prodcat_id") ?>)
+&lt;? elseif exists("prodcat_pattern") ?>
+           AND (item_prodcat_id IN ( SELECT prodcat_id
+                                       FROM prodcat
+                                      WHERE (prodcat_code ~ &lt;? value("prodcat_pattern") ?>) ))
+&lt;? endif ?>
+               )
+       ) AS data</sql>
+ </querysource>
+ <querysource>
+  <name>calendar</name>
+  <sql>SELECT calhead_name,
+       calitem_name,
+       formatDate(calitem_startdate) AS f_startdate,
+       formatDate(calitem_enddate) AS f_enddate
+  FROM calhead,
+       (
+         SELECT rcalitem_calhead_id AS calitem_calhead_id,
+                rcalitem_name AS calitem_name,
+                findPeriodStart(rcalitem_id) AS calitem_startdate,
+                findPeriodEnd(rcalitem_id) AS calitem_enddate
+           FROM rcalitem
+          WHERE (rcalitem_id IN (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                ))
+          UNION
+         SELECT acalitem_calhead_id AS calitem_calhead_id,
+                acalitem_name AS calitem_name,
+                findPeriodStart(acalitem_id) AS calitem_startdate,
+                findPeriodEnd(acalitem_id) AS calitem_enddate
+           FROM acalitem
+          WHERE (acalitem_id IN (
+&lt;? foreach("period_id_list") ?>
+  &lt;? if not isfirst("period_id_list") ?>
+    ,
+  &lt;? endif ?>
+  &lt;? value("period_id_list") ?>
+&lt;? endforeach ?>
+                                ))
+
+       ) AS calitem
+ WHERE (calhead_id = calitem_calhead_id)
+ORDER BY calitem_startdate, calitem_enddate </sql>
+ </querysource>
+ <rpthead>
+  <height>136</height>
+  <field>
+   <rect>
+    <x>140</x>
+    <y>90</y>
+    <width>430</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>prodcat</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>15</x>
+    <y>90</y>
+    <width>120</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Product Category:</string>
+  </label>
+  <field>
+   <rect>
+    <x>140</x>
+    <y>112</y>
+    <width>430</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>calendar</query>
+    <column>calhead_name</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>15</x>
+    <y>112</y>
+    <width>120</width>
+    <height>20</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Calendar:</string>
+  </label>
+  <label>
+   <rect>
+    <x>65</x>
+    <y>10</y>
+    <width>660</width>
+    <height>38</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>18</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Time Phased Sales History By Customer By Item</string>
+  </label>
+  <label>
+   <rect>
+    <x>27</x>
+    <y>55</y>
+    <width>108</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Cust. Number:</string>
+  </label>
+  <label>
+   <rect>
+    <x>31</x>
+    <y>73</y>
+    <width>105</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Cust. Name:</string>
+  </label>
+  <field>
+   <rect>
+    <x>142</x>
+    <y>55</y>
+    <width>158</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cust_number</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>141</x>
+    <y>72</y>
+    <width>250</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>cust_name</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>430</x>
+    <y>54</y>
+    <width>111</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Sales Rep. #:</string>
+  </label>
+  <label>
+   <rect>
+    <x>427</x>
+    <y>70</y>
+    <width>114</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Sales Rep. Name:</string>
+  </label>
+  <field>
+   <rect>
+    <x>546</x>
+    <y>53</y>
+    <width>163</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>salesrep_number</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>545</x>
+    <y>70</y>
+    <width>152</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>10</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>head</query>
+    <column>salesrep_name</column>
+   </data>
+  </field>
+ </rpthead>
+ <pghead>
+  <firstpage/>
+  <height>7</height>
+ </pghead>
+ <pghead>
+  <height>22</height>
+  <label>
+   <rect>
+    <x>270</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Qty.</string>
+  </label>
+  <label>
+   <rect>
+    <x>10</x>
+    <y>0</y>
+    <width>250</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Period</string>
+  </label>
+  <label>
+   <rect>
+    <x>525</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Margin</string>
+  </label>
+  <label>
+   <rect>
+    <x>440</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Costs</string>
+  </label>
+  <line>
+   <xstart>15</xstart>
+   <ystart>15</ystart>
+   <xend>735</xend>
+   <yend>15</yend>
+   <weight>0</weight>
+  </line>
+  <label>
+   <rect>
+    <x>615</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Margin %</string>
+  </label>
+  <label>
+   <rect>
+    <x>355</x>
+    <y>0</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Sales</string>
+  </label>
+ </pghead>
+ <section>
+  <name>calendar</name>
+  <detail>
+   <key>
+    <query>calendar</query>
+   </key>
+   <height>17</height>
+   <field>
+    <rect>
+     <x>185</x>
+     <y>0</y>
+     <width>200</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>calendar</query>
+     <column>calitem_name</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>395</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>calendar</query>
+     <column>f_startdate</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>555</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>calendar</query>
+     <column>f_enddate</column>
+    </data>
+   </field>
+  </detail>
+ </section>
+ <section>
+  <name>detail</name>
+  <group>
+   <name>itemsite</name>
+   <column>itemsite_id</column>
+   <head>
+    <height>47</height>
+    <field>
+     <rect>
+      <x>350</x>
+      <y>10</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>warehous_code</column>
+     </data>
+    </field>
+    <label>
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>normal</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <string>Item Number:</string>
+    </label>
+    <field>
+     <rect>
+      <x>85</x>
+      <y>25</y>
+      <width>580</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>itemdescription</column>
+     </data>
+    </field>
+    <field>
+     <rect>
+      <x>85</x>
+      <y>10</y>
+      <width>150</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <left/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>item_number</column>
+     </data>
+    </field>
+    <label>
+     <rect>
+      <x>265</x>
+      <y>10</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>normal</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <string>Site:</string>
+    </label>
+   </head>
+   <foot>
+    <height>17</height>
+    <field>
+     <rect>
+      <x>520</x>
+      <y>0</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>f_itemsubmargin</column>
+     </data>
+    </field>
+    <field>
+     <rect>
+      <x>605</x>
+      <y>0</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>f_itemsubprcnt</column>
+     </data>
+    </field>
+    <field>
+     <rect>
+      <x>434</x>
+      <y>0</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>f_itemsubcosts</column>
+     </data>
+    </field>
+    <field>
+     <rect>
+      <x>350</x>
+      <y>0</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>f_itemsubsales</column>
+     </data>
+    </field>
+    <field>
+     <rect>
+      <x>265</x>
+      <y>0</y>
+      <width>80</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>bold</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <data>
+      <query>detail</query>
+      <column>f_itemsubqty</column>
+     </data>
+    </field>
+    <label>
+     <rect>
+      <x>150</x>
+      <y>0</y>
+      <width>95</width>
+      <height>15</height>
+     </rect>
+     <font>
+      <face>Arial</face>
+      <size>8</size>
+      <weight>normal</weight>
+     </font>
+     <right/>
+     <vcenter/>
+     <string>Item Totals:</string>
+    </label>
+    <line>
+     <xstart>260</xstart>
+     <ystart>0</ystart>
+     <xend>690</xend>
+     <yend>0</yend>
+     <weight>0</weight>
+    </line>
+   </foot>
+  </group>
+  <detail>
+   <key>
+    <query>detail</query>
+   </key>
+   <height>17</height>
+   <field>
+    <rect>
+     <x>350</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_sales</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>250</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <hcenter/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>period</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>605</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_prcnt</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>434</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_costs</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>265</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_qty</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>520</x>
+     <y>0</y>
+     <width>80</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <right/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_margin</column>
+    </data>
+   </field>
+  </detail>
+ </section>
+ <pgfoot>
+  <height>17</height>
+  <field>
+   <rect>
+    <x>95</x>
+    <y>0</y>
+    <width>100</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>report_date</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>690</x>
+    <y>0</y>
+    <width>51</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <data>
+    <query>Context Query</query>
+    <column>page_number</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>600</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Page:</string>
+  </label>
+  <label>
+   <rect>
+    <x>5</x>
+    <y>0</y>
+    <width>85</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Report Date:</string>
+  </label>
+ </pgfoot>
+ <rptfoot>
+  <height>27</height>
+  <field>
+   <rect>
+    <x>605</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>totals</query>
+    <column>f_prcnt</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>350</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>totals</query>
+    <column>f_sales</column>
+   </data>
+  </field>
+  <field>
+   <rect>
+    <x>434</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>totals</query>
+    <column>f_costs</column>
+   </data>
+  </field>
+  <label>
+   <rect>
+    <x>150</x>
+    <y>5</y>
+    <width>95</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <string>Report Totals:</string>
+  </label>
+  <field>
+   <rect>
+    <x>520</x>
+    <y>5</y>
+    <width>80</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>bold</weight>
+   </font>
+   <right/>
+   <vcenter/>
+   <data>
+    <query>totals</query>
+    <column>f_margin</column>
+   </data>
+  </field>
+ </rptfoot>
+</report>

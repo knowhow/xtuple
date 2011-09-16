@@ -3,12 +3,6 @@
  <title>Sales Order Acknowledgement</title>
  <name>SalesOrderAcknowledgement</name>
  <description>Sales Order Acknowledgement Omits Closed Lines -- With Barcodes formatitemsitebarcode(itemsite_id) -- SO # barcoded formatsobarcode(cohead_id) -- With Logo, place logo graphic in images DB with name "logo"</description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>25</topmargin>
@@ -55,10 +49,85 @@
   FROM coitem
  WHERE ((coitem_status &lt;> 'X') AND (coitem_cohead_id=&lt;? value("sohead_id") ?>));</sql>
  </querysource>
- <querysource loadFromDb="true">
+ <querysource>
   <name>detail</name>
-  <mqlgroup>salesOrderItems</mqlgroup>
-  <mqlname>list</mqlname>
+  <sql>SELECT 1 AS groupby,
+       coitem_linenumber,
+       coitem_memo,
+       CASE WHEN (coitem_custpn != '') THEN coitem_custpn
+            ELSE item_number
+       END AS item_number,
+       formatitemsitebarcode(itemsite_id) AS item_barcode,
+--     In 2.3 replaced the next line:
+--     uom_name,
+--     with:
+       (select uom_name from uom where uom_id = coitem_qty_uom_id) AS uom_name,
+       itemSellingUOM(item_id) AS item_shipuom,
+       CASE WHEN (coitem_custpn != '' AND itemalias_usedescrip=TRUE) THEN itemalias_descrip1
+            ELSE item_descrip1
+       END AS item_descrip1,
+       CASE WHEN (coitem_custpn != '' AND itemalias_usedescrip=TRUE) THEN itemalias_descrip2
+            ELSE item_descrip2
+       END AS item_descrip2,
+       formatQty(coitem_qtyord) AS ordered,
+       formatQty(coitem_qtyshipped - coitem_qtyreturned) AS shipped,
+       formatQty(noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned)) AS balance,
+       formatQty( ( SELECT COALESCE(SUM(coship_qty), 0)
+                    FROM coship, cosmisc
+                    WHERE ( (coship_coitem_id=coitem_id)
+                     AND (coship_cosmisc_id=cosmisc_id)
+                     AND (NOT cosmisc_shipped) ) ) ) AS atshipping,
+       formatQty(roundUp((coitem_qtyord * coitem_qty_invuomratio) / itemInvPriceRat(item_id))) AS shipordered,
+       formatQty(roundUp(((coitem_qtyshipped - coitem_qtyreturned) * coitem_qty_invuomratio) / itemInvPriceRat(item_id))) AS shipshipped,
+       formatQty(roundUp((noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned) * coitem_qty_invuomratio) / itemInvPriceRat(item_id))) AS shipbalance,
+       formatQty(roundUp( ( SELECT COALESCE(SUM(coship_qty), 0)
+                            FROM coship, cosmisc
+                            WHERE ( (coship_coitem_id=coitem_id)
+                              AND (coship_cosmisc_id=cosmisc_id)
+                              AND (NOT cosmisc_shipped) ) )/ itemInvPriceRat(item_id) ) ) AS shipatshipping,
+       CASE WHEN (coitem_status='O' AND (SELECT cust_creditstatus FROM cust,cohead WHERE coitem_cohead_id=cohead_id AND cust_id=cohead_cust_id)='H') THEN 'H'
+            WHEN (coitem_status='O' AND ((SELECT SUM(invcitem_billed)
+                                            FROM cohead, invchead, invcitem
+                                           WHERE ((invchead_ordernumber=cohead_number)
+                                             AND  (invcitem_invchead_id=invchead_id)
+                                             AND  (invcitem_item_id=item_id)
+                                             AND  (invcitem_warehous_id=itemsite_warehous_id)
+                                             AND  (invcitem_linenumber=coitem_linenumber)
+                                             AND  (cohead_id=coitem_cohead_id))) >= coitem_qtyord)) THEN 'I'
+            WHEN (coitem_status='O' AND ((SELECT SUM(invcitem_billed)
+                                            FROM cohead, invchead, invcitem
+                                           WHERE ((invchead_ordernumber=cohead_number)
+                                             AND  (invcitem_invchead_id=invchead_id)
+                                             AND  (invcitem_item_id=item_id)
+                                             AND  (invcitem_warehous_id=itemsite_warehous_id)
+                                             AND  (invcitem_linenumber=coitem_linenumber)
+                                             AND  (cohead_id=coitem_cohead_id))) > 0)) THEN 'P'
+            WHEN (coitem_status='O' AND (itemsite_qtyonhand - qtyAllocated(itemsite_id, CURRENT_DATE)
+                                         + qtyOrdered(itemsite_id, CURRENT_DATE))
+                                          >= (coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned)) THEN 'R'
+            ELSE coitem_status
+       END AS f_status
+  FROM coitem
+       JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+       JOIN item ON (item_id=itemsite_item_id)
+       JOIN uom ON (uom_id=item_inv_uom_id)
+       LEFT OUTER JOIN itemalias ON (itemalias_item_id=item_id AND itemalias_number=coitem_custpn) 
+ WHERE ( (coitem_status &lt;> 'X')
+   AND (coitem_status &lt;> 'C')
+-- 1 REMOVE THIS AND CLOSED LINES WILL NOT DISPLAY ON PACKING LIST  
+   &lt;? if exists("hide closed") ?>
+   AND (coitem_status &lt;> 'C')
+-- 2 REMOVE THIS AND CLOSED LINES WILL NOT DISPLAY ON PACKING LIST  
+-- &lt;? endif ?>
+   AND (coitem_cohead_id=&lt;? value("sohead_id") ?>)
+)
+--2.3 add coitem_qty_uom_id, to the GROUP BY clause
+GROUP BY coitem_qty_uom_id, coitem_linenumber, coitem_id, coitem_memo, item_number, uom_name, item_id,
+         coitem_custpn, itemalias_usedescrip, itemalias_descrip1, itemalias_descrip2,
+         item_descrip1, item_descrip2, coitem_qtyord, coitem_qty_invuomratio, coitem_qtyshipped,
+         coitem_qtyreturned, coitem_status, coitem_cohead_id,
+         itemsite_id, itemsite_qtyonhand, itemsite_warehous_id, item_id
+ORDER BY coitem_linenumber;</sql>
  </querysource>
  <querysource>
   <name>logo</name>
@@ -68,19 +137,6 @@ WHERE ((image_name='logo'));</sql>
  </querysource>
  <rpthead>
   <height>477</height>
-  <image>
-   <rect>
-    <x>375</x>
-    <y>0</y>
-    <width>425</width>
-    <height>85</height>
-   </rect>
-   <mode>stretch</mode>
-   <data>
-    <query>logo</query>
-    <column>image_data</column>
-   </data>
-  </image>
   <field>
    <rect>
     <x>120</x>
@@ -135,6 +191,19 @@ WHERE ((image_name='logo'));</sql>
     <column>orderdate</column>
    </data>
   </field>
+  <image>
+   <rect>
+    <x>375</x>
+    <y>0</y>
+    <width>425</width>
+    <height>85</height>
+   </rect>
+   <mode>stretch</mode>
+   <data>
+    <query>logo</query>
+    <column>image_data</column>
+   </data>
+  </image>
   <label>
    <rect>
     <x>330</x>
@@ -742,7 +811,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_qtyshipped</column>
+     <column>shipped</column>
     </data>
    </field>
    <field>
@@ -761,7 +830,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_qtyatshipping</column>
+     <column>atshipping</column>
     </data>
    </field>
    <barcode>
@@ -796,7 +865,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>enhanced_status</column>
+     <column>f_status</column>
     </data>
    </field>
    <text>
@@ -897,7 +966,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_balance</column>
+     <column>balance</column>
     </data>
    </field>
    <label>
@@ -939,7 +1008,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>item_descrip2_cust</column>
+     <column>item_descrip2</column>
     </data>
    </field>
    <line>
@@ -965,7 +1034,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>item_number_cust</column>
+     <column>item_number</column>
     </data>
    </field>
    <field>
@@ -984,7 +1053,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>item_descrip1_cust</column>
+     <column>item_descrip1</column>
     </data>
    </field>
    <line>
@@ -1031,7 +1100,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>qty_uom</column>
+     <column>uom_name</column>
     </data>
    </field>
    <label>
@@ -1080,7 +1149,7 @@ WHERE ((image_name='logo'));</sql>
     <vcenter/>
     <data>
      <query>detail</query>
-     <column>f_qtyord</column>
+     <column>ordered</column>
     </data>
    </field>
   </detail>

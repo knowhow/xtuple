@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -442,7 +442,7 @@ menuAccounting::menuAccounting(GUIClient *Pparent) :
     { "separator",		  NULL,					NULL,					utilitiesMenu,		"true",					       NULL, NULL, true, NULL },
     { "so.purgeInvoices", tr("Purge &Invoices..."), SLOT(sPurgeInvoices()), utilitiesMenu, "PurgeInvoices", NULL, NULL, true , NULL },
     { "ar.updateLateCustCreditStatus", tr("&Update Late Customer Credit Status..."), SLOT(sUpdateLateCustCreditStatus()), utilitiesMenu, "UpdateCustomerCreditStatus", NULL, NULL, _metrics->boolean("AutoCreditWarnLateCustomers"), NULL },
-//    { "ar.createRecurringInvoices", tr("&Create Recurring Invoices..."), SLOT(sCreateRecurringInvoices()), utilitiesMenu, "MaintainMiscInvoices", NULL, NULL, true, NULL },
+    { "ar.createRecurringInvoices", tr("&Create Recurring Invoices..."), SLOT(sCreateRecurringInvoices()), utilitiesMenu, "MaintainMiscInvoices", NULL, NULL, true, NULL },
     { "separator",		  NULL,					NULL,					utilitiesMenu,		"true",					       NULL, NULL, _metrics->boolean("MultiCompanyFinancialConsolidation"), NULL },
     { "gl.syncCompanies",           tr("&Synchronize Companies"),        SLOT(sSyncCompanies()),           utilitiesMenu, "SynchronizeCompanies", NULL, NULL, _metrics->boolean("MultiCompanyFinancialConsolidation"), NULL },
 

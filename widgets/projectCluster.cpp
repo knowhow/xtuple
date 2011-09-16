@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -44,26 +44,24 @@ ProjectLineEdit::ProjectType ProjectCluster::type()
 }
 
 ProjectLineEdit::ProjectLineEdit(QWidget* pParent, const char* pName) :
-    CrmClusterLineEdit(pParent, "prj()", "prj_id", "prj_number", "prj_name", 0, "prj_owner_username", "prj_username", 0, pName)
+    VirtualClusterLineEdit(pParent, "prj", "prj_id", "prj_number", "prj_name", 0, 0, pName)
 {
   setTitles(tr("Project"), tr("Projects"));
   setUiName("project");
-  setEditPriv("MaintainAllProjects");
-  setNewPriv("MaintainAllProjects");
-  setViewPriv("ViewAllProjects");
-  setEditOwnPriv("MaintainPersonalProjects");
-  setViewOwnPriv("ViewPersonalProjects");
+  setEditPriv("MaintainProjects");
+  setNewPriv("MaintainProjects");
+  setViewPriv("ViewProjects");
 
   _type = Undefined;
 }
 
 ProjectLineEdit::ProjectLineEdit(enum ProjectType pPrjType, QWidget *pParent, const char *pName) :
-    CrmClusterLineEdit(pParent, "prj()", "prj_id", "prj_number", "prj_name", 0, 0, pName)
+    VirtualClusterLineEdit(pParent, "prj", "prj_id", "prj_number", "prj_name", 0, 0, pName)
 {
   setTitles(tr("Project"), tr("Projects"));
   setUiName("project");
-  setEditPriv("MaintainAllProjects");
-  setViewPriv("ViewAllProjects");
+  setEditPriv("MaintainProjects");
+  setViewPriv("ViewProjects");
 
   _type = pPrjType;
   _allowedStatuses = 0x00;
@@ -130,7 +128,7 @@ void ProjectLineEdit::setType(ProjectType ptype)
   buildExtraClause();
 }
 
-void ProjectLineEdit::setAllowedStatuses(const ProjectStatuses p)
+void ProjectLineEdit::setAllowedStatuses(const ProjectLineEdit::ProjectStatuses p)
 {
   _allowedStatuses = p;
   buildExtraClause();

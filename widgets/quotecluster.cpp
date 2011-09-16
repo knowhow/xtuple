@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -32,6 +32,74 @@ QuoteSearch::QuoteSearch(QWidget *pParent, Qt::WindowFlags flags)
   _listTab->headerItem()->setText(0, tr("Quote Number"));
   _listTab->headerItem()->setText(1, tr("Customer/Prospect"));
 
+  // disconnect from VirtualSearch
+  disconnect(_searchNumber,  SIGNAL(toggled(bool)), this, SLOT(sFillList()));
+  disconnect(_searchDescrip, SIGNAL(toggled(bool)), this, SLOT(sFillList()));
+  disconnect(_search,        SIGNAL(lostFocus()),   this, SLOT(sFillList()));
+
+  // and reconnect to QuoteSearch
+  connect(_searchNumber,  SIGNAL(toggled(bool)), this, SLOT(sFillList()));
+  connect(_searchDescrip, SIGNAL(toggled(bool)), this, SLOT(sFillList()));
+  connect(_search,        SIGNAL(lostFocus()),   this, SLOT(sFillList()));
+}
+
+/* overridden from virtualCluster.cpp; because quhead_number is integer, not text
+   TODO: remove this when type of quhead_number in the db changes
+ */
+void QuoteSearch::sFillList()
+{
+  if (! _parent)
+    return;
+
+  _listTab->clear();
+
+  _search->setText(_search->text().trimmed());
+  if (_search->text().length() == 0)
+    return;
+
+  MetaSQLQuery mql("SELECT quhead_id AS id, quhead_number AS number,"
+                   "       COALESCE(cust_number, prospect_number, '?') AS name,"
+                   "       quhead_billtoname AS description,"
+                   "       quhead_cust_id AS recip_id,"
+                   "       CASE WHEN cust_number IS NOT NULL THEN 'C'"
+                   "            WHEN prospect_number IS NOT NULL THEN 'P'"
+                   "       END AS recip_type"
+                   "  FROM quhead"
+                   "  LEFT OUTER JOIN custinfo ON (quhead_cust_id=cust_id)"
+                   "  LEFT OUTER JOIN prospect ON (quhead_cust_id=prospect_id)"
+                   " WHERE TRUE"
+                   "   AND xtbatch.getEdiProfileId('QT', quhead_id) > 0"
+                   "   AND (FALSE"
+                   "       <? if exists(\"searchnumber\") ?>"
+                   "        OR CAST(quhead_number AS TEXT) ~* <? value(\"searchstr\") ?>"
+                   "       <? endif ?>"
+                   "       <? if exists(\"searchname\") ?>"
+                   "        OR COALESCE(cust_number, prospect_number, '?') ~* <? value(\"searchstr\") ?>"
+                   "       <? endif ?>"
+                   "       <? if exists(\"searchdescrip\") ?>"
+                   "        OR quhead_billtoname ~* <? value(\"searchstr\") ?>"
+                   "       <? endif ?>"
+                   "      )"
+                   "ORDER BY name;");
+
+  ParameterList params;
+  params.append("searchstr", _search->text());
+  if (_searchNumber->isChecked())
+    params.append("searchnumber");
+  if (_searchName->isChecked())
+    params.append("searchname");
+  if (_searchDescrip->isChecked())
+    params.append("searchdescrip");
+
+  XSqlQuery qry = mql.toQuery(params);
+
+  _listTab->populate(qry);
+  if (qry.lastError().type() != QSqlError::NoError)
+  {
+    QMessageBox::critical(this, tr("A System Error Occurred at %1::%2.")
+                                   .arg(__FILE__).arg(__LINE__),
+                          qry.lastError().text());
+  }
 }
 
 QuoteCluster::QuoteCluster(QWidget* pParent, const char* pName) :
@@ -130,39 +198,33 @@ void QuoteLineEdit::silentSetId(const int pId)
   emit parsed();
 }
 
-// TODO: can we get _recip_id and _recip_type using the inherited sParse()?
 void QuoteLineEdit::sParse()
 {
   if (! _parsed)
   {
     QString stripped = text().trimmed().toUpper();
     if (stripped.length() == 0)
-    {
-      _parsed = true;
       setId(-1);
-    }
     else
     {
       XSqlQuery numQ;
       numQ.prepare(_query + _numClause +
                   (_extraClause.isEmpty() || !_strict ? "" : " AND " + _extraClause) +
                   QString(";"));
-      numQ.bindValue(":number", "^" + stripped);
+      numQ.bindValue(":number", stripped);
       numQ.exec();
       if (numQ.first())
       {
         _valid       = true;
-        setId(numQ.value("id").toInt());
-        if (_hasName)
-          _name      = numQ.value("name").toString();
-        if (_hasDescription)
-          _description = numQ.value("description").toString();
+        _id          = numQ.value("id").toInt();
+        _name        = numQ.value("name").toString();
+        _description = numQ.value("description").toString();
         _recip_id    = numQ.value("recip_id").toInt();
         _recip_type  = numQ.value("recip_type").toString();
       }
       else
       {
-        setId(-1);
+        clear();
         if (numQ.lastError().type() != QSqlError::NoError)
             QMessageBox::critical(this, tr("A System Error Occurred at %1::%2.")
                                           .arg(__FILE__)
@@ -170,12 +232,11 @@ void QuoteLineEdit::sParse()
                     numQ.lastError().databaseText());
       }
     }
-    emit valid(_valid);
-    emit parsed();
   }
 
   _parsed = true;
-  sHandleNullStr();
+  emit valid(_valid);
+  emit parsed();
 }
 
 bool QuoteLineEdit::forCustomer()

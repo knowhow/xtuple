@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -18,11 +18,6 @@
 
 #define DEBUG false
 
-/** \ingroup creditcards
-    \class   ExternalCCProcessor
-    \brief   A simple interface for entering credit card transaction
-             information manually.
- */
 ExternalCCProcessor::ExternalCCProcessor() : CreditCardProcessor()
 {
   _defaultLivePort   = 0;

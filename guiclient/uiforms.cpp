@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -19,8 +19,6 @@
 #include "uiform.h"
 #include "guiclient.h"
 #include "xmainwindow.h"
-
-#define DEBUG false
 
 uiforms::uiforms(QWidget* parent, const char* name, Qt::WFlags fl)
     : XWidget(parent, name, fl)
@@ -148,8 +146,7 @@ void uiforms::sTest()
 
   XUiLoader loader;
   QByteArray ba = q.value("uiform_source").toString().toUtf8();
-  if (DEBUG)
-    qDebug("about to load a uiFile with %s", ba.constData());
+  qDebug("about to load a uiFile with %s", ba.constData());
   QBuffer uiFile(&ba);
   if(!uiFile.open(QIODevice::ReadOnly))
   {

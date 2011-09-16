@@ -3,15 +3,9 @@
  <title>Packing List (Shipment)</title>
  <name>PackingList-Shipment</name>
  <description>Non-Hybrid version - driven only by shiphead_id parameter - Packing List showing the contents of a particular shipment - Shows RA# if SO is a replacement order for and RA</description>
- <parameter default="324" active="true" listtype="static" type="string" name="cosmisc_id">
+ <parameter default="324" active="true" listtype="static" type="string" name="cosmisc_id" >
   <description></description>
  </parameter>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>25</topmargin>
@@ -57,7 +51,7 @@ SELECT shiphead_number, 'T/O #:' AS ordertype,
        formattobarcode(tohead_id) AS order_barcode,
        shiphead_shipvia AS shipvia,
        tohead_destphone AS shiptophone,
-       TEXT(' ') AS cohead_custponumber,
+       TEXT(tohead_number) AS cohead_custponumber,
        formatDate(tohead_orderdate) AS orderdate,
        tohead_shipcomments AS shipcomments,
        tohead_srcname AS billtoname,
@@ -243,19 +237,6 @@ select
  </querysource>
  <rpthead>
   <height>463</height>
-  <image>
-   <rect>
-    <x>375</x>
-    <y>0</y>
-    <width>425</width>
-    <height>100</height>
-   </rect>
-   <mode>stretch</mode>
-   <data>
-    <query>logo</query>
-    <column>image_data</column>
-   </data>
-  </image>
   <field>
    <rect>
     <x>170</x>
@@ -771,6 +752,19 @@ select
     <column>billtoname</column>
    </data>
   </field>
+  <image>
+   <rect>
+    <x>375</x>
+    <y>0</y>
+    <width>425</width>
+    <height>100</height>
+   </rect>
+   <mode>stretch</mode>
+   <data>
+    <query>logo</query>
+    <column>image_data</column>
+   </data>
+  </image>
   <field>
    <rect>
     <x>170</x>
@@ -1311,7 +1305,7 @@ select
   <field>
    <rect>
     <x>455</x>
-    <y>7</y>
+    <y>5</y>
     <width>80</width>
     <height>17</height>
    </rect>
@@ -1324,7 +1318,7 @@ select
    <top/>
    <data>
     <query>head</query>
-    <column>ordernumber</column>
+    <column>cohead_number</column>
    </data>
   </field>
   <label>
@@ -1358,6 +1352,22 @@ select
    <right/>
    <top/>
    <string>Print Date: </string>
+  </label>
+  <label>
+   <rect>
+    <x>360</x>
+    <y>5</y>
+    <width>90</width>
+    <height>17</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <right/>
+   <top/>
+   <string>Sales Order #:</string>
   </label>
   <field>
    <rect>
@@ -1395,25 +1405,6 @@ select
    <data>
     <query>Context Query</query>
     <column>report_date</column>
-   </data>
-  </field>
-  <field>
-   <rect>
-    <x>365</x>
-    <y>7</y>
-    <width>80</width>
-    <height>17</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <left/>
-   <top/>
-   <data>
-    <query>head</query>
-    <column>ordertype</column>
    </data>
   </field>
  </pgfoot>

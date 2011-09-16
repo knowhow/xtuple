@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -64,9 +64,6 @@ configureCRM::configureCRM(QWidget* parent, const char* name, bool /*modal*/, Qt
   {
     connect(_strictCountries, SIGNAL(toggled(bool)), this, SLOT(sStrictCountryChanged(bool)));
   }
-
-  _incidentsPublicShow->setChecked(_metrics->boolean("IncidentsPublicPrivate"));
-  _incidentsPublicDefault->setChecked(_metrics->boolean("IncidentPublicDefault"));
 
   if (_metrics->boolean("EnableBatchManager"))
   {
@@ -142,9 +139,6 @@ bool configureCRM::sSave()
 
   _metrics->set("StrictAddressCountry", _strictCountries->isChecked());
   
-  _metrics->set("IncidentsPublicPrivate", _incidentsPublicShow->isChecked());
-  _metrics->set("IncidentPublicDefault", _incidentsPublicDefault->isChecked());
-
   if (_metrics->boolean("EnableBatchManager"))
   {
     _metrics->set("CRMIncidentEmailProfile", _incdtEmailProfile->id());

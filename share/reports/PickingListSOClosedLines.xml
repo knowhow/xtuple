@@ -4,12 +4,6 @@
  <name>PickingListSOClosedLines</name>
  <description>Shows Closed Lines -- With Barcodes formatitemsitebarcode(itemsite_id) -- SO # barcoded formatsobarcode(cohead_id) -- With Logo, place logo graphic in images DB with name "logo"
 </description>
- <grid>
-  <snap/>
-  <show/>
-  <x>0.05</x>
-  <y>0.05</y>
- </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>25</topmargin>
@@ -71,15 +65,13 @@
        item_descrip1,
        item_descrip2,
        formatQty(coitem_qtyord) AS ordered,
-       CASE WHEN ((coitem_qtyshipped - coitem_qtyreturned) > 0.0) THEN formatQty(coitem_qtyshipped - coitem_qtyreturned)
-            ELSE NULL
-       END AS shipped,
-       CASE WHEN ((coitem_qtyshipped - coitem_qtyreturned) > 0.0) THEN formatQty(noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned))
-            ELSE NULL
-       END AS balance,
-       CASE WHEN (qtyAtShipping('SO', coitem_id) > 0.0) THEN formatQty(qtyAtShipping('SO', coitem_id))
-            ELSE NULL
-       END AS atShipping,
+       formatQty(coitem_qtyshipped - coitem_qtyreturned) AS shipped,
+       formatQty(noNeg(coitem_qtyord - coitem_qtyshipped + coitem_qtyreturned)) AS balance,
+       formatQty( ( SELECT COALESCE(SUM(coship_qty), 0)
+                    FROM coship, cosmisc
+                    WHERE ( (coship_coitem_id=coitem_id)
+                     AND (coship_cosmisc_id=cosmisc_id)
+                     AND (NOT cosmisc_shipped) ) ) ) AS atshipping,
        CASE WHEN (coitem_status='O' AND (SELECT cust_creditstatus FROM cust,cohead WHERE coitem_cohead_id=cohead_id AND cust_id=cohead_cust_id)='H') THEN 'H'
             WHEN (coitem_status='O' AND ((SELECT SUM(invcitem_billed)
                                             FROM cohead, invchead, invcitem
@@ -126,19 +118,6 @@ WHERE ((image_name='logo'));</sql>
  </querysource>
  <rpthead>
   <height>477</height>
-  <image>
-   <rect>
-    <x>375</x>
-    <y>0</y>
-    <width>425</width>
-    <height>85</height>
-   </rect>
-   <mode>stretch</mode>
-   <data>
-    <query>logo</query>
-    <column>image_data</column>
-   </data>
-  </image>
   <text>
    <rect>
     <x>465</x>
@@ -282,7 +261,6 @@ WHERE ((image_name='logo'));</sql>
    <format>128</format>
    <maxlength>10</maxlength>
    <left/>
-   <narrowBarWidth>0.01</narrowBarWidth>
    <data>
     <query>head</query>
     <column>order_barcode</column>
@@ -582,12 +560,24 @@ WHERE ((image_name='logo'));</sql>
    <format>3of9</format>
    <maxlength>20</maxlength>
    <left/>
-   <narrowBarWidth>0.01</narrowBarWidth>
    <data>
     <query>head</query>
     <column>cohead_custponumber</column>
    </data>
   </barcode>
+  <image>
+   <rect>
+    <x>375</x>
+    <y>0</y>
+    <width>425</width>
+    <height>85</height>
+   </rect>
+   <mode>stretch</mode>
+   <data>
+    <query>logo</query>
+    <column>image_data</column>
+   </data>
+  </image>
   <label>
    <rect>
     <x>10</x>
@@ -681,7 +671,6 @@ WHERE ((image_name='logo'));</sql>
    <format>3of9</format>
    <maxlength>10</maxlength>
    <left/>
-   <narrowBarWidth>0.01</narrowBarWidth>
    <data>
     <query>head</query>
     <column>cust_number</column>
@@ -910,7 +899,6 @@ WHERE ((image_name='logo'));</sql>
     <format>128</format>
     <maxlength>15</maxlength>
     <left/>
-    <narrowBarWidth>0.01</narrowBarWidth>
     <data>
      <query>detail</query>
      <column>item_barcode</column>

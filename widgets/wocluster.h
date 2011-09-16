@@ -1,7 +1,7 @@
 /*
  * This file is part of the xTuple ERP: PostBooks Edition, a free and
  * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
+ * Copyright (c) 1999-2010 by OpenMFG LLC, d/b/a xTuple.
  * It is licensed to you under the Common Public Attribution License
  * version 1.0, the full text of which (including xTuple-specific Exhibits)
  * is available at www.xtuple.com/CPAL.  By using this software, you agree
@@ -44,7 +44,7 @@ public:
     woList(QWidget*, Qt::WindowFlags = 0);
 
 public slots:
-    virtual void set(const ParameterList & pParams);
+    virtual void set( const ParameterList & pParams );
     virtual void sFillList();
 
 private:
@@ -62,7 +62,7 @@ public:
     woSearch(QWidget*, Qt::WindowFlags = 0);
 
 public slots:
-    void set(const ParameterList & pParams);
+    void set( ParameterList & pParams );
     void sFillList();
 
 private:
@@ -143,7 +143,6 @@ friend class WoCluster;
 class XTUPLEWIDGETS_EXPORT WoCluster : public QWidget
 {
   Q_OBJECT
-  Q_PROPERTY(QString label          READ label          WRITE setLabel)
   Q_PROPERTY(QString fieldName      READ fieldName      WRITE setFieldName)
   Q_PROPERTY(QString number         READ woNumber       WRITE setWoNumber       DESIGNABLE false)
   Q_PROPERTY(QString defaultNumber  READ defaultNumber                          DESIGNABLE false)
@@ -155,13 +154,7 @@ class XTUPLEWIDGETS_EXPORT WoCluster : public QWidget
 
     QString  defaultNumber()    { return QString();          }
     QString  fieldName()        { return _fieldName;         }
-    QString  woNumber() const;
-
-    virtual Qt::Orientation orientation();
-    virtual void setOrientation(Qt::Orientation orientation);
-
-    virtual QString label();
-    virtual void setLabel(const QString& p);
+    Q_INVOKABLE QString woNumber() const;
 
     inline void setType(int pWoType)           { _woNumber->setType(pWoType);           }
     inline int  type() const                   { return _woNumber->_woType;              }
@@ -193,28 +186,14 @@ class XTUPLEWIDGETS_EXPORT WoCluster : public QWidget
     void constructor();
 
     WoLineEdit  *_woNumber;
-    QLabel      *_woNumberLit;
     QLabel      *_warehouse;
     QLabel      *_itemNumber;
-    QLabel      *_itemNumberLit;
     QLabel      *_uom;
-    QLabel      *_uomLit;
     QLabel      *_descrip1;
     QLabel      *_descrip2;
     QLabel      *_status;
-    QLabel      *_statusLit;
     QLabel      *_method;
-    QLabel      *_methodLit;
     QString      _fieldName;
-    QHBoxLayout *_line1Layout;
-    QHBoxLayout *_line2Layout;
-    QHBoxLayout *_itemLayout;
-    QVBoxLayout *_mainLayout;
-    QHBoxLayout *_statusLayout;
-    QHBoxLayout *_uomLayout;
-    QHBoxLayout *_warehouseLayout;
-    QHBoxLayout *_woLayout;
-    Qt::Orientation _orientation;
 
   signals:
     void newId(int);
