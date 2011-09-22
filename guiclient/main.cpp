@@ -130,6 +130,189 @@ QString __password;
 
 extern void xTupleMessageOutput(QtMsgType type, const char *msg);
 
+
+void setApplicationVersion(QSplashScreen *_splash) 
+{
+  XSqlQuery metric;
+  metric.exec("SELECT metric_value"
+           "  FROM metric"
+           " WHERE (metric_name = 'Application')" );
+  if(!metric.first() || (metric.value("metric_value").toString() == "Standard"))
+  {
+    // check if the xtmfg package is installed
+    metric.exec("SELECT pkghead_name FROM pkghead WHERE pkghead_name='xtmfg'");
+    if(metric.first())
+    {
+      metric.exec("SELECT count(*) FROM pkghead WHERE pkghead_name IN ('xtprjaccnt','asset','assetdepn')");
+      if(metric.first() && metric.value(0).toInt() == 3)
+      {
+        _splash->setPixmap(QPixmap(":/images/splashEnterprise.png"));
+        _Name = _Name.arg("Enterprise");
+      }
+      else
+      {
+        _splash->setPixmap(QPixmap(":/images/splashMfgEdition.png"));
+        _Name = _Name.arg("Manufacturing");
+      }
+    }
+    else
+    {
+      _splash->setPixmap(QPixmap(":/images/splashStdEdition.png"));
+      _Name = _Name.arg("Standard");
+    }
+
+  }
+  else
+  {
+    metric.exec("SELECT pkghead_name FROM pkghead WHERE pkghead_name='xtprjaccnt'");
+    if(metric.first())
+    {
+      _splash->setPixmap(QPixmap(":/images/splashProject.png"));
+      _Name = _Name.arg("Project");
+    }
+    else
+    {
+      _splash->setPixmap(QPixmap(":/images/splashPostBooks.png"));
+      _Name = _Name.arg("PostBooks");
+    }
+  }
+}
+
+bool checkRegistration(QSplashScreen *_splash)
+{
+    XSqlQuery metric;
+    _splash->showMessage(QObject::tr("Checking License Key"), SplashTextAlignment, SplashTextColor);
+    qApp->processEvents();
+    metric.exec("SELECT count(*) AS registered, (SELECT count(*) FROM pg_stat_activity WHERE datname=current_database()) AS total"
+                "  FROM pg_stat_activity, pg_locks"
+                " WHERE((database=datid)"
+                "   AND (classid=datid)"
+                "   AND (objsubid=2)"
+                "   AND (procpid = pg_backend_pid()));");
+    int cnt = 50000;
+    int tot = 50000;
+    if(metric.first())
+    {
+      cnt = metric.value("registered").toInt();
+      tot = metric.value("total").toInt();
+    }
+    metric.exec("SELECT packageIsEnabled('drupaluserinfo') AS result;");
+    bool xtweb = false;
+    if(metric.first())
+      xtweb = metric.value("result").toBool();
+    metric.exec("SELECT metric_value"
+                "  FROM metric"
+                " WHERE(metric_name = 'ForceLicenseLimit');");
+    bool forceLimit = false;
+    bool forced = false;
+    if(metric.first())
+      forceLimit = metric.value("metric_value").toBool();
+    metric.exec("SELECT metric_value"
+                "  FROM metric"
+                " WHERE(metric_name = 'RegistrationKey');");
+    bool checkPass = true;
+    bool checkLock = false;
+    QString checkPassReason;
+    QString rkey = "";
+    if(metric.first())
+      rkey = metric.value("metric_value").toString();
+    XTupleProductKey pkey(rkey);
+    if(pkey.valid() && (pkey.version() == 1 || pkey.version() == 2))
+    {
+      if(pkey.expiration() < QDate::currentDate())
+      {
+        checkPass = false;
+        checkPassReason = QObject::tr("<p>Your license has expired.");
+        if(!pkey.perpetual())
+        {
+          int daysTo = pkey.expiration().daysTo(QDate::currentDate());
+          if(daysTo > 30)
+          {
+            checkLock = true;
+            checkPassReason = QObject::tr("<p>Your xTuple license expired over 30 days ago, and this software will no longer function. Please contact xTuple immediately to reinstate your software.");
+          }
+          else
+            checkPassReason = QObject::tr("<p>Attention:  Your xTuple license has expired, and in %1 days this software will cease to function.  Please make arrangements for immediate payment").arg(30 - daysTo);
+        }
+      }
+      else if(pkey.users() != 0 && (pkey.users() < cnt || (!xtweb && (pkey.users() * 2 < tot))))
+      {
+        checkPass = false;
+        checkPassReason = QObject::tr("<p>You have exceeded the number of allowed concurrent users for your license.");
+        checkLock = forced = forceLimit;
+      }
+      else
+      {
+        int daysTo = QDate::currentDate().daysTo(pkey.expiration());
+        if(!pkey.perpetual() && daysTo <= 15)
+        {
+          checkPass = false;
+          checkPassReason = QObject::tr("<p>Please note: your xTuple license will expire in %1 days.  You should already have received your renewal invoice; please contact xTuple at your earliest convenience.").arg(daysTo);
+        }
+      }
+    }
+    else
+    {
+      checkPass = false;
+      checkPassReason = QObject::tr("<p>The Registration key installed for this system does not appear to be valid.");
+    }
+
+    if(!checkPass)
+    {
+      _splash->hide();
+      if(checkLock)
+      {
+        QMessageBox::critical(0, QObject::tr("Registration Key"), checkPassReason);
+        if(!forced)
+          return false;
+      }
+      else
+      {
+        if(QMessageBox::critical(0, QObject::tr("Registration Key"), QObject::tr("%1\n<p>Would you like to continue anyway?").arg(checkPassReason), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
+          return false;
+      }
+
+      if(forced)
+        checkPassReason.append(" FORCED!");
+
+      metric.exec("SELECT current_database() AS db,"
+                  "       fetchMetricText('DatabaseName') AS dbname,"
+                  "       fetchMetricText('remitto_name') AS name;");
+      QString db = "";
+      QString dbname = "";
+      QString name = "";
+      if(metric.first())
+      {
+        db = metric.value("db").toString();
+        dbname = metric.value("dbname").toString();
+        name = metric.value("name").toString();
+      }
+
+      QHttp *http = new QHttp();
+
+      QUrl url;
+      url.setPath("/api/regviolation.php");
+      url.addQueryItem("key", QUrl::toPercentEncoding(rkey));
+      url.addQueryItem("error", QUrl::toPercentEncoding(checkPassReason));
+      url.addQueryItem("name", QUrl::toPercentEncoding(name));
+      url.addQueryItem("dbname", QUrl::toPercentEncoding(dbname));
+      url.addQueryItem("db", QUrl::toPercentEncoding(db));
+      url.addQueryItem("cnt", QString::number(cnt));
+      url.addQueryItem("tot", QString::number(tot));
+      url.addQueryItem("ver", _Version);
+
+      http->setHost("www.xtuple.org");
+      http->get(url.toString());
+
+      if(forced)
+        return true;
+
+      _splash->show();
+    }
+
+    return true;
+}
+
 int main(int argc, char *argv[])
 {
   Q_INIT_RESOURCE(guiclient);
@@ -304,181 +487,21 @@ int main(int argc, char *argv[])
     }
   }
 
-  XSqlQuery metric;
-  metric.exec("SELECT metric_value"
-           "  FROM metric"
-           " WHERE (metric_name = 'Application')" );
-  if(!metric.first() || (metric.value("metric_value").toString() == "Standard"))
-  {
-    // check if the xtmfg package is installed
-    metric.exec("SELECT pkghead_name FROM pkghead WHERE pkghead_name='xtmfg'");
-    if(metric.first())
-    {
-      metric.exec("SELECT count(*) FROM pkghead WHERE pkghead_name IN ('xtprjaccnt','asset','assetdepn')");
-      if(metric.first() && metric.value(0).toInt() == 3)
-      {
-        _splash->setPixmap(QPixmap(":/images/splashEnterprise.png"));
-        _Name = _Name.arg("Enterprise");
-      }
-      else
-      {
-        _splash->setPixmap(QPixmap(":/images/splashMfgEdition.png"));
-        _Name = _Name.arg("Manufacturing");
-      }
-    }
-    else
-    {
-      _splash->setPixmap(QPixmap(":/images/splashStdEdition.png"));
-      _Name = _Name.arg("Standard");
-    }
 
-    _splash->showMessage(QObject::tr("Checking License Key"), SplashTextAlignment, SplashTextColor);
-    qApp->processEvents();
-    metric.exec("SELECT count(*) AS registered, (SELECT count(*) FROM pg_stat_activity WHERE datname=current_database()) AS total"
-                "  FROM pg_stat_activity, pg_locks"
-                " WHERE((database=datid)"
-                "   AND (classid=datid)"
-                "   AND (objsubid=2)"
-                "   AND (procpid = pg_backend_pid()));");
-    int cnt = 50000;
-    int tot = 50000;
-    if(metric.first())
-    {
-      cnt = metric.value("registered").toInt();
-      tot = metric.value("total").toInt();
-    }
-    metric.exec("SELECT packageIsEnabled('drupaluserinfo') AS result;");
-    bool xtweb = false;
-    if(metric.first())
-      xtweb = metric.value("result").toBool();
-    metric.exec("SELECT metric_value"
-                "  FROM metric"
-                " WHERE(metric_name = 'ForceLicenseLimit');");
-    bool forceLimit = false;
-    bool forced = false;
-    if(metric.first())
-      forceLimit = metric.value("metric_value").toBool();
-    metric.exec("SELECT metric_value"
-                "  FROM metric"
-                " WHERE(metric_name = 'RegistrationKey');");
-    bool checkPass = true;
-    bool checkLock = false;
-    QString checkPassReason;
-    QString rkey = "";
-    if(metric.first())
-      rkey = metric.value("metric_value").toString();
-    XTupleProductKey pkey(rkey);
-    if(pkey.valid() && (pkey.version() == 1 || pkey.version() == 2))
-    {
-      if(pkey.expiration() < QDate::currentDate())
-      {
-        checkPass = false;
-        checkPassReason = QObject::tr("<p>Your license has expired.");
-        if(!pkey.perpetual())
-        {
-          int daysTo = pkey.expiration().daysTo(QDate::currentDate());
-          if(daysTo > 30)
-          {
-            checkLock = true;
-            checkPassReason = QObject::tr("<p>Your xTuple license expired over 30 days ago, and this software will no longer function. Please contact xTuple immediately to reinstate your software.");
-          }
-          else
-            checkPassReason = QObject::tr("<p>Attention:  Your xTuple license has expired, and in %1 days this software will cease to function.  Please make arrangements for immediate payment").arg(30 - daysTo);
-        }
-      }
-      else if(pkey.users() != 0 && (pkey.users() < cnt || (!xtweb && (pkey.users() * 2 < tot))))
-      {
-        checkPass = false;
-        checkPassReason = QObject::tr("<p>You have exceeded the number of allowed concurrent users for your license.");
-        checkLock = forced = forceLimit;
-      }
-      else
-      {
-        int daysTo = QDate::currentDate().daysTo(pkey.expiration());
-        if(!pkey.perpetual() && daysTo <= 15)
-        {
-          checkPass = false;
-          checkPassReason = QObject::tr("<p>Please note: your xTuple license will expire in %1 days.  You should already have received your renewal invoice; please contact xTuple at your earliest convenience.").arg(daysTo);
-        }
-      }
-    }
-    else
-    {
-      checkPass = false;
-      checkPassReason = QObject::tr("<p>The Registration key installed for this system does not appear to be valid.");
-    }
-    if(!checkPass)
-    {
-      _splash->hide();
-      if(checkLock)
-      {
-        QMessageBox::critical(0, QObject::tr("Registration Key"), checkPassReason);
-        if(!forced)
-          return 0;
-      }
-      else
-      {
-        if(QMessageBox::critical(0, QObject::tr("Registration Key"), QObject::tr("%1\n<p>Would you like to continue anyway?").arg(checkPassReason), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
-          return 0;
-      }
+    setApplicationVersion(_splash);
 
-      if(forced)
-        checkPassReason.append(" FORCED!");
+    qDebug() << _Name.data()->unicode();
 
-      metric.exec("SELECT current_database() AS db,"
-                  "       fetchMetricText('DatabaseName') AS dbname,"
-                  "       fetchMetricText('remitto_name') AS name;");
-      QString db = "";
-      QString dbname = "";
-      QString name = "";
-      if(metric.first())
-      {
-        db = metric.value("db").toString();
-        dbname = metric.value("dbname").toString();
-        name = metric.value("name").toString();
-      }
+    //if (_Name != QString("PostBooks"))
+    //checkRegistration(_splash);
 
-      QHttp *http = new QHttp();
-      
-      QUrl url;
-      url.setPath("/api/regviolation.php");
-      url.addQueryItem("key", QUrl::toPercentEncoding(rkey));
-      url.addQueryItem("error", QUrl::toPercentEncoding(checkPassReason));
-      url.addQueryItem("name", QUrl::toPercentEncoding(name));
-      url.addQueryItem("dbname", QUrl::toPercentEncoding(dbname));
-      url.addQueryItem("db", QUrl::toPercentEncoding(db));
-      url.addQueryItem("cnt", QString::number(cnt));
-      url.addQueryItem("tot", QString::number(tot));
-      url.addQueryItem("ver", _Version);
+    XSqlQuery metric;
 
-      http->setHost("www.xtuple.org");
-      http->get(url.toString());
 
-      if(forced)
-        return 0;
 
-      _splash->show();
-    }
-  }
-  else
-  {
-    metric.exec("SELECT pkghead_name FROM pkghead WHERE pkghead_name='xtprjaccnt'");
-    if(metric.first())
-    {
-      _splash->setPixmap(QPixmap(":/images/splashProject.png"));
-      _Name = _Name.arg("Project");
-    }
-    else
-    {
-      _splash->setPixmap(QPixmap(":/images/splashPostBooks.png"));
-      _Name = _Name.arg("PostBooks");
-    }
-  }
 
-  metric.exec("SELECT metric_value"
-           "  FROM metric"
-           " WHERE (metric_name = 'ServerVersion')" );
-  if(!metric.first() || (metric.value("metric_value").toString() != _dbVersion))
+  metric.exec("SELECT fetchMetricText('ServerVersion') as ver");
+  if(!metric.first() || (metric.value("ver").toString() != _dbVersion))
   {
     bool disallowMismatch = false;
     metric.exec("SELECT metric_value FROM metric WHERE(metric_name='DisallowMismatchClientVersion')");
@@ -773,3 +796,5 @@ int main(int argc, char *argv[])
 
   return 0;
 }
+
+
