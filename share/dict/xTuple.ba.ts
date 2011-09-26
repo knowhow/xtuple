@@ -6,43 +6,43 @@
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="37"/>
         <source>Address</source>
-        <translation type="unfinished">Adresa</translation>
+        <translation>Adresa</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="38"/>
         <source>Addresses</source>
-        <translation type="unfinished">Adrese</translation>
+        <translation>Adrese</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="50"/>
         <source>Street
 Address:</source>
-        <translation type="unfinished">Ulica:</translation>
+        <translation>Ulica:</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="54"/>
         <source>City:</source>
-        <translation type="unfinished">Grad:</translation>
+        <translation>Grad:</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="56"/>
         <source>State:</source>
-        <translation type="unfinished">Država:</translation>
+        <translation>Država:</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="58"/>
         <source>Postal Code:</source>
-        <translation type="unfinished">Poštanski broj:</translation>
+        <translation>Poštanski broj:</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="60"/>
         <source>Country:</source>
-        <translation type="unfinished">Država:</translation>
+        <translation>Država:</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="62"/>
         <source>Active</source>
-        <translation type="unfinished">Aktivan</translation>
+        <translation>Aktivan</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="265"/>
@@ -51,7 +51,7 @@ Address:</source>
         <location filename="../../widgets/addressCluster.cpp" line="612"/>
         <location filename="../../widgets/addressCluster.cpp" line="631"/>
         <source>A System Error Occurred at %1::%2.</source>
-        <translation type="unfinished">Desila se sistemska greška na %1::%2.</translation>
+        <translation>Desila se sistemska greška na %1::%2.</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="596"/>
@@ -76,29 +76,30 @@ Address:</source>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="26"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="541"/>
         <source>There are multiple Contacts sharing this Address.
 What would you like to do?</source>
-        <translation type="unfinished"></translation>
+        <translation>Postoji više kontakata koji dijele Ovu adresu.
+Šta želite uraditi ?</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="543"/>
         <source>Change This One</source>
-        <translation type="unfinished"></translation>
+        <translation>Promijeni ovu adresu</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="544"/>
         <source>Change Address for All</source>
-        <translation type="unfinished"></translation>
+        <translation>Promijeni adrese za sve</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="478"/>
         <location filename="../../widgets/addressCluster.cpp" line="556"/>
         <source>Error</source>
-        <translation type="unfinished">Greška</translation>
+        <translation>Greška</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="479"/>
@@ -121,48 +122,48 @@ What would you like to do?</source>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="680"/>
         <source>Line 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija 1</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="681"/>
         <source>Line 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija 2</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="682"/>
         <source>Line 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija 3</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="683"/>
         <source>City</source>
-        <translation type="unfinished"></translation>
+        <translation>Grad</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="684"/>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Država</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="685"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Država</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="686"/>
         <source>Postal Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Poštanski broj</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="702"/>
         <source>Only addresses for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Samo adrese za %1</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="726"/>
         <location filename="../../widgets/addressCluster.cpp" line="740"/>
         <source>A System Error Occurred at %1::%2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Desila se sistemska greška na %1::%2.</translation>
     </message>
 </context>
 <context>
@@ -205,47 +206,47 @@ What would you like to do?</source>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="826"/>
         <source>Line 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija 1</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="827"/>
         <source>Line 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija 2</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="828"/>
         <source>Line 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija 3</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="829"/>
         <source>City</source>
-        <translation type="unfinished"></translation>
+        <translation>Grad</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="830"/>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Država</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="831"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Država</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="832"/>
         <source>Postal Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Poštanski broj</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="854"/>
         <source>Only addresses for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Samo adrese za %1</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="936"/>
         <source>A System Error Occurred at %1::%2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Desila se sistemska greška na %1::%2.</translation>
     </message>
 </context>
 <context>
@@ -253,77 +254,77 @@ What would you like to do?</source>
     <message>
         <location filename="../../widgets/alarms.cpp" line="86"/>
         <source>Qualifier</source>
-        <translation type="unfinished"></translation>
+        <translation>Kvalifikator</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="87"/>
         <source>Due</source>
-        <translation type="unfinished"></translation>
+        <translation>Obaveza</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="88"/>
         <source>Event Recipient</source>
-        <translation type="unfinished"></translation>
+        <translation>Primalac događaja</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="89"/>
         <source>SysMsg Recipient</source>
-        <translation type="unfinished"></translation>
+        <translation>Primalac sistemske poruke</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="93"/>
         <source>Email Recipient</source>
-        <translation type="unfinished"></translation>
+        <translation>Primalac email-a</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="262"/>
         <source>Email</source>
-        <translation type="unfinished"></translation>
+        <translation>email</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="263"/>
         <source>Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Događaj</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="264"/>
         <source>System Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistemska poruka</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="265"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostalo</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="266"/>
         <source>minutes before</source>
-        <translation type="unfinished"></translation>
+        <translation>minuta prije</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="267"/>
         <source>hours before</source>
-        <translation type="unfinished"></translation>
+        <translation>sahata prije</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="268"/>
         <source>days before</source>
-        <translation type="unfinished"></translation>
+        <translation>dana prije</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="269"/>
         <source>mintues after</source>
-        <translation type="unfinished"></translation>
+        <translation>minuta nakon</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="270"/>
         <source>hours after</source>
-        <translation type="unfinished"></translation>
+        <translation>sahata nakon</translation>
     </message>
     <message>
         <location filename="../../widgets/alarms.cpp" line="271"/>
         <source>days after</source>
-        <translation type="unfinished"></translation>
+        <translation>dana nakon</translation>
     </message>
 </context>
 <context>
