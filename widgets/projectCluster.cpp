@@ -44,7 +44,7 @@ ProjectLineEdit::ProjectType ProjectCluster::type()
 }
 
 ProjectLineEdit::ProjectLineEdit(QWidget* pParent, const char* pName) :
-    CrmClusterLineEdit(pParent, "prj()", "prj_id", "prj_number", "prj_name", 0, "prj_owner_username", "prj_username", 0, pName)
+    CrmClusterLineEdit(pParent, "prj", "prj_id", "prj_number", "prj_name", 0, "prj_owner_username", "prj_username", 0, pName)
 {
   setTitles(tr("Project"), tr("Projects"));
   setUiName("project");
@@ -75,6 +75,10 @@ void ProjectLineEdit::buildExtraClause()
   QString typeClause;
   QString statusClause;
   QStringList clauses;
+
+  CrmClusterLineEdit::buildExtraClause();
+  if(!_extraClause.isEmpty())
+    extraClause.append(_extraClause);
 
   // Add in type clause
   if (_type & SalesOrder)    clauses << "(prj_so)";

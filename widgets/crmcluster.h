@@ -44,6 +44,8 @@ class XTUPLEWIDGETS_EXPORT CrmClusterLineEdit : public VirtualClusterLineEdit
       virtual void silentSetId(const int);
 
     protected:
+      void buildExtraClause();
+
       QString _editOwnPriv;
       QString _viewOwnPriv;
       QString _owner;

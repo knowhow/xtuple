@@ -69,32 +69,32 @@ void applyARDiscount::sApply()
 
 void applyARDiscount::populate()
 {
-  q.prepare("SELECT cust_name as f_cust, "
-              "CASE WHEN (aropen_doctype='I') THEN 'Invoice' "
-              "WHEN (aropen_doctype='C') THEN 'Credit Memo' "
-              "ELSE aropen_doctype "
-              "END AS f_doctype, "
-              "aropen_docnumber, "
-		      "aropen_docdate,(terms_code|| '-' || terms_descrip) AS f_terms, "
-		      "(aropen_docdate + terms_discdays) AS discdate,terms_discprcnt,applied, "
-		      "aropen_amount,aropen_curr_id, "
-              "((aropen_docdate + terms_discdays) < CURRENT_DATE) AS past "
-              "FROM aropen LEFT OUTER JOIN terms ON (aropen_terms_id=terms_id),custinfo, "
-              "     (SELECT COALESCE(SUM(arapply_applied),0) AS applied "
-		      "      FROM arapply, aropen "
-              "      WHERE ((arapply_target_aropen_id=:apopen_id) "
-              "AND "
-              "(arapply_source_aropen_id=aropen_id) "
-              "AND  (aropen_discount) "
-              " ) ) AS data "
-              "WHERE ((aropen_cust_id=cust_id) "
-              "AND  (aropen_id=:aropen_id) );");
+  q.prepare("SELECT cust_name, aropen_docnumber, aropen_docdate,"
+            "       CASE WHEN (aropen_doctype='I') THEN :invoice "
+            "            WHEN (aropen_doctype='C') THEN :creditmemo "
+            "            ELSE aropen_doctype "
+            "       END AS f_doctype, "
+            "       (terms_code || '-' || terms_descrip) AS f_terms, "
+            "       determineDiscountDate(terms_id, aropen_docdate) AS discdate, "
+            "       terms_discprcnt, applied, "
+            "       aropen_amount,aropen_curr_id, "
+            "       (determineDiscountDate(terms_id, aropen_docdate) < CURRENT_DATE) AS past "
+            "FROM aropen LEFT OUTER JOIN terms ON (aropen_terms_id=terms_id) "
+            "            JOIN custinfo ON (cust_id=aropen_cust_id), "
+            "     ( SELECT COALESCE(SUM(arapply_applied),0) AS applied "
+            "       FROM arapply, aropen "
+            "       WHERE ((arapply_target_aropen_id=:aropen_id) "
+            "         AND  (arapply_source_aropen_id=aropen_id) "
+            "         AND  (aropen_discount)) ) AS data "
+            "WHERE (aropen_id=:aropen_id);");
   q.bindValue(":aropen_id", _aropenid);
+  q.bindValue(":invoice", tr("Invoice"));
+  q.bindValue(":creditmemo", tr("Credit Memo"));
   q.exec();
 
   if(q.first())
   {
-    _cust->setText(q.value("f_cust").toString());
+    _cust->setText(q.value("cust_name").toString());
 
     _doctype->setText(q.value("f_doctype").toString());
     _docnum->setText(q.value("aropen_docnumber").toString());

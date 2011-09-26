@@ -81,27 +81,21 @@ void dspOrderActivityByProject::sPopulateMenu(QMenu * pMenu, QTreeWidgetItem*, i
   if(list()->altId() == 15)
   {
     menuItem = pMenu->addAction(tr("Edit Quote..."), this, SLOT(sEdit()));
-    menuItem->setEnabled(_privileges->check("MaintainAllQuotes") ||
-                         _privileges->check("MaintainPersonalQuotes"));
+    menuItem->setEnabled(_privileges->check("MaintainQuotes"));
 
     menuItem = pMenu->addAction(tr("View Quote..."), this, SLOT(sView()));
-    menuItem->setEnabled(_privileges->check("MaintainAllQuotes") ||
-                         _privileges->check("ViewAllQuotes") ||
-                         _privileges->check("MaintainPersonalQuotes") ||
-                         _privileges->check("ViewPersonalQuotes"));
+    menuItem->setEnabled(_privileges->check("MaintainQuotes") ||
+                         _privileges->check("ViewQuotes") );
   }
 
   if(list()->altId() == 17)
   {
     menuItem = pMenu->addAction(tr("Edit Quote Item..."), this, SLOT(sEdit()));
-    menuItem->setEnabled(_privileges->check("MaintainAllQuotes") ||
-                         _privileges->check("MaintainPersonalQuotes"));
+    menuItem->setEnabled(_privileges->check("MaintainQuotes"));
 
     menuItem = pMenu->addAction(tr("View Quote Item..."), this, SLOT(sView()));
-    menuItem->setEnabled(_privileges->check("MaintainAllQuotes") ||
-                         _privileges->check("ViewAllQuotes") ||
-                         _privileges->check("MaintainPersonalQuotes") ||
-                         _privileges->check("ViewPersonalQuotes"));
+    menuItem->setEnabled(_privileges->check("MaintainQuotes") ||
+                         _privileges->check("ViewQuotes"));
   }
 
   if(list()->altId() == 25)

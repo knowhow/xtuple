@@ -73,30 +73,31 @@ void applyDiscount::sApply()
 void applyDiscount::populate()
 {
   q.prepare("SELECT (vend_number|| '-' || vend_name) as f_vend,"
-            "       CASE WHEN (apopen_doctype='V') THEN 'Voucher'"
-            "            WHEN (apopen_doctype='D') THEN 'Debit Memo'"
+            "       CASE WHEN (apopen_doctype='V') THEN :voucher"
+            "            WHEN (apopen_doctype='D') THEN :debitmemo"
             "            ELSE apopen_doctype"
             "       END AS f_doctype,"
             "       apopen_docnumber,"
             "       apopen_docdate, "
-            "       (terms_code|| '-' || terms_descrip) AS f_terms,"
+            "       (terms_code || '-' || terms_descrip) AS f_terms,"
             "       determineDiscountDate(apopen_terms_id, apopen_docdate) AS discdate,"
             "       terms_discprcnt,"
             "       apopen_amount, apopen_discountable_amount, apopen_curr_id, applied, "
             "       noNeg(apopen_discountable_amount *"
-            "             CASE WHEN (CURRENT_DATE <= (apopen_docdate + terms_discdays)) THEN terms_discprcnt"
+            "             CASE WHEN (CURRENT_DATE <= determineDiscountDate(terms_id, apopen_docdate)) THEN terms_discprcnt"
             "             ELSE 0.0 END - applied) AS amount,"
-            "       ((apopen_docdate + terms_discdays) < CURRENT_DATE) AS past"
-            "  FROM apopen LEFT OUTER JOIN terms ON (apopen_terms_id=terms_id),"
-            "       vend, "
+            "       (determineDiscountDate(terms_id, apopen_docdate) < CURRENT_DATE) AS past"
+            "  FROM apopen LEFT OUTER JOIN terms ON (apopen_terms_id=terms_id)"
+            "              JOIN vend ON (apopen_vend_id=vend_id), "
             "       (SELECT COALESCE(SUM(apapply_amount),0) AS applied"
             "          FROM apapply, apopen"
             "         WHERE ((apapply_target_apopen_id=:apopen_id)"
             "           AND  (apapply_source_apopen_id=apopen_id)"
             "           AND  (apopen_discount)) ) AS data"
-            " WHERE ((apopen_vend_id=vend_id)"
-            "   AND  (apopen_id=:apopen_id)); ");
+            " WHERE (apopen_id=:apopen_id); ");
   q.bindValue(":apopen_id", _apopenid);
+  q.bindValue(":voucher", tr("Voucher"));
+  q.bindValue(":debitmemo", tr("Debit Memo"));
   q.exec();
 
   if(q.first())

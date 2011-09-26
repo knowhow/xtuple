@@ -232,8 +232,7 @@ customer::customer(QWidget* parent, const char* name, Qt::WFlags fl)
   else
     _graceDays->setValue(_metrics->value("DefaultAutoCreditWarnGraceDays").toInt());
 
-  if (!_privileges->check("MaintainAllQuotes") && !_privileges->check("ViewAllQuotes") &&
-      !_privileges->check("MaintainPersonalQuotes") && !_privileges->check("ViewPersonalQuotes"))
+  if (!_privileges->check("MaintainQuotes") && !_privileges->check("ViewQuotes"))
     _quotesButton->setEnabled(false);
   if (!_privileges->check("MaintainSalesOrders") && !_privileges->check("ViewSalesOrders"))
     _ordersButton->setEnabled(false);

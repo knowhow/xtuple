@@ -1046,11 +1046,11 @@ void opportunity::sPopulateSalesMenu(QMenu *pMenu)
   if(_salesList->currentItem())
   {
     editPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("MaintainSalesOrders")) );
 
     viewPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("ViewSalesOrders")) );
 
     convertPriv = (cNew == _mode || cEdit == _mode) &&
@@ -1075,7 +1075,7 @@ void opportunity::sHandleSalesPrivs()
 {
   bool isCustomer = (_custid > -1);
   
-  bool newQuotePriv = ((cNew == _mode || cEdit == _mode) && _privileges->check("MaintainAllQuotes"));
+  bool newQuotePriv = ((cNew == _mode || cEdit == _mode) && _privileges->check("MaintainQuotes"));
   bool newSalesOrderPriv = ((cNew == _mode || cEdit == _mode) && isCustomer && _privileges->check("MaintainSalesOrders"));
 
   bool editPriv = false;
@@ -1100,11 +1100,11 @@ void opportunity::sHandleSalesPrivs()
   if(_salesList->currentItem())
   {
     editPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("MaintainQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("MaintainSalesOrders")) );
 
     viewPriv = (cNew == _mode || cEdit == _mode) && (
-      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewAllQuotes")) ||
+      (0 == _salesList->currentItem()->altId() && _privileges->check("ViewQuotes")) ||
       (1 == _salesList->currentItem()->altId() && _privileges->check("ViewSalesOrders")) );
 
     convertPriv = (cNew == _mode || cEdit == _mode) &&

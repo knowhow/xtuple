@@ -14,7 +14,7 @@ to be bound by its terms.</comment>
     <x>0</x>
     <y>0</y>
     <width>757</width>
-    <height>549</height>
+    <height>572</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -930,7 +930,7 @@ to be bound by its terms.</comment>
                </property>
               </widget>
              </item>
-             <item row="2" column="0" colspan="2">
+             <item row="3" column="0" colspan="2">
               <widget class="QGroupBox" name="_remitToGroup">
                <property name="title">
                 <string>Remit-To Address</string>
@@ -1015,7 +1015,7 @@ to be bound by its terms.</comment>
                </layout>
               </widget>
              </item>
-             <item row="3" column="0" colspan="2">
+             <item row="4" column="0" colspan="2">
               <widget class="QGroupBox" name="_warnLate">
                <property name="title">
                 <string>Credit Warn Customers when Late</string>
@@ -1066,7 +1066,7 @@ to be bound by its terms.</comment>
                </layout>
               </widget>
              </item>
-             <item row="4" column="0" colspan="2">
+             <item row="5" column="0" colspan="2">
               <layout class="QHBoxLayout">
                <item>
                 <widget class="QLabel" name="_recurringBufferLit">
@@ -1100,7 +1100,7 @@ to be bound by its terms.</comment>
                </item>
               </layout>
              </item>
-             <item row="5" column="0" colspan="2">
+             <item row="6" column="0" colspan="2">
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
                 <widget class="QLabel" name="_incdtCategory_2">
@@ -1143,6 +1143,13 @@ to be bound by its terms.</comment>
                 </spacer>
                </item>
               </layout>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="_discountTax">
+               <property name="text">
+                <string>Credit Taxes for Early Payment Discounts</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
