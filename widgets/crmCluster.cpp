@@ -75,9 +75,6 @@ void CrmClusterLineEdit::setTableAndColumnNames(const char* pTabName,
   if (_hasActive)
     _query += QString(", %1 AS active ").arg(pActiveColumn);
 
-  // This strips parenthesis off table function to get to root table
-  _setQuery = _query + QString("FROM %1 WHERE (TRUE) ").arg(QString(pTabName).replace("()",""));
-
   _query += QString("FROM %1 WHERE (TRUE) ").arg(pTabName);
 
   _idClause = QString(" AND (%1=:id) ").arg(pIdColumn);
@@ -105,7 +102,7 @@ void CrmClusterLineEdit::silentSetId(const int pId)
   else
   {
     XSqlQuery idQ;
-    idQ.prepare(_setQuery + _idClause + QString(";"));
+    idQ.prepare(_query + _idClause + QString(";"));
     idQ.bindValue(":id", pId);
     idQ.exec();
     if (idQ.first())
@@ -194,11 +191,31 @@ void CrmClusterLineEdit::sOpen()
 void CrmClusterLineEdit::setEditOwnPriv(const QString& priv)
 {
   _editOwnPriv = priv;
+  buildExtraClause();
   sUpdateMenu();
 }
 
 void CrmClusterLineEdit::setViewOwnPriv(const QString& priv)
 {
   _viewOwnPriv = priv;
+  buildExtraClause();
   sUpdateMenu();
+}
+
+void CrmClusterLineEdit::buildExtraClause()
+{
+  if ( _x_privileges &&
+       !_x_privileges->check(_editPriv) &&
+       !_x_privileges->check(_viewPriv) &&
+       (_x_privileges->check(_editOwnPriv) || _x_privileges->check(_viewOwnPriv) ) )
+  {
+    QStringList userCols;
+    if(_hasOwner)
+      userCols.append(_ownerColName);
+    if(_hasAssignto)
+      userCols.append(_assigntoColName);
+
+    _extraClause = QString("'%1' IN (%2)").arg(_x_username).arg(userCols.join(","));
+  }
+
 }

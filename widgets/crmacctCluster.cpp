@@ -150,7 +150,7 @@ CRMAcctLineEdit::CRMAcctSubtype CRMAcctCluster::subtype() const
 }
 
 CRMAcctLineEdit::CRMAcctLineEdit(QWidget* pParent, const char* pName) :
-    CrmClusterLineEdit(pParent, "crmacct()", "crmacct_id", "crmacct_number", "crmacct_name", 0, "crmacct_owner_username", 0, 0, pName, "crmacct_active")
+    CrmClusterLineEdit(pParent, "crmacct", "crmacct_id", "crmacct_number", "crmacct_name", 0, "crmacct_owner_username", 0, 0, pName, "crmacct_active")
 {
   setTitles(tr("CRM Account"), tr("CRM Accounts"));
   setUiName("crmaccount");
