@@ -168,6 +168,22 @@ void sysLocale::sSave()
 
   QLocale sampleLocale = generateLocale();
 
+
+  QString short_date = sampleLocale.dateFormat(QLocale::ShortFormat);
+  QString long_date = sampleLocale.dateFormat(QLocale::LongFormat)
+
+  QString short_time = sampleLocale.dateTimeFormat(QLocale::ShortFormat);
+  QString long_time = sampleLocale.dateTimeFormat(QLocale::LongFormat)
+
+
+  if (sampleLocale.name() == "bs_BA")
+  {
+	  qDebug << "bosanski lokal cu morati patchirati jer u qtlib to ne valja";
+      
+	  short_date = "dd.MM.yy";
+	  long_date = "DD.MM.yyyy";
+  }
+
   if (_mode == cNew)
   {
     q.prepare( "INSERT INTO locale "
@@ -249,10 +265,10 @@ void sysLocale::sSave()
   q.bindValue(":locale_altemphasis_color", _alternate->text());
   q.bindValue(":locale_expired_color",     _expired->text());
   q.bindValue(":locale_future_color",      _future->text());
-  q.bindValue(":locale_dateformat",     convert(sampleLocale.dateFormat(QLocale::ShortFormat)));
-  q.bindValue(":locale_timeformat",     convert(sampleLocale.timeFormat(QLocale::ShortFormat)));
-  q.bindValue(":locale_timestampformat",convert(sampleLocale.dateFormat(QLocale::ShortFormat)) +
-                                  " " + convert(sampleLocale.timeFormat(QLocale::ShortFormat)));
+  q.bindValue(":locale_dateformat",     convert(short_date));
+  q.bindValue(":locale_timeformat",     convert(short_time));
+  q.bindValue(":locale_timestampformat",convert(short_date) +
+                                  " " + convert(short_time));
   {
     QString intervalfmt = convert(sampleLocale.timeFormat(QLocale::ShortFormat).remove("ap", Qt::CaseInsensitive));
     intervalfmt.insert(intervalfmt.indexOf("HH") + 2, "24");
@@ -644,6 +660,7 @@ QLocale sysLocale::generateLocale()
 
   if (_country->id() > 0)
   {
+	qDebug() << "cuntry_id" <<  _country->id();
     q.prepare("SELECT country_qt_number "
               "FROM country "
               "WHERE (country_id=:countryid);");
