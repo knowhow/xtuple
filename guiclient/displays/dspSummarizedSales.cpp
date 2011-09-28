@@ -31,7 +31,7 @@ dspSummarizedSales::dspSummarizedSales(QWidget* parent, const char*, Qt::WFlags 
   parameterWidget()->append(tr("Ship Start Date"), "shipStartDate", ParameterWidget::Date);
   parameterWidget()->append(tr("Ship End Date"),   "shipEndDate",   ParameterWidget::Date);
   parameterWidget()->appendComboBox(tr("Currency"), "curr_id", XComboBox::Currencies);
-  parameterWidget()->append(tr("Currency Pattern"), "currConcat_patternn", ParameterWidget::Text);
+  parameterWidget()->append(tr("Currency Pattern"), "currConcat_pattern", ParameterWidget::Text);
   parameterWidget()->append(tr("Customer"),   "cust_id",   ParameterWidget::Customer);
   parameterWidget()->append(tr("Customer Ship-to"),   "shipto_id",   ParameterWidget::Shipto);
   parameterWidget()->appendComboBox(tr("Customer Group"), "custgrp_id", XComboBox::CustomerGroups);

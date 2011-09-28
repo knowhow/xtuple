@@ -167,7 +167,7 @@ enum SetResponse crmaccount::set(const ParameterList &pParams)
       XSqlQuery insq;
       insq.prepare("INSERT INTO crmacct(crmacct_number, crmacct_name,"
                    "                    crmacct_active, crmacct_type)"
-                   "  SELECT 'TEMPORARY' || (last_value + 1), '', false, 'O'"
+                   "  SELECT 'TEMPORARY' || (last_value + 1), '', true, 'O'"
                    "    FROM crmacct_crmacct_id_seq"
                    " RETURNING crmacct_id AS result;");
       insq.bindValue(":crmacct_id", _crmacctId);

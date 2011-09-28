@@ -95,7 +95,6 @@ ParameterWidget::ParameterWidget(QWidget *pParent, const char *pName)  :
 {
   setupUi(this);
 
-
   if(pName)
     setObjectName(pName);
 
@@ -1273,33 +1272,29 @@ ParameterList ParameterWidget::parameters()
 void ParameterWidget::repopulateComboboxes()
 {
   QRegExp rx("^xcomboBox");
+  XComboBox *signaler = qobject_cast<XComboBox *>(sender());
 
-  QList<XComboBox *> xlist = _filterGroup->findChildren<XComboBox*>(rx);
-  QMapIterator<int, ParamProps* > j(_params);
   QString current;
   QString value;
-  int idx;
-  for (int i = 0; i < xlist.count(); i++)
+  foreach (XComboBox *combobox,
+           _filterGroup->findChildren<XComboBox*>(rx))
   {
-    current = xlist.at(i)->currentText();
-    QStringList split = xlist.at(i)->itemData(xlist.at(i)->currentIndex()).toString().split(":");
-    disconnect(xlist.at(i), 0, this, 0);
-    xlist.at(i)->clear();
-    while (j.hasNext())
+    if (signaler && signaler == combobox)
+      continue; // avoid Qt bug 20415
+
+    current = combobox->currentText();
+    QStringList split = combobox->itemData(combobox->currentIndex()).toString().split(":");
+    combobox->blockSignals(true);
+    combobox->clear();
+    foreach (ParamProps *pp, _params)
     {
-      j.next();
-      ParamProps* pp = j.value();
       value = split[0] + ":" + QString().setNum(pp->paramType);
       if ( !containsUsedType(pp->name) || current == pp->name )
-        xlist.at(i)->addItem(pp->name, value );
+        combobox->addItem(pp->name, value );
     }
-    j.toFront();
 
-    idx = xlist.at(i)->findText(current);
-    xlist.at(i)->setCurrentIndex(idx);
-    connect(xlist.at(i), SIGNAL(currentIndexChanged(int)), this, SLOT( addUsedType() ) );
-    connect(xlist.at(i), SIGNAL(currentIndexChanged(int)), this, SLOT( changeFilterObject(int)) );
-    connect(xlist.at(i), SIGNAL(currentIndexChanged(int)), this, SLOT( repopulateComboboxes() ) );
+    combobox->setText(current);
+    combobox->blockSignals(false);
   }
 }
 
@@ -1668,10 +1663,6 @@ void ParameterWidget::storeFilterValue(int pId, QObject* filter)
     QString username = usernameCluster->username();
     _filterValues[foundRow] = qMakePair(pp->param, QVariant(username));
     emit updated();
-    if (classname == "XComboBox")
-    {
-      _saveButton->setDisabled(true);
-    }
   }
   else if (classname == "QCheckBox")
   {

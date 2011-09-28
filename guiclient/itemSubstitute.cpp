@@ -27,7 +27,7 @@ itemSubstitute::itemSubstitute(QWidget* parent, const char* name, bool modal, Qt
   connect(_close, SIGNAL(clicked()), this, SLOT(reject()));
   connect(_save, SIGNAL(clicked()), this, SLOT(sSave()));
 
-  _uomRatio->setValidator(omfgThis->percentVal());
+  _uomRatio->setValidator(omfgThis->ratioVal());
   _uomRatio->setText("1.0");
 }
 

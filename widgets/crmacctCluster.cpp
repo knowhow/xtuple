@@ -73,7 +73,7 @@ static QString _listAndSearchQueryString(
       "    SELECT prospect_id AS id,         prospect_number AS number,"
       "           prospect_name AS name,     prospect_cntct_id AS cntct_id,"
       "           prospect_active AS active, cntct_addr_id AS addr_id"
-      "      FROM prospect()"
+      "      FROM prospect"
       "      LEFT OUTER JOIN cntct ON (prospect_cntct_id=cntct_id)"
       "<? endif ?>"
       "  ) AS crminfo"

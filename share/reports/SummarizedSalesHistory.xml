@@ -91,8 +91,20 @@ WHERE (true
  AND (itemsite_warehous_id=&lt;? value("warehous_id") ?>)
 &lt;? endif ?>
 
+&lt;? if exists("item_id") ?>
+ AND (itemsite_item_id=&lt;? value("item_id") ?>)
+&lt;? endif ?>
+
 &lt;? if exists("cust_id") ?>
  AND (cohist_cust_id=&lt;? value("cust_id") ?>)
+&lt;? endif ?>
+
+&lt;? if exists("shipto_id") ?>
+ AND (cohist_shipto_id=&lt;? value("shipto_id") ?>)
+&lt;? endif ?>
+
+&lt;? if exists("salesrep_id") ?>
+ AND (cohist_salesrep_id=&lt;? value("salesrep_id") ?>)
 &lt;? endif ?>
 
 &lt;? if exists("prodcat_id") ?>
@@ -100,7 +112,7 @@ WHERE (true
 &lt;? endif ?>
 
 &lt;? if exists("prodcat_pattern") ?>
- AND (item_prodcat_id IN (SELECT prodcat_id FROM prodcat WHERE (prodcat_code ~ &lt;? value("prodcat_pattern") ?>))) 
+ AND (prodcat_code ~ &lt;? value("prodcat_pattern") ?>) 
 &lt;? endif ?>
 
 &lt;? if exists("custtype_id") ?>
@@ -108,8 +120,21 @@ WHERE (true
 &lt;? endif ?>
 
 &lt;? if exists("custtype_pattern") ?>
-   AND (cust_custtype_id IN (SELECT custtype_id FROM custtype WHERE (custtype_code ~ &lt;? value("custtype_pattern") ?>)))
+   AND (custtype_code ~ &lt;? value("custtype_pattern") ?>)
 &lt;? endif ?> 
+
+&lt;? if exists("custgrp_id") ?>
+  AND (cust_id IN (SELECT DISTINCT custgrpitem_cust_id
+                   FROM custgrpitem
+                   WHERE (custgrpitem_custgrp_id=&lt;? value("custgrp_id") ?>)))
+&lt;? endif ?>
+
+&lt;? if exists("custgrp_pattern") ?>
+  AND (cust_id IN (SELECT DISTINCT custgrpitem_cust_id
+                   FROM custgrp, custgrpitem
+                   WHERE ( (custgrpitem_custgrp_id=custgrp_id)
+                     AND   (custgrp_name ~ &lt;? value("custgrp_pattern") ?>) )) )
+&lt;? endif ?>
 
 &lt;? if exists("shipzone_id") ?>
  AND (shipzone_id=&lt;? value("shipzone_id") ?>)
@@ -120,7 +145,7 @@ WHERE (true
 &lt;? endif ?>
 
 &lt;? if exists("currConcat_pattern") ?>
- AND cust_curr_id IN (SELECT curr_id FROM curr_symbol WHERE currConcat(curr_id) ~ &lt;? value("currConcat_pattern") ?>) 
+ AND (currAbbr ~ &lt;? value("currConcat_pattern") ?>) 
 &lt;? endif ?>
 ) 
 GROUP BY dummy

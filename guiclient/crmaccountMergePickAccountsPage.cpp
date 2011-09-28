@@ -102,7 +102,7 @@ void CrmaccountMergePickAccountsPage::cleanupPage()
   _data->_targetid_cache = _target->id();
   _data->_ids_cache.clear();
   for (int i = 0; i < _target->count(); i++)
-    _data->_ids_cache[i] = _target->id(i);
+    _data->_ids_cache.append(_target->id(i));
 }
 
 void CrmaccountMergePickAccountsPage::initializePage()
@@ -233,7 +233,7 @@ bool CrmaccountMergePickAccountsPage::validatePage()
   _data->_targetid_cache = _target->id();
   _data->_ids_cache.clear();
   for (int i = 0; i < _target->count(); i++)
-    _data->_ids_cache[i] = _target->id(i);
+    _data->_ids_cache.append(_target->id(i));
 
   wizard()->page(crmaccountMerge::Page_PickTask)->initializePage();
   setField("_existingMerge", field("_target"));
@@ -247,7 +247,7 @@ void CrmaccountMergePickAccountsPage::sFillList()
   int prevtarget = _target->id();
   QList<int> ids;
   for (int i = 0; i < _target->count(); i++)
-    ids[i] = _target->id(i);
+    ids.append(_target->id(i));
 
   // repopulate
   _target->clear();
