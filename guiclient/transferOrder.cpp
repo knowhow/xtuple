@@ -1038,7 +1038,7 @@ void transferOrder::sHandleButtons()
         _delete->setEnabled(FALSE);
       }
 
-      if(1 == lineMode || 4 == lineMode)
+      if(1 == lineMode || 4 == lineMode || 5 == lineMode)
       {
         _issueStock->setEnabled(FALSE);
         _issueLineBalance->setEnabled(FALSE);

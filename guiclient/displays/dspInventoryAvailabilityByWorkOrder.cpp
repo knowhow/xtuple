@@ -54,6 +54,7 @@ dspInventoryAvailabilityByWorkOrder::dspInventoryAvailabilityByWorkOrder(QWidget
   list()->addColumn(tr("Total Avail."),_qtyColumn, Qt::AlignRight, true, "woinvav_totalavail");
   list()->addColumn(tr("Type"),                 0, Qt::AlignLeft, false, "woinvav_type");
 
+
   connect(omfgThis, SIGNAL(workOrdersUpdated(int, bool)), this, SLOT(sFillList()));
 }
 
@@ -208,8 +209,8 @@ void dspInventoryAvailabilityByWorkOrder::sViewAllocations()
 {
   q.prepare( "SELECT womatl_duedate "
              "FROM womatl "
-             "WHERE (womatl_itemsite_id=:womatl_itemsite_id);" );
-  q.bindValue(":womatl_itemsite_id", list()->id());
+             "WHERE (womatl_id=:womatl_id);" );
+  q.bindValue(":womatl_id", list()->altId());
   q.exec();
   if (q.first())
   {
@@ -228,8 +229,8 @@ void dspInventoryAvailabilityByWorkOrder::sViewOrders()
 {
   q.prepare( "SELECT womatl_duedate "
              "FROM womatl "
-             "WHERE (womatl_itemsite_id=:womatl_itemsite_id);" );
-  q.bindValue(":womatl_itemsite_id", list()->id());
+             "WHERE (womatl_id=:womatl_id);" );
+  q.bindValue(":womatl_id", list()->altId());
   q.exec();
   if (q.first())
   {
@@ -259,8 +260,8 @@ void dspInventoryAvailabilityByWorkOrder::sViewSubstituteAvailability()
 {
   q.prepare( "SELECT womatl_duedate "
              "FROM womatl "
-             "WHERE (womatl_itemsite_id=:womatl_itemsite_id);" );
-  q.bindValue(":womatl_itemsite_id", list()->id());
+             "WHERE (womatl_id=:womatl_id);" );
+  q.bindValue(":womatl_id", list()->altId());
   q.exec();
   if (q.first())
   {
@@ -278,7 +279,6 @@ void dspInventoryAvailabilityByWorkOrder::sViewSubstituteAvailability()
 
 void dspInventoryAvailabilityByWorkOrder::sCreatePR()
 {
-  int currentAltId = 0;
   ParameterList params;
   params.append("mode", "new");
   params.append("itemsite_id", list()->id());
@@ -287,19 +287,14 @@ void dspInventoryAvailabilityByWorkOrder::sCreatePR()
   newdlg.set(params);
   newdlg.exec();
 
-  q.prepare("SELECT womatl_id FROM womatl WHERE womatl_itemsite_id = :womatl_itemsite_id");
-  q.bindValue(":womatl_itemsite_id", list()->id());
-  q.exec();
-  if (q.first())
-    currentAltId =  q.value("womatl_id").toInt();
   int currentId = list()->id();
+  int currentAltId = list()->altId();
   sFillList();
   list()->setId(currentId,currentAltId);
 }
 
 void dspInventoryAvailabilityByWorkOrder::sCreatePO()
 {
-  int currentAltId = 0;
   ParameterList params;
   params.append("mode", "new");
   params.append("itemsite_id", list()->id());
@@ -308,19 +303,14 @@ void dspInventoryAvailabilityByWorkOrder::sCreatePO()
   if(newdlg->set(params) == NoError)
     omfgThis->handleNewWindow(newdlg);
 
-  q.prepare("SELECT womatl_id FROM womatl WHERE womatl_itemsite_id = :womatl_itemsite_id");
-  q.bindValue(":womatl_itemsite_id", list()->id());
-  q.exec();
-  if (q.first())
-    currentAltId =  q.value("womatl_id").toInt();
   int currentId = list()->id();
+  int currentAltId = list()->altId();
   sFillList();
   list()->setId(currentId,currentAltId);
 }
 
 void dspInventoryAvailabilityByWorkOrder::sCreateWO()
 {
-  int currentAltId = 0;
   ParameterList params;
   params.append("mode", "new");
   params.append("itemsite_id", list()->id());
@@ -329,19 +319,14 @@ void dspInventoryAvailabilityByWorkOrder::sCreateWO()
   newdlg->set(params);
   omfgThis->handleNewWindow(newdlg);
 
-  q.prepare("SELECT womatl_id FROM womatl WHERE womatl_itemsite_id = :womatl_itemsite_id");
-  q.bindValue(":womatl_itemsite_id", list()->id());
-  q.exec();
-  if (q.first())
-    currentAltId =  q.value("womatl_id").toInt();
   int currentId = list()->id();
+  int currentAltId = list()->altId();
   sFillList();
   list()->setId(currentId,currentAltId);
 }
 
 void dspInventoryAvailabilityByWorkOrder::sPostMiscProduction()
 {
-  int currentAltId = 0;
   ParameterList params;
   params.append("itemsite_id", list()->id());
 
@@ -349,12 +334,8 @@ void dspInventoryAvailabilityByWorkOrder::sPostMiscProduction()
   newdlg.set(params);
   newdlg.exec();
 
-  q.prepare("SELECT womatl_id FROM womatl WHERE womatl_itemsite_id = :womatl_itemsite_id");
-  q.bindValue(":womatl_itemsite_id", list()->id());
-  q.exec();
-  if (q.first())
-    currentAltId =  q.value("womatl_id").toInt();
   int currentId = list()->id();
+  int currentAltId = list()->altId();
   sFillList();
   list()->setId(currentId,currentAltId);
 }
@@ -371,7 +352,6 @@ void dspInventoryAvailabilityByWorkOrder::sIssueCountTag()
 
 void dspInventoryAvailabilityByWorkOrder::sEnterMiscCount()
 {  
-  int currentAltId = 0;
   ParameterList params;
   params.append("itemsite_id", list()->id());
   
@@ -379,12 +359,8 @@ void dspInventoryAvailabilityByWorkOrder::sEnterMiscCount()
   newdlg.set(params);
   newdlg.exec();
 
-  q.prepare("SELECT womatl_id FROM womatl WHERE womatl_itemsite_id = :womatl_itemsite_id");
-  q.bindValue(":womatl_itemsite_id", list()->id());
-  q.exec();
-  if (q.first())
-    currentAltId =  q.value("womatl_id").toInt();
   int currentId = list()->id();
+  int currentAltId = list()->altId();
   sFillList();
   list()->setId(currentId,currentAltId);
 }
