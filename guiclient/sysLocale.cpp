@@ -170,15 +170,15 @@ void sysLocale::sSave()
 
 
   QString short_date = sampleLocale.dateFormat(QLocale::ShortFormat);
-  QString long_date = sampleLocale.dateFormat(QLocale::LongFormat)
+  QString long_date = sampleLocale.dateFormat(QLocale::LongFormat);
 
   QString short_time = sampleLocale.dateTimeFormat(QLocale::ShortFormat);
-  QString long_time = sampleLocale.dateTimeFormat(QLocale::LongFormat)
+  QString long_time = sampleLocale.dateTimeFormat(QLocale::LongFormat);
 
 
   if (sampleLocale.name() == "bs_BA")
   {
-	  qDebug << "bosanski lokal cu morati patchirati jer u qtlib to ne valja";
+	  qDebug() << "bosanski lokal cu morati patchirati jer u qtlib to ne valja";
       
 	  short_date = "dd.MM.yy";
 	  long_date = "DD.MM.yyyy";
