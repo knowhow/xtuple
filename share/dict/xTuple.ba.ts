@@ -117,7 +117,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="679"/>
         <source>CRM Account</source>
-        <translation type="unfinished"></translation>
+        <translation>CRM korisnik</translation>
     </message>
     <message>
         <location filename="../../widgets/addressCluster.cpp" line="680"/>
@@ -1929,12 +1929,12 @@ What would you like to do?</source>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="157"/>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="236"/>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Greška baze podataka</translation>
     </message>
     <message>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="158"/>
         <source>You don&apos;t have permission to process Credit Card transactions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemate pravo procesirati kreditnu karticu</translation>
     </message>
     <message>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="159"/>
@@ -1979,7 +1979,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="168"/>
         <source>Credit Card %1 has expired.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreditna kartica %1 je istekla.</translation>
     </message>
     <message>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="169"/>
@@ -2023,7 +2023,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="178"/>
         <source>%1 is not implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nije implementiran.</translation>
     </message>
     <message>
         <location filename="../../guiclient/creditcardprocessor.cpp" line="179"/>
@@ -3001,12 +3001,13 @@ What would you like to do?</source>
         <location filename="../../widgets/currCluster.cpp" line="924"/>
         <location filename="../../widgets/currCluster.cpp" line="974"/>
         <source>A System Error occurred at %1::%2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Desila se sistemska greška na %1::%2.</translation>
     </message>
     <message>
         <location filename="../../widgets/currCluster.cpp" line="610"/>
         <source>N/A</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>nedostupno</translatorcomment>
+        <translation>N/D</translation>
     </message>
 </context>
 <context>
