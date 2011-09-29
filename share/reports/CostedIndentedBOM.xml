@@ -3,6 +3,12 @@
  <title>Costed Indented Bill of Materials</title>
  <name>CostedIndentedBOM</name>
  <description></description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
@@ -16,17 +22,16 @@
        item_descrip1,
        item_descrip2,
        &lt;? if exists("useActualCosts") ?>
-         text('Using Actual Costs')
+         text('Using Actual Costs') AS lbl_usecosts,
+         (SELECT formatCost(SUM(bomdata_actextendedcost))
+          FROM indentedbom(&lt;? value("item_id") ?>,&lt;? value("revision_id") ?>,0,0)
+          WHERE (bomdata_bomwork_level=1)) as t_extendedcost,
        &lt;? else ?>
-         text('Using Standard Costs')
+         text('Using Standard Costs') AS lbl_usecosts,
+         (SELECT formatCost(SUM(bomdata_stdextendedcost))
+          FROM indentedbom(&lt;? value("item_id") ?>,&lt;? value("revision_id") ?>,0,0)
+          WHERE (bomdata_bomwork_level=1)) as t_extendedcost,
        &lt;? endif ?>
-       AS lbl_usecosts,
-       (select formatCost(sum(extendedcost)) from 
-(select CASE WHEN(bomdata_bomwork_parent_id=-1) THEN bomdata_stdextendedcost
-            ELSE 0
-       END AS extendedcost,
-       bomdata_bomwork_level
-FROM indentedBOM(&lt;? value("item_id") ?>,&lt;? value("revision_id") ?>,0,0))foo) as t_extendedcost,
        formatCost(actcost(item_id)) AS f_actual,
        formatCost(stdcost(item_id)) AS f_standard
   FROM item JOIN uom ON (uom_id=item_inv_uom_id)
