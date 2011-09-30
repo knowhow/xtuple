@@ -1,6 +1,7 @@
-<RCC version="1.0">
+<RCC>
   <qresource prefix="/login">
+    <file>images/poweredbyxtuple_transparent.gif</file>
     <file>images/splashXTuple.png</file>
+    <file>images/login_p1.png</file>
   </qresource>
 </RCC>
-

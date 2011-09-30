@@ -1,12 +1,41 @@
 /*
- * This file is part of the xTuple ERP: PostBooks Edition, a free and
- * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
- * It is licensed to you under the Common Public Attribution License
- * version 1.0, the full text of which (including xTuple-specific Exhibits)
- * is available at www.xtuple.com/CPAL.  By using this software, you agree
- * to be bound by its terms.
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at http://www.xTuple.com/CPAL.  
+ * The License is based on the Mozilla Public License Version 1.1 but Sections 14 and 15 
+ * have been added to cover use of software over a computer network and provide for limited attribution 
+ * for the Original Developer. In addition, Exhibit A has been modified to be consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing rights and limitations under the License. 
+ *
+ * The Original Code is xTuple ERP: PostBooks Edition
+ *
+ * The Initial Developer of the Original Code is OpenMFG, LLC, d/b/a xTuple. 
+ * All portions of the code written by xTuple are Copyright (c) 1999-2011 
+ * OpenMFG, LLC, d/b/a xTuple. All Rights Reserved. 
+ *
+ * Contributor(s):
+ * - hernad - Ernad Husremovic, hernad@bring.out.ba
+ *
+ * ----------------------------------------------------------------------------
+ * 
+ * Modified by bring.out doo Sarajevo as part of knowhow ERP project 2010-2011.  
+ *
+ * CHANGELOG
+ * ===========
+ * 2011-09-30, hernad, xTuple splashScreen 
+ *             changed to knowhow ERP, powered by xTuple 
+ *             http://redmine.bring.out.ba/issues/24643
+ *            
+ * 2011-09-28, hernad, cleanup main.cpp, 
+ *             turn off registration check from xTuple commercial versions
+ *             new functions  getApplicationEdition, checkRegistration
+ *             http://redmine.bring.out.ba/issues/24478 
+ * ----------------------------------------------------------------------------
  */
+
 
 /*! \mainpage xTuple ERP Programmer Reference Index Page
 
@@ -131,12 +160,22 @@ QString __password;
 extern void xTupleMessageOutput(QtMsgType type, const char *msg);
 
 
-void setApplicationVersion(QSplashScreen *_splash) 
+void setApplicationEdition(QSplashScreen *_splash) 
 {
+  
+  _splash->setPixmap(QPixmap(":/images/splashKnowhow.png"));	
+  _Name = _Name.arg("PostBooks");
+  /*
+  ovo ima smisla kasnije reaktivirati ... ali na drugi nacin
+
   XSqlQuery metric;
   metric.exec("SELECT metric_value"
            "  FROM metric"
            " WHERE (metric_name = 'Application')" );
+
+  */
+
+  /*
   if(!metric.first() || (metric.value("metric_value").toString() == "Standard"))
   {
     // check if the xtmfg package is installed
@@ -176,6 +215,7 @@ void setApplicationVersion(QSplashScreen *_splash)
       _Name = _Name.arg("PostBooks");
     }
   }
+  */
 }
 
 bool checkRegistration(QSplashScreen *_splash)
@@ -488,7 +528,7 @@ int main(int argc, char *argv[])
   }
 
 
-    setApplicationVersion(_splash);
+    setApplicationEdition(_splash);
 
     qDebug() << _Name.data()->unicode();
 

@@ -1,11 +1,34 @@
 /*
- * This file is part of the xTuple ERP: PostBooks Edition, a free and
- * open source Enterprise Resource Planning software suite,
- * Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
- * It is licensed to you under the Common Public Attribution License
- * version 1.0, the full text of which (including xTuple-specific Exhibits)
- * is available at www.xtuple.com/CPAL.  By using this software, you agree
- * to be bound by its terms.
+ * The contents of this file are subject to the Common Public Attribution License Version 1.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at http://www.xTuple.com/CPAL.  
+ * The License is based on the Mozilla Public License Version 1.1 but Sections 14 and 15 
+ * have been added to cover use of software over a computer network and provide for limited attribution 
+ * for the Original Developer. In addition, Exhibit A has been modified to be consistent with Exhibit B.
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis, 
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing rights and limitations under the License. 
+ *
+ * The Original Code is xTuple ERP: PostBooks Edition
+ *
+ * The Initial Developer of the Original Code is OpenMFG, LLC, d/b/a xTuple. 
+ * All portions of the code written by xTuple are Copyright (c) 1999-2011 
+ * OpenMFG, LLC, d/b/a xTuple. All Rights Reserved. 
+ *
+ * Contributor(s):
+ * - hernad - Ernad Husremovic, hernad@bring.out.ba
+ *
+ * ----------------------------------------------------------------------------
+ * 
+ * Modified by bring.out doo Sarajevo as part of knowhow ERP project 2010-2011.  
+ *
+ * CHANGELOG
+ * ===========
+ * 2011-09-30, hernad, xTuple cloud option excluded
+ *                     login xTuple => knowhow ERP, powered by xTuple
+ *                     http://redmine.bring.out.ba/issues/24643 
+ * ----------------------------------------------------------------------------
  */
 
 #include "login2.h"
@@ -51,7 +74,7 @@ login2::login2(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
 
   connect(_buttonBox, SIGNAL(accepted()), this, SLOT(sLogin()));
   connect(_options, SIGNAL(clicked()), this, SLOT(sOptions()));
-  connect(_cloudLink, SIGNAL(linkActivated(QString)), this, SLOT(cloudLink(QString)));
+  //connect(_cloudLink, SIGNAL(linkActivated(QString)), this, SLOT(cloudLink(QString)));
   connect(_otherOption, SIGNAL(toggled(bool)), _options, SLOT(setEnabled(bool)));
   connect(_otherOption, SIGNAL(toggled(bool)), _recent, SLOT(setEnabled(bool)));
 
@@ -60,7 +83,7 @@ login2::login2(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _captive = false; _nonxTupleDB = false;
   _multipleConnections = false;
   _evalDatabaseURL = "pgsql://demo.xtuple.com:5434/%1";
-  _cloudDatabaseURL= "pgsql://cloud.xtuple.com:5432/%1";
+  //_cloudDatabaseURL= "pgsql://cloud.xtuple.com:5432/%1";
 
   _password->setEchoMode(QLineEdit::Password);
 
@@ -70,9 +93,9 @@ login2::login2(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _requireSSL = xtsettingsValue("/xTuple/_requireSSL", false).toBool();
   if(xtsettingsValue("/xTuple/_demoOption", false).toBool())
     _demoOption->setChecked(true);
-  else if(xtsettingsValue("/xTuple/_cloudOption", false).toBool())
-    _cloudOption->setChecked(true);
-  _company->setText(xtsettingsValue("/xTuple/cloud_company", "").toString());
+  //else if(xtsettingsValue("/xTuple/_cloudOption", false).toBool())
+  //  _cloudOption->setChecked(true);
+  //_company->setText(xtsettingsValue("/xTuple/cloud_company", "").toString());
 
   adjustSize();
 }
@@ -132,9 +155,9 @@ int login2::set(const ParameterList &pParams, QSplashScreen *pSplash)
   if (valid)
     _demoOption->setChecked(TRUE);
 
-  param = pParams.value("cloud", &valid);
-  if (valid)
-    _cloudOption->setChecked(true);
+  //param = pParams.value("cloud", &valid);
+  //if (valid)
+  //  _cloudOption->setChecked(true);
 
   param = pParams.value("company", &valid);
   if (valid)
@@ -180,8 +203,8 @@ void login2::sLogin()
   databaseURL = _databaseURL;
   if (_demoOption->isChecked())
     databaseURL = _evalDatabaseURL.arg(_username->text().trimmed());
-  else if(_cloudOption->isChecked())
-    databaseURL = _cloudDatabaseURL.arg(_company->text().trimmed());
+  //else if(_cloudOption->isChecked())
+  //  databaseURL = _cloudDatabaseURL.arg(_company->text().trimmed());
 
   QString protocol;
   QString hostName;
@@ -237,6 +260,7 @@ void login2::sLogin()
   _cUsername = _username->text().trimmed();
   _cPassword = _password->text().trimmed();
   _cCompany  = _company->text().trimmed();
+  /*
   if(_cloudOption->isChecked())
   {
     if(_cCompany.isEmpty())
@@ -247,6 +271,7 @@ void login2::sLogin()
     }
     _cUsername = _cUsername + "_" + _cCompany;
   }
+  */
 
   db.setUserName(_cUsername);
   if(_demoOption->isChecked())
@@ -254,11 +279,13 @@ void login2::sLogin()
     QString passwd = QMd5(QString(_cPassword + "private" + _cUsername)); 
     db.setPassword(passwd);
   }
+  /*
   else if(_cloudOption->isChecked())
   {
     QString passwd = QMd5(QString(_cPassword + "cloudkey" + _cUsername)); 
     db.setPassword(passwd);
   }
+  */
   else
   {
     if(_enhancedAuth)
@@ -324,8 +351,10 @@ void login2::sLogin()
   }
 
   xtsettingsSetValue("/xTuple/_demoOption", (bool)_demoOption->isChecked());
+  /*
   xtsettingsSetValue("/xTuple/_cloudOption", (bool)_cloudOption->isChecked());
   xtsettingsSetValue("/xTuple/cloud_company", _company->text());
+  */
 
   if (_splash)
   {
@@ -442,7 +471,8 @@ QString login2::company()
 
 bool login2::useCloud() const
 {
-  return _cloudOption->isChecked();
+  return false;
+  //return _cloudOption->isChecked();
 }
 
 void login2::setLogo(const QImage & img)
@@ -465,7 +495,7 @@ void login2::setRequireSSL(bool on)
 
 void login2::updateRecentOptions()
 {
-  if (_demoOption->isChecked() || _cloudOption->isChecked())
+  if (_demoOption->isChecked()) //|| _cloudOption->isChecked())
     return;
 
     
@@ -533,7 +563,10 @@ void login2::clearRecentOptions()
     updateRecentOptionsActions();
 }
 
-void login2::cloudLink(const QString & /*link*/)
+/*
+void login2::cloudLink(const QString &)
 {
   QDesktopServices::openUrl(QUrl("http://www.xtuple.com/cloud"));
 }
+*/
+

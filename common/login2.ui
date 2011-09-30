@@ -13,8 +13,8 @@ to be bound by its terms.</comment>
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>400</height>
+    <width>627</width>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,11 @@ to be bound by its terms.</comment>
          <item>
           <widget class="QLabel" name="_logo">
            <property name="text">
-            <string/>
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/login/images/login_p1.png&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="pixmap">
             <pixmap resource="xTupleCommon.qrc">:/login/images/splashXTuple.png</pixmap>
@@ -2486,26 +2490,6 @@ to be bound by its terms.</comment>
          <property name="spacing">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QRadioButton" name="_cloudOption">
-           <property name="text">
-            <string>Log in to my company's</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="_cloudLink">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>&lt;a href=&quot;cloud&quot;&gt;xTuple cloud database&lt;/a&gt;</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item>
@@ -2797,15 +2781,26 @@ to be bound by its terms.</comment>
          <enum>Qt::Vertical</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::Expanding</enum>
+         <enum>QSizePolicy::Fixed</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>0</height>
+          <height>10</height>
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/login/images/poweredbyxtuple_transparent.gif&quot; /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -2815,7 +2810,6 @@ to be bound by its terms.</comment>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>_otherOption</tabstop>
-  <tabstop>_cloudOption</tabstop>
   <tabstop>_demoOption</tabstop>
   <tabstop>_company</tabstop>
   <tabstop>_username</tabstop>
@@ -2886,38 +2880,6 @@ to be bound by its terms.</comment>
     <hint type="destinationlabel">
      <x>355</x>
      <y>330</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_cloudOption</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_company</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>110</x>
-     <y>271</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>188</x>
-     <y>335</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>_cloudOption</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>_companyLit</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>68</x>
-     <y>271</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>68</x>
-     <y>335</y>
     </hint>
    </hints>
   </connection>
