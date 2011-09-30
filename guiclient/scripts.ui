@@ -1,5 +1,5 @@
-<ui version="4.0" stdsetdef="1" >
-  <author></author>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <comment>This file is part of the xTuple ERP: PostBooks Edition, a free and
 open source Enterprise Resource Planning software suite,
 Copyright (c) 1999-2011 by OpenMFG LLC, d/b/a xTuple.
@@ -7,164 +7,223 @@ It is licensed to you under the Common Public Attribution License
 version 1.0, the full text of which (including xTuple-specific Exhibits)
 is available at www.xtuple.com/CPAL.  By using this software, you agree
 to be bound by its terms.</comment>
-  <exportmacro></exportmacro>
-  <class>scripts</class>
-  <widget class="QWidget" name="scripts" >
-    <property name="geometry" >
-      <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>432</width>
-        <height>359</height>
-      </rect>
-    </property>
-    <property name="windowTitle" >
-      <string>List Scripts</string>
-    </property>
-      <layout class="QHBoxLayout" >
-        <item>
-          <layout class="QVBoxLayout" >
-            <property name="margin" >
-              <number>0</number>
-            </property>
-            <property name="spacing" >
-              <number>0</number>
-            </property>
-            <item>
-              <widget class="QLabel" name="_scripts" >
-                <property name="text" >
-                  <string>Scripts:</string>
-                </property>
-              </widget>
-            </item>
-            <item>
-              <widget class="XTreeWidget" name="_script" >
-                <property name="sizePolicy" >
-                  <sizepolicy>
-                    <hsizetype>7</hsizetype>
-                    <vsizetype>7</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                  </sizepolicy>
-                </property>
-              </widget>
-            </item>
-          </layout>
-        </item>
-        <item>
-          <layout class="QVBoxLayout" >
-            <property name="margin" >
-              <number>0</number>
-            </property>
-            <property name="spacing" >
-              <number>5</number>
-            </property>
-            <item>
-              <widget class="QPushButton" name="_close" >
-                <property name="text" >
-                  <string>&amp;Close</string>
-                </property>
-              </widget>
-            </item>
-            <item>
-              <layout class="QVBoxLayout" >
-                <property name="margin" >
-                  <number>0</number>
-                </property>
-                <property name="spacing" >
-                  <number>0</number>
-                </property>
-                <item>
-                  <widget class="QPushButton" name="_new" >
-                    <property name="text" >
-                      <string>&amp;New</string>
-                    </property>
-                  </widget>
-                </item>
-                <item>
-                  <widget class="QPushButton" name="_edit" >
-                    <property name="enabled" >
-                      <bool>false</bool>
-                    </property>
-                    <property name="text" >
-                      <string>&amp;Edit</string>
-                    </property>
-                  </widget>
-                </item>
-                <item>
-                  <widget class="QPushButton" name="_delete" >
-                    <property name="enabled" >
-                      <bool>false</bool>
-                    </property>
-                    <property name="text" >
-                      <string>&amp;Delete</string>
-                    </property>
-                  </widget>
-                </item>
-              </layout>
-            </item>
-            <item>
-              <spacer name="Spacer270" >
-                <property name="sizeHint" >
-                  <size>
-                    <width>20</width>
-                    <height>20</height>
-                  </size>
-                </property>
-                <property name="sizeType" >
-                  <enum>Expanding</enum>
-                </property>
-                <property name="orientation" >
-                  <enum>Vertical</enum>
-                </property>
-              </spacer>
-            </item>
-          </layout>
-        </item>
+ <class>scripts</class>
+ <widget class="QWidget" name="scripts">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>432</width>
+    <height>359</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>List Scripts</string>
+  </property>
+  <layout class="QHBoxLayout">
+   <item>
+    <layout class="QVBoxLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="_scripts">
+         <property name="text">
+          <string>Scripts:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="XCheckBox" name="_byPackage">
+         <property name="text">
+          <string>Organize By Package</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
-  </widget>
-  <layoutdefault spacing="6" margin="11" />
-  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
-  <customwidgets>
-    <customwidget>
-      <class>XTreeWidget</class>
-      <extends>QTreeWidget</extends>
-      <header>xtreewidget.h</header>
-      <container>0</container>
-      <pixmap></pixmap>
-    </customwidget>
-  </customwidgets>
-  <tabstops>
-    <tabstop>_script</tabstop>
-    <tabstop>_new</tabstop>
-    <tabstop>_edit</tabstop>
-    <tabstop>_delete</tabstop>
-    <tabstop>_close</tabstop>
-  </tabstops>
-  <connections>
-    <connection>
-      <sender>_script</sender>
-      <signal>valid(bool)</signal>
-      <receiver>_delete</receiver>
-      <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-      <sender>_script</sender>
-      <signal>itemSelected(int)</signal>
-      <receiver>_edit</receiver>
-      <slot>animateClick()</slot>
-    </connection>
-    <connection>
-      <sender>_script</sender>
-      <signal>valid(bool)</signal>
-      <receiver>_edit</receiver>
-      <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-      <sender>_close</sender>
-      <signal>clicked()</signal>
-      <receiver>scripts</receiver>
-      <slot>close()</slot>
-    </connection>
-  </connections>
+     </item>
+     <item>
+      <widget class="XTreeWidget" name="_script">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QPushButton" name="_close">
+       <property name="text">
+        <string>&amp;Close</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_new">
+       <property name="text">
+        <string>&amp;New</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_edit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>&amp;Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="_delete">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>&amp;Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="Spacer270">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>XCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>xcheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>XTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>xtreewidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>_script</tabstop>
+  <tabstop>_close</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>_script</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_delete</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_script</sender>
+   <signal>itemSelected(int)</signal>
+   <receiver>_edit</receiver>
+   <slot>animateClick()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_script</sender>
+   <signal>valid(bool)</signal>
+   <receiver>_edit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_close</sender>
+   <signal>clicked()</signal>
+   <receiver>scripts</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

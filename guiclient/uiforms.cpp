@@ -14,11 +14,14 @@
 #include <QMessageBox>
 #include <QSqlError>
 
+#include <mqlutil.h>
 #include <parameter.h>
-#include "xuiloader.h"
-#include "uiform.h"
+
+#include "errorReporter.h"
 #include "guiclient.h"
+#include "uiform.h"
 #include "xmainwindow.h"
+#include "xuiloader.h"
 
 #define DEBUG false
 
@@ -27,18 +30,18 @@ uiforms::uiforms(QWidget* parent, const char* name, Qt::WFlags fl)
 {
   setupUi(this);
 
-  connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
-  connect(_edit, SIGNAL(clicked()), this, SLOT(sEdit()));
-  connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
-  connect(_test, SIGNAL(clicked()), this, SLOT(sTest()));
-  
-  connect(_uiform, SIGNAL(newId(int)), this, SLOT(sHandleButtons()));
+  connect(_byPackage, SIGNAL(toggled(bool)), this, SLOT(sFillList()));
+  connect(_delete,        SIGNAL(clicked()), this, SLOT(sDelete()));
+  connect(_edit,          SIGNAL(clicked()), this, SLOT(sEdit()));
+  connect(_new,           SIGNAL(clicked()), this, SLOT(sNew()));
+  connect(_test,          SIGNAL(clicked()), this, SLOT(sTest()));
+  connect(_uiform,       SIGNAL(newId(int)), this, SLOT(sHandleButtons()));
 
   _uiform->addColumn(tr("Name"),   _itemColumn, Qt::AlignLeft,  true, "uiform_name");
   _uiform->addColumn(tr("Description"),     -1, Qt::AlignLeft,  true, "uiform_notes");
   _uiform->addColumn(tr("Grade"),    _ynColumn, Qt::AlignCenter,true, "uiform_order");
   _uiform->addColumn(tr("Enabled"),  _ynColumn, Qt::AlignCenter,true, "uiform_enabled");
-  _uiform->addColumn(tr("Package"),_itemColumn, Qt::AlignLeft,  true, "nspname");
+  _uiform->addColumn(tr("Package"),_itemColumn, Qt::AlignLeft,  true, "pkgname");
 
   sFillList();
 }
@@ -86,68 +89,69 @@ void uiforms::sDelete()
                             QMessageBox::No) == QMessageBox::No)
     return;
 
-  q.prepare( "DELETE FROM uiform "
-             "WHERE (uiform_id=:uiform_id);" );
-  q.bindValue(":uiform_id", _uiform->id());
-  q.exec();
-  if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  XSqlQuery delq;
+  delq.prepare("DELETE FROM uiform WHERE (uiform_id=:uiform_id);" );
+  delq.bindValue(":uiform_id", _uiform->id());
+  delq.exec();
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Deleting Screen"),
+                           delq, __FILE__, __LINE__))
     return;
-  }
 
   sFillList();
 }
 
+bool uiforms::setParams(ParameterList &params)
+{
+  if (_byPackage->isChecked())
+    params.append("byPackage");
+
+  return true;
+}
+
 void uiforms::sFillList()
 {
-  XSqlQuery r;
-  r.exec(" SELECT uiform_id, uiform_name, uiform_notes, uiform_order, uiform_enabled,"
-         "        CASE WHEN nspname='public' THEN ''"
-         "             ELSE nspname END AS nspname,"
-         "        CASE WHEN (pkghead_id IS NULL) THEN 0"
-         "             ELSE 1 END AS xtindentrole"
-         " FROM uiform, pg_class, pg_namespace"
-         "   LEFT OUTER JOIN pkghead ON (nspname=pkghead_name) "
-         " WHERE ((uiform.tableoid=pg_class.oid)"
-         "   AND  (relnamespace=pg_namespace.oid))"
-         " UNION "
-         " SELECT -1, pkghead_name, pkghead_descrip, NULL, NULL, pkghead_name, 0"
-         " FROM uiform, pg_class, pg_namespace"
-         "   RIGHT OUTER JOIN pkghead ON (nspname=pkghead_name) "
-         " WHERE ((uiform.tableoid=pg_class.oid)"
-         "   AND  (relnamespace=pg_namespace.oid))"
-         " ORDER BY nspname, xtindentrole, uiform_name, uiform_order, uiform_id;" );
-  _uiform->populate(r);
-  if (r.lastError().type() != QSqlError::NoError)
+  QString errmsg;
+  bool    ok;
+  MetaSQLQuery  getm = MQLUtil::mqlLoad("uiforms", "detail", errmsg, &ok);
+  if (! ok)
   {
-    systemError(this, r.lastError().databaseText(), __FILE__, __LINE__);
+    ErrorReporter::error(QtCriticalMsg, this, tr("Getting Screens"),
+                         errmsg, __FILE__, __LINE__);
     return;
   }
+
+  ParameterList getp;
+  if (! setParams(getp))
+    return;
+
+  XSqlQuery getq = getm.toQuery(getp);
+  _uiform->populate(getq);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Screens"),
+                           getq, __FILE__, __LINE__))
+    return;
 }
 
 void uiforms::sTest()
 {
-  q.prepare("SELECT *"
-            "  FROM uiform "
-            " WHERE(uiform_id=:uiform_id);");
-  q.bindValue(":uiform_id", _uiform->id());
-  q.exec();
-  if (q.first())
+  XSqlQuery getq;
+  getq.prepare("SELECT *"
+               "  FROM uiform "
+               " WHERE(uiform_id=:uiform_id);");
+  getq.bindValue(":uiform_id", _uiform->id());
+  getq.exec();
+  if (getq.first())
     ; // everything's OK
-  else if (q.lastError().type() != QSqlError::NoError)
-  {
-    systemError(this, q.lastError().databaseText(), __FILE__, __LINE__);
+  else if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Form"),
+                                getq, __FILE__, __LINE__))
     return;
-  }
   else
     return;
-  
+
   XMainWindow * wnd = new XMainWindow();
-  wnd->setObjectName(q.value("uiform_name").toString());
+  wnd->setObjectName(getq.value("uiform_name").toString());
 
   XUiLoader loader;
-  QByteArray ba = q.value("uiform_source").toString().toUtf8();
+  QByteArray ba = getq.value("uiform_source").toString().toUtf8();
   if (DEBUG)
     qDebug("about to load a uiFile with %s", ba.constData());
   QBuffer uiFile(&ba);
@@ -175,10 +179,10 @@ void uiforms::sTest()
 
 void uiforms::sHandleButtons()
 {
-    if (_uiform->id() < 0)
-    {
-        _delete->setEnabled(false);
-        _edit->setEnabled(false);
-        _test->setEnabled(false);
-    }
+  if (_uiform->id() < 0)
+  {
+    _delete->setEnabled(false);
+    _edit->setEnabled(false);
+    _test->setEnabled(false);
+  }
 }

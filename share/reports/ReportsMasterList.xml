@@ -3,17 +3,22 @@
  <title>Reports Master List</title>
  <name>ReportsMasterList</name>
  <description></description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>50</topmargin>
  <bottommargin>50</bottommargin>
  <rightmargin>50</rightmargin>
  <leftmargin>50</leftmargin>
- <querysource>
+ <querysource loadFromDb="true">
   <name>detail</name>
-  <sql>select report_name, report_descrip
-  from report
-order by report_name;</sql>
+  <mqlgroup>reports</mqlgroup>
+  <mqlname>detail</mqlname>
  </querysource>
  <rpthead>
   <height>76</height>
@@ -82,7 +87,7 @@ order by report_name;</sql>
   <label>
    <rect>
     <x>10</x>
-    <y>0</y>
+    <y>-1</y>
     <width>95</width>
     <height>15</height>
    </rect>
@@ -105,7 +110,7 @@ order by report_name;</sql>
   <label>
    <rect>
     <x>265</x>
-    <y>0</y>
+    <y>-1</y>
     <width>80</width>
     <height>15</height>
    </rect>
@@ -128,9 +133,9 @@ order by report_name;</sql>
    <height>16</height>
    <field>
     <rect>
-     <x>265</x>
-     <y>0</y>
-     <width>475</width>
+     <x>80</x>
+     <y>2</y>
+     <width>175</width>
      <height>15</height>
     </rect>
     <font>
@@ -139,31 +144,51 @@ order by report_name;</sql>
      <weight>bold</weight>
     </font>
     <left/>
-    <vcenter/>
-    <data>
-     <query>detail</query>
-     <column>report_descrip</column>
-    </data>
-   </field>
-   <field>
-    <rect>
-     <x>10</x>
-     <y>0</y>
-     <width>250</width>
-     <height>15</height>
-    </rect>
-    <font>
-     <face>Arial</face>
-     <size>8</size>
-     <weight>bold</weight>
-    </font>
-    <left/>
-    <vcenter/>
+    <top/>
     <data>
      <query>detail</query>
      <column>report_name</column>
     </data>
    </field>
+   <field>
+    <rect>
+     <x>0</x>
+     <y>2</y>
+     <width>75</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>detail</query>
+     <column>pkgname</column>
+    </data>
+   </field>
+   <text>
+    <rect>
+     <x>265</x>
+     <y>2</y>
+     <width>475</width>
+     <height>15</height>
+    </rect>
+    <bottompad>1</bottompad>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <top/>
+    <data>
+     <query>detail</query>
+     <column>report_descrip_qttooltiprole</column>
+    </data>
+   </text>
   </detail>
  </section>
  <pgfoot>
@@ -171,7 +196,7 @@ order by report_name;</sql>
   <field>
    <rect>
     <x>90</x>
-    <y>0</y>
+    <y>1</y>
     <width>100</width>
     <height>15</height>
    </rect>
@@ -190,7 +215,7 @@ order by report_name;</sql>
   <label>
    <rect>
     <x>615</x>
-    <y>0</y>
+    <y>1</y>
     <width>85</width>
     <height>15</height>
    </rect>
@@ -222,7 +247,7 @@ order by report_name;</sql>
   <field>
    <rect>
     <x>705</x>
-    <y>0</y>
+    <y>1</y>
     <width>40</width>
     <height>15</height>
    </rect>

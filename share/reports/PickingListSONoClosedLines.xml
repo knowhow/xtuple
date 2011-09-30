@@ -116,7 +116,7 @@
    &lt;? if exists("hide closed") ?>
    AND (coitem_status &lt;> 'C')
 -- 2 REMOVE THIS AND CLOSED LINES WILL NOT DISPLAY ON PACKING LIST  
--- &lt;? endif ?>
+   &lt;? endif ?>
    AND (coitem_cohead_id=&lt;? value("sohead_id") ?>)
 )
 GROUP BY coitem_qty_uom_id, coitem_linenumber, coitem_subnumber, coitem_id, coitem_memo, item_number, item_invuom,

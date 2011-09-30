@@ -30,6 +30,7 @@ public:
     static bool userHasPriv(const int priv = cView);
 
 public slots:
+    virtual bool setParams(ParameterList &params);
     virtual void sDelete();
     virtual void sEdit();
     virtual void sFillList();

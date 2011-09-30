@@ -10,73 +10,90 @@
 
 #include "reports.h"
 
-#include <QVariant>
 #include <QMessageBox>
-//#include <QStatusBar>
+#include <QVariant>
 #include <QWorkspace>
+
+#include <metasql.h>
+#include <mqlutil.h>
 #include <openreports.h>
 #include <reporthandler.h>
 
-/*
- *  Constructs a reports as a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'.
- *
- */
+#include "errorReporter.h"
+
 reports::reports(QWidget* parent, const char* name, Qt::WFlags fl)
     : XWidget(parent, name, fl)
 {
   setupUi(this);
 
-//  (void)statusBar();
+  connect(_byPackage,  SIGNAL(toggled(bool)), this,    SLOT(sFillList()));
+  connect(_close,          SIGNAL(clicked()), this,    SLOT(close()));
+  connect(_delete,         SIGNAL(clicked()), this,    SLOT(sDelete()));
+  connect(_edit,           SIGNAL(clicked()), this,    SLOT(sEdit()));
+  connect(_new,            SIGNAL(clicked()), this,    SLOT(sNew()));
+  connect(_print,          SIGNAL(clicked()), this,    SLOT(sPrint()));
+  connect(_report, SIGNAL(itemSelected(int)), _edit,   SLOT(animateClick()));
+  connect(_report,       SIGNAL(valid(bool)), _delete, SLOT(setEnabled(bool)));
+  connect(_report,       SIGNAL(valid(bool)), _edit,   SLOT(setEnabled(bool)));
 
-  // signals and slots connections
-  connect(_print, SIGNAL(clicked()), this, SLOT(sPrint()));
-  connect(_close, SIGNAL(clicked()), this, SLOT(close()));
-  connect(_new, SIGNAL(clicked()), this, SLOT(sNew()));
-  connect(_edit, SIGNAL(clicked()), this, SLOT(sEdit()));
-  connect(_delete, SIGNAL(clicked()), this, SLOT(sDelete()));
-  connect(_report, SIGNAL(valid(bool)), _edit, SLOT(setEnabled(bool)));
-  connect(_report, SIGNAL(valid(bool)), _delete, SLOT(setEnabled(bool)));
-  connect(_report, SIGNAL(itemSelected(int)), _edit, SLOT(animateClick()));
-
-//  statusBar()->hide();
-
-  _report->addColumn( tr("Name"),       200, Qt::AlignLeft,  true, "report_name" );
-  _report->addColumn( tr("Grade"),       50, Qt::AlignRight, true, "report_grade");
-  _report->addColumn( tr("Description"), -1, Qt::AlignLeft | Qt::AlignTop, true, "report_descrip");
+  _report->addColumn(tr("Name"),           200, Qt::AlignLeft, true, "report_name" );
+  _report->addColumn(tr("Grade"),   _seqColumn, Qt::AlignRight,true, "report_grade");
+  _report->addColumn(tr("Description"),     -1, Qt::AlignLeft, true, "report_descrip");
+  _report->addColumn(tr("Package"),_itemColumn, Qt::AlignLeft, false,"pkgname");
 
   connect(omfgThis, SIGNAL(reportsChanged(int, bool)), this, SLOT(sFillList()));
 
   sFillList();
 }
 
-/*
- *  Destroys the object and frees any allocated resources
- */
 reports::~reports()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
 }
 
-/*
- *  Sets the strings of the subwidgets using the current
- *  language.
- */
 void reports::languageChange()
 {
-    retranslateUi(this);
+  retranslateUi(this);
+}
+
+bool reports::setParams(ParameterList &params)
+{
+  if (_byPackage->isChecked())
+    params.append("byPackage");
+
+  return true;
 }
 
 void reports::sFillList()
 {
-  _report->populate( "SELECT report_id, report_name, report_grade, report_descrip "
-                     "FROM report "
-                     "ORDER BY report_name, report_grade" );
+  QString errmsg;
+  bool    ok;
+  MetaSQLQuery getm = MQLUtil::mqlLoad("reports", "detail", errmsg, &ok);
+  if (! ok)
+  {
+    ErrorReporter::error(QtCriticalMsg, this, tr("Getting Reports"),
+                         errmsg, __FILE__, __LINE__);
+    return;
+  }
+
+  ParameterList getp;
+  if (! setParams(getp))
+    return;
+
+  XSqlQuery getq = getm.toQuery(getp);
+  _report->populate(getq);
+  if (ErrorReporter::error(QtCriticalMsg, this, tr("Getting Reports"),
+                           getq, __FILE__, __LINE__))
+    return;
 }
 
 void reports::sPrint()
 {
-  orReport report("ReportsMasterList");
+  ParameterList params;
+  if (! setParams(params))
+    return;
+
+  orReport report("ReportsMasterList", params);
   if (report.isValid())
     report.print();
   else
@@ -112,42 +129,49 @@ void reports::sEdit()
     connect(omfgThis->_reportHandler, SIGNAL(reportsChanged(int, bool)), omfgThis, SLOT(sReportsChanged(int, bool)));
   }
 
-  q.prepare( "SELECT report_name, report_grade, report_source "
-             "  FROM report "
-             " WHERE (report_id=:report_id); " );
-  q.bindValue(":report_id", _report->id());
-  q.exec();
-  if (q.first())
+  XSqlQuery getq;
+  getq.prepare("SELECT report_name, report_grade, report_source "
+               "  FROM report "
+               " WHERE (report_id=:report_id);");
+  getq.bindValue(":report_id", _report->id());
+  getq.exec();
+  if (getq.first())
   {
     QDomDocument doc;
     QString errorMessage;
     int errorLine;
     int errorColumn;
 
-    if (doc.setContent(q.value("report_source").toString(), &errorMessage, &errorLine, &errorColumn))
-      omfgThis->_reportHandler->fileOpen(doc, q.value("report_name").toString(), q.value("report_grade").toInt());
+    if (doc.setContent(getq.value("report_source").toString(),
+                       &errorMessage, &errorLine, &errorColumn))
+      omfgThis->_reportHandler->fileOpen(doc,
+                                         getq.value("report_name").toString(),
+                                         getq.value("report_grade").toInt());
     else
-      QMessageBox::warning( this, tr("Error Loading Report"),
-                            tr( "ERROR parsing content:\n"
-                                "\t%1 (Line %2 Column %3)" )
-                            .arg(errorMessage)
-                            .arg(errorLine)
-                            .arg(errorColumn) );
+    {
+      ErrorReporter::error(QtCriticalMsg, this, tr("Error Loading Report"),
+                           errorMessage, getq.value("report_name").toString(),
+                           errorLine);
+      return;
+    }
   }
 }
 
 void reports::sDelete()
 {
-  if ( QMessageBox::warning(this, tr("Delete Report?"),
+  if (QMessageBox::question(this, tr("Delete Report?"),
                             tr("<p>Are you sure that you want to completely "
                                "delete the selected Report?"),
                             QMessageBox::Yes,
                             QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
   {
-    q.prepare( "DELETE FROM report "
-               "WHERE (report_id=:report_id);" );
-    q.bindValue(":report_id", _report->id());
-    q.exec();
+    XSqlQuery delq;
+    delq.prepare( "DELETE FROM report WHERE (report_id=:report_id);" );
+    delq.bindValue(":report_id", _report->id());
+    delq.exec();
+    if (ErrorReporter::error(QtCriticalMsg, this, tr("Deleting Report"),
+                             delq, __FILE__, __LINE__))
+      return;
 
     sFillList();
   }

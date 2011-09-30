@@ -17,7 +17,12 @@
  <leftmargin>50</leftmargin>
  <querysource>
   <name>detail</name>
-  <sql>SELECT DISTINCT ON (item_number) 
+  <sql>SELECT
+       &lt;? if exists("ListNumericItemNumbersFirst") ?>
+         DISTINCT ON ( toNumeric(item_number, 999999999999999), item_number )
+       &lt;? else ?>
+         DISTINCT ON ( item_number )
+       &lt;? endif ?>
        item_number,
        item_descrip1,
        item_descrip2,

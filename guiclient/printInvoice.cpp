@@ -284,7 +284,11 @@ void printInvoice::sPrint()
 void printInvoice::sHandleCopies(int pValue)
 {
   if (_invoiceWatermarks->topLevelItemCount() > pValue)
-    _invoiceWatermarks->takeTopLevelItem(_invoiceWatermarks->topLevelItemCount() - 1);
+  {
+    int diff = (_invoiceWatermarks->topLevelItemCount() - pValue);
+    for (int i = 0; i < diff; i++)
+      _invoiceWatermarks->takeTopLevelItem(_invoiceWatermarks->topLevelItemCount() - 1);
+  }
   else
   {
     for (int i = (_invoiceWatermarks->topLevelItemCount() + 1); i <= pValue; i++)

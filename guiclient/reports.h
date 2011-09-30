@@ -24,11 +24,12 @@ public:
     ~reports();
 
 public slots:
-    virtual void sFillList();
-    virtual void sPrint();
-    virtual void sNew();
-    virtual void sEdit();
+    virtual bool setParams(ParameterList &params);
     virtual void sDelete();
+    virtual void sEdit();
+    virtual void sFillList();
+    virtual void sNew();
+    virtual void sPrint();
 
 protected slots:
     virtual void languageChange();

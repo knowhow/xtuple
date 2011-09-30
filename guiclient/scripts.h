@@ -24,11 +24,12 @@ public:
     ~scripts();
 
 public slots:
-    virtual void sNew();
-    virtual void sEdit();
+    virtual bool setParams(ParameterList &params);
     virtual void sDelete();
+    virtual void sEdit();
     virtual void sFillList();
     virtual void sHandleButtons();
+    virtual void sNew();
 
 protected slots:
     virtual void languageChange();

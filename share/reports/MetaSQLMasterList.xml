@@ -3,29 +3,29 @@
  <title>List of MetaSQL statements</title>
  <name>MetaSQLMasterList</name>
  <description></description>
+ <grid>
+  <snap/>
+  <show/>
+  <x>0.05</x>
+  <y>0.05</y>
+ </grid>
  <size>Letter</size>
  <portrait/>
  <topmargin>100</topmargin>
  <bottommargin>100</bottommargin>
  <rightmargin>100</rightmargin>
  <leftmargin>100</leftmargin>
- <querysource>
+ <querysource loadFromDb="true">
   <name>Detail</name>
-  <sql>SELECT metasql.*,
-       CASE WHEN nspname = 'public' THEN ''
-            ELSE nspname
-       END AS schema
-  FROM metasql
-  JOIN pg_class ON (metasql.tableoid=pg_class.oid)
-  JOIN pg_namespace ON (relnamespace=pg_namespace.oid)
-ORDER BY schema, metasql_group, metasql_name;</sql>
+  <mqlgroup>metasqls</mqlgroup>
+  <mqlname>detail</mqlname>
  </querysource>
  <rpthead>
   <height>100</height>
   <label>
    <rect>
     <x>350</x>
-    <y>10.3</y>
+    <y>10</y>
     <width>300</width>
     <height>25</height>
    </rect>
@@ -41,103 +41,6 @@ ORDER BY schema, metasql_group, metasql_name;</sql>
  </rpthead>
  <section>
   <name>Detail</name>
-  <group>
-   <name>Schema</name>
-   <column>schema</column>
-   <head>
-    <height>57.2954</height>
-    <field>
-     <rect>
-      <x>100</x>
-      <y>0</y>
-      <width>100</width>
-      <height>25</height>
-     </rect>
-     <font>
-      <face>Arial</face>
-      <size>10</size>
-      <weight>bold</weight>
-     </font>
-     <left/>
-     <vcenter/>
-     <data>
-      <query>Detail</query>
-      <column>schema</column>
-     </data>
-    </field>
-    <label>
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>90</width>
-      <height>25</height>
-     </rect>
-     <font>
-      <face>Arial</face>
-      <size>10</size>
-      <weight>normal</weight>
-     </font>
-     <right/>
-     <vcenter/>
-     <string>Package:</string>
-    </label>
-    <line>
-     <xstart>2.00125</xstart>
-     <ystart>52.053</ystart>
-     <xend>648.9</xend>
-     <yend>52.053</yend>
-     <weight>0</weight>
-    </line>
-    <label>
-     <rect>
-      <x>150</x>
-      <y>30</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
-     <font>
-      <face>Arial</face>
-      <size>10</size>
-      <weight>normal</weight>
-     </font>
-     <hcenter/>
-     <vcenter/>
-     <string>Name</string>
-    </label>
-    <label>
-     <rect>
-      <x>300</x>
-      <y>30</y>
-      <width>300</width>
-      <height>25</height>
-     </rect>
-     <font>
-      <face>Arial</face>
-      <size>10</size>
-      <weight>normal</weight>
-     </font>
-     <hcenter/>
-     <vcenter/>
-     <string>Notes</string>
-    </label>
-    <label>
-     <rect>
-      <x>0</x>
-      <y>30</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
-     <font>
-      <face>Arial</face>
-      <size>10</size>
-      <weight>normal</weight>
-     </font>
-     <hcenter/>
-     <vcenter/>
-     <string>Group</string>
-    </label>
-   </head>
-  </group>
   <detail>
    <key>
     <query>Detail</query>
@@ -145,14 +48,14 @@ ORDER BY schema, metasql_group, metasql_name;</sql>
    <height>27.4992</height>
    <field>
     <rect>
-     <x>0</x>
+     <x>100</x>
      <y>0</y>
-     <width>150</width>
+     <width>100</width>
      <height>12.5</height>
     </rect>
     <font>
      <face>Arial</face>
-     <size>10</size>
+     <size>9</size>
      <weight>bold</weight>
     </font>
     <left/>
@@ -164,14 +67,14 @@ ORDER BY schema, metasql_group, metasql_name;</sql>
    </field>
    <field>
     <rect>
-     <x>150</x>
+     <x>200</x>
      <y>0</y>
      <width>150</width>
      <height>12.5</height>
     </rect>
     <font>
      <face>Arial</face>
-     <size>10</size>
+     <size>9</size>
      <weight>bold</weight>
     </font>
     <left/>
@@ -183,7 +86,7 @@ ORDER BY schema, metasql_group, metasql_name;</sql>
    </field>
    <text>
     <rect>
-     <x>300</x>
+     <x>350</x>
      <y>0</y>
      <width>300</width>
      <height>14</height>
@@ -191,24 +94,43 @@ ORDER BY schema, metasql_group, metasql_name;</sql>
     <bottompad>12</bottompad>
     <font>
      <face>Arial</face>
-     <size>10</size>
+     <size>9</size>
      <weight>normal</weight>
     </font>
     <left/>
     <vcenter/>
     <data>
      <query>Detail</query>
-     <column>metasql_notes</column>
+     <column>metasql_notes_qttooltiprole</column>
     </data>
    </text>
+   <field>
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>100</width>
+     <height>12.5</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>9</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>Detail</query>
+     <column>pkgname</column>
+    </data>
+   </field>
   </detail>
  </section>
  <pgfoot>
   <height>65.9806</height>
   <label>
    <rect>
-    <x>304</x>
-    <y>25</y>
+    <x>305</x>
+    <y>22.5008</y>
     <width>25</width>
     <height>25</height>
    </rect>
@@ -223,8 +145,8 @@ ORDER BY schema, metasql_group, metasql_name;</sql>
   </label>
   <field>
    <rect>
-    <x>332.425</x>
-    <y>25</y>
+    <x>330</x>
+    <y>22.5008</y>
     <width>100</width>
     <height>25</height>
    </rect>
@@ -243,7 +165,7 @@ ORDER BY schema, metasql_group, metasql_name;</sql>
   <field>
    <rect>
     <x>200</x>
-    <y>25</y>
+    <y>22.5008</y>
     <width>100</width>
     <height>25</height>
    </rect>
