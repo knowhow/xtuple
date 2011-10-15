@@ -234,5 +234,5 @@ void setupScriptApi(QScriptEngine *engine)
   setupXTreeWidget(engine);
   setupXTreeWidgetItem(engine);
   setupXVariant(engine);
-  setupQMessageBox(engine);
+  setupMsgBox(engine);
 }

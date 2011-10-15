@@ -14,12 +14,20 @@ void setupQUrlProto(QScriptEngine *engine)
 */
 
 
-void setupQMessageBox(QScriptEngine *engine)
+void setupMsgBox(QScriptEngine *engine)
 {
   //qScriptRegisterMetaType(engine, XTreeWidgetItemtoScriptValue,     XTreeWidgetItemfromScriptValue);
   //qScriptRegisterMetaType(engine, XTreeWidgetItemListtoScriptValue, XTreeWidgetItemListfromScriptValue);
 
   QScriptValue constructor = engine->newQObject(new Wrapper_QMessageBox(engine));
   //engine->setDefaultPrototype(qMetaTypeId<Wrapper_QMessageBox*>(), constructor);
-  engine->globalObject().setProperty("QMessageBox", constructor, QScriptValue::ReadOnly | QScriptValue::Undeletable);
+  engine->globalObject().setProperty("MsgBox", constructor, QScriptValue::ReadOnly | QScriptValue::Undeletable);
 }
+
+void Wrapper_QMessageBox::setWindowTitle ( const QString & title )
+{
+   QMessageBox::setWindowTitle(title);
+}
+
+
+
