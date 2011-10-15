@@ -40,11 +40,11 @@ countTag::countTag(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _qty->setValidator(omfgThis->qtyVal());
 
   //If not multi-warehouse hide whs control
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
 }
 
 countTag::~countTag()

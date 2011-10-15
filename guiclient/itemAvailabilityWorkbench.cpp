@@ -202,13 +202,15 @@ itemAvailabilityWorkbench::itemAvailabilityWorkbench(QWidget* parent, const char
   //If not Manufacturing, hide show planned option
   if (_metrics->value("Application") != "Standard")
     _showPlanned->hide();
-    
+   
+  /* 
   //If not multi-warehouse hide whs control
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
   }
+  */
   
   //If not Serial Control, hide lot control
   if (!_metrics->boolean("LotSerialControl"))

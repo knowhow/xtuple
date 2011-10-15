@@ -31,13 +31,14 @@ location::location(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _locitem->addColumn(tr("Description"), -1,          Qt::AlignLeft, true, "item_descrip" );
 
   _warehouse->setAllowNull(_metrics->boolean("MultiWhs"));
-  if (!_metrics->boolean("MultiWhs"))
+  /*if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
     sHandleWarehouse(_warehouse->id());
   }
-  else
+  */
+  //else
     _warehouse->setNull();
 
 }

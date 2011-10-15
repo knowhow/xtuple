@@ -66,11 +66,11 @@ creditMemoItem::creditMemoItem(QWidget* parent, const char* name, bool modal, Qt
   _taxType->setEnabled(_privileges->check("OverrideTax"));
   
   //If not multi-warehouse hide whs control
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
   
   adjustSize();
 }

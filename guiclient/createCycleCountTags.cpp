@@ -33,11 +33,11 @@ createCycleCountTags::createCycleCountTags(QWidget* parent, const char* name, bo
     _freeze->setEnabled(_privileges->check("CreateReceiptTrans"));
     
     //If not multi-warehouse hide whs control
-    if (!_metrics->boolean("MultiWhs"))
-    {
-      _warehouseLit->hide();
-      _warehouse->hide();
-    }
+    //if (!_metrics->boolean("MultiWhs"))
+    //{
+    //  _warehouseLit->hide();
+    //  _warehouse->hide();
+    //}
 
     if (_preferences->boolean("XCheckBox/forgetful"))
       _priority->setChecked(true);

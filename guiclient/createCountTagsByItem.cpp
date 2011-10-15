@@ -35,11 +35,11 @@ createCountTagsByItem::createCountTagsByItem(QWidget* parent, const char* name, 
 
   _captive = FALSE;
   
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
 
   sPopulateLocations();
 }

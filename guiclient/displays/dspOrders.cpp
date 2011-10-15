@@ -41,11 +41,11 @@ dspOrders::dspOrders(QWidget* parent, const char*, Qt::WFlags fl)
   list()->addColumn(tr("Running Bal."), _qtyColumn,     Qt::AlignRight,  true,  "runningbalanceqty"  );
   list()->addColumn(tr("Required"),     _dateColumn,    Qt::AlignCenter, true,  "duedate" );
 
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
 }
 
 void dspOrders::languageChange()

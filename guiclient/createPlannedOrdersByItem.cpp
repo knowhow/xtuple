@@ -28,11 +28,11 @@ createPlannedOrdersByItem::createPlannedOrdersByItem(QWidget* parent, const char
   connect(_create, SIGNAL(clicked()), this, SLOT(sCreate()));
 
   //If not multi-warehouse hide whs control
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
 
   _captive = FALSE;
 }

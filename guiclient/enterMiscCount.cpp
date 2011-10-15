@@ -29,11 +29,14 @@ enterMiscCount::enterMiscCount(QWidget* parent, const char* name, bool modal, Qt
   _warehouse->setType(WComboBox::AllActiveInventory);
   _qty->setValidator(omfgThis->qtyVal());
 
+  /*
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
   }
+  */
+
 }
 
 enterMiscCount::~enterMiscCount()

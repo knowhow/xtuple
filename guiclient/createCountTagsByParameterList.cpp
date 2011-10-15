@@ -30,11 +30,11 @@ createCountTagsByParameterList::createCountTagsByParameterList(QWidget* parent, 
 
   _freeze->setEnabled(_privileges->check("FreezeInventory"));
 
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
 
   if (_preferences->boolean("XCheckBox/forgetful"))
     _priority->setChecked(true);

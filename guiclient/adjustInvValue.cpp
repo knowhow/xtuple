@@ -39,11 +39,11 @@ adjustInvValue::adjustInvValue(QWidget* parent, const char * name, Qt::WindowFla
   _site->setType(WComboBox::AllActiveInventory);
   _newValue->setValidator(omfgThis->costVal());
 
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _siteLit->hide();
-    _site->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _siteLit->hide();
+  //  _site->hide();
+  //}
 
   _itemsiteid = -1;
   _qtyonhand = -0;

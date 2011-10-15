@@ -31,10 +31,10 @@ configureIM::configureIM(QWidget* parent, const char* name, bool /*modal*/, Qt::
 
   //Inventory
   //Disable multi-warehouse if PostBooks
-  if (_metrics->value("Application") == "PostBooks")
-    _multiWhs->hide();
-  else
-  {
+  //if (_metrics->value("Application") == "PostBooks")
+  //  _multiWhs->hide();
+  //else
+  //{
     q.exec("SELECT * "
 	   "FROM whsinfo");
     if (q.size() > 1)
@@ -63,7 +63,7 @@ configureIM::configureIM(QWidget* parent, const char* name, bool /*modal*/, Qt::
 
     _enableToShipping->setChecked(_metrics->boolean("EnableTOShipping"));
     _transferOrderChangeLog->setChecked(_metrics->boolean("TransferOrderChangeLog"));
-  }
+  //}
 
   _eventFence->setValue(_metrics->value("DefaultEventFence").toInt());
   _itemSiteChangeLog->setChecked(_metrics->boolean("ItemSiteChangeLog"));
@@ -221,7 +221,9 @@ bool configureIM::sSave()
   _metrics->set("ItemSiteChangeLog", _itemSiteChangeLog->isChecked());
   _metrics->set("WarehouseChangeLog", _warehouseChangeLog->isChecked());
   _metrics->set("PostCountTagToDefault", _postToDefault->isChecked());
-  _metrics->set("MultiWhs", ((!_multiWhs->isCheckable()) || (_multiWhs->isChecked())));
+  
+  _metrics->set("MultiWhs", true);
+  //_metrics->set("MultiWhs", ((!_multiWhs->isCheckable()) || (_multiWhs->isChecked())));
   _metrics->set("LotSerialControl", _lotSerial->isChecked());
   _metrics->set("SetDefaultLocations", _setDefLoc->isChecked());
   _metrics->set("AllowAvgCostMethod", _costAvg->isChecked());
@@ -235,7 +237,8 @@ bool configureIM::sSave()
   else if (_toNumGeneration->currentIndex() == 2)
     _metrics->set("TONumberGeneration", QString("O"));
 
-  if (_metrics->boolean("MultiWhs"))
+  //if (_metrics->boolean("MultiWhs"))
+  if (true)
   {
     q.prepare("SELECT setNextNumber('ToNumber', :next) AS result;");
     q.bindValue(":next", _toNextNum->text());

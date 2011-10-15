@@ -55,11 +55,14 @@ dspRunningAvailability::dspRunningAvailability(QWidget* parent, const char*, Qt:
 
   connect(omfgThis, SIGNAL(workOrdersUpdated(int, bool)), this, SLOT(sFillList()));
 
+  /*
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
   }
+  */
+
 }
 
 void dspRunningAvailability::languageChange()

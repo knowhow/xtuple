@@ -47,11 +47,13 @@ materialReceiptTrans::materialReceiptTrans(QWidget* parent, const char* name, Qt
   omfgThis->inputManager()->notify(cBCItem, this, _item, SLOT(setItemid(int)));
   omfgThis->inputManager()->notify(cBCItemSite, this, _item, SLOT(setItemsiteid(int)));
 
+  /*
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
   }
+  */
 
   if (!_metrics->boolean("AllowAvgCostMethod"))
     _tab->removeTab(0);

@@ -22,11 +22,14 @@ firmPlannedOrder::firmPlannedOrder(QWidget* parent, const char* name, bool modal
   connect(_firm, SIGNAL(clicked()), this, SLOT(sFirm()));
   _quantity->setValidator(omfgThis->qtyVal());
 
+  /*
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
   }
+  */
+
 }
 
 firmPlannedOrder::~firmPlannedOrder()

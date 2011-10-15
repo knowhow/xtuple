@@ -253,7 +253,8 @@ bool configureGL::sSave()
                             "You must assign G/L Accounts to all Cost Categories");
       return false;
     }
-    if (_metrics->boolean("MultiWhs") && _metrics->boolean("Transforms"))
+    //if (_metrics->boolean("MultiWhs") && _metrics->boolean("Transforms"))
+    if (_metrics->boolean("Transforms"))
     {
       q.exec("SELECT costcat_id "
              "FROM costcat "
@@ -267,7 +268,8 @@ bool configureGL::sSave()
         return false;
       }
     }
-    if (_metrics->boolean("MultiWhs"))
+    //if (_metrics->boolean("MultiWhs"))
+    if (true)
     {
       q.exec("SELECT costcat_id "
              "FROM costcat "

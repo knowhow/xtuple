@@ -97,6 +97,7 @@ itemSite::itemSite(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   _restricted->addColumn(tr("Description"), -1, Qt::AlignLeft, true, "location_descrip" );
   _restricted->addColumn(tr("Allowed"), _dateColumn, Qt::AlignCenter, true, "allowed" );
 
+  /*
   //If not multi-warehouse hide whs control
   if (!_metrics->boolean("MultiWhs"))
   {
@@ -105,9 +106,10 @@ itemSite::itemSite(QWidget* parent, const char* name, bool modal, Qt::WFlags fl)
   }
   else
   {
+  */
     _warehouse->setAllowNull(TRUE);
     _warehouse->setNull();
-  }
+  //}
 
   //Default to Regular control  
   _controlMethod->setCurrentIndex(1);

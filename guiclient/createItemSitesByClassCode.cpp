@@ -55,8 +55,8 @@ createItemSitesByClassCode::createItemSitesByClassCode(QWidget* parent, const ch
   else
     _planningType->append(1, "MRP", "M");
 
-  if (!_metrics->boolean("MultiWhs"))
-    _createPlannedTransfers->hide();
+  //if (!_metrics->boolean("MultiWhs"))
+  //  _createPlannedTransfers->hide();
 
   sHandlePlanningType();
   
@@ -94,16 +94,16 @@ createItemSitesByClassCode::createItemSitesByClassCode(QWidget* parent, const ch
   _eventFence->setValue(_metrics->value("DefaultEventFence").toInt());
   _costcat->setEnabled(_metrics->boolean("InterfaceToGL"));
   
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
-  else
-  {
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
+  //else
+  //{
     _warehouse->setAllowNull(TRUE);
     _warehouse->setNull();
-  }
+  //}
 
     //If not lot serial control, remove options
   if (!_metrics->boolean("LotSerialControl"))

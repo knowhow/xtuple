@@ -55,13 +55,15 @@ distributeInventory::distributeInventory(QWidget* parent, const char* name, bool
   _itemloc->addColumn(tr("Qty. Before"),  _qtyColumn,  Qt::AlignRight, true, "qty");
   _itemloc->addColumn(tr("Tagged Qty."),  _qtyColumn,  Qt::AlignRight, true, "qtytagged");
   _itemloc->addColumn(tr("Qty. After"),   _qtyColumn,  Qt::AlignRight, true, "balance");
-  
+ 
+  /* 
   //If not multi-warehouse hide whs control
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
   }
+  */
   
   //If not lot serial control, hide info
   if (!_metrics->boolean("LotSerialControl"))

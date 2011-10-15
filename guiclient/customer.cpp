@@ -221,11 +221,11 @@ customer::customer(QWidget* parent, const char* name, Qt::WFlags fl)
   }
 
   //If not multi-warehouse hide whs control
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _sellingWarehouseLit->hide();
-    _sellingWarehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _sellingWarehouseLit->hide();
+  //  _sellingWarehouse->hide();
+  //}
 
   if(!_metrics->boolean("AutoCreditWarnLateCustomers"))
     _warnLate->hide();

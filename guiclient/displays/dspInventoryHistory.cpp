@@ -36,7 +36,7 @@ dspInventoryHistory::dspInventoryHistory(QWidget* parent, const char* name, Qt::
   setParameterWidgetVisible(true);
 
   QString qryType;
-  if (_metrics->boolean("MultiWhs"))
+  //if (_metrics->boolean("MultiWhs"))
     qryType = QString( "SELECT  1, '%1' UNION "
                        "SELECT  2, '%2' UNION "
                        "SELECT  4, '%3' UNION "
@@ -49,17 +49,17 @@ dspInventoryHistory::dspInventoryHistory(QWidget* parent, const char* name, Qt::
     .arg(tr("Adjustments and Counts"))
     .arg(tr("Transfers"))
     .arg(tr("Scraps"));
-  else
-    qryType = QString( "SELECT  1, '%1' UNION "
-                       "SELECT  2, '%2' UNION "
-                       "SELECT  4, '%3' UNION "
-                       "SELECT  8, '%4' UNION "
-                       "SELECT  32, '%5'")
-        .arg(tr("Receipts"))
-        .arg(tr("Issues"))
-        .arg(tr("Shipments"))
-        .arg(tr("Adjustments and Counts"))
-        .arg(tr("Scraps"));
+  //else
+  //  qryType = QString( "SELECT  1, '%1' UNION "
+  //                     "SELECT  2, '%2' UNION "
+  //                     "SELECT  4, '%3' UNION "
+  //                     "SELECT  8, '%4' UNION "
+  //                     "SELECT  32, '%5'")
+  //      .arg(tr("Receipts"))
+  //      .arg(tr("Issues"))
+  //      .arg(tr("Shipments"))
+  //      .arg(tr("Adjustments and Counts"))
+  //      .arg(tr("Scraps"));
 
   parameterWidget()->append(tr("Start Date"), "startDate", ParameterWidget::Date, QDate::currentDate(), true);
   parameterWidget()->append(tr("End Date"),   "endDate",   ParameterWidget::Date, QDate::currentDate(), true);

@@ -44,11 +44,11 @@ countSlip::countSlip(QWidget* parent, const char* name, bool modal, Qt::WFlags f
   _expiration->setAllowNullDate(false);
   
   //If not multi-warehouse hide whs control
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
 }
 
 /*

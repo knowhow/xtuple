@@ -42,11 +42,13 @@ dspReservations::dspReservations(QWidget* parent, const char*, Qt::WFlags fl)
   list()->addColumn(tr("Running Bal."),             _qtyColumn,     Qt::AlignRight,  true,  "balanceqty"  );
   list()->addColumn(tr("Required"),                 _dateColumn,    Qt::AlignCenter, true,  "scheddate" );
 
+  /*
   if (!_metrics->boolean("MultiWhs"))
   {
     _warehouseLit->hide();
     _warehouse->hide();
   }
+  */
 }
 
 void dspReservations::languageChange()

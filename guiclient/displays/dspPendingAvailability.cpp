@@ -51,11 +51,11 @@ dspPendingAvailability::dspPendingAvailability(QWidget* parent, const char*, Qt:
   list()->addColumn(tr("Availability"), _qtyColumn,  Qt::AlignRight,  true,  "totalavail"  );
 
   //If not multi-warehouse hide whs control
-  if (!_metrics->boolean("MultiWhs"))
-  {
-    _warehouseLit->hide();
-    _warehouse->hide();
-  }
+  //if (!_metrics->boolean("MultiWhs"))
+  //{
+  //  _warehouseLit->hide();
+  //  _warehouse->hide();
+  //}
 }
 
 void dspPendingAvailability::languageChange()
