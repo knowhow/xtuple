@@ -115,7 +115,8 @@ HEADERS += setupscriptapi.h \
     xdateeditsetup.h \
     xsqltablenodeproto.h \
     xt.h \
-    xvariantsetup.h
+    xvariantsetup.h \
+    knowhow_utils.h
 
 SOURCES += setupscriptapi.cpp \
     include.cpp \
@@ -213,7 +214,8 @@ SOURCES += setupscriptapi.cpp \
     xdateeditsetup.cpp \
     xsqltablnodeproto.cpp \
     xt.cpp \
-    xvariantsetup.cpp
+    xvariantsetup.cpp \
+    knowhow_utils.cpp
 
 QT += sql \
     xml \

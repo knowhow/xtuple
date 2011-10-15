@@ -601,7 +601,7 @@ void menuSystem::sImportData()
 
 void menuSystem::sCommunityHome()
 {
-  omfgThis->launchBrowser(omfgThis, "http://www.xtuple.org/");
+  omfgThis->launchBrowser(omfgThis, "http://redmine.bring.out.ba/projects/knowhow?jump=welcome");
 }
 
 void menuSystem::sRegister()
@@ -659,7 +659,7 @@ void menuSystem::sCommunityTranslation()
 
 void menuSystem::sCommunityXchange()
 {
-  omfgThis->launchBrowser(omfgThis, "http://www.xtuple.com/xchange");
+  omfgThis->launchBrowser(omfgThis, "http://redmine.bring.out.ba/projects/knowhow?jump=welcome");
 }
 
 void menuSystem::sCheckForUpdates()

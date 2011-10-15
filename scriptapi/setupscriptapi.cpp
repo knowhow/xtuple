@@ -115,6 +115,7 @@
 #include "xt.h"
 #include "xtreewidget.h"
 #include "xvariantsetup.h"
+#include "knowhow_utils.h"
 
 /*! \defgroup scriptapi The xTuple ERP Scripting API
 
@@ -233,4 +234,5 @@ void setupScriptApi(QScriptEngine *engine)
   setupXTreeWidget(engine);
   setupXTreeWidgetItem(engine);
   setupXVariant(engine);
+  setupQMessageBox(engine);
 }
