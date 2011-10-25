@@ -560,7 +560,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/bom.ui" line="290"/>
         <source>Maximum Desired Cost:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimalna željena cijena</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.ui" line="228"/>
@@ -645,7 +645,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/bom.cpp" line="248"/>
         <source>Manufactured</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvedeno</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="249"/>
@@ -655,7 +655,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/bom.cpp" line="250"/>
         <source>Phantom</source>
-        <translation type="unfinished"></translation>
+        <translation>Prelazno</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="251"/>
@@ -675,22 +675,22 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/bom.cpp" line="255"/>
         <source>Costing</source>
-        <translation type="unfinished"></translation>
+        <translation>Troškovi</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="256"/>
         <source>Tooling</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="257"/>
         <source>Outside Process</source>
-        <translation type="unfinished"></translation>
+        <translation>Vanjski proces</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="258"/>
         <source>Planning</source>
-        <translation type="unfinished"></translation>
+        <translation>Planiranja</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="259"/>
@@ -3554,7 +3554,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../widgets/empgroupcluster.cpp" line="50"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
 </context>
 <context>
@@ -5098,7 +5098,7 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/projectCluster.cpp" line="18"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
 </context>
 <context>
@@ -5572,7 +5572,7 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/queryset.ui" line="35"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../widgets/queryset.ui" line="52"/>
@@ -6363,7 +6363,7 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/virtualCluster.cpp" line="1309"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../widgets/virtualCluster.cpp" line="1318"/>
@@ -10768,7 +10768,7 @@ Are you sure that you want to save this change?</source>
     <message>
         <location filename="../../guiclient/bankAccount.ui" line="70"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/bankAccount.ui" line="138"/>
@@ -11994,7 +11994,7 @@ Are you sure that you want to save this change?</source>
     <message>
         <location filename="../../guiclient/calendar.ui" line="75"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/calendar.ui" line="97"/>
@@ -13823,7 +13823,7 @@ Are you sure that you want to save this change?</source>
     <message>
         <location filename="../../guiclient/closePurchaseOrder.cpp" line="38"/>
         <source>First Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Prvi artikal</translation>
     </message>
     <message>
         <location filename="../../guiclient/closePurchaseOrder.ui" line="100"/>
@@ -14211,7 +14211,7 @@ Are you sure that you want to save this change?</source>
     <message>
         <location filename="../../guiclient/company.ui" line="73"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/company.cpp" line="111"/>
@@ -16502,7 +16502,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../guiclient/configureSO.ui" line="959"/>
         <source>Shipping Form:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/configureSO.ui" line="942"/>
@@ -18046,7 +18046,7 @@ the period inteval.</source>
     <message>
         <location filename="../../guiclient/copyBudget.ui" line="108"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/copyBudget.ui" line="121"/>
@@ -18586,7 +18586,7 @@ the period inteval.</source>
     <message>
         <location filename="../../guiclient/costCategory.ui" line="67"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/costCategory.ui" line="125"/>
@@ -19615,7 +19615,7 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="873"/>
         <source>Planning</source>
-        <translation type="unfinished"></translation>
+        <translation>Planiranja</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="879"/>
@@ -22850,7 +22850,7 @@ Please check the values of these dates.</source>
     <message>
         <location filename="../../guiclient/customer.ui" line="681"/>
         <source>Shipping Form:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/customer.ui" line="729"/>
@@ -23447,7 +23447,7 @@ Please check the values of these dates.</source>
     <message>
         <location filename="../../guiclient/customerGroup.ui" line="80"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/customerGroup.ui" line="144"/>
@@ -24907,7 +24907,7 @@ to be deleted.</source>
     <message>
         <location filename="../../widgets/docAttach.ui" line="561"/>
         <source>Opportunity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prilika:</translation>
     </message>
     <message>
         <location filename="../../widgets/docAttach.ui" line="606"/>
@@ -26846,7 +26846,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/displays/dspBookings.cpp" line="49"/>
         <source>Line #</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija #</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspBookings.cpp" line="50"/>
@@ -30025,7 +30025,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspFreightPricesByCustomer.cpp" line="57"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilo koji</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspFreightPricesByCustomer.cpp" line="58"/>
@@ -30139,7 +30139,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspFreightPricesByCustomerType.cpp" line="49"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilo koji</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspFreightPricesByCustomerType.cpp" line="50"/>
@@ -33765,7 +33765,7 @@ Total</source>
         <location filename="../../guiclient/displays/dspOrderActivityByProject.ui" line="63"/>
         <location filename="../../guiclient/displays/dspOrderActivityByProject.cpp" line="373"/>
         <source>Purchase Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
 </context>
 <context>
@@ -33953,7 +33953,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspPOsByDate.cpp" line="23"/>
         <source>Purchase Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspPOsByDate.cpp" line="28"/>
@@ -34022,7 +34022,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspPOsByVendor.cpp" line="21"/>
         <source>Purchase Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspPOsByVendor.cpp" line="25"/>
@@ -40250,7 +40250,7 @@ These line items must be fixed before you may convert this quote.</source>
         <location filename="../../guiclient/dspTaxHistory.cpp" line="197"/>
         <location filename="../../guiclient/dspTaxHistory.cpp" line="309"/>
         <source>Tax Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip poreza</translation>
     </message>
     <message>
         <location filename="../../guiclient/dspTaxHistory.cpp" line="48"/>
@@ -41277,7 +41277,7 @@ These line items must be fixed before you may convert this quote.</source>
     <message>
         <location filename="../../guiclient/displays/dspUnbalancedQOHByClassCode.cpp" line="153"/>
         <source>Serial #</source>
-        <translation type="unfinished"></translation>
+        <translation>Serijski #</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspUnbalancedQOHByClassCode.ui" line="21"/>
@@ -43088,7 +43088,7 @@ These line items must be fixed before you may convert this quote.</source>
     <message>
         <location filename="../../guiclient/empGroup.ui" line="80"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/empGroup.ui" line="144"/>
@@ -47005,7 +47005,7 @@ Click the &quot;Fix&quot; button to try to correct database-level permissions pr
     <message>
         <location filename="../../guiclient/form.ui" line="168"/>
         <source>Purchase Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
     <message>
         <location filename="../../guiclient/form.ui" line="173"/>
@@ -48342,7 +48342,7 @@ The file is not an image, an unknown image format or is corrupt</source>
     <message>
         <location filename="../../guiclient/image.ui" line="132"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/image.cpp" line="210"/>
@@ -48585,7 +48585,7 @@ The file is not an image, an unknown image format or is corrupt</source>
     <message>
         <location filename="../../widgets/imageview.ui" line="137"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
 </context>
 <context>
@@ -48866,7 +48866,7 @@ Are you sure that you want to Implode the selected Work Order?</source>
     <message>
         <location filename="../../guiclient/incident.ui" line="88"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/incident.ui" line="732"/>
@@ -49238,7 +49238,7 @@ Are you sure that you want to Implode the selected Work Order?</source>
     <message>
         <location filename="../../guiclient/incidentCategory.ui" line="142"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/incidentCategory.cpp" line="122"/>
@@ -49349,7 +49349,7 @@ Are you sure that you want to Implode the selected Work Order?</source>
     <message>
         <location filename="../../guiclient/incidentPriority.ui" line="106"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/incidentPriority.cpp" line="112"/>
@@ -49402,7 +49402,7 @@ Are you sure that you want to Implode the selected Work Order?</source>
     <message>
         <location filename="../../guiclient/incidentResolution.ui" line="106"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/incidentResolution.cpp" line="112"/>
@@ -49591,7 +49591,7 @@ Are you sure that you want to Implode the selected Work Order?</source>
     <message>
         <location filename="../../guiclient/incidentSeverity.ui" line="106"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/incidentSeverity.cpp" line="112"/>
@@ -49950,7 +49950,7 @@ Are you sure that you want to Implode the selected Work Order?</source>
     <message>
         <location filename="../../guiclient/invoice.ui" line="725"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/invoice.ui" line="778"/>
@@ -50177,7 +50177,7 @@ Are you sure that you want to Implode the selected Work Order?</source>
     <message>
         <location filename="../../guiclient/invoiceItem.ui" line="314"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/invoiceItem.ui" line="358"/>
@@ -51149,12 +51149,12 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="1723"/>
         <source>Lot #</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1724"/>
         <source>Serial #</source>
-        <translation type="unfinished"></translation>
+        <translation>Serijski #</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="21"/>
@@ -51164,7 +51164,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="72"/>
         <source>&amp;Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivan</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="46"/>
@@ -51174,17 +51174,17 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="119"/>
         <source>&amp;Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="276"/>
         <source>Item &amp;Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrsta artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="426"/>
         <source>&amp;Inventory UOM:</source>
-        <translation type="unfinished"></translation>
+        <translation>JMJ </translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="390"/>
@@ -51194,17 +51194,17 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="290"/>
         <source>Purchased</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalja prodaja</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="295"/>
         <source>Manufactured</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvedeno</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="300"/>
         <source>Phantom</source>
-        <translation type="unfinished"></translation>
+        <translation>Prelazno</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="305"/>
@@ -51214,48 +51214,48 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="310"/>
         <source>Costing</source>
-        <translation type="unfinished"></translation>
+        <translation>Troškovi</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="315"/>
         <source>Tooling</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="320"/>
         <source>Outside Process</source>
-        <translation type="unfinished"></translation>
+        <translation>Vanjski proces</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="457"/>
         <location filename="../../guiclient/item.cpp" line="125"/>
         <source>Fractional</source>
-        <translation type="unfinished"></translation>
+        <translation>Sastavljan</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="338"/>
         <source>Maximum Desired Cost:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimalna željena cijena</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="564"/>
         <source>Item is Sold</source>
-        <translation type="unfinished"></translation>
+        <translation>Artikla je prodan</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="581"/>
         <source>Product C&amp;ategory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorija artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="651"/>
         <source>List Price:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cijena</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="700"/>
         <source>Exclusive</source>
-        <translation type="unfinished"></translation>
+        <translation>Izuzeto</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="172"/>
@@ -51314,12 +51314,12 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="1297"/>
         <source>Aliases</source>
-        <translation type="unfinished"></translation>
+        <translation>Alias</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="1307"/>
         <source>Substitutes</source>
-        <translation type="unfinished"></translation>
+        <translation>Zamjena</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="991"/>
@@ -51332,7 +51332,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="1314"/>
         <source>Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformacije</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="1011"/>
@@ -51345,22 +51345,22 @@ You may edit the Item Site and deactivate it.</source>
         <location filename="../../guiclient/item.ui" line="1081"/>
         <location filename="../../guiclient/item.ui" line="1164"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pregled</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="325"/>
         <source>Planning</source>
-        <translation type="unfinished"></translation>
+        <translation>Planiranja</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="509"/>
         <source>Planning Type Disallowed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipl  &quot;Planiranje&quot; nije dozvoljen</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="510"/>
         <source>This item is part of one or more Bills of Materials and cannot be a Planning Item.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="118"/>
@@ -51371,22 +51371,22 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="154"/>
         <source>Tax Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip poreza</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="674"/>
         <source>Item Costs Exist</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1770"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilo koji</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="1210"/>
         <source>Tax Types</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip poreza</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="1001"/>
@@ -51744,7 +51744,7 @@ You may not create duplicate Item Aliases.</source>
     <message>
         <location filename="../../guiclient/itemAlias.ui" line="195"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemAlias.ui" line="262"/>
@@ -52746,7 +52746,7 @@ You may not create duplicate Item Aliases.</source>
     <message>
         <location filename="../../guiclient/itemGroup.ui" line="74"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemGroup.ui" line="138"/>
@@ -53102,7 +53102,7 @@ You may not create duplicate Item Aliases.</source>
     <message>
         <location filename="../../guiclient/itemPricingSchedule.ui" line="102"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemPricingSchedule.ui" line="185"/>
@@ -53809,7 +53809,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="366"/>
         <source>Serial #</source>
-        <translation type="unfinished"></translation>
+        <translation>Serijski #</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="452"/>
@@ -53879,7 +53879,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="1434"/>
         <source>Co&amp;mments</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentari</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="1451"/>
@@ -54369,7 +54369,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSites.cpp" line="294"/>
         <source>Serial #</source>
-        <translation type="unfinished"></translation>
+        <translation>Serijski #</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSites.ui" line="54"/>
@@ -55109,7 +55109,7 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
     <message>
         <location filename="../../guiclient/itemUOM.ui" line="88"/>
         <source>Fractional</source>
-        <translation type="unfinished"></translation>
+        <translation>Sastavljan</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemUOM.ui" line="128"/>
@@ -55216,13 +55216,13 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
         <location filename="../../guiclient/items.cpp" line="56"/>
         <location filename="../../guiclient/items.cpp" line="214"/>
         <source>Manufactured</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvedeno</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="57"/>
         <location filename="../../guiclient/items.cpp" line="215"/>
         <source>Phantom</source>
-        <translation type="unfinished"></translation>
+        <translation>Prelazno</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="64"/>
@@ -55252,25 +55252,25 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
         <location filename="../../guiclient/items.cpp" line="59"/>
         <location filename="../../guiclient/items.cpp" line="220"/>
         <source>Costing</source>
-        <translation type="unfinished"></translation>
+        <translation>Troškovi</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="60"/>
         <location filename="../../guiclient/items.cpp" line="221"/>
         <source>Tooling</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="61"/>
         <location filename="../../guiclient/items.cpp" line="222"/>
         <source>Outside Process</source>
-        <translation type="unfinished"></translation>
+        <translation>Vanjski proces</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="62"/>
         <location filename="../../guiclient/items.cpp" line="223"/>
         <source>Planning</source>
-        <translation type="unfinished"></translation>
+        <translation>Planiranja</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="224"/>
@@ -55419,7 +55419,7 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
     <message>
         <location filename="../../guiclient/itemtax.ui" line="80"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilo koji</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemtax.ui" line="146"/>
@@ -56642,7 +56642,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/maintainBudget.ui" line="31"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/maintainBudget.ui" line="47"/>
@@ -62165,7 +62165,7 @@ You must reassign these Opportunities before you may delete the selected Opportu
     <message>
         <location filename="../../guiclient/package.ui" line="122"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/package.ui" line="135"/>
@@ -65854,12 +65854,12 @@ Would you like to post it anyway?</source>
     <message>
         <location filename="../../guiclient/printPackingList.ui" line="268"/>
         <source>Purchase Order #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba #</translation>
     </message>
     <message>
         <location filename="../../guiclient/printPackingList.ui" line="281"/>
         <source>Order Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum Narudžbe</translation>
     </message>
     <message>
         <location filename="../../guiclient/printPackingList.ui" line="109"/>
@@ -66471,7 +66471,7 @@ Would you like to post it anyway?</source>
     <message>
         <location filename="../../guiclient/printSoForm.ui" line="43"/>
         <source>Sales Order #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba #</translation>
     </message>
     <message>
         <location filename="../../guiclient/printSoForm.ui" line="58"/>
@@ -66908,7 +66908,7 @@ You may not create a Product Category with this code.</source>
     <message>
         <location filename="../../guiclient/productCategory.ui" line="67"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/productCategory.cpp" line="106"/>
@@ -66941,7 +66941,7 @@ You may not create a Product Category with this code.</source>
     <message>
         <location filename="../../guiclient/profitCenter.ui" line="100"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/profitCenter.ui" line="138"/>
@@ -67119,7 +67119,7 @@ You may not create a Product Category with this code.</source>
     <message>
         <location filename="../../guiclient/project.ui" line="126"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/project.ui" line="174"/>
@@ -67139,7 +67139,7 @@ You may not create a Product Category with this code.</source>
     <message>
         <location filename="../../guiclient/project.ui" line="304"/>
         <source>Purchase Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
     <message>
         <location filename="../../guiclient/project.ui" line="30"/>
@@ -67985,12 +67985,12 @@ You may not create a Product Category with this code.</source>
     <message>
         <location filename="../../guiclient/purchaseOrder.ui" line="43"/>
         <source>Order #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba #</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrder.ui" line="105"/>
         <source>Order Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum Narudžbe</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrder.ui" line="56"/>
@@ -68030,7 +68030,7 @@ You may not create a Product Category with this code.</source>
     <message>
         <location filename="../../guiclient/purchaseOrder.ui" line="259"/>
         <source>Sales Order #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba #</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrder.ui" line="433"/>
@@ -68572,7 +68572,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="761"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="943"/>
@@ -68612,12 +68612,12 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1336"/>
         <source>Order #: </source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba #</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1350"/>
         <source>Line #</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija #</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="657"/>
@@ -68630,12 +68630,12 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="38"/>
         <source>Purchase Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="53"/>
         <source>&amp;Purchase Orders:</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="62"/>
@@ -68645,7 +68645,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="66"/>
         <source>&amp;Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi</translation>
     </message>
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="87"/>
@@ -68660,7 +68660,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="89"/>
         <source>Agent</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="90"/>
@@ -68670,7 +68670,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../widgets/purchaseOrderList.cpp" line="91"/>
         <source>First Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Prvi artikal</translation>
     </message>
 </context>
 <context>
@@ -68756,7 +68756,7 @@ Please correct before creating this Purchase Request.</source>
     <message>
         <location filename="../../guiclient/purchaseRequest.ui" line="270"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseRequest.ui" line="317"/>
@@ -72465,7 +72465,7 @@ You must Recall this Work Order before Rescheduling it.</source>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="68"/>
         <source>&amp;Header Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacije u zaglavlju</translation>
     </message>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="76"/>
@@ -72646,7 +72646,7 @@ You must Recall this Work Order before Rescheduling it.</source>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="1397"/>
         <source>Co&amp;mments</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentari</translation>
     </message>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="688"/>
@@ -72666,7 +72666,7 @@ You must Recall this Work Order before Rescheduling it.</source>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="610"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="875"/>
@@ -72681,7 +72681,7 @@ You must Recall this Work Order before Rescheduling it.</source>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="948"/>
         <source>&amp;Line Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Stavke</translation>
     </message>
     <message>
         <location filename="../../guiclient/returnAuthorization.ui" line="981"/>
@@ -73180,7 +73180,7 @@ You must Recall this Work Order before Rescheduling it.</source>
     <message>
         <location filename="../../guiclient/returnAuthorizationItem.ui" line="1886"/>
         <source>Co&amp;mments</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentari</translation>
     </message>
     <message>
         <location filename="../../guiclient/returnAuthorizationItem.cpp" line="94"/>
@@ -74994,7 +74994,7 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="111"/>
         <source>&amp;Header Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacije u zaglavlju</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="337"/>
@@ -75136,52 +75136,52 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1483"/>
         <source>Relat&amp;ionships</source>
-        <translation type="unfinished"></translation>
+        <translation>Registracije</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1614"/>
         <source>&amp;Order Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Zabilješke </translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1628"/>
         <source>Co&amp;mments</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentari</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1642"/>
         <source>Shippin&amp;g Notes</source>
-        <translation type="unfinished"></translation>
+        <translation>Zabilješke o isporuci</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1656"/>
         <source>Doc&amp;uments</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumenti</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1666"/>
         <source>Pa&amp;yment</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaćanje</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="716"/>
         <source>Shipping Chgs.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Troškovi isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="762"/>
         <source>Shipping Form:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="186"/>
         <source>Ship Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Isporuka izvršena</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="889"/>
         <source>&amp;Line Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Stavke</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="921"/>
@@ -75282,7 +75282,7 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1571"/>
         <source>Opportunity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prilika:</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1692"/>
@@ -75659,7 +75659,7 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1503"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="1447"/>
@@ -75682,7 +75682,7 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
     <message>
         <location filename="../../guiclient/salesOrderInformation.cpp" line="106"/>
         <source>Ship</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oppo</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrderInformation.cpp" line="107"/>
@@ -76208,7 +76208,7 @@ Do you want to change the Qty Ordered?</source>
     <message>
         <location filename="../../guiclient/salesOrderItem.ui" line="1713"/>
         <source>Co&amp;mments</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentari</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrderItem.ui" line="1739"/>
@@ -78816,7 +78816,7 @@ Would you like to save them now?</source>
     <message>
         <location filename="../../guiclient/shipTo.ui" line="342"/>
         <source>Shipping Form:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/shipTo.ui" line="365"/>
@@ -78954,7 +78954,7 @@ before you may save it.</source>
     <message>
         <location filename="../../guiclient/shipVia.ui" line="52"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/shipVia.cpp" line="108"/>
@@ -79032,7 +79032,7 @@ before you may save it.</source>
     <message>
         <location filename="../../guiclient/shippingChargeType.ui" line="57"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/shippingChargeType.ui" line="128"/>
@@ -79346,12 +79346,12 @@ You must reassign these Ship-Tos before you may delete the selected Shipping For
     <message>
         <location filename="../../guiclient/shippingInformation.ui" line="273"/>
         <source>Shipping Chgs.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Troškovi isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/shippingInformation.ui" line="316"/>
         <source>Shipping Form:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/shippingInformation.cpp" line="107"/>
@@ -79515,7 +79515,7 @@ before you may save it.</source>
     <message>
         <location filename="../../guiclient/siteType.ui" line="67"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
 </context>
 <context>
@@ -79745,7 +79745,7 @@ You must reassign these Sites before deleting this Site Type.</source>
     <message>
         <location filename="../../guiclient/standardJournal.ui" line="76"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/standardJournal.ui" line="158"/>
@@ -79886,7 +79886,7 @@ You must reassign these Sites before deleting this Site Type.</source>
     <message>
         <location filename="../../guiclient/standardJournalGroup.ui" line="88"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/standardJournalGroup.ui" line="152"/>
@@ -82334,7 +82334,7 @@ You may not create a Subaccount Type with this code.</source>
     <message>
         <location filename="../../guiclient/subAccntType.ui" line="157"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/subAccntType.ui" line="203"/>
@@ -82461,7 +82461,7 @@ You must reassign these G/L Accounts before you may delete the selected G/L Suba
     <message>
         <location filename="../../guiclient/subaccount.ui" line="107"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/subaccount.ui" line="150"/>
@@ -83419,7 +83419,7 @@ Posting currency revaluation adjustments...</source>
     <message>
         <location filename="../../guiclient/task.ui" line="134"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/task.ui" line="305"/>
@@ -83599,7 +83599,7 @@ You first need to Revoke those Tax Codes.</source>
     <message>
         <location filename="../../guiclient/taxAssignment.ui" line="31"/>
         <source>Tax Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip poreza</translation>
     </message>
     <message>
         <location filename="../../guiclient/taxAssignment.ui" line="41"/>
@@ -83610,7 +83610,7 @@ You first need to Revoke those Tax Codes.</source>
         <location filename="../../guiclient/taxAssignment.ui" line="56"/>
         <location filename="../../guiclient/taxAssignment.ui" line="86"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilo koji</translation>
     </message>
     <message>
         <location filename="../../guiclient/taxAssignment.ui" line="144"/>
@@ -83675,7 +83675,7 @@ You first need to Revoke those Tax Codes.</source>
         <location filename="../../guiclient/taxAssignments.ui" line="104"/>
         <location filename="../../guiclient/taxAssignments.ui" line="192"/>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilo koji</translation>
     </message>
     <message>
         <location filename="../../guiclient/taxAssignments.ui" line="132"/>
@@ -84387,7 +84387,7 @@ You first need to Revoke those Tax Codes.</source>
     <message>
         <location filename="../../guiclient/taxCode.ui" line="80"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/taxCode.ui" line="128"/>
@@ -84618,7 +84618,7 @@ You first need to Revoke those Tax Codes.</source>
     <message>
         <location filename="../../guiclient/taxDetail.ui" line="102"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/taxDetail.ui" line="207"/>
@@ -84814,7 +84814,7 @@ You may not create a Tax Type with this name.</source>
     <message>
         <location filename="../../guiclient/taxType.ui" line="20"/>
         <source>Tax Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip poreza</translation>
     </message>
     <message>
         <location filename="../../guiclient/taxType.ui" line="52"/>
@@ -84824,7 +84824,7 @@ You may not create a Tax Type with this name.</source>
     <message>
         <location filename="../../guiclient/taxType.ui" line="62"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/taxType.ui" line="149"/>
@@ -85326,7 +85326,7 @@ You must first re-assign these items before deleting the selected Tax Type.</sou
     <message>
         <location filename="../../guiclient/todoItem.ui" line="77"/>
         <source>Description:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis:</translation>
     </message>
     <message>
         <location filename="../../guiclient/todoItem.ui" line="134"/>
@@ -86209,7 +86209,7 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="102"/>
         <source>&amp;Header Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informacije u zaglavlju</translation>
     </message>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="131"/>
@@ -86244,7 +86244,7 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="165"/>
         <source>Ship Complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Isporuka izvršena</translation>
     </message>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="482"/>
@@ -86254,12 +86254,12 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="514"/>
         <source>Shipping Form:</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma isporuke</translation>
     </message>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="583"/>
         <source>&amp;Line Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Stavke</translation>
     </message>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="777"/>
@@ -86339,7 +86339,7 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="218"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/transferOrder.ui" line="307"/>
@@ -88413,7 +88413,7 @@ Would you like to post it anyway?</source>
     <message>
         <location filename="../../guiclient/unpostedPoReceipts.cpp" line="51"/>
         <source>Line #</source>
-        <translation type="unfinished"></translation>
+        <translation>Linija #</translation>
     </message>
     <message>
         <location filename="../../guiclient/unpostedPoReceipts.cpp" line="52"/>
@@ -88802,7 +88802,7 @@ Would you like to post it anyway?</source>
     <message>
         <location filename="../../guiclient/uom.cpp" line="44"/>
         <source>Fractional</source>
-        <translation type="unfinished"></translation>
+        <translation>Sastavljan</translation>
     </message>
     <message>
         <location filename="../../guiclient/uom.cpp" line="100"/>
@@ -88900,7 +88900,7 @@ Would you like to post it anyway?</source>
     <message>
         <location filename="../../guiclient/uomConv.ui" line="89"/>
         <source>Fractional</source>
-        <translation type="unfinished"></translation>
+        <translation>Sastavljan</translation>
     </message>
     <message>
         <location filename="../../guiclient/uomConv.ui" line="129"/>
@@ -91809,7 +91809,7 @@ You must reassign these Vendors before you may delete the selected Vendor Type.<
     <message>
         <location filename="../../guiclient/vendorWorkBench.ui" line="532"/>
         <source>Purchase Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe:</translation>
     </message>
     <message>
         <location filename="../../guiclient/vendorWorkBench.ui" line="538"/>
@@ -94269,7 +94269,7 @@ You may want to consider imploding and exploding the Work Order.
     <message>
         <location filename="../../guiclient/workOrder.ui" line="683"/>
         <source>Costing</source>
-        <translation type="unfinished"></translation>
+        <translation>Troškovi</translation>
     </message>
     <message>
         <location filename="../../guiclient/workOrder.ui" line="689"/>
@@ -94371,7 +94371,7 @@ Site before creating the Work Order.</source>
     <message>
         <location filename="../../guiclient/workOrder.ui" line="410"/>
         <source>Project #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Projekat #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/workOrder.ui" line="614"/>
@@ -94546,7 +94546,7 @@ Site before creating the Work Order.</source>
     <message>
         <location filename="../../guiclient/workOrderMaterials.ui" line="337"/>
         <source>Maximum Desired Cost:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimalna željena cijena</translation>
     </message>
     <message>
         <location filename="../../guiclient/workOrderMaterials.cpp" line="181"/>
