@@ -665,7 +665,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/bom.cpp" line="252"/>
         <source>Co-Product</source>
-        <translation type="unfinished"></translation>
+        <translation>Nus Proizvod</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="253"/>
@@ -3318,7 +3318,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../widgets/documents.cpp" line="514"/>
         <source>Inventory Description</source>
-        <translation type="unfinished">Opis</translation>
+        <translation>Opis grupe</translation>
     </message>
     <message>
         <location filename="../../widgets/documents.cpp" line="83"/>
@@ -7110,7 +7110,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../guiclient/absoluteCalendarItem.ui" line="27"/>
         <source>Calendar Name:</source>
-        <translation>Naziv kalendara:</translation>
+        <translation>Naziv kalendara</translation>
     </message>
     <message>
         <location filename="../../guiclient/absoluteCalendarItem.ui" line="63"/>
@@ -8438,7 +8438,7 @@ Check the database server log for errors.</source>
     <message>
         <location filename="../../guiclient/adjustmentTrans.ui" line="163"/>
         <source>  &amp;Site:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Org. jed:</translation>
     </message>
     <message>
         <location filename="../../guiclient/adjustmentTrans.ui" line="356"/>
@@ -16091,12 +16091,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../guiclient/configureIM.ui" line="331"/>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosijek</translation>
     </message>
     <message>
         <location filename="../../guiclient/configureIM.ui" line="338"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardno</translation>
     </message>
     <message>
         <location filename="../../guiclient/configureIM.ui" line="348"/>
@@ -16952,7 +16952,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../guiclient/configureWO.ui" line="188"/>
         <source>Proportional</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporcionalno</translation>
     </message>
 </context>
 <context>
@@ -19521,17 +19521,17 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="891"/>
         <source>&amp;Reorder Level:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kritična zaliha</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="920"/>
         <source>Order &amp;Up To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Naruči do:</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="1007"/>
         <source>Order &amp;Multiple:</source>
-        <translation type="unfinished"></translation>
+        <translation>Min. nabavna količina</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="508"/>
@@ -19545,12 +19545,12 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="1114"/>
         <source>Safety Stock:</source>
-        <translation type="unfinished"></translation>
+        <translation>Obavezna zaliha</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="456"/>
         <source>ABC Class:</source>
-        <translation type="unfinished"></translation>
+        <translation>ABC Klasa</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="195"/>
@@ -19600,12 +19600,12 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="641"/>
         <source>Proportional</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporcionalno</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="708"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="837"/>
@@ -19695,17 +19695,17 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="666"/>
         <source>Automatic Lot/Serial Numbering</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatska dodjela Lot/Serijskih br.</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="678"/>
         <source>Sequence #:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sekvenca #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="1036"/>
         <source>Enforce on Manual Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Forsiraj na manuelne nabavke</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="1238"/>
@@ -19792,7 +19792,7 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
         <location filename="../../guiclient/createItemSitesByClassCode.cpp" line="189"/>
         <location filename="../../guiclient/createItemSitesByClassCode.cpp" line="207"/>
         <source>Cannot Save Item Site</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu spasiti artikal</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.cpp" line="190"/>
@@ -19842,12 +19842,12 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="949"/>
         <source>Minimum Order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalna narudžba:</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="978"/>
         <source>Maximum Order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimalna narudžba:</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="554"/>
@@ -19862,12 +19862,12 @@ Please verify the Count Tag Qty. and attempt to post again.</source>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="592"/>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosijek</translation>
     </message>
     <message>
         <location filename="../../guiclient/createItemSitesByClassCode.ui" line="579"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardno</translation>
     </message>
 </context>
 <context>
@@ -24441,7 +24441,7 @@ to be deleted.</source>
     <message>
         <location filename="../../guiclient/distributeInventory.cpp" line="50"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/distributeInventory.cpp" line="51"/>
@@ -27895,7 +27895,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/dspCountSlipEditList.cpp" line="48"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/dspCountSlipEditList.cpp" line="49"/>
@@ -28241,7 +28241,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/dspCountTagEditList.cpp" line="68"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/dspCountTagEditList.cpp" line="155"/>
@@ -29132,7 +29132,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/displays/dspDetailedInventoryHistoryByLotSerial.cpp" line="51"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspDetailedInventoryHistoryByLotSerial.ui" line="113"/>
@@ -31758,12 +31758,12 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspInventoryHistory.cpp" line="208"/>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosijek</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspInventoryHistory.cpp" line="209"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardno</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspInventoryHistory.cpp" line="210"/>
@@ -31801,7 +31801,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspInventoryLocator.cpp" line="32"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspInventoryLocator.cpp" line="33"/>
@@ -32348,7 +32348,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspItemCostHistory.cpp" line="60"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardno</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspItemCostHistory.cpp" line="61"/>
@@ -37191,7 +37191,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspQOHByLocation.cpp" line="26"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspQOHByLocation.cpp" line="39"/>
@@ -41595,7 +41595,7 @@ These line items must be fixed before you may convert this quote.</source>
     <message>
         <location filename="../../guiclient/displays/dspValidLocationsByItem.cpp" line="27"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspValidLocationsByItem.cpp" line="28"/>
@@ -52024,7 +52024,7 @@ You may not create duplicate Item Aliases.</source>
     <message>
         <location filename="../../guiclient/itemAvailabilityWorkbench.cpp" line="152"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemAvailabilityWorkbench.cpp" line="153"/>
@@ -52181,12 +52181,12 @@ You may not create duplicate Item Aliases.</source>
     <message>
         <location filename="../../guiclient/itemAvailabilityWorkbench.cpp" line="836"/>
         <source>Average</source>
-        <translation type="unfinished"></translation>
+        <translation>Prosijek</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemAvailabilityWorkbench.cpp" line="837"/>
         <source>Standard</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardno</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemAvailabilityWorkbench.cpp" line="838"/>
@@ -52974,7 +52974,7 @@ You may not create duplicate Item Aliases.</source>
     <message>
         <location filename="../../guiclient/itemListPrice.ui" line="439"/>
         <source>Standard</source>
-        <translation></translation>
+        <translation>Standardno</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemListPrice.ui" line="455"/>
@@ -53238,7 +53238,7 @@ You may not create duplicate Pricing Schedule Items.</source>
     <message>
         <location filename="../../guiclient/itemPricingScheduleItem.ui" line="254"/>
         <source>List Price:</source>
-        <translation>Cijena:</translation>
+        <translation>Cijena</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemPricingScheduleItem.ui" line="36"/>
@@ -53273,7 +53273,7 @@ You may not create duplicate Pricing Schedule Items.</source>
     <message>
         <location filename="../../guiclient/itemPricingScheduleItem.ui" line="388"/>
         <source>Standard</source>
-        <translation></translation>
+        <translation>Standardno</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemPricingScheduleItem.ui" line="404"/>
@@ -54185,7 +54185,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../sample_scripts/resources/client/uiforms/itemSiteViewItem.ui" line="75"/>
         <source>Item Site</source>
-        <translation type="unfinished"></translation>
+        <translation>Org. jed.</translation>
     </message>
 </context>
 <context>
@@ -54597,12 +54597,12 @@ before you may save this Item Source.</source>
     <message>
         <location filename="../../guiclient/itemSource.ui" line="246"/>
         <source>Minimum Order:</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalna narudžba:</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSource.ui" line="335"/>
         <source>Order &amp;Multiple:</source>
-        <translation type="unfinished"></translation>
+        <translation>Min. nabavna količina</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSource.ui" line="588"/>
@@ -55763,7 +55763,7 @@ You must reassign the Locales for these Users before you may delete the selected
         <location filename="../../guiclient/location.ui" line="21"/>
         <location filename="../../guiclient/location.ui" line="231"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/location.ui" line="29"/>
@@ -69479,7 +69479,7 @@ You must purge these records before you may delete the selected Reason Code.</so
     <message>
         <location filename="../../guiclient/reassignLotSerial.cpp" line="35"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/reassignLotSerial.cpp" line="36"/>
@@ -71247,7 +71247,7 @@ submitting this job.</source>
         <location filename="../../guiclient/relocateInventory.cpp" line="36"/>
         <location filename="../../guiclient/relocateInventory.cpp" line="40"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/relocateInventory.cpp" line="37"/>
@@ -87050,7 +87050,7 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/transformTrans.cpp" line="52"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/transformTrans.cpp" line="53"/>
@@ -87234,7 +87234,7 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/translations.cpp" line="40"/>
         <source>Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija</translation>
     </message>
     <message>
         <location filename="../../guiclient/translations.cpp" line="112"/>
@@ -94300,7 +94300,7 @@ You may want to consider imploding and exploding the Work Order.
     <message>
         <location filename="../../guiclient/workOrder.ui" line="798"/>
         <source>Proportional</source>
-        <translation type="unfinished"></translation>
+        <translation>Proporcionalno</translation>
     </message>
     <message>
         <location filename="../../guiclient/workOrder.ui" line="851"/>
