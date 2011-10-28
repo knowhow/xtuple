@@ -57333,7 +57333,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
         <location filename="../../guiclient/menuAccounting.cpp" line="387"/>
         <location filename="../../guiclient/menuAccounting.cpp" line="433"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuAccounting.cpp" line="269"/>
@@ -57876,7 +57876,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuCRM.cpp" line="105"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuCRM.cpp" line="107"/>
@@ -58076,7 +58076,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
         <location filename="../../guiclient/menuInventory.cpp" line="284"/>
         <location filename="../../guiclient/menuInventory.cpp" line="318"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuInventory.cpp" line="231"/>
@@ -58408,7 +58408,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuInventory.cpp" line="414"/>
         <source>&amp;Inventory</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pregled stanja</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuInventory.cpp" line="251"/>
@@ -58629,7 +58629,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuManufacture.cpp" line="156"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuManufacture.cpp" line="159"/>
@@ -58722,7 +58722,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuManufacture.cpp" line="199"/>
         <source>&amp;Manufacture</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Proizvodnja</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuManufacture.cpp" line="182"/>
@@ -58746,7 +58746,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
         <location filename="../../guiclient/menuProducts.cpp" line="125"/>
         <location filename="../../guiclient/menuProducts.cpp" line="197"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="145"/>
@@ -58765,7 +58765,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="130"/>
         <source>&amp;Bills of Materials</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sastavnice</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="131"/>
@@ -58790,7 +58790,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="136"/>
         <source>&amp;Where Used</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Koriste se u</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="140"/>
@@ -58805,97 +58805,97 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="151"/>
         <source>&amp;Item</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Artikal</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="152"/>
         <location filename="../../guiclient/menuProducts.cpp" line="163"/>
         <source>&amp;New...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Novi</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="153"/>
         <location filename="../../guiclient/menuProducts.cpp" line="164"/>
         <source>&amp;List...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lista</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="153"/>
         <source>List Items</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pregled artikala</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="154"/>
         <location filename="../../guiclient/menuProducts.cpp" line="165"/>
         <source>&amp;Copy...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kopiraj</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="156"/>
         <source>&amp;Workbench...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Radna površina</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="158"/>
         <source>&amp;Groups...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Grupe</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="159"/>
         <source>&amp;Images...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Slike</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="162"/>
         <source>Bill Of Ma&amp;terials</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sastavnice</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="164"/>
         <source>List Bill of Materials</source>
-        <translation type="unfinished"></translation>
+        <translation>Pregled sastavnica</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="167"/>
         <source>Mass &amp;Replace...</source>
-        <translation type="unfinished"></translation>
+        <translation>Masovna &amp;zamjena</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="168"/>
         <source>Mass E&amp;xpire...</source>
-        <translation type="unfinished"></translation>
+        <translation>Masovno &amp;zaključenje</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="171"/>
         <source>&amp;Costing</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Troškovi</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="172"/>
         <source>&amp;Maintain Item Costs...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Podesi troškove proizvoda</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="180"/>
         <source>Update &amp;Actual Costs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Osvježi trenutne troškove</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="181"/>
         <location filename="../../guiclient/menuProducts.cpp" line="186"/>
         <location filename="../../guiclient/menuProducts.cpp" line="191"/>
         <source>by &amp;Item...</source>
-        <translation type="unfinished"></translation>
+        <translation>Po &amp;proizvodu</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="185"/>
         <source>&amp;Post Actual Costs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ažuriraj trenutne troškove</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="190"/>
         <source>Post &amp;Standard Costs</source>
-        <translation type="unfinished"></translation>
+        <translation>Ažuriraj &amp;standardne troškove</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="200"/>
@@ -58905,37 +58905,37 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="206"/>
         <source>&amp;Item Costs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Troškovi proizvoda</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="208"/>
         <source>&amp;Summary...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zbirno...</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="209"/>
         <source>&amp;History...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Istorija...</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="212"/>
         <source>&amp;User-Defined Costing Elements...</source>
-        <translation type="unfinished"></translation>
+        <translation>Korinički definisani elementi troškova</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="217"/>
         <source>&amp;Utilities</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Alati</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="218"/>
         <source>Unused &amp;Purchased Items...</source>
-        <translation type="unfinished"></translation>
+        <translation>Neiskorišteni kupljeni proizvodi</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="219"/>
         <source>Undefined &amp;Manufactured Items...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedefinisani Proizvedeni proizvodi</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="220"/>
@@ -58945,27 +58945,27 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="222"/>
         <source>Reassign &amp;Class Codes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Reasigniraj klasu</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="223"/>
         <source>&amp;Reassign Product Categories...</source>
-        <translation type="unfinished"></translation>
+        <translation>Reasigniraj vrstu proizvoda</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="226"/>
         <source>&amp;Setup...</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="235"/>
         <source>Produc&amp;ts</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Provizvodi</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuProducts.cpp" line="175"/>
         <source>&amp;Lot/Serial...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lot</translation>
     </message>
 </context>
 <context>
@@ -59100,7 +59100,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuPurchase.cpp" line="156"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuPurchase.cpp" line="158"/>
@@ -59217,7 +59217,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuPurchase.cpp" line="238"/>
         <source>P&amp;urchase</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nabavka</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuPurchase.cpp" line="214"/>
@@ -59424,7 +59424,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
         <location filename="../../guiclient/menuSales.cpp" line="248"/>
         <location filename="../../guiclient/menuSales.cpp" line="307"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuSales.cpp" line="249"/>
@@ -59479,7 +59479,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuSales.cpp" line="338"/>
         <source>S&amp;ales</source>
-        <translation type="unfinished"></translation>
+        <translation>Prodaja</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuSales.cpp" line="216"/>
@@ -59575,7 +59575,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuSales.cpp" line="303"/>
         <source>S&amp;ales...</source>
-        <translation>Prodaja</translation>
+        <translation>&amp;Prodaja</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuSales.cpp" line="317"/>
@@ -59728,7 +59728,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuSchedule.cpp" line="84"/>
         <source>&amp;Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Izvještaji</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuSchedule.cpp" line="87"/>
@@ -59773,7 +59773,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuSchedule.cpp" line="106"/>
         <source>Sche&amp;dule</source>
-        <translation type="unfinished"></translation>
+        <translation>Pla&amp;niranje</translation>
     </message>
 </context>
 <context>
@@ -59886,7 +59886,7 @@ You must reassign these Item Sites before you may delete the selected Planner Co
     <message>
         <location filename="../../guiclient/menuSystem.cpp" line="204"/>
         <source>S&amp;ystem</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sistem</translation>
     </message>
     <message>
         <location filename="../../guiclient/menuSystem.cpp" line="209"/>
@@ -63554,7 +63554,7 @@ post these Invoices.</source>
     <message>
         <location filename="../../guiclient/postJournals.cpp" line="95"/>
         <source>Products</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvodi</translation>
     </message>
     <message>
         <location filename="../../guiclient/postJournals.cpp" line="96"/>
@@ -78250,7 +78250,7 @@ Would you like to save them now?</source>
         <location filename="../../guiclient/setup.cpp" line="50"/>
         <location filename="../../guiclient/setup.cpp" line="72"/>
         <source>Products</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvodi</translation>
     </message>
     <message>
         <location filename="../../guiclient/setup.cpp" line="51"/>
