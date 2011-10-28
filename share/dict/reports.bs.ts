@@ -12813,19 +12813,19 @@
     </message>
     <message>
         <source>Item Description</source>
-        <translation></translation>
+        <translation>Opis artikla</translation>
     </message>
     <message>
         <source>Shipped</source>
-        <translation>Isporuka</translation>
+        <translation>Isporučeno</translation>
     </message>
     <message>
         <source>Sched. Date:</source>
-        <translation></translation>
+        <translation>Datum isporuke:</translation>
     </message>
     <message>
         <source>Balance</source>
-        <translation>Stanje</translation>
+        <translation>Stanje:</translation>
     </message>
     <message>
         <source>At Shipping</source>
@@ -12833,27 +12833,28 @@
     </message>
     <message>
         <source>Sales Order Acknowledgement</source>
-        <translation></translation>
+        <translation>Odobrio:</translation>
     </message>
     <message>
         <source>Customer P/O #:</source>
-        <translation></translation>
+        <translation>Narudžba.#</translation>
     </message>
     <message>
         <source>Ship To:</source>
-        <translation></translation>
+        <translation>Isporuka na:</translation>
     </message>
     <message>
         <source>Attention:</source>
-        <translation></translation>
+        <translation>Pažnja_
+</translation>
     </message>
     <message>
         <source>Packed</source>
-        <translation></translation>
+        <translation>Pakirao</translation>
     </message>
     <message>
         <source>Bill To:</source>
-        <translation></translation>
+        <translation>Na teret:</translation>
     </message>
     <message>
         <source>Item Number</source>
@@ -12861,11 +12862,11 @@
     </message>
     <message>
         <source>Ordered</source>
-        <translation>Narudžba</translation>
+        <translation>Naručio</translation>
     </message>
     <message>
         <source>S/O Date:</source>
-        <translation></translation>
+        <translation>P/N Datum:</translation>
     </message>
     <message>
         <source>UOM</source>
@@ -12873,7 +12874,7 @@
     </message>
     <message>
         <source>S/O #:</source>
-        <translation></translation>
+        <translation>P/N #:</translation>
     </message>
     <message>
         <source>Customer #:</source>
@@ -12889,11 +12890,11 @@
     </message>
     <message>
         <source>Batch #:</source>
-        <translation></translation>
+        <translation>Seija #</translation>
     </message>
     <message>
         <source>Carton:</source>
-        <translation></translation>
+        <translation>Kutija:</translation>
     </message>
     <message>
         <source>Status:</source>
@@ -12901,7 +12902,7 @@
     </message>
     <message>
         <source>Page:</source>
-        <translation></translation>
+        <translation>Str:</translation>
     </message>
     <message>
         <source>Sales Order #:</source>
@@ -12909,15 +12910,15 @@
     </message>
     <message>
         <source>Print Date: </source>
-        <translation></translation>
+        <translation>Štampano:</translation>
     </message>
     <message>
         <source>Checked By:</source>
-        <translation></translation>
+        <translation>Provjerio:</translation>
     </message>
     <message>
         <source>Completed By:</source>
-        <translation></translation>
+        <translation>Kompletirao:</translation>
     </message>
 </context>
 <context>
