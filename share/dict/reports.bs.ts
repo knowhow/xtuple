@@ -6483,7 +6483,7 @@
     </message>
     <message>
         <source>Bill To:</source>
-        <translation></translation>
+        <translation>Na:</translation>
     </message>
     <message>
         <source>F.O.B.</source>
@@ -6491,19 +6491,19 @@
     </message>
     <message>
         <source>Order #</source>
-        <translation>Narudžba #</translation>
+        <translation>Narudžba#</translation>
     </message>
     <message>
         <source>P.O. Number</source>
-        <translation></translation>
+        <translation>Broj narudžbe</translation>
     </message>
     <message>
         <source>Ship To:</source>
-        <translation></translation>
+        <translation>Isporuči</translation>
     </message>
     <message>
         <source>Order Date</source>
-        <translation></translation>
+        <translation>Datum Narudžbe:</translation>
     </message>
     <message>
         <source>Customer #:</source>
@@ -6523,39 +6523,39 @@
     </message>
     <message>
         <source>Discount Date:</source>
-        <translation></translation>
+        <translation>Popust do:</translation>
     </message>
     <message>
         <source>Terms:</source>
-        <translation>Uslovi:</translation>
+        <translation>Uslov:</translation>
     </message>
     <message>
         <source>Tracking #</source>
-        <translation></translation>
+        <translation>Broj za praćenje</translation>
     </message>
     <message>
         <source>Shipment Details</source>
-        <translation></translation>
+        <translation>Detalji isporuke</translation>
     </message>
     <message>
         <source>Ship Date</source>
-        <translation></translation>
+        <translation>Datum isporuke:</translation>
     </message>
     <message>
         <source>Carrier</source>
-        <translation></translation>
+        <translation>Prevoznik</translation>
     </message>
     <message>
         <source>Invoice Currency:</source>
-        <translation></translation>
+        <translation>Valuta</translation>
     </message>
     <message>
         <source>Unit Price</source>
-        <translation></translation>
+        <translation>Cijena JMJ</translation>
     </message>
     <message>
         <source>Qty. Shipped</source>
-        <translation></translation>
+        <translation>Isporučeno:</translation>
     </message>
     <message>
         <source>UOM</source>
@@ -6563,11 +6563,11 @@
     </message>
     <message>
         <source>Item Description</source>
-        <translation></translation>
+        <translation>Opis artikla</translation>
     </message>
     <message>
         <source>Ext. Price</source>
-        <translation></translation>
+        <translation>Vrijednost</translation>
     </message>
     <message>
         <source>Item Number</source>
@@ -6575,7 +6575,7 @@
     </message>
     <message>
         <source>Serial #/Lot Information:</source>
-        <translation></translation>
+        <translation>Serijski #/LOT informacije:</translation>
     </message>
     <message>
         <source>Notes:</source>
@@ -6583,35 +6583,35 @@
     </message>
     <message>
         <source>Doc #</source>
-        <translation></translation>
+        <translation>Dok #</translation>
     </message>
     <message>
         <source>Total Credit</source>
-        <translation></translation>
+        <translation>Ukupan kredit</translation>
     </message>
     <message>
         <source>Allocated</source>
-        <translation></translation>
+        <translation>Alocirano</translation>
     </message>
     <message>
         <source>Pre-Allocated Credits</source>
-        <translation></translation>
+        <translation>Pre-alocirani kredit</translation>
     </message>
     <message>
         <source>Prev. Applied</source>
-        <translation></translation>
+        <translation>Iskorišteno</translation>
     </message>
     <message>
         <source>Balance</source>
-        <translation>Stanje</translation>
+        <translation>Stanje:</translation>
     </message>
     <message>
         <source>Total Allocated:</source>
-        <translation></translation>
+        <translation>Ukupno alocirano</translation>
     </message>
     <message>
         <source>Freight:</source>
-        <translation></translation>
+        <translation>Transport:</translation>
     </message>
     <message>
         <source>Subtotal:</source>
@@ -6619,11 +6619,11 @@
     </message>
     <message>
         <source>Page:</source>
-        <translation></translation>
+        <translation>Str:</translation>
     </message>
     <message>
         <source>Pre-Allocated Credit</source>
-        <translation></translation>
+        <translation>Pre-alocirani kredit</translation>
     </message>
     <message>
         <source>Misc. Charge:</source>
@@ -6631,15 +6631,15 @@
     </message>
     <message>
         <source>of</source>
-        <translation></translation>
+        <translation>od</translation>
     </message>
     <message>
         <source>Sales Tax:</source>
-        <translation></translation>
+        <translation>Porez:</translation>
     </message>
     <message>
         <source>Total Due:</source>
-        <translation></translation>
+        <translation>Ukupno:</translation>
     </message>
 </context>
 <context>
@@ -11580,7 +11580,7 @@
     </message>
     <message>
         <source>Sales Rep.:</source>
-        <translation type="unfinished">Zastupnik :</translation>
+        <translation>Zastupnik:</translation>
     </message>
     <message>
         <source>F.O.B.:</source>
