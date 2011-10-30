@@ -4668,7 +4668,7 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/ordercluster.cpp" line="269"/>
         <source>To:</source>
-        <translation type="unfinished"></translation>
+        <translation>Za:</translation>
     </message>
 </context>
 <context>
@@ -4738,7 +4738,7 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/ordercluster.cpp" line="921"/>
         <source>Order Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip narudžbe</translation>
     </message>
     <message>
         <location filename="../../widgets/ordercluster.cpp" line="922"/>
@@ -68332,7 +68332,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="833"/>
         <source>Min. Order Qty.:</source>
-        <translation type="unfinished"></translation>
+        <translation>Min. količina po narudžbi</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="859"/>
@@ -68347,7 +68347,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="339"/>
         <source>Qty. Received:</source>
-        <translation type="unfinished"></translation>
+        <translation>Isporučena količina</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="492"/>
@@ -68362,7 +68362,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="571"/>
         <source>Extended Price:</source>
-        <translation>Iznos</translation>
+        <translation>Vrijednost</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1133"/>
@@ -68467,7 +68467,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="617"/>
         <source>Line Freight:</source>
-        <translation type="unfinished"></translation>
+        <translation>Transport:</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1204"/>
@@ -68478,7 +68478,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
         <location filename="../../guiclient/purchaseOrderItem.ui" line="534"/>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="816"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="45"/>
@@ -68578,12 +68578,12 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="943"/>
         <source> Earliest Avail. Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kada će biti na stanju</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1027"/>
         <source>Manufacturer</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvođač</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1037"/>
@@ -68608,7 +68608,7 @@ Click Yes to use the existing Purchase Order otherwise a new one will be created
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1323"/>
         <source>Demand</source>
-        <translation type="unfinished"></translation>
+        <translation>Potražnja</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrderItem.ui" line="1336"/>
