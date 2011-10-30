@@ -802,7 +802,7 @@ What would you like to do?</source>
         <location filename="../../guiclient/bom.cpp" line="78"/>
         <location filename="../../guiclient/bom.cpp" line="254"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="232"/>
@@ -11645,7 +11645,7 @@ Are you sure that you want to save this change?</source>
     <message>
         <location filename="../../guiclient/bomItem.ui" line="376"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
 </context>
 <context>
@@ -28503,7 +28503,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/dspCreditCardTransactions.cpp" line="49"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/dspCreditCardTransactions.cpp" line="50"/>
@@ -28854,7 +28854,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/displays/dspDepositsRegister.cpp" line="31"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspDepositsRegister.cpp" line="32"/>
@@ -51209,7 +51209,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="305"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="310"/>
@@ -51418,7 +51418,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="122"/>
         <source>Conversions/Where Used</source>
-        <translation>Korištene konverzcije</translation>
+        <translation>Korištene konverzije</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="124"/>
@@ -51623,7 +51623,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="132"/>
         <source>Manuf. Item#</source>
-        <translation type="unfinished"></translation>
+        <translation>Artikla proizvođača</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="197"/>
@@ -53734,17 +53734,17 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="483"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="488"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="493"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="374"/>
@@ -53770,22 +53770,22 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="159"/>
         <source>Create Work Orders linked to Sales Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj radne naloge povezane sa nalogom prodaje</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="195"/>
         <source>Create Purchase Requests for Sales Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj zahtjev za nabavku za naloge prodaje</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="202"/>
         <source>Create Purchase Orders linked to Sales Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj nalog za nabavku za naloge prodaje </translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="188"/>
         <source>Create Purchase Requests for Work Order requirements</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj zahtjev za nabavku za potrebu radnih naloga</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="227"/>
@@ -53795,7 +53795,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="320"/>
         <source>&amp;Inventory</source>
-        <translation>&amp;Pregled stanja</translation>
+        <translation>&amp;Skladište</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="356"/>
@@ -53820,7 +53820,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="465"/>
         <source>Allow Automatic ABC Updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatsko ABC osvježavanje</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="637"/>
@@ -53865,7 +53865,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="1303"/>
         <source>Create Planned Transfer Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj planske prenosnice</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="1315"/>
@@ -53930,7 +53930,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="403"/>
         <source>Cost Cate&amp;gory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorija troškova</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="880"/>
@@ -53970,7 +53970,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.cpp" line="543"/>
         <source>Cannot find Supplied From Item Site.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.cpp" line="626"/>
@@ -54030,7 +54030,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="340"/>
         <source>Control Method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrolna metoda</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="943"/>
@@ -54131,7 +54131,7 @@ You must delete these assignments before you may delete the selected Pricing Sch
     <message>
         <location filename="../../guiclient/itemSite.ui" line="561"/>
         <source>Costing Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulacija nabavne cijene</translation>
     </message>
     <message>
         <location filename="../../guiclient/itemSite.ui" line="330"/>
@@ -88000,7 +88000,7 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/unpostedGLTransactions.cpp" line="38"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/unpostedGLTransactions.cpp" line="39"/>
@@ -88098,7 +88098,7 @@ otherwise a new one will be created.</source>
     <message>
         <location filename="../../guiclient/unpostedGlSeries.cpp" line="44"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/unpostedGlSeries.cpp" line="45"/>
@@ -93659,7 +93659,7 @@ that the selected Work Order does.</source>
     <message>
         <location filename="../../guiclient/woMaterialItem.ui" line="430"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
 </context>
 <context>
@@ -93804,7 +93804,7 @@ Please correct before creating this Work Order</source>
     <message>
         <location filename="../../guiclient/workOrder.cpp" line="148"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/workOrder.cpp" line="412"/>
@@ -94592,7 +94592,7 @@ Site before creating the Work Order.</source>
     <message>
         <location filename="../../guiclient/workOrderMaterials.cpp" line="65"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
 </context>
 <context>
