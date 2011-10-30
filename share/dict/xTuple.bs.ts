@@ -802,7 +802,7 @@ What would you like to do?</source>
         <location filename="../../guiclient/bom.cpp" line="78"/>
         <location filename="../../guiclient/bom.cpp" line="254"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="232"/>
@@ -11645,7 +11645,7 @@ Are you sure that you want to save this change?</source>
     <message>
         <location filename="../../guiclient/bomItem.ui" line="376"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
 </context>
 <context>
@@ -28503,7 +28503,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/dspCreditCardTransactions.cpp" line="49"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/dspCreditCardTransactions.cpp" line="50"/>
@@ -28854,7 +28854,7 @@ You must contact your Systems Administrator to have this corrected before you ma
     <message>
         <location filename="../../guiclient/displays/dspDepositsRegister.cpp" line="31"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspDepositsRegister.cpp" line="32"/>
@@ -30453,7 +30453,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspGLTransactions.cpp" line="86"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspGLTransactions.cpp" line="87"/>
@@ -30712,7 +30712,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspIndentedBOM.cpp" line="31"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
 </context>
 <context>
@@ -32089,7 +32089,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspInvoiceRegister.cpp" line="37"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspInvoiceRegister.cpp" line="38"/>
@@ -32679,7 +32679,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspJournals.cpp" line="78"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspJournals.cpp" line="79"/>
@@ -33026,7 +33026,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByBOMItem.cpp" line="41"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByBOMItem.cpp" line="79"/>
@@ -33150,7 +33150,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByComponentItem.cpp" line="43"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByComponentItem.cpp" line="56"/>
@@ -33254,7 +33254,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByItem.cpp" line="45"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByItem.cpp" line="58"/>
@@ -33368,7 +33368,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByWarehouse.cpp" line="43"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByWarehouse.cpp" line="56"/>
@@ -33457,7 +33457,7 @@ Total</source>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByWorkOrder.cpp" line="43"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspMaterialUsageVarianceByWorkOrder.cpp" line="56"/>
@@ -39118,7 +39118,7 @@ These line items must be fixed before you may convert this quote.</source>
     <message>
         <location filename="../../guiclient/displays/dspSingleLevelBOM.cpp" line="35"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
 </context>
 <context>
@@ -41849,7 +41849,7 @@ These line items must be fixed before you may convert this quote.</source>
     <message>
         <location filename="../../guiclient/displays/dspVoucherRegister.cpp" line="44"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/displays/dspVoucherRegister.cpp" line="45"/>
@@ -51209,7 +51209,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="305"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="310"/>
@@ -55247,7 +55247,7 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
         <location filename="../../guiclient/items.cpp" line="58"/>
         <location filename="../../guiclient/items.cpp" line="219"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="59"/>
