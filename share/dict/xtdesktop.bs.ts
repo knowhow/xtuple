@@ -524,7 +524,7 @@
     <message>
         <location filename="../uiforms/desktopNotice.ui" line="26"/>
         <source>Note: The xTuple Desktop is only available when user preferences are set to show windows as free-floating.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">VHome</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopNotice.ui" line="36"/>
@@ -593,7 +593,7 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="274"/>
         <source>Vouchers</source>
-        <translation>VAučeri</translation>
+        <translation>Vaučeri</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="296"/>
@@ -846,22 +846,22 @@
     <message>
         <location filename="../scripts/dockExtensions.js" line="68"/>
         <source>Triggers</source>
-        <translation type="unfinished"></translation>
+        <translation>Okidači</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="69"/>
         <source>Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Slike</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="70"/>
         <source>MetaSQL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="71"/>
         <source>Privileges</source>
-        <translation type="unfinished"></translation>
+        <translation>Privilegije</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="72"/>
@@ -871,12 +871,12 @@
     <message>
         <location filename="../scripts/dockExtensions.js" line="73"/>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Šema</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="74"/>
         <source>Tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabele</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="75"/>
@@ -886,22 +886,22 @@
     <message>
         <location filename="../scripts/dockExtensions.js" line="76"/>
         <source>Views</source>
-        <translation type="unfinished"></translation>
+        <translation>Pregedi</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="77"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Folder</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="78"/>
         <source>Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Klijent</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="79"/>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Baza podataka</translation>
     </message>
 </context>
 <context>
@@ -909,12 +909,12 @@
     <message>
         <location filename="../scripts/dockGLAccounts.js" line="36"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Osvježi</translation>
     </message>
     <message>
         <location filename="../scripts/dockGLAccounts.js" line="42"/>
         <source>Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja...</translation>
     </message>
     <message>
         <location filename="../scripts/dockGLAccounts.js" line="45"/>
@@ -987,7 +987,7 @@
     <message>
         <location filename="../scripts/dockMfgActive.js" line="70"/>
         <source>Planned</source>
-        <translation type="unfinished"></translation>
+        <translation>Planirano</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgActive.js" line="71"/>
@@ -1015,17 +1015,17 @@
     <message>
         <location filename="../scripts/dockMfgHist.js" line="39"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Osvježi</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="45"/>
         <source>Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja...</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="123"/>
         <source>Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Primitke</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="126"/>
@@ -1035,22 +1035,22 @@
     <message>
         <location filename="../scripts/dockMfgHist.js" line="128"/>
         <source>this Week</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove sedmice</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="130"/>
         <source>this Month</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovog mjeseca</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="132"/>
         <source>this Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove godine</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="261"/>
         <source>Class Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasa</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="262"/>
@@ -1067,7 +1067,7 @@
     <message>
         <location filename="../scripts/dockMfgHist.js" line="271"/>
         <source>Planner Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Planski kod</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgHist.js" line="275"/>
@@ -1077,7 +1077,7 @@
     <message>
         <location filename="../scripts/dockMfgHist.js" line="276"/>
         <source>Qty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Količina:</translation>
     </message>
 </context>
 <context>
@@ -1231,12 +1231,12 @@
     <message>
         <location filename="../scripts/dockMyContacts.js" line="24"/>
         <source>Account#</source>
-        <translation type="unfinished"></translation>
+        <translation>Račun#</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyContacts.js" line="25"/>
         <source>Account Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv računa</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyContacts.js" line="26"/>
@@ -1440,7 +1440,7 @@
     <message>
         <location filename="../scripts/dockPurchActive.js" line="72"/>
         <source>Planned</source>
-        <translation type="unfinished"></translation>
+        <translation>Planirano</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchActive.js" line="73"/>
@@ -1455,7 +1455,7 @@
     <message>
         <location filename="../scripts/dockPurchActive.js" line="76"/>
         <source>Unreleased</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije odobreno</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchActive.js" line="77"/>
@@ -1483,12 +1483,12 @@
     <message>
         <location filename="../scripts/dockPurchHist.js" line="39"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Osvježi</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchHist.js" line="45"/>
         <source>Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja...</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchHist.js" line="101"/>
@@ -1498,12 +1498,12 @@
     <message>
         <location filename="../scripts/dockPurchHist.js" line="130"/>
         <source>Variances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varijacije</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchHist.js" line="132"/>
         <source>Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Primitke</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchHist.js" line="135"/>
@@ -1513,17 +1513,17 @@
     <message>
         <location filename="../scripts/dockPurchHist.js" line="137"/>
         <source>this Week</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove sedmice</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchHist.js" line="139"/>
         <source>this Month</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovog mjeseca</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchHist.js" line="141"/>
         <source>this Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove godine</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchHist.js" line="223"/>
@@ -1569,7 +1569,7 @@
     <message>
         <location filename="../scripts/dockPurchHist.js" line="323"/>
         <source>Qty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Količina:</translation>
     </message>
 </context>
 <context>
@@ -1582,7 +1582,7 @@
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="25"/>
         <source>Vendor#</source>
-        <translation type="unfinished"></translation>
+        <translation>Dobavljač#</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="26"/>
@@ -1607,17 +1607,17 @@
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="30"/>
         <source>Ship Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontakt za isporuku</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="31"/>
         <source>Ship Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>telefon za isporuku</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="32"/>
         <source>Ship Via</source>
-        <translation type="unfinished"></translation>
+        <translation>Isporuka putem:</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="33"/>
@@ -1637,7 +1637,7 @@
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="77"/>
         <source>Unreleased</source>
-        <translation type="unfinished"></translation>
+        <translation>Nije odobreno</translation>
     </message>
 </context>
 <context>
@@ -1708,17 +1708,17 @@
     <message>
         <location filename="../scripts/dockSalesActive.js" line="70"/>
         <source>Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesActive.js" line="71"/>
         <source>To Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Za printanje</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesActive.js" line="72"/>
         <source>Pick</source>
-        <translation type="unfinished"></translation>
+        <translation>Odabir</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesActive.js" line="73"/>
@@ -1733,12 +1733,12 @@
     <message>
         <location filename="../scripts/dockSalesActive.js" line="75"/>
         <source>To Bill</source>
-        <translation type="unfinished"></translation>
+        <translation>Za fakturisanje</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesActive.js" line="76"/>
         <source>Invoiced</source>
-        <translation type="unfinished"></translation>
+        <translation>Fakturisano</translation>
     </message>
 </context>
 <context>
@@ -1746,12 +1746,12 @@
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="39"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Osvježi</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="45"/>
         <source>Preferences...</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja...</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="131"/>
@@ -1771,17 +1771,17 @@
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="138"/>
         <source>this Week</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove sedmice</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="140"/>
         <source>this Month</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovog mjeseca</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="142"/>
         <source>this Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove godine</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="285"/>
@@ -1797,7 +1797,7 @@
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="290"/>
         <source>Product Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorija artikla</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="291"/>
@@ -1817,7 +1817,7 @@
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="300"/>
         <source>Qty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Količina:</translation>
     </message>
 </context>
 <context>
@@ -1830,7 +1830,7 @@
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="25"/>
         <source>Customer#</source>
-        <translation type="unfinished"></translation>
+        <translation>Kupac#</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="26"/>
@@ -1855,17 +1855,17 @@
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="30"/>
         <source>Ship Contact</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontakt za isporuku</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="31"/>
         <source>Ship Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>telefon za isporuku</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="32"/>
         <source>Ship Via</source>
-        <translation type="unfinished"></translation>
+        <translation>Isporuka putem:</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="33"/>
@@ -2069,7 +2069,7 @@
     <message>
         <location filename="../scripts/preferencesSelections.js" line="4"/>
         <source>Account#</source>
-        <translation type="unfinished"></translation>
+        <translation>Račun#</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesSelections.js" line="5"/>
