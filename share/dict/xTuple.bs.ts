@@ -55312,12 +55312,12 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
     <message>
         <location filename="../../guiclient/items.cpp" line="73"/>
         <source>Item Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Opis Artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="74"/>
         <source>Item Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupa artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="69"/>
@@ -55354,7 +55354,7 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
     <message>
         <location filename="../../guiclient/items.cpp" line="142"/>
         <source>Are you sure that you want to delete the Item?</source>
-        <translation type="unfinished"></translation>
+        <translation>Da li ste sigurni da želite obrisati artikal</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="143"/>
