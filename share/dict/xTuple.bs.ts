@@ -5514,7 +5514,7 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/queryset.cpp" line="49"/>
         <source>Name</source>
-        <translation>Ime</translation>
+        <translation>Naziv</translation>
     </message>
     <message>
         <location filename="../../widgets/queryset.cpp" line="50"/>
@@ -5644,12 +5644,12 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/quotecluster.cpp" line="23"/>
         <source>Quote Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Broj ponude</translation>
     </message>
     <message>
         <location filename="../../widgets/quotecluster.cpp" line="24"/>
         <source>Customer/Prospect</source>
-        <translation type="unfinished"></translation>
+        <translation>Kupac/Potencijalni kupac</translation>
     </message>
 </context>
 <context>
@@ -5657,12 +5657,12 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/quotecluster.cpp" line="32"/>
         <source>Quote Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Broj ponude</translation>
     </message>
     <message>
         <location filename="../../widgets/quotecluster.cpp" line="33"/>
         <source>Customer/Prospect</source>
-        <translation type="unfinished"></translation>
+        <translation>Kupac/Potencijalni kupac</translation>
     </message>
 </context>
 <context>
@@ -67986,7 +67986,7 @@ You may not create a Product Category with this code.</source>
     <message>
         <location filename="../../guiclient/purchaseOrder.ui" line="43"/>
         <source>Order #:</source>
-        <translation>Narudžba #:</translation>
+        <translation>Broj #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/purchaseOrder.ui" line="105"/>
@@ -68996,17 +68996,17 @@ Are you sure that you want to delete the selected Invoice Records?</source>
     <message>
         <location filename="../../widgets/quoteList.cpp" line="71"/>
         <source>&amp;Select</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Odaberi</translation>
     </message>
     <message>
         <location filename="../../widgets/quoteList.cpp" line="81"/>
         <source>Quotes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponude:</translation>
     </message>
     <message>
         <location filename="../../widgets/quoteList.cpp" line="98"/>
         <source>Order #</source>
-        <translation>Narudžba #</translation>
+        <translation>Ponuda #</translation>
     </message>
     <message>
         <location filename="../../widgets/quoteList.cpp" line="99"/>
@@ -69016,7 +69016,7 @@ Are you sure that you want to delete the selected Invoice Records?</source>
     <message>
         <location filename="../../widgets/quoteList.cpp" line="100"/>
         <source>Ordered</source>
-        <translation>Narudžba</translation>
+        <translation>Naručeno</translation>
     </message>
     <message>
         <location filename="../../widgets/quoteList.cpp" line="101"/>
@@ -69045,12 +69045,12 @@ Are you sure that you want to delete the selected Invoice Records?</source>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="41"/>
         <source>Site</source>
-        <translation>Prodajno mjesto</translation>
+        <translation>Org.jed.</translation>
     </message>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="42"/>
         <source>Exclude Prospects</source>
-        <translation type="unfinished"></translation>
+        <translation>Izbaci potencijalne kupce</translation>
     </message>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="44"/>
@@ -69126,7 +69126,7 @@ Are you sure that you want to delete the selected Invoice Records?</source>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="509"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedefinisano</translation>
     </message>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="101"/>
@@ -69172,7 +69172,7 @@ Are you sure that you want to delete the selected Invoice Records?</source>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="432"/>
         <source>Delete Selected Quotes</source>
-        <translation type="unfinished"></translation>
+        <translation>Obriši odabrane ponude</translation>
     </message>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="129"/>
@@ -69184,7 +69184,7 @@ Are you sure that you want to delete the selected Invoice Records?</source>
         <location filename="../../guiclient/quotes.cpp" line="279"/>
         <location filename="../../guiclient/quotes.cpp" line="290"/>
         <source>Quote for Prospect</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponuda za potencijalnog kupca</translation>
     </message>
     <message>
         <location filename="../../guiclient/quotes.cpp" line="330"/>
@@ -69226,7 +69226,7 @@ Are you sure that you want to delete the selected Invoice Records?</source>
     <message>
         <location filename="../../guiclient/quotes.ui" line="21"/>
         <source>List Quotes</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista ponuda</translation>
     </message>
     <message>
         <location filename="../../guiclient/quotes.ui" line="32"/>
@@ -74975,7 +74975,7 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
         <location filename="../../guiclient/salesOrder.ui" line="45"/>
         <location filename="../../guiclient/salesOrder.ui" line="125"/>
         <source>Order #:</source>
-        <translation>Narudžba #:</translation>
+        <translation>Broj #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="52"/>
@@ -75097,7 +75097,7 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="492"/>
         <source>Bill-To</source>
-        <translation>Fakturiši</translation>
+        <translation>Na teret</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrder.ui" line="537"/>
@@ -75703,7 +75703,7 @@ Would you like to mark the selected Sales Category as inactive instead?</source>
     <message>
         <location filename="../../guiclient/salesOrderInformation.ui" line="77"/>
         <source>Order #:</source>
-        <translation>Narudžba #:</translation>
+        <translation>Broj #:</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrderInformation.ui" line="165"/>
@@ -75934,7 +75934,7 @@ Do you want to change the Qty Ordered?</source>
         <location filename="../../guiclient/salesOrderItem.cpp" line="1853"/>
         <location filename="../../guiclient/salesOrderItem.cpp" line="2879"/>
         <source>Create Purchase Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj narudžbu</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrderItem.cpp" line="1854"/>
@@ -75961,7 +75961,7 @@ Do you want to change the Qty Ordered?</source>
     <message>
         <location filename="../../guiclient/salesOrderItem.cpp" line="1977"/>
         <source>C&amp;reate Work Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj nalog za proizvodnju</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrderItem.cpp" line="1978"/>
@@ -75981,7 +75981,7 @@ Do you want to change the Qty Ordered?</source>
     <message>
         <location filename="../../guiclient/salesOrderItem.cpp" line="1998"/>
         <source>C&amp;reate Purchase Request</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj zahtjev za nabavku</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrderItem.cpp" line="1999"/>
@@ -76001,7 +76001,7 @@ Do you want to change the Qty Ordered?</source>
     <message>
         <location filename="../../guiclient/salesOrderItem.cpp" line="2016"/>
         <source>C&amp;reate Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj narudžbu</translation>
     </message>
     <message>
         <location filename="../../guiclient/salesOrderItem.cpp" line="2017"/>
