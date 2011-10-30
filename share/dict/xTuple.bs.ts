@@ -670,7 +670,7 @@ What would you like to do?</source>
     <message>
         <location filename="../../guiclient/bom.cpp" line="253"/>
         <source>By-Product</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalo/Rastur</translation>
     </message>
     <message>
         <location filename="../../guiclient/bom.cpp" line="255"/>
@@ -4469,12 +4469,12 @@ point to the browser executable.</source>
     <message>
         <location filename="../../widgets/itemCluster.cpp" line="144"/>
         <source>Breeder </source>
-        <translation>Uzgoj</translation>
+        <translation>Kalo/Rastur</translation>
     </message>
     <message>
         <location filename="../../widgets/itemCluster.cpp" line="146"/>
         <source>Co-Product and By-Product </source>
-        <translation>Nus Proizvod</translation>
+        <translation>Kalo/Rastur</translation>
     </message>
     <message>
         <location filename="../../widgets/itemCluster.cpp" line="148"/>
@@ -51074,7 +51074,7 @@ sure there is sufficient Quantity on Hand before proceeding.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="886"/>
         <source>Create New Item Sites</source>
-        <translation type="unfinished"></translation>
+        <translation>Kreiraj novu lokaciju artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="888"/>
@@ -51099,7 +51099,7 @@ sure there is sufficient Quantity on Hand before proceeding.</source>
         <location filename="../../guiclient/item.cpp" line="1682"/>
         <location filename="../../guiclient/item.cpp" line="1688"/>
         <source>Cannot Delete Item Site</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu obrisati lokaciju artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1659"/>
@@ -51139,7 +51139,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="1721"/>
         <source>Regular</source>
-        <translation type="unfinished"></translation>
+        <translation>Obićan</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1722"/>
@@ -51204,7 +51204,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="300"/>
         <source>Phantom</source>
-        <translation>Prelazno</translation>
+        <translation>Prelazni</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="305"/>
@@ -51230,17 +51230,17 @@ You may edit the Item Site and deactivate it.</source>
         <location filename="../../guiclient/item.ui" line="457"/>
         <location filename="../../guiclient/item.cpp" line="125"/>
         <source>Fractional</source>
-        <translation>Sastavljan</translation>
+        <translation>Djeljiv</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="338"/>
         <source>Maximum Desired Cost:</source>
-        <translation>Maksimalna željena cijena</translation>
+        <translation>Ciljna cijena</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="564"/>
         <source>Item is Sold</source>
-        <translation>Artikal je prodan</translation>
+        <translation>Artikal se prodaje</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="581"/>
@@ -51250,7 +51250,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="651"/>
         <source>List Price:</source>
-        <translation>Cijena</translation>
+        <translation>Cjenovna lista:</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="700"/>
@@ -51366,7 +51366,7 @@ You may edit the Item Site and deactivate it.</source>
         <location filename="../../guiclient/item.cpp" line="118"/>
         <location filename="../../guiclient/item.cpp" line="133"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="154"/>
@@ -51397,88 +51397,88 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="622"/>
         <source>You must select a Product Category for this Sold Item before continuing.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1607"/>
         <location filename="../../guiclient/item.cpp" line="1612"/>
         <source>No Item Site Found</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija artikla nije pronađena</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1608"/>
         <source>There is no Item Site for this item. Would you like to create one now?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne postoji lokacija za ovaj artikal, da li je želite kreirati ? </translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1613"/>
         <source>There is no Item Site for this item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne postoji lokacija za ovaj artikal</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="122"/>
         <source>Conversions/Where Used</source>
-        <translation type="unfinished"></translation>
+        <translation>Korištene konverzcije</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="124"/>
         <source>Global</source>
-        <translation type="unfinished"></translation>
+        <translation>Globalno</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="630"/>
         <source>You must select a Selling UOM for this Sold Item before continuing.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="692"/>
         <source>Item Sites Exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacija postoji</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1401"/>
         <source>Cannot Duplicate Transformation</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu duplicirati promjenu</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="119"/>
         <source>List Price</source>
-        <translation type="unfinished"></translation>
+        <translation>Cjenovna lista</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="658"/>
         <source>&lt;p&gt;This Item has Item Sites with either on hand quantities or pending inventory activity. This item type does not allow on hand balances or inventory activity.</source>
-        <translation type="unfinished"></translation>
+        <translation>za ovaj artikla postoje lokacije koje imaju stanje ili očekuju promjenu stanja. Ova vrsta artikla ne dopušta raspored.</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="675"/>
         <source>&lt;p&gt;You have changed the Item Type of this Item. This Item has Item Costs associated with it that will be deleted before this change may occur. Do you wish to continue saving and delete the Item Costs?</source>
-        <translation type="unfinished"></translation>
+        <translation>Izmjenili ste tip artikla za koji postoje troškovi asocirani za taj tip, isti će biti obrisani da bi ova promjena stupila na snagu. Da li želite nastaviti te obrisati troškove artikla.</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="693"/>
         <source>&lt;p&gt;You have changed the Item Type of this Item. To ensure Item Sites do not have invalid settings, all Item Sites for it will be inactivated before this change may occur.  You may afterward edit the Item Sites, enter valid information, and reactivate them.  Do you wish to continue saving and inactivate the Item Sites?</source>
-        <translation type="unfinished"></translation>
+        <translation>Izmjenili ste tip artikla za ovaj artikal, da bi osigurali konzistenciju lokacija, sve asocirane lokacije će biti zaključane. Naknadno možete izvršiti izmjenu na samim lokacija. Želite li nastaviti ?</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="751"/>
         <source>Add conversions?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj konverziju</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="752"/>
         <source>&lt;p&gt;There are records referring to this Item that do not have UOM Conversions to %1. Would you like to create UOM Conversions now?&lt;p&gt;If you  answer No then the Item will be saved and you may encounter errors later. The units without conversions are:&lt;br&gt;%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Postoje zapisi za ovaj artikal koji nemaju JMJ konverziju %1. Želite li da odmah reiramo istu ?  JMJ bez konverzije su %2</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="887"/>
         <source>Would you like to create Item site inventory settings for the newly created Item now?</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="212"/>
         <source>Materials...</source>
-        <translation>Materijali</translation>
+        <translation>Materijali...</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="222"/>
@@ -51488,7 +51488,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="229"/>
         <source>Workbench...</source>
-        <translation type="unfinished"></translation>
+        <translation>Radna površina</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="239"/>
@@ -51498,17 +51498,17 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="447"/>
         <source>Pick List</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista artikala za RN</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="467"/>
         <source>Configured</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurisan</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="504"/>
         <source>Bar Code:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="604"/>
@@ -51523,12 +51523,12 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.ui" line="680"/>
         <source>Unit Price UOM:</source>
-        <translation>Cijena JMJ</translation>
+        <translation>Prodajna JMJ</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="731"/>
         <source>Weight</source>
-        <translation type="unfinished"></translation>
+        <translation>Težina</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="739"/>
@@ -51548,7 +51548,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="398"/>
         <source>You must select a Class Code before continuing.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="477"/>
@@ -51563,12 +51563,12 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="516"/>
         <source>Must be Sold</source>
-        <translation type="unfinished"></translation>
+        <translation>Samo za prodaju</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="517"/>
         <source>Kit item types must be Sold. Please mark this item as sold and set the appropriate options and save again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kit tipovi morabiti prodani</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="537"/>
@@ -51578,12 +51578,12 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="558"/>
         <source>BOM Items should be marked as Sold</source>
-        <translation type="unfinished"></translation>
+        <translation>Artikle sastavnice markirati kao prodane </translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="559"/>
         <source>&lt;p&gt;You have changed the Item Type of this Item to Kit. This Item has BOM Items associated with it that are not marked as Sold. Do you wish to continue saving?</source>
-        <translation type="unfinished"></translation>
+        <translation>Izmjenili ste tip artikla na &quot;KIT&quot;  Postoje sastavnice koje su sada markirane kao prodane. Želite li nastaviti ?</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="1954"/>
@@ -51593,7 +51593,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="1955"/>
         <source>You may not view or edit this Item Site as it references a Site for which you have not been granted privileges.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="330"/>
@@ -51613,12 +51613,12 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="130"/>
         <source>Vendor Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Artikal dobavljača</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="131"/>
         <source>Manufacturer</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvođač</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="132"/>
@@ -51640,7 +51640,7 @@ You may edit the Item Site and deactivate it.</source>
         <location filename="../../guiclient/item.cpp" line="2133"/>
         <location filename="../../guiclient/item.cpp" line="2138"/>
         <source>Delete Item Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Briši prorijeklo artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="2119"/>
@@ -51650,7 +51650,7 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="2121"/>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uredu</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.cpp" line="2133"/>
@@ -51660,17 +51660,17 @@ You may edit the Item Site and deactivate it.</source>
     <message>
         <location filename="../../guiclient/item.cpp" line="2139"/>
         <source>Are you sure that you want to delete the Item Source?</source>
-        <translation type="unfinished"></translation>
+        <translation>Da li ste sigurni da želite pobrisati prijeklo artikla</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="489"/>
         <source>Freight Class:</source>
-        <translation type="unfinished"></translation>
+        <translation>Transportna klasa:</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="805"/>
         <source>Remarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Napomene</translation>
     </message>
     <message>
         <location filename="../../guiclient/item.ui" line="831"/>
@@ -55241,13 +55241,13 @@ You may edit the existing Substitution but you may not create a duplicate.</sour
         <location filename="../../guiclient/items.cpp" line="66"/>
         <location filename="../../guiclient/items.cpp" line="218"/>
         <source>By-Product</source>
-        <translation>Nus Proizvod</translation>
+        <translation>Kalo/Rastur</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="58"/>
         <location filename="../../guiclient/items.cpp" line="219"/>
         <source>Reference</source>
-        <translation>Referenca</translation>
+        <translation>Usluga</translation>
     </message>
     <message>
         <location filename="../../guiclient/items.cpp" line="59"/>
