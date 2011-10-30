@@ -261,7 +261,7 @@
         <location filename="../uiforms/desktopMaintenance.ui" line="14"/>
         <location filename="../uiforms/desktopMaintenance.ui" line="34"/>
         <source>Maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravljanje</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="41"/>
@@ -281,47 +281,47 @@
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="134"/>
         <source>Inventory</source>
-        <translation>Stanje</translation>
+        <translation>Stanje artikala</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="149"/>
         <source>Site</source>
-        <translation>Prodajno mjesto</translation>
+        <translation>Organizacione jedinice</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="171"/>
         <source>Locations</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokacije</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="177"/>
         <source>dspBillingSelections</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="227"/>
         <source>Pricing</source>
-        <translation type="unfinished"></translation>
+        <translation>Cjenovnici</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="242"/>
         <source>Schedules</source>
-        <translation type="unfinished"></translation>
+        <translation>Planiranja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="264"/>
         <source>Assignments</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadaci</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="320"/>
         <source>Security</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="335"/>
         <source>Users</source>
-        <translation type="unfinished"></translation>
+        <translation>Korisnici</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="357"/>
@@ -336,62 +336,62 @@
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="428"/>
         <source>Currencies</source>
-        <translation type="unfinished"></translation>
+        <translation>Valute</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="447"/>
         <source>coin_clock_48</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="450"/>
         <source>Exchange Rates</source>
-        <translation type="unfinished"></translation>
+        <translation>Kursna lista</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="506"/>
         <source>Design</source>
-        <translation type="unfinished"></translation>
+        <translation>Dizajn</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="521"/>
         <source>Commands</source>
-        <translation type="unfinished"></translation>
+        <translation>Komande</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="540"/>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Skripte</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="562"/>
         <source>Screens</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekrani</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="584"/>
         <source>Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvještaji</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="606"/>
         <source>MetaSQL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="629"/>
         <source>Extensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Extenzije</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="651"/>
         <source>Users Online</source>
-        <translation type="unfinished"></translation>
+        <translation>Online korisnici</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopMaintenance.ui" line="685"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation>Alatna traka</translation>
     </message>
 </context>
 <context>
@@ -400,17 +400,17 @@
         <location filename="../uiforms/desktopManufacture.ui" line="14"/>
         <location filename="../uiforms/desktopManufacture.ui" line="34"/>
         <source>Manufacture</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvodnja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="41"/>
         <source>Plan</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="56"/>
         <source>Inventory Availability</source>
-        <translation type="unfinished"></translation>
+        <translation>Stanje artikala</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="88"/>
@@ -420,12 +420,12 @@
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="120"/>
         <source>Material Requirements</source>
-        <translation type="unfinished"></translation>
+        <translation>Potrebne sirovine</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="152"/>
         <source>Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Odobrenja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="171"/>
@@ -435,22 +435,22 @@
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="203"/>
         <source>Process</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesiraj</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="244"/>
         <source>Issue Material</source>
-        <translation type="unfinished"></translation>
+        <translation>Izdaj sirovinu</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="260"/>
         <source>Close Work Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Zatvori radni nalog</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="279"/>
         <source>Return Material</source>
-        <translation type="unfinished"></translation>
+        <translation>Povrat sirovine</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="324"/>
@@ -460,58 +460,58 @@
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="343"/>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Istorija...</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="362"/>
         <source>Post Production</source>
-        <translation type="unfinished"></translation>
+        <translation>Završna obrada</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="381"/>
         <source>Post Scrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Otpad</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="400"/>
         <source>Order Schedule</source>
-        <translation type="unfinished"></translation>
+        <translation>Plan narudžbi</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="422"/>
         <source>Material Availability</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostupna sirovina</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="441"/>
         <source>Correct Production</source>
-        <translation type="unfinished"></translation>
+        <translation>Ispravi proizvodnju</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="464"/>
         <source>Manufacture Activities</source>
-        <translation type="unfinished"></translation>
+        <translation>Proizvodne aktivnosti</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="486"/>
         <source>Manufacture History</source>
-        <translation type="unfinished"></translation>
+        <translation>Istorija proizvodnje</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="524"/>
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="540"/>
         <location filename="../uiforms/desktopManufacture.ui" line="556"/>
         <source>b</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopManufacture.ui" line="571"/>
         <source>Work Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Radni nalozi</translation>
     </message>
 </context>
 <context>
@@ -538,7 +538,7 @@
         <location filename="../uiforms/desktopPurchase.ui" line="14"/>
         <location filename="../uiforms/desktopPurchase.ui" line="34"/>
         <source>Purchase</source>
-        <translation type="unfinished"></translation>
+        <translation>Nabavka</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="41"/>
@@ -548,7 +548,7 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="56"/>
         <source>Purchase Requests</source>
-        <translation type="unfinished"></translation>
+        <translation>Zahtijevi za nabavku</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="75"/>
@@ -563,57 +563,57 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="116"/>
         <source>Inventory Availability</source>
-        <translation type="unfinished"></translation>
+        <translation>Stanje artikala</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="174"/>
         <source>Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Odobrenja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="206"/>
         <source>Receive</source>
-        <translation type="unfinished"></translation>
+        <translation>Primitka</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="221"/>
         <source>Enter Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Unesi račune</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="240"/>
         <source>Unposted Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Neažurirani računi</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="259"/>
         <source>Payment</source>
-        <translation type="unfinished"></translation>
+        <translation>Plaćanja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="274"/>
         <source>Vouchers</source>
-        <translation type="unfinished"></translation>
+        <translation>VAučeri</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="296"/>
         <source>Select for Payment</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi sa plaćanje</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="315"/>
         <source>Selected Payments</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberana plaćanja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="334"/>
         <source>Check Register</source>
-        <translation type="unfinished"></translation>
+        <translation>Provjeri registar</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="353"/>
         <source>Check Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Ćek</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="372"/>
@@ -623,12 +623,12 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="378"/>
         <source>dspTimePhasedOpenAPItems</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="381"/>
         <source>ViewAPOpenItems</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="391"/>
@@ -638,28 +638,28 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="413"/>
         <source>Open Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Otvoreni artikli</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="475"/>
         <source>Purchase Activities</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivnosti nabavke</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="497"/>
         <source>Purchase History</source>
-        <translation type="unfinished"></translation>
+        <translation>Istorija nabavke</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="535"/>
         <source>label</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="551"/>
         <location filename="../uiforms/desktopPurchase.ui" line="567"/>
         <source>b</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="582"/>
@@ -749,7 +749,7 @@
     <message>
         <location filename="../uiforms/desktopSales.ui" line="371"/>
         <source>dspBillingSelections</source>
-        <translation type="unfinished"></translation>
+        <translation>Za fakturisanje</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopSales.ui" line="384"/>
@@ -831,7 +831,7 @@
     <message>
         <location filename="../scripts/dockExtensions.js" line="65"/>
         <source>Scripts</source>
-        <translation type="unfinished"></translation>
+        <translation>Skripte</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="66"/>
@@ -866,7 +866,7 @@
     <message>
         <location filename="../scripts/dockExtensions.js" line="72"/>
         <source>Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvještaji</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="73"/>
@@ -881,7 +881,7 @@
     <message>
         <location filename="../scripts/dockExtensions.js" line="75"/>
         <source>Screens</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekrani</translation>
     </message>
     <message>
         <location filename="../scripts/dockExtensions.js" line="76"/>
@@ -1085,12 +1085,12 @@
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="24"/>
         <source>Order#</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba#</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="25"/>
         <source>Item#</source>
-        <translation type="unfinished"></translation>
+        <translation>Artikal</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="26"/>
@@ -1100,7 +1100,7 @@
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="28"/>
         <source>Whs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skladište.</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="29"/>
@@ -1110,12 +1110,12 @@
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="30"/>
         <source>Ordered</source>
-        <translation>Narudžba</translation>
+        <translation>Naručeno</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="31"/>
         <source>Received</source>
-        <translation type="unfinished"></translation>
+        <translation>Primljeno</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="32"/>
@@ -1135,12 +1135,12 @@
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="35"/>
         <source>Condition</source>
-        <translation type="unfinished"></translation>
+        <translation>Stanje</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="38"/>
         <source>Posted Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrijednost</translation>
     </message>
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="39"/>
@@ -1165,7 +1165,7 @@
     <message>
         <location filename="../scripts/dockMfgOpen.js" line="86"/>
         <source>In Process</source>
-        <translation type="unfinished"></translation>
+        <translation>U procesu</translation>
     </message>
 </context>
 <context>
@@ -1188,7 +1188,7 @@
     <message>
         <location filename="../scripts/dockMyAccounts.js" line="27"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyAccounts.js" line="28"/>
@@ -1921,17 +1921,17 @@
     <message>
         <location filename="../scripts/initMenu.js" line="32"/>
         <source>Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otvori</translation>
     </message>
     <message>
         <location filename="../scripts/initMenu.js" line="41"/>
         <source>Desktop</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../scripts/initMenu.js" line="46"/>
         <source>Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja</translation>
     </message>
     <message>
         <location filename="../scripts/initMenu.js" line="88"/>
@@ -1941,7 +1941,7 @@
     <message>
         <location filename="../scripts/initMenu.js" line="135"/>
         <source>Sites</source>
-        <translation>Prodajna mjesta</translation>
+        <translation>Organizacione jedinice</translation>
     </message>
 </context>
 <context>
@@ -1954,22 +1954,22 @@
     <message>
         <location filename="../scripts/preferencesHistory.js" line="19"/>
         <source>This Week</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove sedmice</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="20"/>
         <source>This Month</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovog mjeseca</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="21"/>
         <source>This Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Ove godine</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="35"/>
         <source>Bookings</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezervacije</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="36"/>
@@ -1984,12 +1984,12 @@
     <message>
         <location filename="../scripts/preferencesHistory.js" line="39"/>
         <source>Product Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorija artikla</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="40"/>
         <source>Sales Rep</source>
-        <translation type="unfinished"></translation>
+        <translation>Zastupnik</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="42"/>
