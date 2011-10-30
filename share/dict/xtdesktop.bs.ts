@@ -633,7 +633,7 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="391"/>
         <source>Uninvoiced Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Primitke bez računa</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="413"/>
@@ -1007,7 +1007,7 @@
     <message>
         <location filename="../scripts/dockMfgActive.js" line="74"/>
         <source>In Process</source>
-        <translation type="unfinished"></translation>
+        <translation>U procesu</translation>
     </message>
 </context>
 <context>
@@ -1241,7 +1241,7 @@
     <message>
         <location filename="../scripts/dockMyContacts.js" line="26"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyContacts.js" line="27"/>
@@ -1289,7 +1289,7 @@
     <message>
         <location filename="../scripts/dockMyTodo.js" line="25"/>
         <source>Assigned To</source>
-        <translation type="unfinished"></translation>
+        <translation>Asignirano na</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="26"/>
@@ -1319,22 +1319,22 @@
     <message>
         <location filename="../scripts/dockMyTodo.js" line="31"/>
         <source>Parent#</source>
-        <translation type="unfinished"></translation>
+        <translation>Srodan zadatak#</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="32"/>
         <source>Customer#</source>
-        <translation type="unfinished"></translation>
+        <translation>Kupac#</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="33"/>
         <source>Account#</source>
-        <translation type="unfinished"></translation>
+        <translation>Račun#</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="34"/>
         <source>Account Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv računa</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="35"/>
@@ -1344,17 +1344,17 @@
     <message>
         <location filename="../scripts/dockMyTodo.js" line="70"/>
         <source>Delete To Do?</source>
-        <translation type="unfinished"></translation>
+        <translation>Obriši TO-DO ?</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="71"/>
         <source>This will permenantly delete the To Do item.  Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Brišete TO-DO zapis, da li ste sigurni ?</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="96"/>
         <source>To-do</source>
-        <translation type="unfinished"></translation>
+        <translation>TO-DO</translation>
     </message>
     <message>
         <location filename="../scripts/dockMyTodo.js" line="97"/>
@@ -1470,7 +1470,7 @@
     <message>
         <location filename="../scripts/dockPurchActive.js" line="79"/>
         <source>Received</source>
-        <translation type="unfinished"></translation>
+        <translation>Primljeno</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchActive.js" line="80"/>
@@ -1577,7 +1577,7 @@
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="24"/>
         <source>Order#</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba#</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="25"/>
@@ -1597,7 +1597,7 @@
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="28"/>
         <source>Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Telefon</translation>
     </message>
     <message>
         <location filename="../scripts/dockPurchOpen.js" line="29"/>
@@ -1756,7 +1756,7 @@
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="131"/>
         <source>Bookings</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezervacije</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesHistory.js" line="133"/>
@@ -1825,7 +1825,7 @@
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="24"/>
         <source>Order#</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžba#</translation>
     </message>
     <message>
         <location filename="../scripts/dockSalesOpen.js" line="25"/>
@@ -1994,18 +1994,18 @@
     <message>
         <location filename="../scripts/preferencesHistory.js" line="42"/>
         <source>Sales History Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja istorije prodaje</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="46"/>
         <location filename="../scripts/preferencesHistory.js" line="57"/>
         <source>Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Primitke</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="47"/>
         <source>Variances</source>
-        <translation type="unfinished"></translation>
+        <translation>Varijacije</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="49"/>
@@ -2016,37 +2016,37 @@
         <location filename="../scripts/preferencesHistory.js" line="50"/>
         <location filename="../scripts/preferencesHistory.js" line="61"/>
         <source>Item</source>
-        <translation>Stavka</translation>
+        <translation>Artikal</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="51"/>
         <source>Purchase Agent</source>
-        <translation type="unfinished"></translation>
+        <translation>Posrednik kod nabavke</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="53"/>
         <source>Purchase History Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja istorije nabavke</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="60"/>
         <source>Class Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasa</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="62"/>
         <source>Planner Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Planski kod</translation>
     </message>
     <message>
         <location filename="../scripts/preferencesHistory.js" line="64"/>
         <source>Manufacture History Preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja istorije proizvodnje</translation>
     </message>
     <message>
         <location filename="../uiforms/preferencesHistory.ui" line="20"/>
         <source>History Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Podešenja istorije</translation>
     </message>
     <message>
         <location filename="../uiforms/preferencesHistory.ui" line="26"/>
@@ -2056,12 +2056,12 @@
     <message>
         <location filename="../uiforms/preferencesHistory.ui" line="56"/>
         <source>Group By:</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupiši po:</translation>
     </message>
     <message>
         <location filename="../uiforms/preferencesHistory.ui" line="76"/>
         <source>Time Frame:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vremenski interval:</translation>
     </message>
 </context>
 <context>
