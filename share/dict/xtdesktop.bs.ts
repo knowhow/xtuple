@@ -13,25 +13,25 @@
         <location filename="../uiforms/desktopAccounting.ui" line="41"/>
         <location filename="../uiforms/desktopAccounting.ui" line="448"/>
         <source>Payables</source>
-        <translation type="unfinished"></translation>
+        <translation>Obaveze</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="56"/>
         <location filename="../uiforms/desktopAccounting.ui" line="134"/>
         <source>Aging</source>
-        <translation type="unfinished"></translation>
+        <translation>Ročni intervali</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="78"/>
         <location filename="../uiforms/desktopAccounting.ui" line="156"/>
         <source>Workbench</source>
-        <translation type="unfinished"></translation>
+        <translation>Radna površina</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="84"/>
         <location filename="../uiforms/desktopAccounting.ui" line="162"/>
         <source>dspBillingSelections</source>
-        <translation type="unfinished"></translation>
+        <translation>Za fakturisanje</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="97"/>
@@ -42,7 +42,7 @@
         <location filename="../uiforms/desktopAccounting.ui" line="119"/>
         <location filename="../uiforms/desktopAccounting.ui" line="470"/>
         <source>Receivables</source>
-        <translation type="unfinished"></translation>
+        <translation>Potraživanja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="175"/>
@@ -52,27 +52,27 @@
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="197"/>
         <source>General Ledger</source>
-        <translation type="unfinished"></translation>
+        <translation>Glavna knjiga</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="212"/>
         <source>Chart of Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Konta</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="234"/>
         <source>Budget</source>
-        <translation type="unfinished"></translation>
+        <translation>Budžet</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="250"/>
         <source>Standard Journal</source>
-        <translation type="unfinished"></translation>
+        <translation>Žurnal</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="272"/>
         <source>Journal Series</source>
-        <translation type="unfinished"></translation>
+        <translation>Serije žurnala</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="291"/>
@@ -88,38 +88,38 @@
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="328"/>
         <source>Reconcile</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="347"/>
         <source>Reporting</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvještaji</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="362"/>
         <source>Financial Statements</source>
-        <translation type="unfinished"></translation>
+        <translation>Finansijski izvještaji </translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="381"/>
         <source>Trial Balance</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="403"/>
         <source>Transactions</source>
-        <translation type="unfinished"></translation>
+        <translation>Transakcije</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="492"/>
         <source>Monitored Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Nadgledani računi</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopAccounting.ui" line="530"/>
         <location filename="../uiforms/desktopAccounting.ui" line="546"/>
         <source>b</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -127,37 +127,37 @@
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="14"/>
         <source>CRM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="34"/>
         <source>Corporate Relationship Management</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="41"/>
         <source>Personal</source>
-        <translation type="unfinished"></translation>
+        <translation>Personal</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="56"/>
         <source>Event Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravitelj notifikacija</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="78"/>
         <source>To Do Calendar</source>
-        <translation type="unfinished"></translation>
+        <translation>TO-DO Kalendar</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="97"/>
         <source>To Do List</source>
-        <translation type="unfinished"></translation>
+        <translation>TO-DO Lista</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="119"/>
         <source>Corporate</source>
-        <translation type="unfinished"></translation>
+        <translation>Preduzeća</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="134"/>
@@ -167,22 +167,22 @@
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="156"/>
         <source>Contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>KOntakti</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="175"/>
         <source>Address Book</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresar</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="197"/>
         <source>Pre-Sales</source>
-        <translation type="unfinished"></translation>
+        <translation>Pred prodaja</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="212"/>
         <source>Prospects</source>
-        <translation>Ponuda</translation>
+        <translation>Potencijalni kupci</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="231"/>
@@ -192,7 +192,7 @@
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="247"/>
         <source>Quotes by Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponude po artiklima</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="269"/>
@@ -202,7 +202,7 @@
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="275"/>
         <source>dspBillingSelections</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="288"/>
@@ -217,22 +217,22 @@
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="325"/>
         <source>Time &amp; Expense</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrijeme i Troškovi</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="344"/>
         <source>Project Orders</source>
-        <translation type="unfinished"></translation>
+        <translation>Projketi/Narudžbe</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="366"/>
         <source>Account Management</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravljanje računima</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="381"/>
         <source>Customer Workbench</source>
-        <translation type="unfinished"></translation>
+        <translation>Kupci/Radna površina</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="403"/>
@@ -247,12 +247,12 @@
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="448"/>
         <source>My Contacts</source>
-        <translation type="unfinished"></translation>
+        <translation>Moji kontakti</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopCRM.ui" line="470"/>
         <source>My Accounts</source>
-        <translation type="unfinished"></translation>
+        <translation>Moji Računi</translation>
     </message>
 </context>
 <context>
@@ -543,7 +543,7 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="41"/>
         <source>Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Narudžbe</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="56"/>
@@ -618,7 +618,7 @@
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="372"/>
         <source>Aging</source>
-        <translation type="unfinished"></translation>
+        <translation>Ročni intervali</translation>
     </message>
     <message>
         <location filename="../uiforms/desktopPurchase.ui" line="378"/>
