@@ -18596,7 +18596,7 @@
     <name>RetailSitesReport</name>
     <message>
         <source>Retail Sites</source>
-        <translation>Prodajna mjesta</translation>
+        <translation>Maloprodajna mjesta</translation>
     </message>
     <message>
         <source>Check Clearing Account</source>
